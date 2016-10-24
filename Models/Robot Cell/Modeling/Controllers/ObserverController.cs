@@ -30,15 +30,21 @@ namespace SafetySharp.CaseStudies.RobotCell.Modeling.Controllers
 	internal abstract class ObserverController : Component
 	{
 		public const int MaxSteps = 350;
-		private bool _hasReconfed;
+	    private bool _hasReconfed;
+
+        [Hidden]
+	    public bool ReconfigurationPerformed = false;
 
 		[NonSerializable]
 		private Tuple<Agent, Capability[]>[] _lastRoleAllocations; // for debugging purposes
 
 		//[Hidden]
-		private bool _reconfigurationRequested = true;
+	    private bool _reconfigurationRequested = true;
 
-		[Range(0, MaxSteps, OverflowBehavior.Clamp)]
+        [Hidden(HideElements = true)]
+        public List<long> TimesForAdaptation { get; } = new List<long>();
+
+        [Range(0, MaxSteps, OverflowBehavior.Clamp)]
 		public int _stepCount;
 
 		public AnalysisMode Mode = AnalysisMode.AllFaults;
@@ -123,7 +129,8 @@ namespace SafetySharp.CaseStudies.RobotCell.Modeling.Controllers
 
 		public override void Update()
 		{
-			if (Mode == AnalysisMode.IntolerableFaults)
+		    ReconfigurationPerformed = false;
+            if (Mode == AnalysisMode.IntolerableFaults)
 			{
 				++_stepCount;
 				if (_stepCount >= MaxSteps)
@@ -165,6 +172,7 @@ namespace SafetySharp.CaseStudies.RobotCell.Modeling.Controllers
 			Reconfigure();
 			_reconfigurationRequested = false;
 			_hasReconfed = true;
+            ReconfigurationPerformed = true;
 		}
 
 		/// <summary>

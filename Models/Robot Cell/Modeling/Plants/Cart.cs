@@ -32,6 +32,7 @@ namespace SafetySharp.CaseStudies.RobotCell.Modeling.Plants
 
 		private Robot _position;
 
+        [Reliability(120)]
 		public Fault Broken = new TransientFault();
 
 		public Workpiece LoadedWorkpiece;

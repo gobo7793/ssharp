@@ -40,16 +40,22 @@ namespace SafetySharp.CaseStudies.RobotCell.Modeling.Controllers
 		private const string MinizincExe = "minizinc.exe";
 		private const string MinizincModel = "ConstraintModel.mzn";
 
-		public MiniZincObserverController(IEnumerable<Agent> agents, List<Task> tasks)
+        public MiniZincObserverController(IEnumerable<Agent> agents, List<Task> tasks)
 			: base(agents, tasks)
 		{
 		}
 
 		protected override void Reconfigure()
 		{
+            //stopwatch not system...
+            var timeReconfStarted = System.DateTime.Now.Ticks;
 			CreateConstraintsFile();
 			ExecuteMinizinc();
+//		    var timeReconfFinished = System.DateTime.Now.Ticks;
 			UpdateConfiguration();
+		    var timeReconfDistributed = System.DateTime.Now.Ticks;
+		    TimesForAdaptation.Add(timeReconfDistributed - timeReconfStarted);
+
 		}
 
 		private void CreateConstraintsFile()
@@ -237,5 +243,7 @@ namespace SafetySharp.CaseStudies.RobotCell.Modeling.Controllers
 
             return false;
         }
-    }
+
+
+	}
 }

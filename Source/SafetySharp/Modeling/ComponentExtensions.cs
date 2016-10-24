@@ -35,12 +35,21 @@ namespace SafetySharp.Modeling
 	///   methods for working with the metadata.
 	/// </summary>
 	public static class ComponentExtensions
-	{
-		/// <summary>
-		///   Gets the <paramref name="component" />'s subcomponents.
-		/// </summary>
-		/// <param name="component">The component the subcomponents should be returned for.</param>
-		public static IEnumerable<IComponent> GetSubcomponents(this IComponent component)
+    {
+        /// <summary>
+        /// Gets the <see cref="Fault"/> instances that affect the component.
+        /// </summary>
+        /// <param name="component">The component the faults should be returned for.</param>
+	    public static IEnumerable<Fault> GetFaults(this IComponent component)
+        {
+            return ((Component)component).FaultEffects.Select(faultEffect => faultEffect.GetFault());
+        }
+
+	    /// <summary>
+        ///   Gets the <paramref name="component" />'s subcomponents.
+        /// </summary>
+        /// <param name="component">The component the subcomponents should be returned for.</param>
+        public static IEnumerable<IComponent> GetSubcomponents(this IComponent component)
 		{
 			Requires.NotNull(component, nameof(component));
 
