@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="Scheduler, RM und NM hier überhaupt nötig?">
+    <Position X="10.21" Y="1.024" Height="0.75" Width="1.7" />
+  </Comment>
+  <Class Name="TestingHadoop.YarnMaster">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAAAAEAAAAEAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Modeling\YarnMaster.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Scheduler" />
+      <Property Name="ResourceManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="TestingHadoop.YarnNode">
+    <Position X="5.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modeling\YarnNode.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="NodeManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="TestingHadoop.Client">
+    <Position X="1.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAABAEAAAAAAA=</HashCode>
+      <FileName>Modeling\Client.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ConnectedYarnMaster" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="TestingHadoop.ResourceManager">
+    <Position X="8.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modeling\ResourceManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingHadoop.Scheduler">
+    <Position X="8.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modeling\Scheduler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingHadoop.NodeManager">
+    <Position X="8.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modeling\NodeManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestingHadoop.YarnApp">
+    <Position X="4" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modeling\YarnApp.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="StartingClient" />
+    </ShowAsAssociation>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
