@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Source\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Modeling\AppState.cs" />
     <Compile Include="Modeling\Client.cs" />
     <Compile Include="Modeling\NodeManager.cs" />
