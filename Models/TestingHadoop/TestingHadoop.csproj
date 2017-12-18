@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Modeling\AppState.cs" />
     <Compile Include="Modeling\Client.cs" />
     <Compile Include="Modeling\NodeManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

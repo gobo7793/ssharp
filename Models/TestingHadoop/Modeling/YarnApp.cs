@@ -6,12 +6,12 @@ using System.Text;
 namespace TestingHadoop
 {
     /// <summary>
-    /// Anwendung, die auf dem Hadoop-System ausgeführt werden soll
+    /// Application/Job to run on the Hadoop cluster
     /// </summary>
     public class YarnApp
     {
         /// <summary>
-        /// <see cref="Client"/>, der die App gestartet hat
+        /// Starting <see cref="Client"/> of this app
         /// </summary>
         public Client StartingClient
         {
@@ -22,11 +22,22 @@ namespace TestingHadoop
         }
 
         /// <summary>
-        /// <see cref="YarnNode"/>s, auf denen die Apps ausgeführt wird
+        /// Running <see cref="YarnNode"/> for this app
         /// </summary>
         public List<YarnNode> ExecutingNodes
         {
             get => default(List<YarnNode>);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Current state
+        /// </summary>
+        public AppState AppState
+        {
+            get => default(AppState);
             set
             {
             }

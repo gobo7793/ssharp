@@ -6,12 +6,12 @@ using System.Text;
 namespace TestingHadoop
 {
     /// <summary>
-    /// Client, der auf Hadoop zugreift
+    /// Client for the Hadoop cluster
     /// </summary>
     public class Client
     {
         /// <summary>
-        /// Gestartete <see cref="YarnApp"/>s des Clients
+        /// Started <see cref="YarnApp"/>s of the client
         /// </summary>
         public List<YarnApp> StartedYarnApps
         {
@@ -22,7 +22,7 @@ namespace TestingHadoop
         }
 
         /// <summary>
-        /// Verbundener <see cref="YarnMaster"/>
+        /// Connected <see cref="YarnMaster"/> for the client
         /// </summary>
         public YarnMaster ConnectedYarnMaster
         {
@@ -33,9 +33,9 @@ namespace TestingHadoop
         }
 
         /// <summary>
-        /// Startet den angegebenen Job auf dem <see cref="ConnectedYarnMaster"/>
+        /// Starts the given <see cref="YarnApp"/> on <see cref="ConnectedYarnMaster" />
         /// </summary>
-        /// <param name="app">Zu startender Job</param>
+        /// <param name="app"><see cref="YarnApp"/> to start</param>
         public void StartJob(YarnApp app)
         {
             throw new System.NotImplementedException();

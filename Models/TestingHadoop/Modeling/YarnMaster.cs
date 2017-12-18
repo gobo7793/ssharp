@@ -6,12 +6,12 @@ using System.Text;
 namespace TestingHadoop
 {
     /// <summary>
-    /// Master-Node von YARN
+    /// YARN Master node
     /// </summary>
     public class YarnMaster
     {
         /// <summary>
-        /// <see cref="Scheduler"/> des Masters
+        /// YARN <see cref="Scheduler"/>
         /// </summary>
         public Scheduler Scheduler
         {
@@ -22,7 +22,7 @@ namespace TestingHadoop
         }
 
         /// <summary>
-        /// <see cref="ResourceManager"/> des Masters
+        /// YARN <see cref="ResourceManager"/>
         /// </summary>
         public ResourceManager ResourceManager
         {
@@ -33,7 +33,7 @@ namespace TestingHadoop
         }
 
         /// <summary>
-        /// Verbundene <see cref="YarnNode"/>s
+        /// Connected YARN Slaves
         /// </summary>
         public List<YarnNode> ConnectedNodes
         {
@@ -44,9 +44,9 @@ namespace TestingHadoop
         }
 
         /// <summary>
-        /// Findet die einer <see cref="YarnApp"/> zugeordneten <see cref="YarnNode"/> und speichert diese
+        /// Indicates the <see cref="YarnNode"/> which executes the given <see cref="YarnApp"/> and saves it
         /// </summary>
-        /// <param name="app">Die App</param>
+        /// <param name="app">The app/job</param>
         public void FindNodesForApp(YarnApp app)
         {
             throw new System.NotImplementedException();
