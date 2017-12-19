@@ -28,60 +28,19 @@ using System.Text;
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
     /// <summary>
-    /// Basis class for yarn nodes
+    /// YARN slave node which executes <see cref="YarnApp"/>s
     /// </summary>
-    public class YarnNode
+    public class YarnSlave : YarnNode
     {
         /// <summary>
-        /// Name of the node
+        /// <see cref="NodeManager"/> of the node
         /// </summary>
-        public string Name
+        public NodeManager NodeManager
         {
-            get => default(string);
+            get => default(NodeManager);
             set
             {
             }
-        }
-
-        /// <summary>
-        /// Indicates if node is aktive
-        /// </summary>
-        public bool IsActive
-        {
-            get => default(bool);
-            set
-            {
-            }
-        }
-
-        /// <summary>
-        /// Indicates if the node connection is acitve
-        /// </summary>
-        public bool IsConnected
-        {
-            get => default(bool);
-            set
-            {
-            }
-        }
-
-        /// <summary>
-        ///   <see cref="YarnApp" />s executing by this node
-        /// </summary>
-        public List<YarnApp> ExecutingApps
-        {
-            get => default(List<YarnApp>);
-            set
-            {
-            }
-        }
-
-        /// <summary>
-        /// Gets the current node status
-        /// </summary>
-        public void GetStatus()
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

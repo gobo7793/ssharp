@@ -44,7 +44,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         }
 
         /// <summary>
-        /// Running <see cref="YarnNode"/> for this app
+        /// Running <see cref="YarnSlave"/> for this app
         /// </summary>
         public List<YarnNode> ExecutingNodes
         {
@@ -60,6 +60,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public AppState AppState
         {
             get => default(AppState);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Name of the app
+        /// </summary>
+        public string Name
+        {
+            get => default(string);
             set
             {
             }

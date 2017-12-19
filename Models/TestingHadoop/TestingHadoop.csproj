@@ -48,10 +48,11 @@
     <Compile Include="Modeling\NodeManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modeling\YarnMaster.cs" />
-    <Compile Include="Modeling\YarnNode.cs" />
+    <Compile Include="Modeling\YarnSlave.cs" />
     <Compile Include="Modeling\ResourceManager.cs" />
     <Compile Include="Modeling\Scheduler.cs" />
     <Compile Include="Modeling\YarnApp.cs" />
+    <Compile Include="Modeling\YarnNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\SafetyChecking\SafetyChecking.csproj">

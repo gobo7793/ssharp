@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Comment CommentText="Scheduler, RM und NM hier überhaupt nötig?">
-    <Position X="9.984" Y="0.667" Height="0.75" Width="1.7" />
+    <Position X="8.453" Y="7.323" Height="0.75" Width="1.7" />
   </Comment>
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnMaster">
-    <Position X="7.25" Y="1.5" Width="1.5" />
+    <Position X="7.25" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAABAAAAAAAAAAAAAAEAAAAEAAAAAIAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAABAAAAAAAAAAAAAAEAABAEAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Modeling\YarnMaster.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -14,11 +14,11 @@
       <Property Name="ResourceManager" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnNode">
-    <Position X="7.25" Y="6.25" Width="1.5" />
+  <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnSlave">
+    <Position X="10.25" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAABAEAAAAEAAAAAAAgAAAAAAAAAAAAA=</HashCode>
-      <FileName>Modeling\YarnNode.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modeling\YarnSlave.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="NodeManager" />
@@ -35,21 +35,21 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.ResourceManager">
-    <Position X="10" Y="2.5" Width="1.5" />
+    <Position X="8.5" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Modeling\ResourceManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.Scheduler">
-    <Position X="10" Y="1.5" Width="1.5" />
+    <Position X="6.75" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Modeling\Scheduler.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.NodeManager">
-    <Position X="10" Y="6.25" Width="1.5" />
+    <Position X="10.25" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Modeling\NodeManager.cs</FileName>
@@ -58,13 +58,20 @@
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnApp">
     <Position X="4.5" Y="4.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAgAAAAAAgAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAgAAAAAAgAAAAAAwAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Modeling\YarnApp.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="StartingClient" />
       <Property Name="AppState" />
     </ShowAsAssociation>
+  </Class>
+  <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnNode">
+    <Position X="9" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAEAAAAEQEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modeling\YarnNode.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Enum Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.AppState">
     <Position X="4.5" Y="6.25" Width="1.5" />
