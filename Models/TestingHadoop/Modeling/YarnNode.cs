@@ -100,7 +100,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Fault effect for <see cref="NodeConnectionError"/>
         /// </summary>
         [FaultEffect(Fault = nameof(NodeConnectionError))]
-        internal class NodeConnectionErrorFault : YarnNode
+        internal class NodeConnectionErrorEffect : YarnNode
         {
 
         }
@@ -109,7 +109,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Fault effect for <see cref="NodeDead"/>
         /// </summary>
         [FaultEffect(Fault = nameof(NodeDead))]
-        internal class NodeDeadFault : YarnNode
+        internal class NodeDeadEffect : YarnNode
         {
 
         }

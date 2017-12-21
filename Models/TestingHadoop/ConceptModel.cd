@@ -68,14 +68,14 @@
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnApp">
     <Position X="4.5" Y="5.25" Width="1.5" />
     <NestedTypes>
-      <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnApp.AppKillingFault" Collapsed="true">
+      <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnApp.KillAppEffect" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Modeling\YarnApp.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAgAAAIAAgAAAAAAwAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAgAAAAAAgACAAAAwAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Modeling\YarnApp.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -86,12 +86,12 @@
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnNode">
     <Position X="8.5" Y="0.5" Width="2" />
     <NestedTypes>
-      <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnNode.NodeDeadFault" Collapsed="true">
+      <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnNode.NodeConnectionErrorEffect" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Modeling\YarnNode.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
-      <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnNode.NodeConnectionErrorFault" Collapsed="true">
+      <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnNode.NodeDeadEffect" Collapsed="true">
         <TypeIdentifier>
           <NewMemberFileName>Modeling\YarnNode.cs</NewMemberFileName>
         </TypeIdentifier>

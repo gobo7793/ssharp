@@ -37,7 +37,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// App will be killed
         /// </summary>
-        public readonly Fault AppKilling = new PermanentFault();
+        public readonly Fault KillApp = new PermanentFault();
 
         /// <summary>
         /// Starting <see cref="Client"/> of this app
@@ -84,10 +84,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         }
 
         /// <summary>
-        /// Fault effect for <see cref="AppKilling"/>
+        /// Fault effect for <see cref="KillApp"/>
         /// </summary>
-        [FaultEffect(Fault = nameof(AppKilling))]
-        internal class AppKillingFault : YarnNode
+        [FaultEffect(Fault = nameof(KillApp))]
+        internal class KillAppEffect : YarnNode
         {
 
         }
