@@ -24,14 +24,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISSE.SafetyChecking.Modeling;
+using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
     /// <summary>
     /// Basis class for yarn nodes
     /// </summary>
-    public class YarnNode
+    public class YarnNode : Component
     {
+        /// <summary>
+        /// Fault for connection errors
+        /// </summary>
+        public readonly Fault NodeConnectionError = new TransientFault();
+
+        /// <summary>
+        /// Fault for dead nodes
+        /// </summary>
+        public readonly Fault NodeDead = new TransientFault();
+
         /// <summary>
         /// Name of the node
         /// </summary>
@@ -82,6 +94,24 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public void GetStatus()
         {
             throw new System.NotImplementedException();
+        }
+
+        /// <summary>
+        /// Fault effect for <see cref="NodeConnectionError"/>
+        /// </summary>
+        [FaultEffect(Fault = nameof(NodeConnectionError))]
+        internal class NodeConnectionErrorFault : YarnNode
+        {
+
+        }
+
+        /// <summary>
+        /// Fault effect for <see cref="NodeDead"/>
+        /// </summary>
+        [FaultEffect(Fault = nameof(NodeDead))]
+        internal class NodeDeadFault : YarnNode
+        {
+
         }
     }
 }

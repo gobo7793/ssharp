@@ -24,13 +24,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
     /// <summary>
     /// Client for the Hadoop cluster
     /// </summary>
-    public class Client
+    public class Client : Component
     {
         /// <summary>
         /// Started <see cref="YarnApp"/>s of the client

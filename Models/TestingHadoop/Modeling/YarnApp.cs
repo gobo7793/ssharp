@@ -24,14 +24,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISSE.SafetyChecking.Modeling;
+using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
     /// <summary>
     /// Application/Job to run on the Hadoop cluster
     /// </summary>
-    public class YarnApp
+    public class YarnApp : Component
     {
+        /// <summary>
+        /// App will be killed
+        /// </summary>
+        public readonly Fault AppKilling = new PermanentFault();
+
         /// <summary>
         /// Starting <see cref="Client"/> of this app
         /// </summary>
@@ -74,6 +81,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             set
             {
             }
+        }
+
+        /// <summary>
+        /// Fault effect for <see cref="AppKilling"/>
+        /// </summary>
+        [FaultEffect(Fault = nameof(AppKilling))]
+        internal class AppKillingFault : YarnNode
+        {
+
         }
     }
 }
