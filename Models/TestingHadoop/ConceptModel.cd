@@ -75,7 +75,7 @@
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAgAAAAAAgACAAAAwAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAgAAAAAAgACAAAAwAAAAAAAAAAAgAAAQAAAA=</HashCode>
       <FileName>Modeling\YarnApp.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -101,6 +101,17 @@
       <HashCode>AAAAAAAAAAAAAABAEgAAAEQEAAAAAAAAAAAAAAACAAA=</HashCode>
       <FileName>Modeling\YarnNode.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.YarnAppContainer">
+    <Position X="2.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAgAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Modeling\YarnAppContainer.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="YarnApp" />
+      <Property Name="AppState" />
+    </ShowAsAssociation>
   </Class>
   <Enum Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.AppState">
     <Position X="4.5" Y="8" Width="1.5" />

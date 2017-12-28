@@ -24,45 +24,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ISSE.SafetyChecking.Modeling;
-using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
-    /// <summary>
-    /// Application/Job to run on the Hadoop cluster
-    /// </summary>
-    public class YarnApp : Component
+    public class YarnAppContainer
     {
         /// <summary>
-        /// App will be killed
+        /// The <see cref="YarnApp"/> for this container
         /// </summary>
-        public readonly Fault KillApp = new PermanentFault();
-
-        /// <summary>
-        /// Starting <see cref="Client"/> of this app
-        /// </summary>
-        public Client StartingClient
+        public YarnApp YarnApp
         {
-            get => default(Client);
+            get => default(YarnApp);
             set
             {
             }
         }
 
         /// <summary>
-        /// Running <see cref="YarnSlave"/> for this app
-        /// </summary>
-        public List<YarnNode> ExecutingNodes
-        {
-            get => default(List<YarnNode>);
-            set
-            {
-            }
-        }
-
-        /// <summary>
-        /// Current state
+        /// State of the container
         /// </summary>
         public AppState AppState
         {
@@ -73,45 +52,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         }
 
         /// <summary>
-        /// Name of the app
+        /// ID of the container
         /// </summary>
-        public string Name
+        public string ContainerId
         {
             get => default(string);
             set
             {
             }
-        }
-
-        /// <summary>
-        /// Containers from this app
-        /// </summary>
-        public List<YarnAppContainer> Containers
-        {
-            get => default(List<YarnAppContainer>);
-            set
-            {
-            }
-        }
-
-        /// <summary>
-        /// ID of the app
-        /// </summary>
-        public string AppId
-        {
-            get => default(string);
-            set
-            {
-            }
-        }
-
-        /// <summary>
-        /// Fault effect for <see cref="KillApp"/>
-        /// </summary>
-        [FaultEffect(Fault = nameof(KillApp))]
-        internal class KillAppEffect : YarnNode
-        {
-
         }
     }
 }

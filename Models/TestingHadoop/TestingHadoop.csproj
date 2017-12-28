@@ -53,6 +53,7 @@
     <Compile Include="Modeling\Scheduler.cs" />
     <Compile Include="Modeling\YarnApp.cs" />
     <Compile Include="Modeling\YarnNode.cs" />
+    <Compile Include="Modeling\YarnAppContainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\SafetyChecking\SafetyChecking.csproj">
