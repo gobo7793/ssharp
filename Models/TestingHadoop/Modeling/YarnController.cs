@@ -30,24 +30,24 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
     /// <summary>
     /// YARN Controller
     /// </summary>
-    public class YarnMaster : YarnNode
+    public class YarnController : YarnHost
     {
 
         /// <summary>
-        /// Connected <see cref="YarnSlave" />s
+        /// Connected <see cref="YarnNode" />s
         /// </summary>
-        public List<YarnSlave> ConnectedSlaves { get; set; }
+        public List<YarnNode> ConnectedSlaves { get; set; }
 
         /// <summary>
-        /// Initializes a new <see cref="YarnMaster"/>
+        /// Initializes a new <see cref="YarnController"/>
         /// </summary>
-        public YarnMaster()
+        public YarnController()
         {
-            ConnectedSlaves = new List<YarnSlave>();
+            ConnectedSlaves = new List<YarnNode>();
         }
 
         /// <summary>
-        /// Indicates the <see cref="YarnSlave"/> which executes the given <see cref="YarnApp"/> and saves it
+        /// Indicates the <see cref="YarnNode"/> which executes the given <see cref="YarnApp"/> and saves it
         /// </summary>
         /// <param name="app">The app/job</param>
         public void FindNodesForApp(YarnApp app)

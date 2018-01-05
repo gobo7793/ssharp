@@ -59,9 +59,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public YarnAppContainer AmContainer { get; set; }
 
         /// <summary>
-        /// <see cref="YarnSlave"/> for ApplicationMaster
+        /// <see cref="YarnNode"/> the ApplicationMaster is running
         /// </summary>
-        public YarnSlave AmHost { get; set; }
+        public YarnNode AmHost { get; set; }
 
         /// <summary>
         /// Initializes a new <see cref="YarnAppAttempt"/>

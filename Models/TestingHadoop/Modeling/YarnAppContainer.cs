@@ -55,9 +55,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public DateTime EndTime { get; set; }
 
         /// <summary>
-        /// <see cref="YarnSlave"/> running this container
+        /// <see cref="YarnNode"/> running this container
         /// </summary>
-        public YarnSlave Host { get; set; }
+        public YarnNode Host { get; set; }
 
         /// <summary>
         /// <see cref="YarnAppAttempt"/> running in this container

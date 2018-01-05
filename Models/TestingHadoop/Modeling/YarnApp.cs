@@ -55,9 +55,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public string Name { get; set; }
 
         /// <summary>
-        /// Containers from this app
+        /// <see cref="YarnAppAttempt"/> for this <see cref="YarnApp"/>
         /// </summary>
-        public List<YarnAppContainer> AppAttempts { get; }
+        public List<YarnAppAttempt> AppAttempts { get; }
 
         /// <summary>
         /// ID of the app
@@ -77,7 +77,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Main ApplicationMaster Host
         /// </summary>
-        public YarnSlave AmHost { get; set; }
+        public YarnNode AmHost { get; set; }
 
         /// <summary>
         /// Allocated Memory MB-seconds
@@ -109,7 +109,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Fault effect for <see cref="KillApp"/>
         /// </summary>
         [FaultEffect(Fault = nameof(KillApp))]
-        public class KillAppEffect : YarnNode
+        public class KillAppEffect : YarnHost
         {
 
         }

@@ -24,47 +24,84 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ISSE.SafetyChecking.Modeling;
-using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
     /// <summary>
-    /// Base class for YARN Hosts
+    /// YARN slave node which executes <see cref="YarnApp"/>s
     /// </summary>
-    public class YarnNode : Component
+    public class YarnNode : YarnHost, IYarnReadable
     {
-        /// <summary>
-        /// Fault for connection errors
-        /// </summary>
-        public readonly Fault NodeConnectionError = new TransientFault();
 
         /// <summary>
-        /// Fault for dead nodes
+        /// Connected <see cref="YarnController"/>
         /// </summary>
-        public readonly Fault NodeDead = new TransientFault();
+        public YarnController Controller { get; set; }
 
         /// <summary>
-        /// Name of the Host
+        /// <see cref="YarnApp" />s executing by this node
         /// </summary>
-        public string Name { get; set; }
+        public List<YarnApp> ExecutingApps { get; set; }
 
         /// <summary>
-        /// Fault effect for <see cref="YarnNode.NodeConnectionError"/>
+        /// Indicates if this <see cref="YarnNode"/> is aktive
         /// </summary>
-        [FaultEffect(Fault = nameof(NodeConnectionError))]
-        public class NodeConnectionErrorEffect : YarnNode
+        public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Indicates if this <see cref="YarnNode"/> connection is acitve
+        /// </summary>
+        public bool IsConnected { get; set; }
+
+        /// <summary>
+        /// Node ID
+        /// </summary>
+        public string NodeId { get; set; }
+
+        /// <summary>
+        /// Currenet State
+        /// </summary>
+        public string NodeState { get; set; }
+
+        /// <summary>
+        /// Running Containers on this Node
+        /// </summary>
+        public List<YarnAppContainer> Containers { get; set; }
+
+        /// <summary>
+        /// Current Memory in use in MB
+        /// </summary>
+        public int MemoryUsed { get; set; }
+
+        /// <summary>
+        /// Total Memory available in MB
+        /// </summary>
+        public int MemoryCapacity { get; set; }
+
+        /// <summary>
+        /// Current CPU vcores in use
+        /// </summary>
+        public int CpuUsed { get; set; }
+
+        /// <summary>
+        /// Total CPU vcores available
+        /// </summary>
+        public int CpuCapacity { get; set; }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnNode"/>
+        /// </summary>
+        public YarnNode()
         {
-
+            Containers = new List<YarnAppContainer>();
         }
 
         /// <summary>
-        /// Fault effect for <see cref="YarnNode.NodeDead"/>
+        /// Reads the current state from Hadoop
         /// </summary>
-        [FaultEffect(Fault = nameof(NodeDead))]
-        public class NodeDeadEffect : YarnNode
+        public void GetStatus()
         {
-
+            throw new NotImplementedException();
         }
     }
 }

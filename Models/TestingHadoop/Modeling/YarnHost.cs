@@ -24,40 +24,47 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ISSE.SafetyChecking.Modeling;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
     /// <summary>
-    /// <see cref="Client"/> for the Hadoop cluster
+    /// Base class for YARN Hosts
     /// </summary>
-    public class Client : Component
+    public class YarnHost : Component
     {
         /// <summary>
-        /// Started <see cref="YarnApp"/>s of the client
+        /// Fault for connection errors
         /// </summary>
-        public List<YarnApp> StartedYarnApps { get; }
+        public readonly Fault NodeConnectionError = new TransientFault();
 
         /// <summary>
-        /// Connected <see cref="YarnController"/> for the client
+        /// Fault for dead nodes
         /// </summary>
-        public YarnController ConnectedYarnController { get; set; }
+        public readonly Fault NodeDead = new TransientFault();
 
         /// <summary>
-        /// Initializes a new <see cref="Client"/>
+        /// Name of the Host
         /// </summary>
-        public Client()
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Fault effect for <see cref="YarnHost.NodeConnectionError"/>
+        /// </summary>
+        [FaultEffect(Fault = nameof(NodeConnectionError))]
+        public class HostConnectionErrorEffect : YarnHost
         {
-            StartedYarnApps = new List<YarnApp>();
+
         }
 
         /// <summary>
-        /// Starts the given <see cref="YarnApp"/> on <see cref="ConnectedYarnController" />
+        /// Fault effect for <see cref="YarnHost.NodeDead"/>
         /// </summary>
-        /// <param name="app"><see cref="YarnApp"/> to start</param>
-        public void StartJob(YarnApp app)
+        [FaultEffect(Fault = nameof(NodeDead))]
+        public class HostDeadEffect : YarnHost
         {
-            throw new System.NotImplementedException();
+
         }
     }
 }

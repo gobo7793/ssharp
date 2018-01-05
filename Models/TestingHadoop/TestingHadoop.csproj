@@ -58,10 +58,10 @@
     <Compile Include="Modeling\AppState.cs" />
     <Compile Include="Modeling\Client.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Modeling\YarnMaster.cs" />
-    <Compile Include="Modeling\YarnSlave.cs" />
-    <Compile Include="Modeling\YarnApp.cs" />
+    <Compile Include="Modeling\YarnController.cs" />
     <Compile Include="Modeling\YarnNode.cs" />
+    <Compile Include="Modeling\YarnApp.cs" />
+    <Compile Include="Modeling\YarnHost.cs" />
     <Compile Include="Modeling\YarnAppContainer.cs" />
     <Compile Include="Modeling\YarnAppAttempt.cs" />
   </ItemGroup>
