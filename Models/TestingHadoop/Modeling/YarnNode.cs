@@ -56,42 +56,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         }
 
         /// <summary>
-        /// Indicates if node is aktive
-        /// </summary>
-        public bool IsActive
-        {
-            get => default(bool);
-            set
-            {
-            }
-        }
-
-        /// <summary>
-        /// Indicates if the node connection is acitve
-        /// </summary>
-        public bool IsConnected
-        {
-            get => default(bool);
-            set
-            {
-            }
-        }
-
-        /// <summary>
-        ///   <see cref="YarnApp" />s executing by this node
-        /// </summary>
-        public List<YarnApp> ExecutingApps
-        {
-            get => default(List<YarnApp>);
-            set
-            {
-            }
-        }
-
-        /// <summary>
         /// Gets the current node status
         /// </summary>
-        public void GetStatus()
+        public void ReadStatus()
         {
             throw new System.NotImplementedException();
         }
@@ -100,7 +67,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Fault effect for <see cref="NodeConnectionError"/>
         /// </summary>
         [FaultEffect(Fault = nameof(NodeConnectionError))]
-        internal class NodeConnectionErrorEffect : YarnNode
+        public class NodeConnectionErrorEffect : YarnNode
         {
 
         }
@@ -109,7 +76,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Fault effect for <see cref="NodeDead"/>
         /// </summary>
         [FaultEffect(Fault = nameof(NodeDead))]
-        internal class NodeDeadEffect : YarnNode
+        public class NodeDeadEffect : YarnNode
         {
 
         }

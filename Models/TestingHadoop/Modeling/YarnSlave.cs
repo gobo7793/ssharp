@@ -42,5 +42,126 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             {
             }
         }
+
+        /// <summary>
+        /// Connected Master
+        /// </summary>
+        public YarnMaster YarnMaster
+        {
+            get => default(YarnMaster);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        ///   <see cref="YarnApp" />s executing by this node
+        /// </summary>
+        public List<YarnApp> ExecutingApps
+        {
+            get => default(List<YarnApp>);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Indicates if node is aktive
+        /// </summary>
+        public bool IsActive
+        {
+            get => default(bool);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the node connection is acitve
+        /// </summary>
+        public bool IsConnected
+        {
+            get => default(bool);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// ID of the Node
+        /// </summary>
+        public string NodeId
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// State of th Node
+        /// </summary>
+        public string NodeState
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Running Containers on this Node
+        /// </summary>
+        public System.Collections.Generic.List<YarnAppContainer> Containers
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Current Memory in use
+        /// </summary>
+        public int MemoryUsed
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Total Memory available
+        /// </summary>
+        public int MemoryCapacity
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Current CPU vcores in use
+        /// </summary>
+        public int CpuUsed
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Total CPU vcores available
+        /// </summary>
+        public int CpuCapacity
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
     }
 }

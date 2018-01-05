@@ -29,21 +29,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
     public class YarnAppContainer
     {
-        /// <summary>
-        /// The <see cref="YarnApp"/> for this container
-        /// </summary>
-        public YarnApp YarnApp
-        {
-            get => default(YarnApp);
-            set
-            {
-            }
-        }
 
         /// <summary>
         /// State of the container
         /// </summary>
-        public AppState AppState
+        public AppState State
         {
             get => default(AppState);
             set
@@ -57,6 +47,50 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public string ContainerId
         {
             get => default(string);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Starting Time
+        /// </summary>
+        public System.DateTime StartTime
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Ending Time
+        /// </summary>
+        public System.DateTime EndTime
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Host running this container
+        /// </summary>
+        public YarnSlave Host
+        {
+            get => default(YarnSlave);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// AppAttempt runninb in this container
+        /// </summary>
+        public YarnAppAttempt YarnAppAttempt
+        {
+            get => default(YarnAppAttempt);
             set
             {
             }

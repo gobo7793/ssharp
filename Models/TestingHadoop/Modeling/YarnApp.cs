@@ -51,20 +51,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         }
 
         /// <summary>
-        /// Running <see cref="YarnSlave"/> for this app
-        /// </summary>
-        public List<YarnNode> ExecutingNodes
-        {
-            get => default(List<YarnNode>);
-            set
-            {
-            }
-        }
-
-        /// <summary>
         /// Current state
         /// </summary>
-        public AppState AppState
+        public AppState State
         {
             get => default(AppState);
             set
@@ -86,7 +75,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Containers from this app
         /// </summary>
-        public List<YarnAppContainer> Containers
+        public List<YarnAppContainer> AppAttempts
         {
             get => default(List<YarnAppContainer>);
             set
@@ -106,10 +95,65 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         }
 
         /// <summary>
+        /// Starting Time
+        /// </summary>
+        public DateTime StartTime
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Ending Time
+        /// </summary>
+        public System.DateTime EndTime
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Main ApplicationMaster Host
+        /// </summary>
+        public YarnSlave AmHost
+        {
+            get => default(YarnSlave);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Allocated Memory MB-seconds
+        /// </summary>
+        public int AllocatedMemory
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
+        /// Allocated CPU vcore-seconds
+        /// </summary>
+        public int AllocatedCpu
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
         /// Fault effect for <see cref="KillApp"/>
         /// </summary>
         [FaultEffect(Fault = nameof(KillApp))]
-        internal class KillAppEffect : YarnNode
+        public class KillAppEffect : YarnNode
         {
 
         }
