@@ -1,6 +1,6 @@
 ﻿// The MIT License (MIT)
 // 
-// Copyright (c) 2014-2017, Institute for Software & Systems Engineering
+// Copyright (c) 2014-2018, Institute for Software & Systems Engineering
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,138 +30,78 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
     /// <summary>
     /// YARN slave node which executes <see cref="YarnApp"/>s
     /// </summary>
-    public class YarnSlave : YarnNode
+    public class YarnSlave : YarnNode, IYarnReadable
     {
-        /// <summary>
-        /// <see cref="NodeManager"/> of the node
-        /// </summary>
-        public NodeManager NodeManager
-        {
-            get => default(NodeManager);
-            set
-            {
-            }
-        }
 
         /// <summary>
-        /// Connected Master
+        /// Connected <see cref="YarnMaster"/>
         /// </summary>
-        public YarnMaster YarnMaster
-        {
-            get => default(YarnMaster);
-            set
-            {
-            }
-        }
+        public YarnMaster Controller { get; set; }
 
         /// <summary>
-        ///   <see cref="YarnApp" />s executing by this node
+        /// <see cref="YarnApp" />s executing by this node
         /// </summary>
-        public List<YarnApp> ExecutingApps
-        {
-            get => default(List<YarnApp>);
-            set
-            {
-            }
-        }
+        public List<YarnApp> ExecutingApps { get; set; }
 
         /// <summary>
-        /// Indicates if node is aktive
+        /// Indicates if this <see cref="YarnSlave"/> is aktive
         /// </summary>
-        public bool IsActive
-        {
-            get => default(bool);
-            set
-            {
-            }
-        }
+        public bool IsActive { get; set; }
 
         /// <summary>
-        /// Indicates if the node connection is acitve
+        /// Indicates if this <see cref="YarnSlave"/> connection is acitve
         /// </summary>
-        public bool IsConnected
-        {
-            get => default(bool);
-            set
-            {
-            }
-        }
+        public bool IsConnected { get; set; }
 
         /// <summary>
-        /// ID of the Node
+        /// Node ID
         /// </summary>
-        public string NodeId
-        {
-            get => default(int);
-            set
-            {
-            }
-        }
+        public string NodeId { get; set; }
 
         /// <summary>
-        /// State of th Node
+        /// Currenet State
         /// </summary>
-        public string NodeState
-        {
-            get => default(int);
-            set
-            {
-            }
-        }
+        public string NodeState { get; set; }
 
         /// <summary>
         /// Running Containers on this Node
         /// </summary>
-        public System.Collections.Generic.List<YarnAppContainer> Containers
-        {
-            get => default(int);
-            set
-            {
-            }
-        }
+        public List<YarnAppContainer> Containers { get; set; }
 
         /// <summary>
-        /// Current Memory in use
+        /// Current Memory in use in MB
         /// </summary>
-        public int MemoryUsed
-        {
-            get => default(int);
-            set
-            {
-            }
-        }
+        public int MemoryUsed { get; set; }
 
         /// <summary>
-        /// Total Memory available
+        /// Total Memory available in MB
         /// </summary>
-        public int MemoryCapacity
-        {
-            get => default(int);
-            set
-            {
-            }
-        }
+        public int MemoryCapacity { get; set; }
 
         /// <summary>
         /// Current CPU vcores in use
         /// </summary>
-        public int CpuUsed
-        {
-            get => default(int);
-            set
-            {
-            }
-        }
+        public int CpuUsed { get; set; }
 
         /// <summary>
         /// Total CPU vcores available
         /// </summary>
-        public int CpuCapacity
+        public int CpuCapacity { get; set; }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnSlave"/>
+        /// </summary>
+        public YarnSlave()
         {
-            get => default(int);
-            set
-            {
-            }
+            Containers = new List<YarnAppContainer>();
+        }
+
+        /// <summary>
+        /// Reads the current state from Hadoop
+        /// </summary>
+        public void GetStatus()
+        {
+            throw new NotImplementedException();
         }
     }
 }

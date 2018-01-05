@@ -1,6 +1,6 @@
 ﻿// The MIT License (MIT)
 // 
-// Copyright (c) 2014-2017, Institute for Software & Systems Engineering
+// Copyright (c) 2014-2018, Institute for Software & Systems Engineering
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,76 +24,52 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
-    public class YarnAppContainer
+    /// <summary>
+    /// Execution Container for <see cref="YarnAppAttempt"/>s
+    /// </summary>
+    public class YarnAppContainer : Component, IYarnReadable
     {
 
         /// <summary>
-        /// State of the container
+        /// Current State
         /// </summary>
-        public AppState State
-        {
-            get => default(AppState);
-            set
-            {
-            }
-        }
+        public AppState State { get; set; }
 
         /// <summary>
-        /// ID of the container
+        /// Container ID
         /// </summary>
-        public string ContainerId
-        {
-            get => default(string);
-            set
-            {
-            }
-        }
+        public string ContainerId { get; set; }
 
         /// <summary>
         /// Starting Time
         /// </summary>
-        public System.DateTime StartTime
-        {
-            get => default(int);
-            set
-            {
-            }
-        }
+        public DateTime StartTime { get; set; }
 
         /// <summary>
         /// Ending Time
         /// </summary>
-        public System.DateTime EndTime
-        {
-            get => default(int);
-            set
-            {
-            }
-        }
+        public DateTime EndTime { get; set; }
 
         /// <summary>
-        /// Host running this container
+        /// <see cref="YarnSlave"/> running this container
         /// </summary>
-        public YarnSlave Host
-        {
-            get => default(YarnSlave);
-            set
-            {
-            }
-        }
+        public YarnSlave Host { get; set; }
 
         /// <summary>
-        /// AppAttempt runninb in this container
+        /// <see cref="YarnAppAttempt"/> running in this container
         /// </summary>
-        public YarnAppAttempt YarnAppAttempt
+        public YarnAppAttempt YarnAppAttempt { get; set; }
+
+        /// <summary>
+        /// Reads the current state from Hadoop
+        /// </summary>
+        public void GetStatus()
         {
-            get => default(YarnAppAttempt);
-            set
-            {
-            }
+            throw new NotImplementedException();
         }
     }
 }

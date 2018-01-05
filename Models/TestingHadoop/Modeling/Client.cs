@@ -1,6 +1,6 @@
 ﻿// The MIT License (MIT)
 // 
-// Copyright (c) 2014-2017, Institute for Software & Systems Engineering
+// Copyright (c) 2014-2018, Institute for Software & Systems Engineering
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,30 +29,26 @@ using SafetySharp.Modeling;
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
     /// <summary>
-    /// Client for the Hadoop cluster
+    /// <see cref="Client"/> for the Hadoop cluster
     /// </summary>
     public class Client : Component
     {
         /// <summary>
         /// Started <see cref="YarnApp"/>s of the client
         /// </summary>
-        public List<YarnApp> StartedYarnApps
-        {
-            get => default(List<YarnApp>);
-            set
-            {
-            }
-        }
+        public List<YarnApp> StartedYarnApps { get; }
 
         /// <summary>
         /// Connected <see cref="YarnMaster"/> for the client
         /// </summary>
-        public YarnMaster ConnectedYarnMaster
+        public YarnMaster ConnectedYarnMaster { get; set; }
+
+        /// <summary>
+        /// Initializes a new <see cref="Client"/>
+        /// </summary>
+        public Client()
         {
-            get => default(YarnMaster);
-            set
-            {
-            }
+            StartedYarnApps = new List<YarnApp>();
         }
 
         /// <summary>

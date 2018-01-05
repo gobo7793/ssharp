@@ -1,6 +1,6 @@
 ﻿// The MIT License (MIT)
 // 
-// Copyright (c) 2014-2017, Institute for Software & Systems Engineering
+// Copyright (c) 2014-2018, Institute for Software & Systems Engineering
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,41 +28,22 @@ using System.Text;
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
     /// <summary>
-    /// YARN Master node
+    /// YARN Controller
     /// </summary>
     public class YarnMaster : YarnNode
     {
-        /// <summary>
-        /// YARN <see cref="Scheduler"/>
-        /// </summary>
-        public Scheduler Scheduler
-        {
-            get => default(Scheduler);
-            set
-            {
-            }
-        }
-
-        /// <summary>
-        /// YARN <see cref="ResourceManager"/>
-        /// </summary>
-        public ResourceManager ResourceManager
-        {
-            get => default(ResourceManager);
-            set
-            {
-            }
-        }
 
         /// <summary>
         /// Connected <see cref="YarnSlave" />s
         /// </summary>
-        public List<YarnSlave> ConnectedSlaves
+        public List<YarnSlave> ConnectedSlaves { get; set; }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnMaster"/>
+        /// </summary>
+        public YarnMaster()
         {
-            get => default(List<YarnSlave>);
-            set
-            {
-            }
+            ConnectedSlaves = new List<YarnSlave>();
         }
 
         /// <summary>

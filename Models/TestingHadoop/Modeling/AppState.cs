@@ -1,6 +1,6 @@
 ﻿// The MIT License (MIT)
 // 
-// Copyright (c) 2014-2017, Institute for Software & Systems Engineering
+// Copyright (c) 2014-2018, Institute for Software & Systems Engineering
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,14 +28,14 @@ using System.Text;
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
     /// <summary>
-    ///   <see cref="YarnApp" /> execution states
+    /// <see cref="YarnApp" /> execution states
     /// </summary>
     /// <remarks>
     /// The valid application state can be one of the following:
     ///   ALL, NEW, NEW_SAVING, SUBMITTED, ACCEPTED, RUNNING,
     ///   FINISHED, FAILED, KILLED
     /// 
-    /// via http://hadoop.apache.org/docs/r2.7.5/hadoop-yarn/hadoop-yarn-site/YarnCommands.html
+    /// via http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/YarnCommands.html
     /// </remarks>
     public enum AppState
     {

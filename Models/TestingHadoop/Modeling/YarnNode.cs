@@ -1,6 +1,6 @@
 ﻿// The MIT License (MIT)
 // 
-// Copyright (c) 2014-2017, Institute for Software & Systems Engineering
+// Copyright (c) 2014-2018, Institute for Software & Systems Engineering
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,7 +30,7 @@ using SafetySharp.Modeling;
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
     /// <summary>
-    /// Basis class for yarn nodes
+    /// Base class for YARN Hosts
     /// </summary>
     public class YarnNode : Component
     {
@@ -45,26 +45,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public readonly Fault NodeDead = new TransientFault();
 
         /// <summary>
-        /// Name of the node
+        /// Name of the Host
         /// </summary>
-        public string Name
-        {
-            get => default(string);
-            set
-            {
-            }
-        }
+        public string Name { get; set; }
 
         /// <summary>
-        /// Gets the current node status
-        /// </summary>
-        public void ReadStatus()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <summary>
-        /// Fault effect for <see cref="NodeConnectionError"/>
+        /// Fault effect for <see cref="YarnNode.NodeConnectionError"/>
         /// </summary>
         [FaultEffect(Fault = nameof(NodeConnectionError))]
         public class NodeConnectionErrorEffect : YarnNode
@@ -73,7 +59,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         }
 
         /// <summary>
-        /// Fault effect for <see cref="NodeDead"/>
+        /// Fault effect for <see cref="YarnNode.NodeDead"/>
         /// </summary>
         [FaultEffect(Fault = nameof(NodeDead))]
         public class NodeDeadEffect : YarnNode

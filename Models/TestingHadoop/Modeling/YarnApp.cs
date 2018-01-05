@@ -1,6 +1,6 @@
 ﻿// The MIT License (MIT)
 // 
-// Copyright (c) 2014-2017, Institute for Software & Systems Engineering
+// Copyright (c) 2014-2018, Institute for Software & Systems Engineering
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +32,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
     /// <summary>
     /// Application/Job to run on the Hadoop cluster
     /// </summary>
-    public class YarnApp : Component
+    public class YarnApp : Component, IYarnReadable
     {
         /// <summary>
         /// App will be killed
@@ -42,111 +42,67 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Starting <see cref="Client"/> of this app
         /// </summary>
-        public Client StartingClient
-        {
-            get => default(Client);
-            set
-            {
-            }
-        }
+        public Client StartingClient { get; set; }
 
         /// <summary>
         /// Current state
         /// </summary>
-        public AppState State
-        {
-            get => default(AppState);
-            set
-            {
-            }
-        }
+        public AppState State { get; set; }
 
         /// <summary>
         /// Name of the app
         /// </summary>
-        public string Name
-        {
-            get => default(string);
-            set
-            {
-            }
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// Containers from this app
         /// </summary>
-        public List<YarnAppContainer> AppAttempts
-        {
-            get => default(List<YarnAppContainer>);
-            set
-            {
-            }
-        }
+        public List<YarnAppContainer> AppAttempts { get; }
 
         /// <summary>
         /// ID of the app
         /// </summary>
-        public string AppId
-        {
-            get => default(string);
-            set
-            {
-            }
-        }
+        public string AppId { get; set; }
 
         /// <summary>
         /// Starting Time
         /// </summary>
-        public DateTime StartTime
-        {
-            get => default(int);
-            set
-            {
-            }
-        }
+        public DateTime StartTime { get; set; }
 
         /// <summary>
         /// Ending Time
         /// </summary>
-        public System.DateTime EndTime
-        {
-            get => default(int);
-            set
-            {
-            }
-        }
+        public DateTime EndTime { get; set; }
 
         /// <summary>
         /// Main ApplicationMaster Host
         /// </summary>
-        public YarnSlave AmHost
-        {
-            get => default(YarnSlave);
-            set
-            {
-            }
-        }
+        public YarnSlave AmHost { get; set; }
 
         /// <summary>
         /// Allocated Memory MB-seconds
         /// </summary>
-        public int AllocatedMemory
-        {
-            get => default(int);
-            set
-            {
-            }
-        }
+        public int AllocatedMemory { get; set; }
 
         /// <summary>
         /// Allocated CPU vcore-seconds
         /// </summary>
-        public int AllocatedCpu
+        public int AllocatedCpu { get; set; }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnApp"/>
+        /// </summary>
+        public YarnApp()
         {
-            get => default(int);
-            set
-            {
-            }
+            AppAttempts = new List<YarnAppContainer>();
+        }
+
+        /// <summary>
+        /// Reads the current state from Hadoop
+        /// </summary>
+        public void GetStatus()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
