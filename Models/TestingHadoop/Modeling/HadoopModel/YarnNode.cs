@@ -22,79 +22,76 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ISSE.SafetyChecking.Modeling;
-using SafetySharp.Modeling;
 
-namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
+namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
     /// <summary>
-    /// Application/Job to run on the Hadoop cluster
+    /// YARN slave node which executes <see cref="YarnApp"/>s
     /// </summary>
-    public class YarnApp : Component, IYarnReadable
+    public class YarnNode : YarnHost, IYarnReadable
     {
-        /// <summary>
-        /// App will be killed
-        /// </summary>
-        public readonly Fault KillApp = new PermanentFault();
 
         /// <summary>
-        /// Starting <see cref="Client"/> of this app
+        /// Connected <see cref="YarnController"/>
         /// </summary>
-        public Client StartingClient { get; set; }
+        public YarnController Controller { get; set; }
 
         /// <summary>
-        /// Current state
+        /// <see cref="YarnApp" />s executing by this node
         /// </summary>
-        public AppState State { get; set; }
+        public List<YarnApp> ExecutingApps { get; set; }
 
         /// <summary>
-        /// Name of the app
+        /// Indicates if this <see cref="YarnNode"/> is aktive
         /// </summary>
-        public string Name { get; set; }
+        public bool IsActive { get; set; }
 
         /// <summary>
-        /// <see cref="YarnAppAttempt"/> for this <see cref="YarnApp"/>
+        /// Indicates if this <see cref="YarnNode"/> connection is acitve
         /// </summary>
-        public List<YarnAppAttempt> AppAttempts { get; }
+        public bool IsConnected { get; set; }
 
         /// <summary>
-        /// ID of the app
+        /// Node ID
         /// </summary>
-        public string AppId { get; set; }
+        public string NodeId { get; set; }
 
         /// <summary>
-        /// Starting Time
+        /// Currenet State
         /// </summary>
-        public DateTime StartTime { get; set; }
+        public string NodeState { get; set; }
 
         /// <summary>
-        /// Ending Time
+        /// Running Containers on this Node
         /// </summary>
-        public DateTime EndTime { get; set; }
+        public List<YarnAppContainer> Containers { get; set; }
 
         /// <summary>
-        /// Main ApplicationMaster Host
+        /// Current Memory in use in MB
         /// </summary>
-        public YarnNode AmHost { get; set; }
+        public int MemoryUsed { get; set; }
 
         /// <summary>
-        /// Allocated Memory MB-seconds
+        /// Total Memory available in MB
         /// </summary>
-        public int AllocatedMemory { get; set; }
+        public int MemoryCapacity { get; set; }
 
         /// <summary>
-        /// Allocated CPU vcore-seconds
+        /// Current CPU vcores in use
         /// </summary>
-        public int AllocatedCpu { get; set; }
+        public int CpuUsed { get; set; }
 
         /// <summary>
-        /// Initializes a new <see cref="YarnApp"/>
+        /// Total CPU vcores available
         /// </summary>
-        public YarnApp()
+        public int CpuCapacity { get; set; }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnNode"/>
+        /// </summary>
+        public YarnNode()
         {
-            AppAttempts = new List<YarnAppContainer>();
+            Containers = new List<YarnAppContainer>();
         }
 
         /// <summary>
@@ -103,15 +100,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public void GetStatus()
         {
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Fault effect for <see cref="KillApp"/>
-        /// </summary>
-        [FaultEffect(Fault = nameof(KillApp))]
-        public class KillAppEffect : YarnHost
-        {
-
         }
     }
 }

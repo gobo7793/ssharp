@@ -22,42 +22,59 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SafetySharp.Modeling;
 
-namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
+namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
     /// <summary>
-    /// <see cref="Client"/> for the Hadoop cluster
+    /// Execution attempt of a <see cref="YarnApp"/>
     /// </summary>
-    public class Client : Component
+    public class YarnAppAttempt : Component, IYarnReadable
     {
         /// <summary>
-        /// Started <see cref="YarnApp"/>s of the client
+        /// <see cref="YarnApp"/> from this attempt
         /// </summary>
-        public List<YarnApp> StartedYarnApps { get; }
+        public YarnApp App { get; set; }
 
         /// <summary>
-        /// Connected <see cref="YarnController"/> for the client
+        /// Attempt ID
         /// </summary>
-        public YarnController ConnectedYarnController { get; set; }
+        public string AttemptId { get; set; }
 
         /// <summary>
-        /// Initializes a new <see cref="Client"/>
+        /// Current State
         /// </summary>
-        public Client()
+        public AppState State { get; set; }
+
+        /// <summary>
+        /// Running Containers
+        /// </summary>
+        public List<YarnAppContainer> Containers { get; }
+
+        /// <summary>
+        /// Container for ApplicationMaster
+        /// </summary>
+        public YarnAppContainer AmContainer { get; set; }
+
+        /// <summary>
+        /// <see cref="YarnNode"/> the ApplicationMaster is running
+        /// </summary>
+        public YarnNode AmHost { get; set; }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnAppAttempt"/>
+        /// </summary>
+        public YarnAppAttempt()
         {
-            StartedYarnApps = new List<YarnApp>();
+            Containers = new List<YarnAppContainer>();
         }
 
         /// <summary>
-        /// Starts the given <see cref="YarnApp"/> on <see cref="ConnectedYarnController" />
+        /// Reads the current state from Hadoop
         /// </summary>
-        /// <param name="app"><see cref="YarnApp"/> to start</param>
-        public void StartJob(YarnApp app)
+        public void GetStatus()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

@@ -20,57 +20,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
+namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
     /// <summary>
-    /// <see cref="YarnApp" /> execution states
+    /// YARN Controller
     /// </summary>
-    /// <remarks>
-    /// The valid application state can be one of the following:
-    ///   ALL, NEW, NEW_SAVING, SUBMITTED, ACCEPTED, RUNNING,
-    ///   FINISHED, FAILED, KILLED
-    /// 
-    /// via http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/YarnCommands.html
-    /// </remarks>
-    public enum AppState
+    public class YarnController : YarnHost
     {
-        ALL,
-        NEW,
-        NEW_SAVING,
 
         /// <summary>
-        /// Job is submitted
+        /// Connected <see cref="YarnNode" />s
         /// </summary>
-        SUBMITTED,
+        public List<YarnNode> ConnectedSlaves { get; set; }
 
         /// <summary>
-        /// Job can be executed
+        /// Initializes a new <see cref="YarnController"/>
         /// </summary>
-        ACCEPTED,
+        public YarnController()
+        {
+            ConnectedSlaves = new List<YarnNode>();
+        }
 
         /// <summary>
-        /// Job is running
+        /// Indicates the <see cref="YarnNode"/> which executes the given <see cref="YarnApp"/> and saves it
         /// </summary>
-        RUNNING,
-
-        /// <summary>
-        /// Job is finished
-        /// </summary>
-        FINISHED,
-
-        /// <summary>
-        /// Job execution failed
-        /// </summary>
-        FAILED,
-
-        /// <summary>
-        /// Job was killed while execution
-        /// </summary>
-        KILLED
+        /// <param name="app">The app/job</param>
+        public void FindNodesForApp(YarnApp app)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -19,40 +19,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
-    /// <summary>
-    /// YARN Controller
-    /// </summary>
-    public class YarnController : YarnHost
+    public class Model
     {
-
-        /// <summary>
-        /// Connected <see cref="YarnNode" />s
-        /// </summary>
-        public List<YarnNode> ConnectedSlaves { get; set; }
-
-        /// <summary>
-        /// Initializes a new <see cref="YarnController"/>
-        /// </summary>
-        public YarnController()
-        {
-            ConnectedSlaves = new List<YarnNode>();
-        }
-
-        /// <summary>
-        /// Indicates the <see cref="YarnNode"/> which executes the given <see cref="YarnApp"/> and saves it
-        /// </summary>
-        /// <param name="app">The app/job</param>
-        public void FindNodesForApp(YarnApp app)
-        {
-            throw new System.NotImplementedException();
-        }
+        
     }
 }

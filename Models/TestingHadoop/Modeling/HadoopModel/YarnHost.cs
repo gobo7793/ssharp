@@ -20,63 +20,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using ISSE.SafetyChecking.Modeling;
 using SafetySharp.Modeling;
 
-namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
+namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
     /// <summary>
-    /// Execution attempt of a <see cref="YarnApp"/>
+    /// Base class for YARN Hosts
     /// </summary>
-    public class YarnAppAttempt : Component, IYarnReadable
+    public class YarnHost : Component
     {
         /// <summary>
-        /// <see cref="YarnApp"/> from this attempt
+        /// Fault for connection errors
         /// </summary>
-        public YarnApp App { get; set; }
+        public readonly Fault NodeConnectionError = new TransientFault();
 
         /// <summary>
-        /// Attempt ID
+        /// Fault for dead nodes
         /// </summary>
-        public string AttemptId { get; set; }
+        public readonly Fault NodeDead = new TransientFault();
 
         /// <summary>
-        /// Current State
+        /// Name of the Host
         /// </summary>
-        public AppState State { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
-        /// Running Containers
+        /// Fault effect for <see cref="YarnHost.NodeConnectionError"/>
         /// </summary>
-        public List<YarnAppContainer> Containers { get; }
-
-        /// <summary>
-        /// Container for ApplicationMaster
-        /// </summary>
-        public YarnAppContainer AmContainer { get; set; }
-
-        /// <summary>
-        /// <see cref="YarnNode"/> the ApplicationMaster is running
-        /// </summary>
-        public YarnNode AmHost { get; set; }
-
-        /// <summary>
-        /// Initializes a new <see cref="YarnAppAttempt"/>
-        /// </summary>
-        public YarnAppAttempt()
+        [FaultEffect(Fault = nameof(NodeConnectionError))]
+        public class HostConnectionErrorEffect : YarnHost
         {
-            Containers = new List<YarnAppContainer>();
+
         }
 
         /// <summary>
-        /// Reads the current state from Hadoop
+        /// Fault effect for <see cref="YarnHost.NodeDead"/>
         /// </summary>
-        public void GetStatus()
+        [FaultEffect(Fault = nameof(NodeDead))]
+        public class HostDeadEffect : YarnHost
         {
-            throw new NotImplementedException();
+
         }
     }
 }

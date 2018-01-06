@@ -22,27 +22,45 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using ISSE.SafetyChecking.Modeling;
 using SafetySharp.Modeling;
 
-namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
+namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
     /// <summary>
-    /// Execution Container for <see cref="YarnAppAttempt"/>s
+    /// Application/Job to run on the Hadoop cluster
     /// </summary>
-    public class YarnAppContainer : Component, IYarnReadable
+    public class YarnApp : Component, IYarnReadable
     {
+        /// <summary>
+        /// App will be killed
+        /// </summary>
+        public readonly Fault KillApp = new PermanentFault();
 
         /// <summary>
-        /// Current State
+        /// Starting <see cref="Client"/> of this app
+        /// </summary>
+        public Client StartingClient { get; set; }
+
+        /// <summary>
+        /// Current state
         /// </summary>
         public AppState State { get; set; }
 
         /// <summary>
-        /// Container ID
+        /// Name of the app
         /// </summary>
-        public string ContainerId { get; set; }
+        public string Name { get; set; }
+
+        /// <summary>
+        /// <see cref="YarnAppAttempt"/> for this <see cref="YarnApp"/>
+        /// </summary>
+        public List<YarnAppAttempt> AppAttempts { get; }
+
+        /// <summary>
+        /// ID of the app
+        /// </summary>
+        public string AppId { get; set; }
 
         /// <summary>
         /// Starting Time
@@ -55,14 +73,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public DateTime EndTime { get; set; }
 
         /// <summary>
-        /// <see cref="YarnNode"/> running this container
+        /// Main ApplicationMaster Host
         /// </summary>
-        public YarnNode Host { get; set; }
+        public YarnNode AmHost { get; set; }
 
         /// <summary>
-        /// <see cref="YarnAppAttempt"/> running in this container
+        /// Allocated Memory MB-seconds
         /// </summary>
-        public YarnAppAttempt YarnAppAttempt { get; set; }
+        public int AllocatedMemory { get; set; }
+
+        /// <summary>
+        /// Allocated CPU vcore-seconds
+        /// </summary>
+        public int AllocatedCpu { get; set; }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnApp"/>
+        /// </summary>
+        public YarnApp()
+        {
+            AppAttempts = new List<YarnAppContainer>();
+        }
 
         /// <summary>
         /// Reads the current state from Hadoop
@@ -70,6 +101,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public void GetStatus()
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Fault effect for <see cref="KillApp"/>
+        /// </summary>
+        [FaultEffect(Fault = nameof(KillApp))]
+        public class KillAppEffect : YarnHost
+        {
+
         }
     }
 }

@@ -21,80 +21,45 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using SafetySharp.Modeling;
 
-namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
+namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
     /// <summary>
-    /// YARN slave node which executes <see cref="YarnApp"/>s
+    /// Execution Container for <see cref="YarnAppAttempt"/>s
     /// </summary>
-    public class YarnNode : YarnHost, IYarnReadable
+    public class YarnAppContainer : Component, IYarnReadable
     {
 
         /// <summary>
-        /// Connected <see cref="YarnController"/>
+        /// Current State
         /// </summary>
-        public YarnController Controller { get; set; }
+        public AppState State { get; set; }
 
         /// <summary>
-        /// <see cref="YarnApp" />s executing by this node
+        /// Container ID
         /// </summary>
-        public List<YarnApp> ExecutingApps { get; set; }
+        public string ContainerId { get; set; }
 
         /// <summary>
-        /// Indicates if this <see cref="YarnNode"/> is aktive
+        /// Starting Time
         /// </summary>
-        public bool IsActive { get; set; }
+        public DateTime StartTime { get; set; }
 
         /// <summary>
-        /// Indicates if this <see cref="YarnNode"/> connection is acitve
+        /// Ending Time
         /// </summary>
-        public bool IsConnected { get; set; }
+        public DateTime EndTime { get; set; }
 
         /// <summary>
-        /// Node ID
+        /// <see cref="YarnNode"/> running this container
         /// </summary>
-        public string NodeId { get; set; }
+        public YarnNode Host { get; set; }
 
         /// <summary>
-        /// Currenet State
+        /// <see cref="YarnAppAttempt"/> running in this container
         /// </summary>
-        public string NodeState { get; set; }
-
-        /// <summary>
-        /// Running Containers on this Node
-        /// </summary>
-        public List<YarnAppContainer> Containers { get; set; }
-
-        /// <summary>
-        /// Current Memory in use in MB
-        /// </summary>
-        public int MemoryUsed { get; set; }
-
-        /// <summary>
-        /// Total Memory available in MB
-        /// </summary>
-        public int MemoryCapacity { get; set; }
-
-        /// <summary>
-        /// Current CPU vcores in use
-        /// </summary>
-        public int CpuUsed { get; set; }
-
-        /// <summary>
-        /// Total CPU vcores available
-        /// </summary>
-        public int CpuCapacity { get; set; }
-
-        /// <summary>
-        /// Initializes a new <see cref="YarnNode"/>
-        /// </summary>
-        public YarnNode()
-        {
-            Containers = new List<YarnAppContainer>();
-        }
+        public YarnAppAttempt YarnAppAttempt { get; set; }
 
         /// <summary>
         /// Reads the current state from Hadoop

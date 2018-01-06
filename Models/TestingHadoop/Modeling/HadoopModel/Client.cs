@@ -20,51 +20,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ISSE.SafetyChecking.Modeling;
 using SafetySharp.Modeling;
 
-namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
+namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
     /// <summary>
-    /// Base class for YARN Hosts
+    /// <see cref="Client"/> for the Hadoop cluster
     /// </summary>
-    public class YarnHost : Component
+    public class Client : Component
     {
         /// <summary>
-        /// Fault for connection errors
+        /// Started <see cref="YarnApp"/>s of the client
         /// </summary>
-        public readonly Fault NodeConnectionError = new TransientFault();
+        public List<YarnApp> StartedYarnApps { get; }
 
         /// <summary>
-        /// Fault for dead nodes
+        /// Connected <see cref="YarnController"/> for the client
         /// </summary>
-        public readonly Fault NodeDead = new TransientFault();
+        public YarnController ConnectedYarnController { get; set; }
 
         /// <summary>
-        /// Name of the Host
+        /// Initializes a new <see cref="Client"/>
         /// </summary>
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Fault effect for <see cref="YarnHost.NodeConnectionError"/>
-        /// </summary>
-        [FaultEffect(Fault = nameof(NodeConnectionError))]
-        public class HostConnectionErrorEffect : YarnHost
+        public Client()
         {
-
+            StartedYarnApps = new List<YarnApp>();
         }
 
         /// <summary>
-        /// Fault effect for <see cref="YarnHost.NodeDead"/>
+        /// Starts the given <see cref="YarnApp"/> on <see cref="ConnectedYarnController" />
         /// </summary>
-        [FaultEffect(Fault = nameof(NodeDead))]
-        public class HostDeadEffect : YarnHost
+        /// <param name="app"><see cref="YarnApp"/> to start</param>
+        public void StartJob(YarnApp app)
         {
-
+            throw new System.NotImplementedException();
         }
     }
 }
