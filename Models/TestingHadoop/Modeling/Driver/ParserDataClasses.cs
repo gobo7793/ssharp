@@ -31,8 +31,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// </summary>
     public class ApplicationListResult
     {
-        public ApplicationListResult(string appId, string appName, string appType, 
-            AppState state, string finalState, int progess, string trackingUrl)
+        public ApplicationListResult(string appId, string appName, string appType,
+            EAppState state, string finalState, int progess, string trackingUrl)
         {
             AppId = appId;
             AppName = appName;
@@ -61,7 +61,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// State
         /// </summary>
-        public AppState State { get; }
+        public EAppState State { get; }
 
         /// <summary>
         /// Final-State
@@ -85,9 +85,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// </summary>
     public class ApplicationDetailsResult : ApplicationListResult
     {
-        public ApplicationDetailsResult(string appId, string appName, string appType, string user, string queue,
-                                        AppState state, string finalState, int progess, string trackingUrl, DateTime startTime,
-                                        DateTime finishTime, string amHost, int mbSeconds, int vcoreSeconds)
+        public ApplicationDetailsResult(string appId, string appName, string appType, EAppState state,
+            string finalState, int progess, string trackingUrl, DateTime startTime,
+            DateTime finishTime, string amHost, int mbSeconds, int vcoreSeconds)
             : base(appId, appName, appType, state, finalState, progess, trackingUrl)
         {
             StartTime = startTime;
@@ -129,7 +129,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// </summary>
     public class ApplicationAttemptListResult
     {
-        public ApplicationAttemptListResult(string attemptId, AppState state, string amContainerId, string trackingUrl)
+        public ApplicationAttemptListResult(string attemptId, EAppState state, string amContainerId, string trackingUrl)
         {
             AttemptId = attemptId;
             State = state;
@@ -145,7 +145,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// State
         /// </summary>
-        public AppState State { get; }
+        public EAppState State { get; }
 
         /// <summary>
         /// AM-Container-Id
@@ -164,7 +164,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// </summary>
     public class ApplicationAttemptDetailsResult : ApplicationAttemptListResult
     {
-        public ApplicationAttemptDetailsResult(string attemptId, AppState state, string amContainerId, string trackingUrl, string amHost)
+        public ApplicationAttemptDetailsResult(string attemptId, EAppState state, string amContainerId, string trackingUrl, string amHost)
             : base(attemptId, state, amContainerId, trackingUrl)
         {
             AmHost = amHost;
@@ -178,12 +178,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
     /// <summary>
     /// Data for a running container from the container list for an application attempt.
+    /// Can also be used for container details.
     /// CMD: <c>yarn container -list &lt;attemptID&gt;</c>
+    /// CMD: <c>yarn container -status &lt;containerID&gt;</c>
     /// </summary>
     public class ContainerListResult
     {
         public ContainerListResult(string containerId, DateTime startTime, DateTime finishTime,
-            AppState state, string host, string logUrl)
+            EAppState state, string host, string logUrl)
         {
             ContainerId = containerId;
             StartTime = startTime;
@@ -211,7 +213,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// State
         /// </summary>
-        public AppState State { get; }
+        public EAppState State { get; }
 
         /// <summary>
         /// Host

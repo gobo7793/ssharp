@@ -57,7 +57,7 @@
     <Compile Include="Modeling\Driver\CmdLineParser.cs" />
     <Compile Include="Modeling\Driver\ParserDataClasses.cs" />
     <Compile Include="Modeling\HadoopModel\IYarnReadable.cs" />
-    <Compile Include="Modeling\HadoopModel\AppState.cs" />
+    <Compile Include="Modeling\HadoopModel\EAppState.cs" />
     <Compile Include="Modeling\HadoopModel\Client.cs" />
     <Compile Include="Modeling\Model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

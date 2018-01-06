@@ -31,6 +31,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// </summary>
     public class YarnAppAttempt : Component, IYarnReadable
     {
+        #region Properties
+
+        /// <summary>
+        /// Running Containers
+        /// </summary>
+        public List<YarnAppContainer> Containers { get; } = new List<YarnAppContainer>();
+
         /// <summary>
         /// <see cref="YarnApp"/> from this attempt
         /// </summary>
@@ -44,12 +51,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Current State
         /// </summary>
-        public AppState State { get; set; }
-
-        /// <summary>
-        /// Running Containers
-        /// </summary>
-        public List<YarnAppContainer> Containers { get; }
+        public EAppState State { get; set; } = EAppState.NOT_STARTED_YET;
 
         /// <summary>
         /// Container for ApplicationMaster
@@ -61,13 +63,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public YarnNode AmHost { get; set; }
 
-        /// <summary>
-        /// Initializes a new <see cref="YarnAppAttempt"/>
-        /// </summary>
-        public YarnAppAttempt()
-        {
-            Containers = new List<YarnAppContainer>();
-        }
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Reads the current state from Hadoop
@@ -76,5 +74,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

@@ -20,25 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using ISSE.SafetyChecking.Modeling;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
     /// <summary>
-    /// Base class for YARN Hosts
+    /// Base class for all YARN Hosts
     /// </summary>
     public class YarnHost : Component
     {
-        /// <summary>
-        /// Fault for connection errors
-        /// </summary>
-        public readonly Fault NodeConnectionError = new TransientFault();
+        private string _HttpUrl;
 
-        /// <summary>
-        /// Fault for dead nodes
-        /// </summary>
-        public readonly Fault NodeDead = new TransientFault();
+        protected virtual string HttpPort => "8042";
 
         /// <summary>
         /// Name of the Host
@@ -46,21 +41,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public string Name { get; set; }
 
         /// <summary>
-        /// Fault effect for <see cref="YarnHost.NodeConnectionError"/>
+        /// HTTP URL of the Host, requires a <see cref="YarnHost.Name"/>
         /// </summary>
-        [FaultEffect(Fault = nameof(NodeConnectionError))]
-        public class HostConnectionErrorEffect : YarnHost
+        public string HttpUrl
         {
-
-        }
-
-        /// <summary>
-        /// Fault effect for <see cref="YarnHost.NodeDead"/>
-        /// </summary>
-        [FaultEffect(Fault = nameof(NodeDead))]
-        public class HostDeadEffect : YarnHost
-        {
-
+            get
+            {
+                if (String.IsNullOrWhiteSpace(_HttpUrl))
+                    _HttpUrl = $"http://{Name}:{HttpPort}";
+                return _HttpUrl;
+            }
         }
     }
 }

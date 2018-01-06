@@ -32,8 +32,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// 
     /// via http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/YarnCommands.html
     /// </remarks>
-    public enum AppState
+    public enum EAppState
     {
+        /// <summary>
+        /// Job not started yet. State only for use inside model.
+        /// Can be used to indicate, that the instance was not in use.
+        /// </summary>
+        NOT_STARTED_YET,
+
         ALL,
         NEW,
         NEW_SAVING,

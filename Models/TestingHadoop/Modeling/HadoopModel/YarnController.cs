@@ -29,18 +29,24 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// </summary>
     public class YarnController : YarnHost
     {
+        protected override string HttpPort => "8088";
 
         /// <summary>
         /// Connected <see cref="YarnNode" />s
         /// </summary>
-        public List<YarnNode> ConnectedSlaves { get; set; }
+        public List<YarnNode> ConnectedNodes { get; }
+
+        /// <summary>
+        /// Connected <see cref="Client" />
+        /// </summary>
+        public Client ConnectedClient { get; set; }
 
         /// <summary>
         /// Initializes a new <see cref="YarnController"/>
         /// </summary>
         public YarnController()
         {
-            ConnectedSlaves = new List<YarnNode>();
+            ConnectedNodes = new List<YarnNode>();
         }
 
         /// <summary>

@@ -33,7 +33,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Started <see cref="YarnApp"/>s of the client
         /// </summary>
-        public List<YarnApp> StartedYarnApps { get; }
+        public List<YarnApp> StartingYarnApps { get; }
 
         /// <summary>
         /// Connected <see cref="YarnController"/> for the client
@@ -45,7 +45,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public Client()
         {
-            StartedYarnApps = new List<YarnApp>();
+            StartingYarnApps = new List<YarnApp>();
         }
 
         /// <summary>

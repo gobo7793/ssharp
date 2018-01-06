@@ -32,10 +32,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// </summary>
     public class YarnApp : Component, IYarnReadable
     {
+
+        #region Faults
+
         /// <summary>
         /// App will be killed
         /// </summary>
         public readonly Fault KillApp = new PermanentFault();
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// <see cref="YarnAppAttempt"/> for this <see cref="YarnApp"/>
+        /// </summary>
+        public List<YarnAppAttempt> AppAttempts { get; } = new List<YarnAppAttempt>();
 
         /// <summary>
         /// Starting <see cref="Client"/> of this app
@@ -45,17 +57,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Current state
         /// </summary>
-        public AppState State { get; set; }
+        public EAppState State { get; set; } = EAppState.NOT_STARTED_YET;
 
         /// <summary>
         /// Name of the app
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// <see cref="YarnAppAttempt"/> for this <see cref="YarnApp"/>
-        /// </summary>
-        public List<YarnAppAttempt> AppAttempts { get; }
 
         /// <summary>
         /// ID of the app
@@ -90,21 +97,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Current Progress
         /// </summary>
-        public int Progress
-        {
-            get => default(int);
-            set
-            {
-            }
-        }
+        public int Progress { get; set; }
 
-        /// <summary>
-        /// Initializes a new <see cref="YarnApp"/>
-        /// </summary>
-        public YarnApp()
-        {
-            AppAttempts = new List<YarnAppAttempt>();
-        }
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Reads the current state from Hadoop
@@ -114,6 +111,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             throw new NotImplementedException();
         }
 
+        #endregion
+
+        #region Fault Effects
+
         /// <summary>
         /// Fault effect for <see cref="KillApp"/>
         /// </summary>
@@ -122,5 +123,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
 
         }
+
+        #endregion
     }
 }

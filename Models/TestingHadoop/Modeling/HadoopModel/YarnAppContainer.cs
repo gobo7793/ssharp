@@ -30,11 +30,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// </summary>
     public class YarnAppContainer : Component, IYarnReadable
     {
+        #region Properties
 
         /// <summary>
         /// Current State
         /// </summary>
-        public AppState State { get; set; }
+        public EAppState State { get; set; } = EAppState.NOT_STARTED_YET;
 
         /// <summary>
         /// Container ID
@@ -61,6 +62,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public YarnAppAttempt YarnAppAttempt { get; set; }
 
+        #endregion
+
+        #region Methods
+
         /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
@@ -68,5 +73,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

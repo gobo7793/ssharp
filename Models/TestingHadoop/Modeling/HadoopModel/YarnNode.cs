@@ -22,6 +22,8 @@
 
 using System;
 using System.Collections.Generic;
+using ISSE.SafetyChecking.Modeling;
+using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
@@ -30,6 +32,46 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// </summary>
     public class YarnNode : YarnHost, IYarnReadable
     {
+        #region Faults
+
+        /// <summary>
+        /// Fault for connection errors
+        /// </summary>
+        public readonly Fault NodeConnectionError = new TransientFault();
+
+        /// <summary>
+        /// Fault for dead nodes
+        /// </summary>
+        public readonly Fault NodeDead = new TransientFault();
+
+        #endregion
+
+        #region Properties
+
+        private string _NodeId;
+
+        /// <summary>
+        /// <see cref="YarnApp" />s executing by this node
+        /// </summary>
+        public List<YarnApp> ExecutingApps { get; } = new List<YarnApp>();
+
+        /// <summary>
+        /// Running Containers on this Node
+        /// </summary>
+        public List<YarnAppContainer> Containers { get; } = new List<YarnAppContainer>();
+
+        /// <summary>
+        /// Node ID, based on its Name
+        /// </summary>
+        public string NodeId
+        {
+            get
+            {
+                if (String.IsNullOrWhiteSpace(_NodeId))
+                    _NodeId = Name + ":45454";
+                return _NodeId;
+            }
+        }
 
         /// <summary>
         /// Connected <see cref="YarnController"/>
@@ -37,34 +79,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public YarnController Controller { get; set; }
 
         /// <summary>
-        /// <see cref="YarnApp" />s executing by this node
-        /// </summary>
-        public List<YarnApp> ExecutingApps { get; set; }
-
-        /// <summary>
         /// Indicates if this <see cref="YarnNode"/> is aktive
         /// </summary>
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
 
         /// <summary>
         /// Indicates if this <see cref="YarnNode"/> connection is acitve
         /// </summary>
-        public bool IsConnected { get; set; }
+        public bool IsConnected { get; set; } = true;
 
         /// <summary>
-        /// Node ID
-        /// </summary>
-        public string NodeId { get; set; }
-
-        /// <summary>
-        /// Currenet State
+        /// Current State
         /// </summary>
         public string NodeState { get; set; }
-
-        /// <summary>
-        /// Running Containers on this Node
-        /// </summary>
-        public List<YarnAppContainer> Containers { get; set; }
 
         /// <summary>
         /// Current Memory in use in MB
@@ -89,21 +116,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Number of current running containers
         /// </summary>
-        public int ContainerCount
-        {
-            get => default(int);
-            set
-            {
-            }
-        }
+        public int ContainerCount { get; set; }
 
-        /// <summary>
-        /// Initializes a new <see cref="YarnNode"/>
-        /// </summary>
-        public YarnNode()
-        {
-            Containers = new List<YarnAppContainer>();
-        }
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Reads the current state from Hadoop
@@ -112,5 +129,29 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             throw new NotImplementedException();
         }
+
+        #endregion
+
+        #region Fault Effects
+
+        /// <summary>
+        /// Fault effect for <see cref="YarnNode.NodeConnectionError"/>
+        /// </summary>
+        [FaultEffect(Fault = nameof(NodeConnectionError))]
+        public class HostConnectionErrorEffect : YarnHost
+        {
+
+        }
+
+        /// <summary>
+        /// Fault effect for <see cref="YarnNode.NodeDead"/>
+        /// </summary>
+        [FaultEffect(Fault = nameof(NodeDead))]
+        public class HostDeadEffect : YarnHost
+        {
+
+        }
+
+        #endregion
     }
 }
