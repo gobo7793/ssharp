@@ -92,7 +92,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public YarnApp()
         {
-            AppAttempts = new List<YarnAppContainer>();
+            AppAttempts = new List<YarnAppAttempt>();
         }
 
         /// <summary>
