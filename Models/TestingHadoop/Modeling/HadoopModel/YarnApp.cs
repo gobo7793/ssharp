@@ -88,6 +88,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public int AllocatedCpu { get; set; }
 
         /// <summary>
+        /// Current Progress
+        /// </summary>
+        public int Progress
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
         /// Initializes a new <see cref="YarnApp"/>
         /// </summary>
         public YarnApp()

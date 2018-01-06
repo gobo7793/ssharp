@@ -87,6 +87,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public int CpuCapacity { get; set; }
 
         /// <summary>
+        /// Number of current running containers
+        /// </summary>
+        public int ContainerCount
+        {
+            get => default(int);
+            set
+            {
+            }
+        }
+
+        /// <summary>
         /// Initializes a new <see cref="YarnNode"/>
         /// </summary>
         public YarnNode()
