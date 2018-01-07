@@ -87,7 +87,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     {
         public ApplicationDetailsResult(string appId, string appName, string appType, EAppState state,
             string finalState, int progess, string trackingUrl, DateTime startTime,
-            DateTime finishTime, string amHost, int mbSeconds, int vcoreSeconds)
+            DateTime finishTime, YarnNode amHost, int mbSeconds, int vcoreSeconds)
             : base(appId, appName, appType, state, finalState, progess, trackingUrl)
         {
             StartTime = startTime;
@@ -110,7 +110,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// AM Host
         /// </summary>
-        public string AmHost { get; }
+        public YarnNode AmHost { get; }
 
         /// <summary>
         /// Aggregate Resource Allocation MB-seconds
@@ -164,7 +164,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// </summary>
     public class ApplicationAttemptDetailsResult : ApplicationAttemptListResult
     {
-        public ApplicationAttemptDetailsResult(string attemptId, EAppState state, string amContainerId, string trackingUrl, string amHost)
+        public ApplicationAttemptDetailsResult(string attemptId, EAppState state, string amContainerId, string trackingUrl, YarnNode amHost)
             : base(attemptId, state, amContainerId, trackingUrl)
         {
             AmHost = amHost;
@@ -173,7 +173,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// AM Host
         /// </summary>
-        public string AmHost { get; }
+        public YarnNode AmHost { get; }
     }
 
     /// <summary>
@@ -185,7 +185,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     public class ContainerListResult
     {
         public ContainerListResult(string containerId, DateTime startTime, DateTime finishTime,
-            EAppState state, string host, string logUrl)
+            EAppState state, YarnNode host, string logUrl)
         {
             ContainerId = containerId;
             StartTime = startTime;
@@ -218,7 +218,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// Host
         /// </summary>
-        public string Host { get; }
+        public YarnNode Host { get; }
 
         /// <summary>
         /// LOG-URL
