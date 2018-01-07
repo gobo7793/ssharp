@@ -22,7 +22,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ISSE.SafetyChecking.Modeling;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
@@ -47,7 +49,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// <see cref="YarnAppAttempt"/> for this <see cref="YarnApp"/>
         /// </summary>
-        public List<YarnAppAttempt> AppAttempts { get; } = new List<YarnAppAttempt>();
+        public List<YarnAppAttempt> Attempts { get; } = new List<YarnAppAttempt>();
 
         /// <summary>
         /// Starting <see cref="Client"/> of this app
@@ -101,14 +103,54 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #endregion
 
-        #region Methods
+        #region IYarnReadable Methods
+
+        /// <summary>
+        /// Parser to read
+        /// </summary>
+        public IHadoopParser Parser { get; set; }
 
         /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
         public void GetStatus()
         {
-            throw new NotImplementedException();
+            var parsed = Parser.ParseAppDetails(AppId);
+
+            Name = parsed.AppName;
+            StartTime = parsed.StartTime;
+            EndTime = parsed.FinishTime;
+            Progress = parsed.Progess;
+            State = parsed.State;
+            AmHost = parsed.AmHost;
+            AllocatedMemory = parsed.MbSeconds;
+            AllocatedCpu = parsed.VcoreSeconds;
+
+            var attempts = Parser.ParseAttemptAttemptList(AppId);
+            if(attempts.Length > 0)
+            {
+                foreach(var con in attempts)
+                {
+                    if(Attempts.All(c => c.AttemptId != con.AttemptId))
+                    {
+                        var usingCont = Attempts.First(c => String.IsNullOrWhiteSpace(c.AttemptId));
+                        if(usingCont == null)
+                            throw new InsufficientMemoryException("No more application attempts available!" +
+                                                                  " Try to initialize more container space.");
+                        usingCont.AttemptId = con.AttemptId;
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
+        public override void Update()
+        {
+            if(!String.IsNullOrWhiteSpace(AppId))
+                GetStatus();
         }
 
         #endregion

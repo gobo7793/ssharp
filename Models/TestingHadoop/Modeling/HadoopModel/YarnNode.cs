@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using ISSE.SafetyChecking.Modeling;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
@@ -49,6 +50,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region Properties
 
         private string _NodeId;
+        protected override string HttpPort => "8042";
 
         /// <summary>
         /// <see cref="YarnApp" />s executing by this node
@@ -91,7 +93,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Current State
         /// </summary>
-        public string NodeState { get; set; }
+        public string State { get; set; }
 
         /// <summary>
         /// Current Memory in use in MB
@@ -120,14 +122,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #endregion
 
-        #region Methods
+        #region IYarnReadable Methods
+
+        /// <summary>
+        /// Parser to read
+        /// </summary>
+        public IHadoopParser Parser { get; set; }
 
         /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
         public void GetStatus()
         {
-            throw new NotImplementedException();
+            var parsed = Parser.ParseNodeDetails(NodeId);
+
+            State = parsed.NodeState;
+            ContainerCount = parsed.RunningContainerCount;
+            MemoryUsed = parsed.MemoryUsed;
+            MemoryCapacity = parsed.MemoryCapacity;
+            CpuUsed = parsed.CpuUsed;
+            CpuCapacity = parsed.CpuCapacity;
         }
 
         #endregion
@@ -138,7 +152,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Fault effect for <see cref="YarnNode.NodeConnectionError"/>
         /// </summary>
         [FaultEffect(Fault = nameof(NodeConnectionError))]
-        public class HostConnectionErrorEffect : YarnHost
+        public class NodeConnectionErrorEffect : YarnNode
         {
 
         }
@@ -147,7 +161,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Fault effect for <see cref="YarnNode.NodeDead"/>
         /// </summary>
         [FaultEffect(Fault = nameof(NodeDead))]
-        public class HostDeadEffect : YarnHost
+        public class NodeDeadEffect : YarnNode
         {
 
         }

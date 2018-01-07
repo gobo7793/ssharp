@@ -21,12 +21,13 @@
 // THE SOFTWARE.
 
 using System;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
     /// <summary>
-    /// Execution Container for <see cref="YarnAppAttempt"/>s
+    /// Execution Container for <see cref="AppAttempt"/>s
     /// </summary>
     public class YarnAppContainer : Component, IYarnReadable
     {
@@ -60,18 +61,38 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// <see cref="YarnAppAttempt"/> running in this container
         /// </summary>
-        public YarnAppAttempt YarnAppAttempt { get; set; }
+        public YarnAppAttempt AppAttempt { get; set; }
 
         #endregion
 
-        #region Methods
+        #region IYarnReadable Methods
+
+        /// <summary>
+        /// Parser to read
+        /// </summary>
+        public IHadoopParser Parser { get; set; }
 
         /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
         public void GetStatus()
         {
-            throw new NotImplementedException();
+            var parsed = Parser.ParseContainerDetails(ContainerId);
+
+            StartTime = parsed.StartTime;
+            EndTime = parsed.FinishTime;
+            State = parsed.State;
+            Host = parsed.Host;
+        }
+
+        #endregion
+
+        #region Methods
+
+        public override void Update()
+        {
+            if(!String.IsNullOrWhiteSpace(ContainerId))
+                GetStatus();
         }
 
         #endregion

@@ -22,6 +22,7 @@
 
 using System.Collections.Generic;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
@@ -78,12 +79,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// </summary>
         public void Config1()
         {
-            InitBaseComponents();
-            InitYarnNodes(4);
+            IHadoopParser parser = null;
 
-            InitApplications(1);
-            InitAppAttempts(1);
-            InitContainers(8);
+            InitBaseComponents();
+            InitYarnNodes(4, parser);
+
+            InitApplications(1, parser);
+            InitAppAttempts(1, parser);
+            InitContainers(8, parser);
         }
 
         #endregion
@@ -105,8 +108,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Init yarn compute nodes
         /// </summary>
-        /// <param name="nodeCount"></param>
-        private void InitYarnNodes(int nodeCount)
+        /// <param name="nodeCount">Instances count</param>
+        /// <param name="parser">Hadoop-Parser to use</param>
+        private void InitYarnNodes(int nodeCount, IHadoopParser parser)
         {
             for (int i = 1; i <= nodeCount; i++)
             {
@@ -114,6 +118,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
                 {
                     Name = "compute-" + i,
                     Controller = Controller,
+                    Parser = parser,
                 };
 
                 Controller.ConnectedNodes.Add(node);
@@ -125,13 +130,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Init application instances
         /// </summary>
         /// <param name="appCount">Instances count</param>
-        private void InitApplications(int appCount)
+        /// <param name="parser">Hadoop-Parser to use</param>
+        private void InitApplications(int appCount, IHadoopParser parser)
         {
             for (int i = 0; i < appCount; i++)
             {
                 var app = new YarnApp
                 {
                     StartingClient = Client,
+                    Parser = parser,
                 };
 
                 Client.StartingYarnApps.Add(app);
@@ -143,7 +150,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Init application attempt instances
         /// </summary>
         /// <param name="attemptCount">Attempt instances count per app</param>
-        private void InitAppAttempts(int attemptCount)
+        /// <param name="parser">Hadoop-Parser to use</param>
+        private void InitAppAttempts(int attemptCount, IHadoopParser parser)
         {
             foreach (var app in Applications)
             {
@@ -152,9 +160,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
                     var attempt = new YarnAppAttempt
                     {
                         App = app,
+                        Parser = parser,
                     };
 
-                    app.AppAttempts.Add(attempt);
+                    app.Attempts.Add(attempt);
                     AppAttempts.Add(attempt);
                 }
             }
@@ -164,7 +173,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Init application container instances
         /// </summary>
         /// <param name="containerCount">Container instances count per attempt</param>
-        private void InitContainers(int containerCount)
+        /// <param name="parser">Hadoop-Parser to use</param>
+        private void InitContainers(int containerCount, IHadoopParser parser)
         {
             foreach (var attempt in AppAttempts)
             {
@@ -172,7 +182,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
                 {
                     var container = new YarnAppContainer
                     {
-                        YarnAppAttempt = attempt,
+                        AppAttempt = attempt,
+                        Parser = parser,
                     };
 
                     attempt.Containers.Add(container);

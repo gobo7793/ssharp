@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 
 using System;
-using ISSE.SafetyChecking.Modeling;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
@@ -29,11 +28,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// <summary>
     /// Base class for all YARN Hosts
     /// </summary>
-    public class YarnHost : Component
+    public abstract class YarnHost : Component
     {
         private string _HttpUrl;
 
-        protected virtual string HttpPort => "8042";
+        protected virtual string HttpPort => "8088";
 
         /// <summary>
         /// Name of the Host
@@ -41,7 +40,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public string Name { get; set; }
 
         /// <summary>
-        /// HTTP URL of the Host, requires a <see cref="YarnHost.Name"/>
+        /// HTTP URL of the Host, requires a <see cref="Name"/>
         /// </summary>
         public string HttpUrl
         {

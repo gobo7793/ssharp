@@ -55,6 +55,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Modeling\Driver\CmdLineParser.cs" />
+    <Compile Include="Modeling\Driver\IHadoopParser.cs" />
     <Compile Include="Modeling\Driver\ParserDataClasses.cs" />
     <Compile Include="Modeling\HadoopModel\IYarnReadable.cs" />
     <Compile Include="Modeling\HadoopModel\EAppState.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Modeling\HadoopModel\YarnHost.cs" />
     <Compile Include="Modeling\HadoopModel\YarnAppContainer.cs" />
     <Compile Include="Modeling\HadoopModel\YarnAppAttempt.cs" />
+    <Compile Include="Tests\YarnNodeTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Source\SafetyChecking\SafetyChecking.csproj">

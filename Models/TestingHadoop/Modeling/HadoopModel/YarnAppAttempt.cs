@@ -22,6 +22,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
@@ -54,9 +56,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public EAppState State { get; set; } = EAppState.NOT_STARTED_YET;
 
         /// <summary>
-        /// Container for ApplicationMaster
+        /// ContainerId for ApplicationMaster
         /// </summary>
-        public YarnAppContainer AmContainer { get; set; }
+        public string AmContainerId { get; set; }
 
         /// <summary>
         /// <see cref="YarnNode"/> the ApplicationMaster is running
@@ -65,14 +67,49 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #endregion
 
-        #region Methods
+        #region IYarnReadable Methods
+
+        /// <summary>
+        /// Parser to read
+        /// </summary>
+        public IHadoopParser Parser { get; set; }
 
         /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
         public void GetStatus()
         {
-            throw new NotImplementedException();
+            var parsed = Parser.ParseAttemptAppDetails(AttemptId);
+
+            State = parsed.State;
+            AmContainerId = parsed.AmContainerId;
+            AmHost = parsed.AmHost;
+
+            var containers = Parser.ParseContainerList(AttemptId);
+            if(containers.Length > 0)
+            {
+                foreach(var con in containers)
+                {
+                    if(Containers.All(c => c.ContainerId != con.ContainerId))
+                    {
+                        var usingCont = Containers.First(c => String.IsNullOrWhiteSpace(c.ContainerId));
+                        if(usingCont == null)
+                            throw new InsufficientMemoryException("No more application attempt containers available!" +
+                                                                  " Try to initialize more container space.");
+                        usingCont.ContainerId = con.ContainerId;
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        #region Methods
+
+        public override void Update()
+        {
+            if(!String.IsNullOrWhiteSpace(AttemptId))
+                GetStatus();
         }
 
         #endregion
