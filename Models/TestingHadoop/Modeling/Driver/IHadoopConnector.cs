@@ -95,6 +95,45 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The YARN node details</returns>
         string GetYarnNodeDetails(string nodeId);
 
+        /// <summary>
+        /// Starts the VM and Hadoop for the given node and returns true if no errors occurs
+        /// </summary>
+        /// <param name="nodeName">Node name</param>
+        /// <returns>True if YARN Node started successfully</returns>
+        bool StartNode(string nodeName);
+
+        /// <summary>
+        /// Stops the VM for the given node and returns true if no errors occurs
+        /// </summary>
+        /// <param name="nodeName">Node name</param>
+        /// <returns>True if VM stopped successfully</returns>
+        bool StopNode(string nodeName);
+
+        /// <summary>
+        /// Starts the VM network connection for the given node and returns true if no errors occurs
+        /// </summary>
+        /// <param name="nodeName">Node name</param>
+        /// <returns>True if network connection started successfully</returns>
+        bool StopStartNetConnection(string nodeName);
+
+        /// <summary>
+        /// Stops the VM network connection for the given node and returns true if no errors occurs
+        /// </summary>
+        /// <param name="nodeName">Node name</param>
+        /// <returns>True if network connection stopped successfully</returns>
+        bool StopNodeNetConnection(string nodeName);
+
+        #endregion
+
+        #region Application Control
+
+        /// <summary>
+        /// Kills the given application and returns true if no errors occurs
+        /// </summary>
+        /// <param name="appId">The app id for the application</param>
+        /// <returns>True if application killed</returns>
+        bool KillApplication(string appId);
+
         #endregion
 
         // TODO: Start benchmark or other things...
