@@ -55,6 +55,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Modeling\Driver\CmdLineParser.cs" />
+    <Compile Include="Modeling\Driver\IHadoopConnector.cs" />
     <Compile Include="Modeling\Driver\IHadoopParser.cs" />
     <Compile Include="Modeling\Driver\ParserDataClasses.cs" />
     <Compile Include="Modeling\HadoopModel\IYarnReadable.cs" />
