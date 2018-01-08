@@ -34,7 +34,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="yarnComponent">The YARN component</param>
         /// <returns>The output from Hadoop</returns>
-        string GetData(IYarnReadable yarnComponent);
+        string GetYarnData(IYarnReadable yarnComponent);
 
         // TODO: Start benchmark or other things...
     }
