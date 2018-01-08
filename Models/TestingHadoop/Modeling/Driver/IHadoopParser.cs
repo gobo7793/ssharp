@@ -43,7 +43,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="appId">The app id</param>
         /// <returns>The attempts</returns>
-        ApplicationAttemptListResult[] ParseAttemptAttemptList(string appId);
+        ApplicationAttemptListResult[] ParseAppAttemptList(string appId);
 
         /// <summary>
         /// Gets and parses the current running <see cref="YarnAppContainer"/> list for the given <see cref="YarnAppAttempt.AttemptId"/>
@@ -68,7 +68,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="attemptId">The <see cref="YarnAppAttempt.AttemptId"/> from the attempt</param>
         /// <returns>The attempt details</returns>
-        ApplicationAttemptDetailsResult ParseAttemptAppDetails(string attemptId);
+        ApplicationAttemptDetailsResult ParseAppAttemptDetails(string attemptId);
 
         /// <summary>
         /// Gets and parses the <see cref="YarnAppContainer"/> details

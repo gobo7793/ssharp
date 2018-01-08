@@ -126,7 +126,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             AllocatedMemory = parsed.MbSeconds;
             AllocatedCpu = parsed.VcoreSeconds;
 
-            var attempts = Parser.ParseAttemptAttemptList(AppId);
+            var attempts = Parser.ParseAppAttemptList(AppId);
             if(attempts.Length > 0)
             {
                 foreach(var con in attempts)

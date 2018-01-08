@@ -70,11 +70,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             Connection = connection;
         }
 
-        private string GetAppStateString(params EAppState[] states)
-        {
-            throw new System.NotImplementedException();
-        }
-
         #endregion
 
         #region IHadoopParser
@@ -86,7 +81,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The applications</returns>
         public ApplicationListResult[] ParseAppList(params EAppState[] states)
         {
-            var appStates = GetAppStateString(states);
+            var appStates = String.Join(",", states);
 
             var fullResult = Connection.GetYarnApplicationList(appStates);
 
@@ -118,7 +113,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="appId">The app id</param>
         /// <returns>The attempts</returns>
-        public ApplicationAttemptListResult[] ParseAttemptAttemptList(string appId)
+        public ApplicationAttemptListResult[] ParseAppAttemptList(string appId)
         {
             var fullResult = Connection.GetYarnAppAttemptList(appId);
 
@@ -192,7 +187,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="attemptId">The <see cref="YarnAppAttempt.AttemptId"/> from the attempt</param>
         /// <returns>The attempt details</returns>
-        public ApplicationAttemptDetailsResult ParseAttemptAppDetails(string attemptId)
+        public ApplicationAttemptDetailsResult ParseAppAttemptDetails(string attemptId)
         {
             throw new System.NotImplementedException();
         }

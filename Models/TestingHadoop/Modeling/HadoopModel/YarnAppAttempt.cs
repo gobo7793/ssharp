@@ -79,7 +79,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void GetStatus()
         {
-            var parsed = Parser.ParseAttemptAppDetails(AttemptId);
+            var parsed = Parser.ParseAppAttemptDetails(AttemptId);
 
             State = parsed.State;
             AmContainerId = parsed.AmContainerId;
