@@ -29,12 +29,73 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// </summary>
     public interface IHadoopConnector
     {
+
+        #region YARN Lists
+
         /// <summary>
-        /// Gets data for the given <see cref="IYarnReadable"/> component
+        /// Gets the YARN application list with the given states
         /// </summary>
-        /// <param name="yarnComponent">The YARN component</param>
-        /// <returns>The output from Hadoop</returns>
-        string GetYarnData(IYarnReadable yarnComponent);
+        /// <param name="states">The states</param>
+        /// <returns>The YARN application list</returns>
+        string GetYarnApplicationList(string states);
+
+        /// <summary>
+        /// Gets the YARN application attempt list for the given app id
+        /// </summary>
+        /// <param name="appId">The app id</param>
+        /// <returns>The YARN application attempt list</returns>
+        string GetYarnAppAttemptList(string appId);
+
+        /// <summary>
+        /// Gets the YARN application container list for the given application attempt id
+        /// </summary>
+        /// <param name="attemptId">The attempt id</param>
+        /// <returns>The YARN application container list</returns>
+        string GetYarnAppContainerList(string attemptId);
+
+        #endregion
+
+        #region YARN Details
+
+        /// <summary>
+        /// Gets the YARN application details for the given app id
+        /// </summary>
+        /// <param name="appId">The app id</param>
+        /// <returns>The YARN application details</returns>
+        string GetYarnApplicationDetails(string appId);
+
+        /// <summary>
+        /// Gets the YARN application attempt details for the given attempt id
+        /// </summary>
+        /// <param name="attemptId">The attempt id</param>
+        /// <returns>The YARN application attempt details</returns>
+        string GetYarnAppAttemptDetails(string attemptId);
+
+        /// <summary>
+        /// Gets the YARN application container details for the given container id
+        /// </summary>
+        /// <param name="containerId">The container id</param>
+        /// <returns>The YARN application container details</returns>
+        string GetYarnAppContainerDetails(string containerId);
+
+        #endregion
+
+        #region YARN Nodes
+
+        /// <summary>
+        /// Gets the YARN node list
+        /// </summary>
+        /// <returns>The YARN node list</returns>
+        string GetYarnNodeList();
+
+        /// <summary>
+        /// Gets the YARN node details for the given node id
+        /// </summary>
+        /// <param name="nodeId">The node id</param>
+        /// <returns>The YARN node details</returns>
+        string GetYarnNodeDetails(string nodeId);
+
+        #endregion
 
         // TODO: Start benchmark or other things...
     }
