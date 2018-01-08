@@ -77,6 +77,36 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Tracking-URL
         /// </summary>
         public string TrackingUrl { get; }
+
+        public override bool Equals(object obj)
+        {
+            var ob = obj as ApplicationListResult;
+            if(ob == null)
+                return false;
+            return Equals(ob);
+        }
+
+        protected bool Equals(ApplicationListResult other)
+        {
+            return string.Equals(AppId, other.AppId) && string.Equals(AppName, other.AppName) && string.Equals(AppType, other.AppType) &&
+                   State == other.State && string.Equals(FinalState, other.FinalState) && Progess == other.Progess &&
+                   string.Equals(TrackingUrl, other.TrackingUrl);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (AppId != null ? AppId.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (AppName != null ? AppName.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (AppType != null ? AppType.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (int)State;
+                hashCode = (hashCode * 397) ^ (FinalState != null ? FinalState.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ Progess;
+                hashCode = (hashCode * 397) ^ (TrackingUrl != null ? TrackingUrl.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
     }
 
     /// <summary>
@@ -121,6 +151,34 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Aggregate Resource Allocation vcore-seconds
         /// </summary>
         public int VcoreSeconds { get; }
+
+        public override bool Equals(object obj)
+        {
+            var ob = obj as ApplicationDetailsResult;
+            if(ob == null)
+                return false;
+            return Equals(ob);
+        }
+
+        protected bool Equals(ApplicationDetailsResult other)
+        {
+            return base.Equals(other) && StartTime.Equals(other.StartTime) && FinishTime.Equals(other.FinishTime) &&
+                   Equals(AmHost, other.AmHost) && MbSeconds == other.MbSeconds && VcoreSeconds == other.VcoreSeconds;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = base.GetHashCode();
+                hashCode = (hashCode * 397) ^ StartTime.GetHashCode();
+                hashCode = (hashCode * 397) ^ FinishTime.GetHashCode();
+                hashCode = (hashCode * 397) ^ (AmHost != null ? AmHost.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ MbSeconds;
+                hashCode = (hashCode * 397) ^ VcoreSeconds;
+                return hashCode;
+            }
+        }
     }
 
     /// <summary>
@@ -156,6 +214,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Tracking-URL
         /// </summary>
         public string TrackingUrl { get; }
+
+        public override bool Equals(object obj)
+        {
+            var ob = obj as ApplicationAttemptListResult;
+            if(ob == null)
+                return false;
+            return Equals(ob);
+        }
+
+        protected bool Equals(ApplicationAttemptListResult other)
+        {
+            return string.Equals(AttemptId, other.AttemptId) && State == other.State && string.Equals(AmContainerId, other.AmContainerId) &&
+                   string.Equals(TrackingUrl, other.TrackingUrl);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (AttemptId != null ? AttemptId.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (int)State;
+                hashCode = (hashCode * 397) ^ (AmContainerId != null ? AmContainerId.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (TrackingUrl != null ? TrackingUrl.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
     }
 
     /// <summary>
@@ -174,6 +258,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// AM Host
         /// </summary>
         public YarnNode AmHost { get; }
+
+        public override bool Equals(object obj)
+        {
+            var ob = obj as ApplicationAttemptDetailsResult;
+            if(ob == null)
+                return false;
+            return Equals(ob);
+        }
+
+        protected bool Equals(ApplicationAttemptDetailsResult other)
+        {
+            return base.Equals(other) && Equals(AmHost, other.AmHost);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (base.GetHashCode() * 397) ^ (AmHost != null ? AmHost.GetHashCode() : 0);
+            }
+        }
     }
 
     /// <summary>
@@ -225,6 +330,34 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         public string LogUrl { get; }
 
+        public override bool Equals(object obj)
+        {
+            var ob = obj as ContainerListResult;
+            if(ob == null)
+                return false;
+            return Equals(ob);
+        }
+
+        protected bool Equals(ContainerListResult other)
+        {
+            return string.Equals(ContainerId, other.ContainerId) && StartTime.Equals(other.StartTime) &&
+                   FinishTime.Equals(other.FinishTime) && State == other.State && Equals(Host, other.Host) &&
+                   string.Equals(LogUrl, other.LogUrl);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (ContainerId != null ? ContainerId.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ StartTime.GetHashCode();
+                hashCode = (hashCode * 397) ^ FinishTime.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int)State;
+                hashCode = (hashCode * 397) ^ (Host != null ? Host.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (LogUrl != null ? LogUrl.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
     }
 
     /// <summary>
@@ -260,6 +393,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Number-of-Running-Containers
         /// </summary>
         public int RunningContainerCount { get; }
+
+        public override bool Equals(object obj)
+        {
+            var ob = obj as NodeListResult;
+            if(ob == null)
+                return false;
+            return Equals(ob);
+        }
+
+        protected bool Equals(NodeListResult other)
+        {
+            return string.Equals(NodeId, other.NodeId) && string.Equals(NodeState, other.NodeState) &&
+                   string.Equals(NodeHttpAdd, other.NodeHttpAdd) && RunningContainerCount == other.RunningContainerCount;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (NodeId != null ? NodeId.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (NodeState != null ? NodeState.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (NodeHttpAdd != null ? NodeHttpAdd.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ RunningContainerCount;
+                return hashCode;
+            }
+        }
     }
 
     /// <summary>
@@ -297,5 +456,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// CPU-Capacity in vcores
         /// </summary>
         public int CpuCapacity { get; }
+
+        public override bool Equals(object obj)
+        {
+            var ob = obj as NodeDetailsResult;
+            if(ob == null)
+                return false;
+            return Equals(ob);
+        }
+
+        protected bool Equals(NodeDetailsResult other)
+        {
+            return base.Equals(other) && MemoryUsed == other.MemoryUsed && MemoryCapacity == other.MemoryCapacity &&
+                   CpuUsed == other.CpuUsed && CpuCapacity == other.CpuCapacity;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hashCode = base.GetHashCode();
+                hashCode = (hashCode * 397) ^ MemoryUsed;
+                hashCode = (hashCode * 397) ^ MemoryCapacity;
+                hashCode = (hashCode * 397) ^ CpuUsed;
+                hashCode = (hashCode * 397) ^ CpuCapacity;
+                return hashCode;
+            }
+        }
     }
 }
