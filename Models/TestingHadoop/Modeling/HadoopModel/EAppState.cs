@@ -35,6 +35,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     public enum EAppState
     {
         /// <summary>
+        /// Default value
+        /// </summary>
+        UNKNOWN,
+
+        /// <summary>
         /// Job not started yet. State only for use inside model.
         /// Can be used to indicate, that the instance was not in use.
         /// </summary>

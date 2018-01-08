@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
@@ -37,12 +38,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// Generic regex pattern for lists
         /// </summary>
-        private const string GenericListRegexPattern = @"([^\s])";
+        private static readonly Regex _genericListRegex = new Regex(@"[\S]+");
 
         /// <summary>
         /// Line splitter regex pattern
         /// </summary>
-        private const string LineSplitterRegexPattern = @"\r\n|\r|\n";
+        private static readonly Regex _lineSplitterRegex = new Regex(@"\r\n|\r|\n");
 
         /// <summary>
         /// Model with its components
@@ -89,27 +90,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
             var fullResult = Connection.GetYarnApplicationList(appStates);
 
-            var appCountRegex = new Regex(@"Total number of applications[^\d]*(\d+)");
-            var listRegex = new Regex(GenericListRegexPattern);
-
-            int appCount = -1;
-            ApplicationListResult[] appList = new ApplicationListResult[0];
-            var resLines = Regex.Split(fullResult, LineSplitterRegexPattern);
+            var appList = new List<ApplicationListResult>();
+            var resLines = _lineSplitterRegex.Split(fullResult);
 
             foreach(var resLine in resLines)
             {
-                if(appList.Length < 1)
-                {
-                    var countRegexMatch = appCountRegex.Match(resLine);
-                    if(countRegexMatch.Success)
-                    {
-                        appCount = Int32.Parse(countRegexMatch.Groups[1].Value);
-                        appList = new ApplicationListResult[appCount];
-                    }
-                }
+                var appMatches = _genericListRegex.Matches(resLine);
+                if(appMatches.Count != 9 || !appMatches[0].Value.StartsWith("application"))
+                    continue;
+
+                EAppState state;
+                Enum.TryParse(appMatches[5].Value, true, out state);
+                int progress;
+                Int32.TryParse(appMatches[7].Value.Substring(0, appMatches[7].Value.Length - 1), out progress);
+
+                var app = new ApplicationListResult(appMatches[0].Value, appMatches[1].Value, appMatches[2].Value, state,
+                    appMatches[6].Value, progress, appMatches[8].Value);
+
+                appList.Add(app);
             }
 
-            return appList;
+            return appList.ToArray();
         }
 
         /// <summary>
@@ -119,7 +120,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The attempts</returns>
         public ApplicationAttemptListResult[] ParseAttemptAttemptList(string appId)
         {
-            throw new System.NotImplementedException();
+            var fullResult = Connection.GetYarnAppAttemptList(appId);
+
+            var attemptList = new List<ApplicationAttemptListResult>();
+            var resLines = _lineSplitterRegex.Split(fullResult);
+
+            foreach(var resLine in resLines)
+            {
+                var attemptMatches = _genericListRegex.Matches(resLine);
+                if(attemptMatches.Count != 4 || !attemptMatches[0].Value.StartsWith("appattempt"))
+                    continue;
+
+                EAppState state;
+                Enum.TryParse(attemptMatches[1].Value, true, out state);
+
+                var attempt = new ApplicationAttemptListResult(attemptMatches[0].Value, state, attemptMatches[2].Value, attemptMatches[3].Value);
+
+                attemptList.Add(attempt);
+            }
+
+            return attemptList.ToArray();
         }
 
         /// <summary>
@@ -129,7 +149,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The running containers</returns>
         public ContainerListResult[] ParseContainerList(string attemptId)
         {
-            throw new System.NotImplementedException();
+            var fullResult = Connection.GetYarnAppAttemptList(attemptId);
+
+            var containerList = new List<ContainerListResult>();
+            var resLines = _lineSplitterRegex.Split(fullResult);
+
+            foreach(var resLine in resLines)
+            {
+                var containerDetails = Regex.Split(resLine, @"\s{2,}");
+                if(containerDetails.Length != 7 || !containerDetails[0].StartsWith("container"))
+                    continue;
+
+                DateTime startTime;
+                DateTime.TryParse(containerDetails[1], out startTime);
+                DateTime finishTime;
+                DateTime.TryParse(containerDetails[2], out finishTime);
+                EAppState state;
+                Enum.TryParse(containerDetails[3], true, out state);
+                var nodeName = containerDetails[4].Split(':')[0];
+                var node = Model.Nodes.Find(x => x.Name == nodeName);
+
+                var container = new ContainerListResult(containerDetails[0], startTime, finishTime, state, node, containerDetails[6]);
+
+                containerList.Add(container);
+            }
+
+            return containerList.ToArray();
         }
 
         /// <summary>
