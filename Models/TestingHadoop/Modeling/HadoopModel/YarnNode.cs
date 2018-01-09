@@ -52,6 +52,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         private string _NodeId;
         protected override string HttpPort => "8042";
 
+        private bool _IsActive = true;
+        private bool _IsConnected = true;
+
+        /// <summary>
+        /// The connector to use for node control
+        /// </summary>
+        public IHadoopConnector Connector { get; set; }
+
         /// <summary>
         /// <see cref="YarnApp" />s executing by this node
         /// </summary>
@@ -69,7 +77,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             get
             {
-                if (String.IsNullOrWhiteSpace(_NodeId))
+                if(String.IsNullOrWhiteSpace(_NodeId))
                     _NodeId = Name + ":45454";
                 return _NodeId;
             }
@@ -83,12 +91,38 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Indicates if this <see cref="YarnNode"/> is aktive
         /// </summary>
-        public bool IsActive { get; set; } = true;
+        public bool IsActive
+        {
+            get => _IsActive;
+            set
+            {
+                if(value != _IsActive)
+                {
+                    if(value)
+                        Connector.StartNode(Name);
+                    else
+                        Connector.StopNode(Name);
+                }
+            }
+        }
 
         /// <summary>
         /// Indicates if this <see cref="YarnNode"/> connection is acitve
         /// </summary>
-        public bool IsConnected { get; set; } = true;
+        public bool IsConnected
+        {
+            get => _IsConnected;
+            set
+            {
+                if(value != _IsConnected)
+                {
+                    if(value)
+                        Connector.StopStartNetConnection(Name);
+                    else
+                        Connector.StopNodeNetConnection(Name);
+                }
+            }
+        }
 
         /// <summary>
         /// Current State
@@ -146,6 +180,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #endregion
 
+        #region Methods
+
+        public override void Update()
+        {
+            if(!String.IsNullOrWhiteSpace(NodeId))
+                GetStatus();
+        }
+
+        #endregion
+
         #region Fault Effects
 
         /// <summary>
@@ -155,6 +199,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public class NodeConnectionErrorEffect : YarnNode
         {
 
+            public override void Update()
+            {
+
+            }
         }
 
         /// <summary>

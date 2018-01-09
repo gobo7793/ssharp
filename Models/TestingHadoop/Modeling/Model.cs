@@ -71,7 +71,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// </summary>
         public void InitializeDefaultInstance()
         {
-
+            Config1();
         }
 
         /// <summary>
@@ -79,10 +79,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// </summary>
         public void Config1()
         {
-            IHadoopParser parser = null;
+            IHadoopConnector connector = null;
+            var parser = new CmdLineParser(this, connector);
 
             InitBaseComponents();
-            InitYarnNodes(4, parser);
+            InitYarnNodes(4, parser, connector);
 
             InitApplications(1, parser);
             InitAppAttempts(1, parser);
@@ -109,8 +110,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Init yarn compute nodes
         /// </summary>
         /// <param name="nodeCount">Instances count</param>
-        /// <param name="parser">Hadoop-Parser to use</param>
-        private void InitYarnNodes(int nodeCount, IHadoopParser parser)
+        /// <param name="parser">Hadoop parser to use</param>
+        /// <param name="connector">Hadoop connector to use</param>
+        private void InitYarnNodes(int nodeCount, IHadoopParser parser, IHadoopConnector connector)
         {
             for (int i = 1; i <= nodeCount; i++)
             {
@@ -119,6 +121,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
                     Name = "compute-" + i,
                     Controller = Controller,
                     Parser = parser,
+                    Connector = connector,
                 };
 
                 Controller.ConnectedNodes.Add(node);
