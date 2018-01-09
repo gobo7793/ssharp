@@ -119,27 +119,30 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             var parsed = Parser.ParseAppDetails(AppId);
 
-            Name = parsed.AppName;
-            StartTime = parsed.StartTime;
-            EndTime = parsed.FinishTime;
-            Progress = parsed.Progess;
-            State = parsed.State;
-            AmHost = parsed.AmHost;
-            AllocatedMemory = parsed.MbSeconds;
-            AllocatedCpu = parsed.VcoreSeconds;
-
-            var attempts = Parser.ParseAppAttemptList(AppId);
-            if(attempts.Length > 0)
+            if(parsed != null)
             {
-                foreach(var con in attempts)
+                Name = parsed.AppName;
+                StartTime = parsed.StartTime;
+                EndTime = parsed.FinishTime;
+                Progress = parsed.Progess;
+                State = parsed.State;
+                AmHost = parsed.AmHost;
+                AllocatedMemory = parsed.MbSeconds;
+                AllocatedCpu = parsed.VcoreSeconds;
+
+                var attempts = Parser.ParseAppAttemptList(AppId);
+                if(attempts.Length > 0)
                 {
-                    if(Attempts.All(c => c.AttemptId != con.AttemptId))
+                    foreach(var con in attempts)
                     {
-                        var usingCont = Attempts.First(c => String.IsNullOrWhiteSpace(c.AttemptId));
-                        if(usingCont == null)
-                            throw new InsufficientMemoryException("No more application attempts available!" +
-                                                                  " Try to initialize more container space.");
-                        usingCont.AttemptId = con.AttemptId;
+                        if(Attempts.All(c => c.AttemptId != con.AttemptId))
+                        {
+                            var usingCont = Attempts.First(c => String.IsNullOrWhiteSpace(c.AttemptId));
+                            if(usingCont == null)
+                                throw new InsufficientMemoryException("No more application attempts available!" +
+                                                                      " Try to initialize more container space.");
+                            usingCont.AttemptId = con.AttemptId;
+                        }
                     }
                 }
             }

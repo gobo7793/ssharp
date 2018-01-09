@@ -83,22 +83,25 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             var parsed = Parser.ParseAppAttemptDetails(AttemptId);
 
-            State = parsed.State;
-            AmContainerId = parsed.AmContainerId;
-            AmHost = parsed.AmHost;
-
-            var containers = Parser.ParseContainerList(AttemptId);
-            if(containers.Length > 0)
+            if(parsed != null)
             {
-                foreach(var con in containers)
+                State = parsed.State;
+                AmContainerId = parsed.AmContainerId;
+                AmHost = parsed.AmHost;
+
+                var containers = Parser.ParseContainerList(AttemptId);
+                if(containers.Length > 0)
                 {
-                    if(Containers.All(c => c.ContainerId != con.ContainerId))
+                    foreach(var con in containers)
                     {
-                        var usingCont = Containers.First(c => String.IsNullOrWhiteSpace(c.ContainerId));
-                        if(usingCont == null)
-                            throw new InsufficientMemoryException("No more application attempt containers available!" +
-                                                                  " Try to initialize more container space.");
-                        usingCont.ContainerId = con.ContainerId;
+                        if(Containers.All(c => c.ContainerId != con.ContainerId))
+                        {
+                            var usingCont = Containers.First(c => String.IsNullOrWhiteSpace(c.ContainerId));
+                            if(usingCont == null)
+                                throw new InsufficientMemoryException("No more application attempt containers available!" +
+                                                                      " Try to initialize more container space.");
+                            usingCont.ContainerId = con.ContainerId;
+                        }
                     }
                 }
             }

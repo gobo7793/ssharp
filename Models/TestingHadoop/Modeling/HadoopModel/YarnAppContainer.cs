@@ -81,10 +81,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             var parsed = Parser.ParseContainerDetails(ContainerId);
 
-            StartTime = parsed.StartTime;
-            EndTime = parsed.FinishTime;
-            State = parsed.State;
-            Host = parsed.Host;
+            if(parsed != null)
+            {
+                StartTime = parsed.StartTime;
+                EndTime = parsed.FinishTime;
+                State = parsed.State;
+                Host = parsed.Host;
+            }
         }
 
         #endregion
