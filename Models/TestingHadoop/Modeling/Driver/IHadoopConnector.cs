@@ -114,7 +114,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="nodeName">Node name</param>
         /// <returns>True if network connection started successfully</returns>
-        bool StopStartNetConnection(string nodeName);
+        bool StartNodeNetConnection(string nodeName);
 
         /// <summary>
         /// Stops the VM network connection for the given node and returns true if no errors occurs
