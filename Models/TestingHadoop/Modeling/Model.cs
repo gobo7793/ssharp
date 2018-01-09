@@ -32,11 +32,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
     /// </summary>
     public class Model : ModelBase
     {
-        #region Model size
+        #region General settings
 
         //public const int MaxApplicationCount = 0xFF;
         //public const int MaxAppAttemptCount = 0xF;
         //public const int MaxContainerCount = 0xF;
+
+        public const string NodeNamePrefix = "compute-";
 
         #endregion
 
@@ -118,7 +120,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             {
                 var node = new YarnNode
                 {
-                    Name = "compute-" + i,
+                    Name = NodeNamePrefix + i,
                     Controller = Controller,
                     Parser = parser,
                     Connector = connector,
