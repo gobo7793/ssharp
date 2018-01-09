@@ -52,9 +52,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         private string _NodeId;
         protected override string HttpPort => "8042";
 
-        private bool _IsActive = true;
-        private bool _IsConnected = true;
-
         /// <summary>
         /// The connector to use for node control
         /// </summary>
@@ -91,38 +88,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Indicates if this <see cref="YarnNode"/> is aktive
         /// </summary>
-        public bool IsActive
-        {
-            get => _IsActive;
-            set
-            {
-                if(value != _IsActive)
-                {
-                    if(value)
-                        Connector.StartNode(Name);
-                    else
-                        Connector.StopNode(Name);
-                }
-            }
-        }
+        public bool IsActive { get; set; } = true;
 
         /// <summary>
         /// Indicates if this <see cref="YarnNode"/> connection is acitve
         /// </summary>
-        public bool IsConnected
-        {
-            get => _IsConnected;
-            set
-            {
-                if(value != _IsConnected)
-                {
-                    if(value)
-                        Connector.StopStartNetConnection(Name);
-                    else
-                        Connector.StopNodeNetConnection(Name);
-                }
-            }
-        }
+        public bool IsConnected { get; set; } = true;
 
         /// <summary>
         /// Current State
@@ -189,8 +160,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             if(!String.IsNullOrWhiteSpace(NodeId))
             {
-                IsActive = true;
-                IsConnected = true;
+                IsActive = Connector.StartNode(Name);
+                IsConnected = Connector.StartNodeNetConnection(Name);
                 GetStatus();
             }
         }
@@ -207,7 +178,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             public override void Update()
             {
-                IsConnected = false;
+                IsConnected = !Connector.StopNodeNetConnection(Name);
             }
         }
 
@@ -219,7 +190,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             public override void Update()
             {
-                IsActive = false;
+                IsActive = !Connector.StopNode(Name);
             }
         }
 
