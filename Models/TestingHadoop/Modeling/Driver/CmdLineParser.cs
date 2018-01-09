@@ -22,7 +22,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
@@ -35,10 +35,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     {
         #region Constants and Properties
 
+        private const string HadoopDateFormat = "ddd MMM dd HH:mm:ss zz00 yyyy";
+
         /// <summary>
         /// Generic regex pattern for lists
         /// </summary>
-        private static readonly Regex _genericListRegex = new Regex(@"[\S]+");
+        private static readonly Regex _genericListRegex = new Regex(@"\s*([^\t]+)");
 
         /// <summary>
         /// Line splitter regex pattern
@@ -91,16 +93,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             foreach(var resLine in resLines)
             {
                 var appMatches = _genericListRegex.Matches(resLine);
-                if(appMatches.Count != 9 || !appMatches[0].Value.StartsWith("application"))
+                if(appMatches.Count != 9 || !appMatches[0].Groups[1].Value.StartsWith("application"))
                     continue;
 
                 EAppState state;
-                Enum.TryParse(appMatches[5].Value, true, out state);
+                Enum.TryParse(appMatches[5].Groups[1].Value, true, out state);
                 int progress;
-                Int32.TryParse(appMatches[7].Value.Substring(0, appMatches[7].Value.Length - 1), out progress);
+                Int32.TryParse(appMatches[7].Groups[1].Value.Substring(0, appMatches[7].Groups[1].Value.Length - 1), out progress);
 
-                var app = new ApplicationListResult(appMatches[0].Value, appMatches[1].Value, appMatches[2].Value, state,
-                    appMatches[6].Value, progress, appMatches[8].Value);
+                var app = new ApplicationListResult(appMatches[0].Groups[1].Value, appMatches[1].Groups[1].Value,
+                    appMatches[2].Groups[1].Value, state, appMatches[6].Groups[1].Value, progress, appMatches[8].Groups[1].Value);
 
                 appList.Add(app);
             }
@@ -123,13 +125,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             foreach(var resLine in resLines)
             {
                 var attemptMatches = _genericListRegex.Matches(resLine);
-                if(attemptMatches.Count != 4 || !attemptMatches[0].Value.StartsWith("appattempt"))
+                if(attemptMatches.Count != 4 || !attemptMatches[0].Groups[1].Value.StartsWith("appattempt"))
                     continue;
 
                 EAppState state;
-                Enum.TryParse(attemptMatches[1].Value, true, out state);
+                Enum.TryParse(attemptMatches[1].Groups[1].Value, true, out state);
 
-                var attempt = new ApplicationAttemptListResult(attemptMatches[0].Value, state, attemptMatches[2].Value, attemptMatches[3].Value);
+                var attempt = new ApplicationAttemptListResult(attemptMatches[0].Groups[1].Value, state, attemptMatches[2].Groups[1].Value,
+                    attemptMatches[3].Groups[1].Value);
 
                 attemptList.Add(attempt);
             }
@@ -144,27 +147,30 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The running containers</returns>
         public ContainerListResult[] ParseContainerList(string attemptId)
         {
-            var fullResult = Connection.GetYarnAppAttemptList(attemptId);
+            var fullResult = Connection.GetYarnAppContainerList(attemptId);
 
             var containerList = new List<ContainerListResult>();
             var resLines = _lineSplitterRegex.Split(fullResult);
 
             foreach(var resLine in resLines)
             {
-                var containerDetails = Regex.Split(resLine, @"\s{2,}");
-                if(containerDetails.Length != 7 || !containerDetails[0].StartsWith("container"))
+                var containerMatches = _genericListRegex.Matches(resLine);
+                if(containerMatches.Count != 7 || !containerMatches[0].Groups[1].Value.StartsWith("container"))
                     continue;
 
                 DateTime startTime;
-                DateTime.TryParse(containerDetails[1], out startTime);
+                DateTime.TryParseExact(containerMatches[1].Groups[1].Value, HadoopDateFormat, new CultureInfo("en-US"),
+                    DateTimeStyles.AssumeUniversal, out startTime);
                 DateTime finishTime;
-                DateTime.TryParse(containerDetails[2], out finishTime);
+                DateTime.TryParseExact(containerMatches[2].Groups[1].Value, HadoopDateFormat, new CultureInfo("en-US"),
+                    DateTimeStyles.AssumeUniversal, out finishTime);
                 EAppState state;
-                Enum.TryParse(containerDetails[3], true, out state);
-                var nodeName = containerDetails[4].Split(':')[0];
+                Enum.TryParse(containerMatches[3].Groups[1].Value, true, out state);
+                var nodeName = containerMatches[4].Groups[1].Value.Split(':')[0];
                 var node = Model.Nodes.Find(x => x.Name == nodeName);
 
-                var container = new ContainerListResult(containerDetails[0], startTime, finishTime, state, node, containerDetails[6]);
+                var container = new ContainerListResult(containerMatches[0].Groups[1].Value, startTime, finishTime, state, node,
+                    containerMatches[6].Groups[1].Value);
 
                 containerList.Add(container);
             }
@@ -179,7 +185,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The application details</returns>
         public ApplicationDetailsResult ParseAppDetails(string appId)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -189,7 +195,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The attempt details</returns>
         public ApplicationAttemptDetailsResult ParseAppAttemptDetails(string attemptId)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -199,7 +205,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The container details</returns>
         public ContainerListResult ParseContainerDetails(string containerId)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -208,7 +214,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>All nodes in the cluster</returns>
         public NodeListResult ParseNodeList()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -218,7 +224,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The node details</returns>
         public NodeDetailsResult ParseNodeDetails(string nodeId)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         #endregion
