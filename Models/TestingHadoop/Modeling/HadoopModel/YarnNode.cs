@@ -170,12 +170,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             var parsed = Parser.ParseNodeDetails(NodeId);
 
-            State = parsed.NodeState;
-            ContainerCount = parsed.RunningContainerCount;
-            MemoryUsed = parsed.MemoryUsed;
-            MemoryCapacity = parsed.MemoryCapacity;
-            CpuUsed = parsed.CpuUsed;
-            CpuCapacity = parsed.CpuCapacity;
+            if(parsed != null)
+            {
+                State = parsed.NodeState;
+                ContainerCount = parsed.RunningContainerCount;
+                MemoryUsed = parsed.MemoryUsed;
+                MemoryCapacity = parsed.MemoryCapacity;
+                CpuUsed = parsed.CpuUsed;
+                CpuCapacity = parsed.CpuCapacity;
+            }
         }
 
         #endregion
@@ -185,7 +188,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public override void Update()
         {
             if(!String.IsNullOrWhiteSpace(NodeId))
+            {
+                IsActive = true;
+                IsConnected = true;
                 GetStatus();
+            }
         }
 
         #endregion
@@ -198,10 +205,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         [FaultEffect(Fault = nameof(NodeConnectionError))]
         public class NodeConnectionErrorEffect : YarnNode
         {
-
             public override void Update()
             {
-
+                IsConnected = false;
             }
         }
 
@@ -211,7 +217,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         [FaultEffect(Fault = nameof(NodeDead))]
         public class NodeDeadEffect : YarnNode
         {
-
+            public override void Update()
+            {
+                IsActive = false;
+            }
         }
 
         #endregion
