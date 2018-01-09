@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
@@ -31,6 +32,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// <summary>
     /// Execution attempt of a <see cref="YarnApp"/>
     /// </summary>
+    [DebuggerDisplay("Attempt {" + nameof(AttemptId) + "}")]
     public class YarnAppAttempt : Component, IYarnReadable
     {
         #region Properties

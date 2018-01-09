@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using ISSE.SafetyChecking.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
@@ -32,6 +33,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// <summary>
     /// Application/Job to run on the Hadoop cluster
     /// </summary>
+    [DebuggerDisplay("Application {" + nameof(AppId) + "}")]
     public class YarnApp : Component, IYarnReadable
     {
 

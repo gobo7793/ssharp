@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Diagnostics;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
@@ -28,6 +29,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// <summary>
     /// Base class for all YARN Hosts
     /// </summary>
+    [DebuggerDisplay("Name {" + nameof(Name) + "}")]
     public abstract class YarnHost : Component
     {
         private string _HttpUrl;

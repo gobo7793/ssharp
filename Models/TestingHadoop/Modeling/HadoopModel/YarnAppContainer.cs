@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Diagnostics;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
 
@@ -29,6 +30,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// <summary>
     /// Execution Container for <see cref="AppAttempt"/>s
     /// </summary>
+    [DebuggerDisplay("Container {" + nameof(ContainerId) + "}")]
     public class YarnAppContainer : Component, IYarnReadable
     {
         #region Properties

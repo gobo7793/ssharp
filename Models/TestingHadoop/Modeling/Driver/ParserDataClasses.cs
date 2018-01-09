@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Diagnostics;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
@@ -29,6 +30,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// Data for an application from application list.
     /// CMD: <c>yarn application -appStates &lt;states&gt; -list</c>
     /// </summary>
+    [DebuggerDisplay("Application {" + nameof(AppId) + "}")]
     public class ApplicationListResult
     {
         public ApplicationListResult(string appId, string appName, string appType,
@@ -113,6 +115,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// Data for an application from app details.
     /// CMD: <c>yarn application -status &lt;appId&gt;</c>
     /// </summary>
+    [DebuggerDisplay("Application {" + nameof(AppId) + "}")]
     public class ApplicationDetailsResult : ApplicationListResult
     {
         public ApplicationDetailsResult(string appId, string appName, string appType, EAppState state,
@@ -185,6 +188,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// Data for an attempts from attempt list.
     /// CMD: <c>yarn applicationattempt -list &lt;appID&gt;</c>
     /// </summary>
+    [DebuggerDisplay("Attempt {" + nameof(AttemptId) + "}")]
     public class ApplicationAttemptListResult
     {
         public ApplicationAttemptListResult(string attemptId, EAppState state, string amContainerId, string trackingUrl)
@@ -246,6 +250,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// Data for an application from app details.
     /// CMD: <c>yarn applicationattempt -status &lt;appAttemptId&gt;</c>
     /// </summary>
+    [DebuggerDisplay("Attempt {" + nameof(AttemptId) + "}")]
     public class ApplicationAttemptDetailsResult : ApplicationAttemptListResult
     {
         public ApplicationAttemptDetailsResult(string attemptId, EAppState state, string amContainerId, string trackingUrl, YarnNode amHost)
@@ -287,6 +292,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// CMD: <c>yarn container -list &lt;attemptID&gt;</c>
     /// CMD: <c>yarn container -status &lt;containerID&gt;</c>
     /// </summary>
+    [DebuggerDisplay("Container {" + nameof(ContainerId) + "}")]
     public class ContainerListResult
     {
         public ContainerListResult(string containerId, DateTime startTime, DateTime finishTime,
@@ -364,6 +370,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// Data for a node from the node list.
     /// CMD: <c>yarn node -list</c>
     /// </summary>
+    [DebuggerDisplay("Node {" + nameof(NodeId) + "}")]
     public class NodeListResult
     {
         public NodeListResult(string nodeId, string nodeState, string nodeHttpAdd, int runningContainerCount)
@@ -425,6 +432,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// Data for a node from node details.
     /// CMD: <c>yarn node -status &lt;nodeId&gt;</c>
     /// </summary>
+    [DebuggerDisplay("Node {" + nameof(NodeId) + "}")]
     public class NodeDetailsResult : NodeListResult
     {
         public NodeDetailsResult(string nodeId, string nodeState, string nodeHttpAdd, int runningContainerCount,
