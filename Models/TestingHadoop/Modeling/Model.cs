@@ -46,7 +46,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 
         public Client Client { get; set; }
         public YarnController Controller { get; set; }
-        public List<YarnNode> Nodes { get; } = new List<YarnNode>();
+        public Dictionary<string, YarnNode> Nodes { get; } = new Dictionary<string, YarnNode>();
 
         public List<YarnApp> Applications { get; } = new List<YarnApp>();
         public List<YarnAppAttempt> AppAttempts { get; } = new List<YarnAppAttempt>();
@@ -127,7 +127,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
                 };
 
                 Controller.ConnectedNodes.Add(node);
-                Nodes.Add(node);
+                Nodes[node.Name] = node;
             }
         }
 
