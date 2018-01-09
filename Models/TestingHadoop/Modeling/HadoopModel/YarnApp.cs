@@ -49,6 +49,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region Properties
 
         /// <summary>
+        /// The connector to use for node control
+        /// </summary>
+        public IHadoopConnector Connector { get; set; }
+
+        /// <summary>
         /// <see cref="YarnAppAttempt"/> for this <see cref="YarnApp"/>
         /// </summary>
         public List<YarnAppAttempt> Attempts { get; } = new List<YarnAppAttempt>();
@@ -166,9 +171,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Fault effect for <see cref="KillApp"/>
         /// </summary>
         [FaultEffect(Fault = nameof(KillApp))]
-        public class KillAppEffect : YarnHost
+        public class KillAppEffect : YarnApp
         {
-
+            public override void Update()
+            {
+                base.Update();
+                if(State != EAppState.FAILED && State != EAppState.FINISHED && State != EAppState.KILLED &&
+                   State != EAppState.NOT_STARTED_YET)
+                    Connector.KillApplication(AppId);
+            }
         }
 
         #endregion
