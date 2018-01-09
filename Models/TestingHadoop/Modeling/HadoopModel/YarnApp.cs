@@ -168,7 +168,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region Fault Effects
 
         /// <summary>
-        /// Fault effect for <see cref="KillApp"/>
+        /// Fault effect for <see cref="YarnApp.KillApp"/>
         /// </summary>
         [FaultEffect(Fault = nameof(KillApp))]
         public class KillAppEffect : YarnApp
