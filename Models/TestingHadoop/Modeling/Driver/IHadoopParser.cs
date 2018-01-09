@@ -85,7 +85,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Gets and parses the <see cref="YarnNode"/> list for the cluster
         /// </summary>
         /// <returns>All nodes in the cluster</returns>
-        NodeListResult ParseNodeList();
+        NodeListResult[] ParseNodeList();
 
         /// <summary>
         /// Gets and parses the <see cref="YarnNode"/> details

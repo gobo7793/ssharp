@@ -43,9 +43,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                 Name = "compute-1",
             };
             _Model = new Model();
-            _Model.Nodes.Add(_Node1);
+            _Model.Nodes[_Node1.Name] = _Node1;
 
             _Parser = new CmdLineParser(_Model, new DummyHadoopConnector());
+        }
+
+        [Test]
+        public void TestParseTimestamp()
+        {
+            // Hadoop converted
+            var date1Exp = new DateTime(2018, 1, 10, 20, 42, 1);
+            var date1Val = "Wed Jan 10 19:42:01 +0000 2018";
+
+            // Java millisec
+            var date2Exp = new DateTime(2017, 12, 2, 4, 58, 23, 523);
+            var date2Val = "1512187108523";
+
+            var date1 = _Parser.ParseTimestamp(date1Val, CmdLineParser.HadoopDateFormat);
+            var date2 = _Parser.ParseTimestamp(date2Val, null);
+
+            Assert.AreEqual(date1Exp, date1, "hadoop converted parsing failed");
+            Assert.AreEqual(date2Exp, date2, "java millisec parsing failed");
         }
 
         [Test]
@@ -82,11 +100,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public void TestParseContainerList()
         {
             var container1 = new ContainerListResult("container_1515488762656_0011_01_000001", new DateTime(2018, 1, 9, 10, 41, 14),
-                DateTime.MinValue, EAppState.RUNNING, _Node1, "http://compute-2:8042/node/containerlogs/container_1515488762656_0011_01_000001/root");
+                DateTime.MinValue, EAppState.RUNNING, _Node1, "http://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000001/root");
             var container2 = new ContainerListResult("container_1515488762656_0011_01_000002", new DateTime(2018, 1, 9, 10, 41, 19),
-                DateTime.MinValue, EAppState.RUNNING, _Node1, "http://compute-2:8042/node/containerlogs/container_1515488762656_0011_01_000002/root");
+                DateTime.MinValue, EAppState.RUNNING, _Node1, "http://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000002/root");
             var container3 = new ContainerListResult("container_1515488762656_0011_01_000003", new DateTime(2018, 1, 9, 10, 41, 19),
-                DateTime.MinValue, EAppState.RUNNING, _Node1, "http://compute-2:8042/node/containerlogs/container_1515488762656_0011_01_000003/root");
+                DateTime.MinValue, EAppState.RUNNING, _Node1, "http://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000003/root");
 
             var containers = _Parser.ParseContainerList("");
 
@@ -94,6 +112,35 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Assert.AreEqual(container1, containers[0], "container1 failed");
             Assert.AreEqual(container2, containers[1], "container2 failed");
             Assert.AreEqual(container3, containers[2], "container3 failed");
+        }
+
+        [Test]
+        public void TestParseNodeList()
+        {
+            var node1 = new NodeListResult("compute-1:45454", "RUNNING", "compute-1:8042", 0);
+            var node2 = new NodeListResult("compute-2:45454", "RUNNING", "compute-2:8042", 0);
+            var node3 = new NodeListResult("compute-3:45454", "RUNNING", "compute-3:8042", 0);
+            var node4 = new NodeListResult("compute-4:45454", "RUNNING", "compute-4:8042", 0);
+
+            var nodes = _Parser.ParseNodeList();
+
+            Assert.AreEqual(4, nodes.Length, "wrong parsed node count");
+            Assert.AreEqual(node1, nodes[0], "node1 failed");
+            Assert.AreEqual(node2, nodes[1], "node2 failed");
+            Assert.AreEqual(node3, nodes[2], "node3 failed");
+            Assert.AreEqual(node4, nodes[3], "node4 failed");
+        }
+
+        [Test]
+        public void TestParseAppDetails()
+        {
+            var app = new ApplicationDetailsResult("application_1515488762656_0002", "word count", "MAPREDUCE", EAppState.FINISHED,
+                "SUCCEEDED", 100, "http://controller:19888/jobhistory/job/job_1515488762656_0002",
+                new DateTime(2018, 1, 9, 10, 10, 34, 402), new DateTime(2018, 1, 9, 10, 11, 48, 249), _Node1, 583396, 482);
+
+            var res = _Parser.ParseAppDetails("");
+
+            Assert.AreEqual(app, res);
         }
     }
 }
