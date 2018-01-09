@@ -70,6 +70,7 @@
     <Compile Include="Modeling\HadoopModel\YarnAppContainer.cs" />
     <Compile Include="Modeling\HadoopModel\YarnAppAttempt.cs" />
     <Compile Include="Tests\CmdLineParserTest.cs" />
+    <Compile Include="Tests\DummyHadoopConnector.cs" />
     <Compile Include="Tests\YarnNodeTest.cs" />
   </ItemGroup>
   <ItemGroup>
