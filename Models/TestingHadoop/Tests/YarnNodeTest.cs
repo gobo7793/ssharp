@@ -25,6 +25,7 @@ using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 {
+    [TestFixture]
     public class YarnNodeTest
     {
         [Test]
