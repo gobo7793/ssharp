@@ -56,25 +56,43 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                                                                  "\tAggregate Resource Allocation : 583396 MB-seconds, 482 vcore-seconds\n" +
                                                                  "\tDiagnostics : \n";
 
-        public string GetYarnAppAttemptDetails(string attemptId)
-        {
-            throw new NotImplementedException();
-        }
+        public string GetYarnAppAttemptDetails(string attemptId) => "Application Attempt Report : \n" +
+                                                                    "\tApplicationAttempt-Id : appattempt_1515577485762_0006_000001\n" +
+                                                                    "\tState : RUNNING\n" +
+                                                                    "\tAMContainer : container_1515577485762_0006_01_000001\n" +
+                                                                    "\tTracking-URL : http://controller:8088/proxy/application_1515577485762_0006/\n" +
+                                                                    "\tRPC Port : 44340\n" +
+                                                                    "\tAM Host : compute-1\n" +
+                                                                    "\tDiagnostics : \n";
 
-        public string GetYarnAppContainerDetails(string containerId)
-        {
-            throw new NotImplementedException();
-        }
+        public string GetYarnAppContainerDetails(string containerId) => "Container Report : \n" +
+                                                                        "\tContainer-Id : container_1515577485762_0008_01_000001\n" +
+                                                                        "\tStart-Time : 1515579722594\n" +
+                                                                        "\tFinish-Time : 0\n" +
+                                                                        "\tState : RUNNING\n" +
+                                                                        "\tLOG-URL : http://compute-1:8042/node/containerlogs/container_1515577485762_0008_01_000001/root\n" +
+                                                                        "\tHost : compute-1:45454\n" +
+                                                                        "\tNodeHttpAddress : http://compute-1:8042\n" +
+                                                                        "\tDiagnostics : null\n";
 
         public string GetYarnNodeList() => " compute-1:45454\t        RUNNING\t   compute-1:8042\t                           0\n" +
                                            " compute-2:45454\t        RUNNING\t   compute-2:8042\t                           0\n" +
                                            " compute-3:45454\t        RUNNING\t   compute-3:8042\t                           0\n" +
                                            " compute-4:45454\t        RUNNING\t   compute-4:8042\t                           0\n";
 
-        public string GetYarnNodeDetails(string nodeId)
-        {
-            throw new NotImplementedException();
-        }
+        public string GetYarnNodeDetails(string nodeId) => "Node Report : \n" +
+                                                           "\tNode-Id : compute-1:45454\n" +
+                                                           "\tRack : /default-rack\n" +
+                                                           "\tNode-State : RUNNING\n" +
+                                                           "\tNode-Http-Address : compute-1:8042\n" +
+                                                           "\tLast-Health-Update : Wed 10/Jan/18 10:24:57:291UTC\n" +
+                                                           "\tHealth-Report : \n" +
+                                                           "\tContainers : 2\n" +
+                                                           "\tMemory-Used : 3072MB\n" +
+                                                           "\tMemory-Capacity : 8192MB\n" +
+                                                           "\tCPU-Used : 2 vcores\n" +
+                                                           "\tCPU-Capacity : 8 vcores\n" +
+                                                           "\tNode-Labels : \n\n";
 
         public bool StartNode(string nodeName)
         {

@@ -56,7 +56,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             var date1Val = "Wed Jan 10 19:42:01 +0000 2018";
 
             // Java millisec
-            var date2Exp = new DateTime(2017, 12, 2, 4, 58, 23, 523);
+            var date2Exp = new DateTime(2017, 12, 2, 4, 58, 28, 523);
             var date2Val = "1512187108523";
 
             var date1 = _Parser.ParseTimestamp(date1Val, CmdLineParser.HadoopDateFormat);
@@ -141,6 +141,39 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             var res = _Parser.ParseAppDetails("");
 
             Assert.AreEqual(app, res);
+        }
+
+        [Test]
+        public void TestParseAppAttemptDetails()
+        {
+            var attempt = new ApplicationAttemptDetailsResult("appattempt_1515577485762_0006_000001", EAppState.RUNNING,
+                "container_1515577485762_0006_01_000001", "http://controller:8088/proxy/application_1515577485762_0006/", _Node1);
+
+            var res = _Parser.ParseAppAttemptDetails("");
+
+            Assert.AreEqual(attempt, res);
+        }
+
+        [Test]
+        public void TestParseContainerDetails()
+        {
+            var container = new ContainerListResult("container_1515577485762_0008_01_000001", new DateTime(2018, 1, 10, 11, 22, 2, 594),
+                DateTime.MinValue, EAppState.RUNNING, _Node1,
+                "http://compute-1:8042/node/containerlogs/container_1515577485762_0008_01_000001/root");
+
+            var res = _Parser.ParseContainerDetails("");
+
+            Assert.AreEqual(container, res);
+        }
+
+        [Test]
+        public void TestParseNodeDetails()
+        {
+            var node = new NodeDetailsResult("compute-1:45454", "RUNNING", "compute-1:8042", 2, 3072, 8192, 2, 8);
+
+            var res = _Parser.ParseNodeDetails("");
+
+            Assert.AreEqual(node, res);
         }
     }
 }

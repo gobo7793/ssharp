@@ -46,7 +46,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <remarks>
         /// Group 1: the property without leading or trailing whitespaces
         /// </remarks>
-        private static readonly Regex _genericListRegex = new Regex(@"\s*([^\t]+)");
+        private static readonly Regex _GenericListRegex = new Regex(@"\s*([^\t]+)");
 
         /// <summary>
         /// Generic regex for details
@@ -55,12 +55,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Group 1: the property name without leading or trailing whitespaces
         /// Group 2: the property value without leading or trailing whitespaces
         /// </remarks>
-        private static readonly Regex _genericDetailsRegex = new Regex(@"^\t(.+)\s:\s(.*)$", RegexOptions.Multiline);
+        private static readonly Regex _GenericDetailsRegex = new Regex(@"^\t(.+)\s:\s(.*)$", RegexOptions.Multiline);
 
         /// <summary>
         /// Line splitter regex
         /// </summary>
-        private static readonly Regex _lineSplitterRegex = new Regex(@"\r\n|\r|\n");
+        private static readonly Regex _LineSplitterRegex = new Regex(@"\r\n|\r|\n");
 
         /// <summary>
         /// Model with its components
@@ -88,6 +88,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         }
 
         /// <summary>
+        /// Parses the <see cref="YarnNode"/> or returns null if node not found
+        /// </summary>
+        /// <param name="node">The node id or http-url</param>
+        /// <returns>The parsed <see cref="YarnNode"/></returns>
+        private YarnNode ParseNode(string node)
+        {
+            var nodeName = Regex.Match(node, @"(https?:\/\/)?([^\:]+)(:\d*)?").Groups[2].Value;
+            if(!Model.Nodes.ContainsKey(nodeName))
+                return null;
+            return Model.Nodes[nodeName];
+        }
+
+        /// <summary>
         /// Parses the <see cref="EAppState"/> or returns the default value <see cref="EAppState.UNKNOWN"/>
         /// </summary>
         /// <param name="state">The state to parse</param>
@@ -112,6 +125,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         }
 
         /// <summary>
+        /// Parses an integer with leading or trailing text or returns the default value 0
+        /// </summary>
+        /// <param name="value">The value to parse</param>
+        /// <returns>The progress</returns>
+        private int ParseIntText(string value)
+        {
+            return ParseInt(Regex.Match(value, @"\d{1,3}").Value);
+        }
+
+        /// <summary>
         /// Parses the timestamp with the given format to <see cref="DateTime"/>
         /// or returns the default value <see cref="DateTime.MinValue"/>
         /// </summary>
@@ -129,11 +152,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 return time;
             }
 
-            var javaMillis = ParseInt(value);
-            var ticks = javaMillis * TimeSpan.TicksPerMillisecond;
-            var javaBaseTime = new DateTime(1970, 1, 1);
-            var javaTimeSpan = TimeSpan.FromTicks(ticks);
-            return javaBaseTime.Add(javaTimeSpan);
+            // Java time if no format is given
+            long javaMillis;
+            Int64.TryParse(value, out javaMillis);
+            var javaTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(javaMillis);
+            return javaTimeUtc.ToLocalTime();
         }
 
         #endregion
@@ -152,16 +175,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var fullResult = Connection.GetYarnApplicationList(appStates);
 
             var appList = new List<ApplicationListResult>();
-            var resLines = _lineSplitterRegex.Split(fullResult);
+            var resLines = _LineSplitterRegex.Split(fullResult);
 
             foreach(var resLine in resLines)
             {
-                var appMatches = _genericListRegex.Matches(resLine);
+                var appMatches = _GenericListRegex.Matches(resLine);
                 if(appMatches.Count != 9 || !appMatches[0].Groups[1].Value.StartsWith("application"))
                     continue;
 
                 var state = ParseState(appMatches[5].Groups[1].Value);
-                var progress = ParseInt(appMatches[7].Groups[1].Value.Substring(0, appMatches[7].Groups[1].Value.Length - 1));
+                var progress = ParseIntText(appMatches[7].Groups[1].Value);
 
                 var app = new ApplicationListResult(appMatches[0].Groups[1].Value, appMatches[1].Groups[1].Value,
                     appMatches[2].Groups[1].Value, state, appMatches[6].Groups[1].Value, progress, appMatches[8].Groups[1].Value);
@@ -182,11 +205,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var fullResult = Connection.GetYarnAppAttemptList(appId);
 
             var attemptList = new List<ApplicationAttemptListResult>();
-            var resLines = _lineSplitterRegex.Split(fullResult);
+            var resLines = _LineSplitterRegex.Split(fullResult);
 
             foreach(var resLine in resLines)
             {
-                var attemptMatches = _genericListRegex.Matches(resLine);
+                var attemptMatches = _GenericListRegex.Matches(resLine);
                 if(attemptMatches.Count != 4 || !attemptMatches[0].Groups[1].Value.StartsWith("appattempt"))
                     continue;
 
@@ -211,11 +234,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var fullResult = Connection.GetYarnAppContainerList(attemptId);
 
             var containerList = new List<ContainerListResult>();
-            var resLines = _lineSplitterRegex.Split(fullResult);
+            var resLines = _LineSplitterRegex.Split(fullResult);
 
             foreach(var resLine in resLines)
             {
-                var containerMatches = _genericListRegex.Matches(resLine);
+                var containerMatches = _GenericListRegex.Matches(resLine);
                 if(containerMatches.Count != 7 || !containerMatches[0].Groups[1].Value.StartsWith("container"))
                     continue;
 
@@ -223,7 +246,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 var finishTime = ParseTimestamp(containerMatches[2].Groups[1].Value, HadoopDateFormat);
                 var state = ParseState(containerMatches[3].Groups[1].Value);
 
-                var node = Model.Nodes[containerMatches[4].Groups[1].Value.Split(':')[0]];
+                var node = ParseNode(containerMatches[4].Groups[1].Value);
 
                 var container = new ContainerListResult(containerMatches[0].Groups[1].Value, startTime, finishTime, state, node,
                     containerMatches[6].Groups[1].Value);
@@ -243,15 +266,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             var fullResult = Connection.GetYarnApplicationDetails(appId);
 
-            var matches = _genericDetailsRegex.Matches(fullResult);
+            var matches = _GenericDetailsRegex.Matches(fullResult);
 
             if(matches.Count == 15)
             {
                 var state = ParseState(matches[8].Groups[2].Value);
-                var progress = ParseInt(matches[7].Groups[2].Value);
+                var progress = ParseIntText(matches[7].Groups[2].Value);
                 var startTime = ParseTimestamp(matches[5].Groups[2].Value, null);
                 var finishTime = ParseTimestamp(matches[6].Groups[2].Value, null);
-                var node = Model.Nodes[matches[12].Groups[2].Value];
+                var node = ParseNode(matches[12].Groups[2].Value);
 
                 var resMatches = Regex.Matches(matches[13].Groups[2].Value, @"\d+");
                 var mbSec = ParseInt(resMatches[0].Value);
@@ -273,7 +296,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The attempt details or null on errors</returns>
         public ApplicationAttemptDetailsResult ParseAppAttemptDetails(string attemptId)
         {
-            throw new NotImplementedException();
+            var fullResult = Connection.GetYarnAppAttemptDetails(attemptId);
+
+            var matches = _GenericDetailsRegex.Matches(fullResult);
+
+            if(matches.Count == 7)
+            {
+                var state = ParseState(matches[1].Groups[2].Value);
+                var node = ParseNode(matches[5].Groups[2].Value);
+
+                var attempt = new ApplicationAttemptDetailsResult(matches[0].Groups[2].Value, state, matches[2].Groups[2].Value,
+                    matches[3].Groups[2].Value, node);
+
+                return attempt;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -283,7 +321,24 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The container details or null on errors</returns>
         public ContainerListResult ParseContainerDetails(string containerId)
         {
-            throw new NotImplementedException();
+            var fullResult = Connection.GetYarnAppContainerDetails(containerId);
+
+            var matches = _GenericDetailsRegex.Matches(fullResult);
+
+            if(matches.Count == 8)
+            {
+                var startTime = ParseTimestamp(matches[1].Groups[2].Value, null);
+                var finishTime = ParseTimestamp(matches[2].Groups[2].Value, null);
+                var state = ParseState(matches[3].Groups[2].Value);
+                var node = ParseNode(matches[5].Groups[2].Value);
+
+                var container = new ContainerListResult(matches[0].Groups[2].Value, startTime, finishTime, state, node,
+                    matches[4].Groups[2].Value);
+
+                return container;
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -295,16 +350,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var fullResult = Connection.GetYarnNodeList();
 
             var nodeList = new List<NodeListResult>();
-            var resLines = _lineSplitterRegex.Split(fullResult);
+            var resLines = _LineSplitterRegex.Split(fullResult);
 
             foreach(var resLine in resLines)
             {
-                var nodeMatches = _genericListRegex.Matches(resLine);
+                var nodeMatches = _GenericListRegex.Matches(resLine);
                 if(nodeMatches.Count != 4 || !nodeMatches[0].Groups[1].Value.StartsWith(Model.NodeNamePrefix))
                     continue;
 
-                int containerCount;
-                Int32.TryParse(nodeMatches[3].Groups[1].Value, out containerCount);
+                int containerCount = ParseInt(nodeMatches[3].Groups[1].Value);
 
                 var app = new NodeListResult(nodeMatches[0].Groups[1].Value, nodeMatches[1].Groups[1].Value,
                     nodeMatches[2].Groups[1].Value, containerCount);
@@ -322,7 +376,25 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The node details or null on errors</returns>
         public NodeDetailsResult ParseNodeDetails(string nodeId)
         {
-            throw new NotImplementedException();
+            var fullResult = Connection.GetYarnNodeDetails(nodeId);
+
+            var matches = _GenericDetailsRegex.Matches(fullResult);
+
+            if(matches.Count == 12)
+            {
+                var containers = ParseInt(matches[6].Groups[2].Value);
+                var memUsed = ParseIntText(matches[7].Groups[2].Value);
+                var memCap = ParseIntText(matches[8].Groups[2].Value);
+                var cpuUsed = ParseIntText(matches[9].Groups[2].Value);
+                var cpuCap = ParseIntText(matches[10].Groups[2].Value);
+
+                var node = new NodeDetailsResult(matches[0].Groups[2].Value, matches[2].Groups[2].Value, matches[3].Groups[2].Value,
+                    containers, memUsed, memCap, cpuUsed, cpuCap);
+
+                return node;
+            }
+
+            return null;
         }
 
         #endregion
