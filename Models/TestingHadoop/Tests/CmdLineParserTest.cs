@@ -34,16 +34,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private CmdLineParser _Parser;
         private Model _Model;
         private YarnNode _Node1;
+        private YarnNode _Node2;
 
         [SetUp]
         public void Setup()
         {
-            _Node1 = new YarnNode
-            {
-                Name = "compute-1",
-            };
             _Model = new Model();
-            _Model.Nodes[_Node1.Name] = _Node1;
+            _Model.TestConfig(new DummyHadoopConnector());
+            _Node1 = _Model.Nodes[$"{Model.NodeNamePrefix}1"];
+            _Node2 = _Model.Nodes[$"{Model.NodeNamePrefix}2"];
 
             _Parser = new CmdLineParser(_Model, new DummyHadoopConnector());
         }
@@ -110,7 +109,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             var container1 = new ContainerListResult("container_1515488762656_0011_01_000001", new DateTime(2018, 1, 9, 10, 41, 14),
                 DateTime.MinValue, EAppState.RUNNING, _Node1, "http://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000001/root");
             var container2 = new ContainerListResult("container_1515488762656_0011_01_000002", new DateTime(2018, 1, 9, 10, 41, 19),
-                DateTime.MinValue, EAppState.RUNNING, _Node1, "http://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000002/root");
+                DateTime.MinValue, EAppState.RUNNING, _Node2, "http://compute-2:8042/node/containerlogs/container_1515488762656_0011_01_000002/root");
             var container3 = new ContainerListResult("container_1515488762656_0011_01_000003", new DateTime(2018, 1, 9, 10, 41, 19),
                 DateTime.MinValue, EAppState.RUNNING, _Node1, "http://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000003/root");
 

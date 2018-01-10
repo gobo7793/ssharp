@@ -37,7 +37,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
         public string GetYarnAppContainerList(string attemptId) =>
             "container_1515488762656_0011_01_000001\tTue Jan 09 09:41:14 +0000 2018\t                 N/A\t             RUNNING\t     compute-1:45454\thttp://compute-1:8042\thttp://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000001/root\n" +
-            "container_1515488762656_0011_01_000002\tTue Jan 09 09:41:19 +0000 2018\t                 N/A\t             RUNNING\t     compute-1:45454\thttp://compute-1:8042\thttp://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000002/root\n" +
+            "container_1515488762656_0011_01_000002\tTue Jan 09 09:41:19 +0000 2018\t                 N/A\t             RUNNING\t     compute-2:45454\thttp://compute-2:8042\thttp://compute-2:8042/node/containerlogs/container_1515488762656_0011_01_000002/root\n" +
             "container_1515488762656_0011_01_000003\tTue Jan 09 09:41:19 +0000 2018\t                 N/A\t             RUNNING\t     compute-1:45454\thttp://compute-1:8042\thttp://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000003/root\n";
 
         public string GetYarnApplicationDetails(string appId) => "Application Report : \n" +
@@ -45,8 +45,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                                                                  "\tApplication-Name : word count\n" +
                                                                  "\tApplication-Type : MAPREDUCE\n" +
                                                                  "\tUser : root\n\tQueue : default\n" +
-                                                                 "\tStart-Time : 1515489034402\n" +
-                                                                 "\tFinish-Time : 1515489108249\n" +
+                                                                 "\tStart-Time : 1515489034402\n" + // new DateTime(2018, 1, 9, 10, 10, 34, 402)
+                                                                 "\tFinish-Time : 1515489108249\n" + // new DateTime(2018, 1, 9, 10, 11, 48, 249)
                                                                  "\tProgress : 100%\n" +
                                                                  "\tState : FINISHED\n" +
                                                                  "\tFinal-State : SUCCEEDED\n" +
@@ -67,8 +67,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
         public string GetYarnAppContainerDetails(string containerId) => "Container Report : \n" +
                                                                         "\tContainer-Id : container_1515577485762_0008_01_000001\n" +
-                                                                        "\tStart-Time : 1515579722594\n" +
-                                                                        "\tFinish-Time : 0\n" +
+                                                                        "\tStart-Time : 1515579722594\n" + // new DateTime(2018, 1, 10, 11, 22, 2, 594)
+                                                                        "\tFinish-Time : 0\n" + // DateTime.MinValue
                                                                         "\tState : RUNNING\n" +
                                                                         "\tLOG-URL : http://compute-1:8042/node/containerlogs/container_1515577485762_0008_01_000001/root\n" +
                                                                         "\tHost : compute-1:45454\n" +

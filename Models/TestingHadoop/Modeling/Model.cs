@@ -77,6 +77,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         }
 
         /// <summary>
+        /// Configuration for model testing
+        /// </summary>
+        /// <param name="connector">The connector to use</param>
+        public void TestConfig(IHadoopConnector connector)
+        {
+            var parser = new CmdLineParser(this, connector);
+
+            InitBaseComponents();
+            InitYarnNodes(4, parser, connector);
+
+            InitApplications(4, parser);
+            InitAppAttempts(4, parser);
+            InitContainers(4, parser);
+        }
+
+
+        /// <summary>
         /// Only one pi calculation
         /// </summary>
         public void Config1()
