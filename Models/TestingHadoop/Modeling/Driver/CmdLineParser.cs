@@ -101,7 +101,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         }
 
         /// <summary>
-        /// Parses the <see cref="EAppState"/> or returns the default value <see cref="EAppState.UNKNOWN"/>
+        /// Parses the <see cref="EAppState"/> or returns the default value <see cref="EAppState.None"/>
         /// </summary>
         /// <param name="state">The state to parse</param>
         /// <returns>The parsed <see cref="EAppState"/></returns>
@@ -169,9 +169,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="states">The states</param>
         /// <returns>The applications</returns>
-        public ApplicationListResult[] ParseAppList(params EAppState[] states)
+        public ApplicationListResult[] ParseAppList(EAppState states = EAppState.None)
         {
-            var appStates = String.Join(",", states);
+            //var appStates = String.Join(",", states);
+            var appStates = String.Empty; // default return appStates by hadoop
+            if(states != EAppState.None)
+                appStates = states.ToString().Replace(" ", "");
 
             var fullResult = Connection.GetYarnApplicationList(appStates);
 

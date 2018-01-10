@@ -108,6 +108,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public int Progress { get; set; }
 
+        /// <summary>
+        /// Indicates if the app can be killed
+        /// </summary>
+        public bool IsKillable => State != EAppState.None &&
+                                  (State & (EAppState.FAILED | EAppState.FINISHED | EAppState.KILLED | EAppState.NOT_STARTED_YET)) ==
+                                  EAppState.None;
+
         #endregion
 
         #region IYarnReadable Methods
@@ -176,8 +183,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             public override void Update()
             {
                 base.Update();
-                if(State != EAppState.FAILED && State != EAppState.FINISHED && State != EAppState.KILLED &&
-                   State != EAppState.NOT_STARTED_YET)
+                if(IsKillable)
                     Connector.KillApplication(AppId);
             }
         }

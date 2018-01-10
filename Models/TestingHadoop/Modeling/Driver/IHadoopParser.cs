@@ -36,7 +36,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="states">The states</param>
         /// <returns>The applications</returns>
-        ApplicationListResult[] ParseAppList(params EAppState[] states);
+        ApplicationListResult[] ParseAppList(EAppState states = EAppState.None);
 
         /// <summary>
         /// Gets and parses the <see cref="YarnAppAttempt"/> list for the given <see cref="YarnApp.AppId"/>

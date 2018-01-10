@@ -51,16 +51,16 @@
     </NestedTypes>
     <AssociationLine Name="AmHost" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnNode" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="6.25" Y="8.828" />
-        <Point X="8.917" Y="8.828" Type="JumpStart" />
-        <Point X="9.083" Y="8.828" Type="JumpEnd" />
-        <Point X="10.375" Y="8.828" />
+        <Point X="6.25" Y="8.865" />
+        <Point X="8.917" Y="8.865" Type="JumpStart" />
+        <Point X="9.083" Y="8.865" Type="JumpEnd" />
+        <Point X="10.375" Y="8.865" />
         <Point X="10.375" Y="9.019" />
         <Point X="10.75" Y="9.019" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAQgAABAAAAAAKAAACAAAAwEIAAwAAAAAAAABAWAAAA=</HashCode>
+      <HashCode>AAQgAABAAAAAAKAAACAAAAwEIAAwAAAAAAAABgWAAAA=</HashCode>
       <FileName>Modeling\HadoopModel\YarnApp.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -136,7 +136,7 @@
   <Enum Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.EAppState">
     <Position X="8" Y="13.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IIQAAACAABAACAAAIAAAQAAAAAAgAAAAgAAAAAAQAAA=</HashCode>
+      <HashCode>IIQAAACAAAAACAAAIAAAQAAAAAAgAAAAgAAAAAEQAAA=</HashCode>
       <FileName>Modeling\HadoopModel\EAppState.cs</FileName>
     </TypeIdentifier>
   </Enum>

@@ -51,6 +51,24 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         }
 
         [Test]
+        [TestCase(EAppState.None, Result = false)]
+        [TestCase(EAppState.ACCEPTED, Result = true)]
+        [TestCase(EAppState.ALL, Result = true)]
+        [TestCase(EAppState.FAILED, Result = false)]
+        [TestCase(EAppState.FINISHED, Result = false)]
+        [TestCase(EAppState.KILLED, Result = false)]
+        [TestCase(EAppState.NEW, Result = true)]
+        [TestCase(EAppState.NEW_SAVING, Result = true)]
+        [TestCase(EAppState.NOT_STARTED_YET, Result = false)]
+        [TestCase(EAppState.RUNNING, Result = true)]
+        [TestCase(EAppState.SUBMITTED, Result = true)]
+        public bool TestIsKillable(EAppState state)
+        {
+            _App.State = state;
+            return _App.IsKillable;
+        }
+
+        [Test]
         public void TestGetAppStatus()
         {
             _App.GetStatus();

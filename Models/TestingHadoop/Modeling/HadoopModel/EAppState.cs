@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
     /// <summary>
@@ -32,51 +34,52 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// 
     /// via http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/YarnCommands.html
     /// </remarks>
+    [Flags]
     public enum EAppState
     {
         /// <summary>
         /// Default value
         /// </summary>
-        UNKNOWN,
+        None = 0,
 
         /// <summary>
         /// Job not started yet. State only for use inside model.
         /// Can be used to indicate, that the instance was not in use.
         /// </summary>
-        NOT_STARTED_YET,
+        NOT_STARTED_YET = 1,
 
-        ALL,
-        NEW,
-        NEW_SAVING,
+        ALL = 2,
+        NEW = 4,
+        NEW_SAVING = 8,
 
         /// <summary>
         /// Job is submitted
         /// </summary>
-        SUBMITTED,
+        SUBMITTED = 16,
 
         /// <summary>
         /// Job can be executed
         /// </summary>
-        ACCEPTED,
+        ACCEPTED = 32,
 
         /// <summary>
         /// Job is running
         /// </summary>
-        RUNNING,
+        RUNNING = 64,
 
         /// <summary>
         /// Job is finished
         /// </summary>
-        FINISHED,
+        FINISHED = 128,
 
         /// <summary>
         /// Job execution failed
         /// </summary>
-        FAILED,
+        FAILED = 256,
 
         /// <summary>
         /// Job was killed while execution
         /// </summary>
-        KILLED
+        KILLED = 512
     }
 }
