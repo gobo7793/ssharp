@@ -174,6 +174,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Fault effect for <see cref="YarnNode.NodeConnectionError"/>
         /// </summary>
         [FaultEffect(Fault = nameof(NodeConnectionError))]
+        [Priority(0)] // will be ignored if NodeDead is active
         public class NodeConnectionErrorEffect : YarnNode
         {
             public override void Update()
@@ -186,6 +187,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Fault effect for <see cref="YarnNode.NodeDead"/>
         /// </summary>
         [FaultEffect(Fault = nameof(NodeDead))]
+        [Priority(1)]
         public class NodeDeadEffect : YarnNode
         {
             public override void Update()
