@@ -49,25 +49,29 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         }
 
         [Test]
-        public void TestParseTimestamp()
+        [TestCase("Wed Jan 10 19:42:01 +0000 2018", CmdLineParser.HadoopDateFormat, Result = "2018-01-10T20:42:01.0000000+01:00")]
+        [TestCase("1512187108523", null, Result = "2017-12-02T04:58:28.5230000+01:00")]
+        [TestCase("0", null, Result = "0001-01-01T00:00:00.0000000")]
+        public string TestParseTimestamp(string date, string format)
         {
-            // Hadoop converted
-            var date1Exp = new DateTime(2018, 1, 10, 20, 42, 1);
-            var date1Val = "Wed Jan 10 19:42:01 +0000 2018";
+            return _Parser.ParseTimestamp(date, format).ToString("o");
+            //// Hadoop converted
+            //var date1Exp = new DateTime(2018, 1, 10, 20, 42, 1);
+            //var date1Val = "Wed Jan 10 19:42:01 +0000 2018";
 
-            // Java millisec
-            var date2Exp = new DateTime(2017, 12, 2, 4, 58, 28, 523);
-            var date2Val = "1512187108523";
-            var date3Exp = DateTime.MinValue;
-            var date3Val = "0";
+            //// Java millisec
+            //var date2Exp = new DateTime(2017, 12, 2, 4, 58, 28, 523);
+            //var date2Val = "1512187108523";
+            //var date3Exp = DateTime.MinValue;
+            //var date3Val = "0";
 
-            var date1 = _Parser.ParseTimestamp(date1Val, CmdLineParser.HadoopDateFormat);
-            var date2 = _Parser.ParseTimestamp(date2Val, null);
-            var date3 = _Parser.ParseTimestamp(date3Val, null);
+            //var date1 = _Parser.ParseTimestamp(date1Val, CmdLineParser.HadoopDateFormat);
+            //var date2 = _Parser.ParseTimestamp(date2Val, null);
+            //var date3 = _Parser.ParseTimestamp(date3Val, null);
 
-            Assert.AreEqual(date1Exp, date1, "hadoop converted parsing failed");
-            Assert.AreEqual(date2Exp, date2, "java millisec parsing failed");
-            Assert.AreEqual(date3Exp, date3, "java millisec fault parsing failed");
+            //Assert.AreEqual(date1Exp, date1, "hadoop converted parsing failed");
+            //Assert.AreEqual(date2Exp, date2, "java millisec parsing failed");
+            //Assert.AreEqual(date3Exp, date3, "java millisec fault parsing failed");
         }
 
         [Test]
