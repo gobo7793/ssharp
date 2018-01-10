@@ -142,11 +142,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                     {
                         if(Attempts.All(c => c.AttemptId != con.AttemptId))
                         {
-                            var usingCont = Attempts.First(c => String.IsNullOrWhiteSpace(c.AttemptId));
-                            if(usingCont == null)
+                            var usingAttempt = Attempts.Find(c => String.IsNullOrWhiteSpace(c.AttemptId));
+                            if(usingAttempt == null)
                                 throw new InsufficientMemoryException("No more application attempts available!" +
-                                                                      " Try to initialize more container space.");
-                            usingCont.AttemptId = con.AttemptId;
+                                                                      " Try to initialize more attempt space.");
+                            usingAttempt.AttemptId = con.AttemptId;
                         }
                     }
                 }
