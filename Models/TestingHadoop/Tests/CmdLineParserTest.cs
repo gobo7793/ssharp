@@ -58,12 +58,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             // Java millisec
             var date2Exp = new DateTime(2017, 12, 2, 4, 58, 28, 523);
             var date2Val = "1512187108523";
+            var date3Exp = DateTime.MinValue;
+            var date3Val = "0";
 
             var date1 = _Parser.ParseTimestamp(date1Val, CmdLineParser.HadoopDateFormat);
             var date2 = _Parser.ParseTimestamp(date2Val, null);
+            var date3 = _Parser.ParseTimestamp(date3Val, null);
 
             Assert.AreEqual(date1Exp, date1, "hadoop converted parsing failed");
             Assert.AreEqual(date2Exp, date2, "java millisec parsing failed");
+            Assert.AreEqual(date3Exp, date3, "java millisec fault parsing failed");
         }
 
         [Test]

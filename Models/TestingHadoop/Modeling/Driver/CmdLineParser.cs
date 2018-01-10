@@ -131,7 +131,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The progress</returns>
         private int ParseIntText(string value)
         {
-            return ParseInt(Regex.Match(value, @"\d{1,3}").Value);
+            return ParseInt(Regex.Match(value, @"\d+").Value);
         }
 
         /// <summary>
@@ -154,7 +154,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
             // Java time if no format is given
             long javaMillis;
-            Int64.TryParse(value, out javaMillis);
+            if(!Int64.TryParse(value, out javaMillis) || javaMillis == 0)
+                return DateTime.MinValue;
             var javaTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(javaMillis);
             return javaTimeUtc.ToLocalTime();
         }
