@@ -58,6 +58,7 @@
     <Compile Include="Modeling\Driver\IHadoopConnector.cs" />
     <Compile Include="Modeling\Driver\IHadoopParser.cs" />
     <Compile Include="Modeling\Driver\ParserDataClasses.cs" />
+    <Compile Include="Modeling\HadoopModel\EFinalStatus.cs" />
     <Compile Include="Modeling\HadoopModel\IYarnReadable.cs" />
     <Compile Include="Modeling\HadoopModel\EAppState.cs" />
     <Compile Include="Modeling\HadoopModel\Client.cs" />

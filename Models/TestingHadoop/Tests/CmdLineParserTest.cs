@@ -77,11 +77,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public void TestParseAppList()
         {
             var app1 = new ApplicationListResult("application_1515488762656_0001", "random-text-writer", "MAPREDUCE",
-                EAppState.FINISHED, "SUCCEEDED", 100, "http://controller:19888/jobhistory/job/job_1515488762656_0001");
+                EAppState.FINISHED, EFinalStatus.SUCCEEDED, 100, "http://controller:19888/jobhistory/job/job_1515488762656_0001");
             var app2 = new ApplicationListResult("application_1515488762656_0002", "word count", "MAPREDUCE",
-                EAppState.FINISHED, "SUCCEEDED", 100, "http://controller:19888/jobhistory/job/job_1515488762656_0002");
+                EAppState.FINISHED, EFinalStatus.SUCCEEDED, 100, "http://controller:19888/jobhistory/job/job_1515488762656_0002");
             var app3 = new ApplicationListResult("application_1515488762656_0003", "sorter", "MAPREDUCE",
-                EAppState.FINISHED, "SUCCEEDED", 100, "http://controller:19888/jobhistory/job/job_1515488762656_0003");
+                EAppState.FINISHED, EFinalStatus.SUCCEEDED, 100, "http://controller:19888/jobhistory/job/job_1515488762656_0003");
 
             var apps = _Parser.ParseAppList();
 
@@ -142,7 +142,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public void TestParseAppDetails()
         {
             var app = new ApplicationDetailsResult("application_1515488762656_0002", "word count", "MAPREDUCE", EAppState.FINISHED,
-                "SUCCEEDED", 100, "http://controller:19888/jobhistory/job/job_1515488762656_0002",
+                EFinalStatus.SUCCEEDED, 100, "http://controller:19888/jobhistory/job/job_1515488762656_0002",
                 new DateTime(2018, 1, 9, 10, 10, 34, 402), new DateTime(2018, 1, 9, 10, 11, 48, 249), _Node1, 583396, 482);
 
             var res = _Parser.ParseAppDetails("");

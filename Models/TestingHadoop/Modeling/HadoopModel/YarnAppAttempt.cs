@@ -55,7 +55,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Current State
         /// </summary>
-        public EAppState State { get; set; } = EAppState.NOT_STARTED_YET;
+        public EAppState State { get; set; } = EAppState.NotStartedYet;
 
         /// <summary>
         /// ContainerId for ApplicationMaster

@@ -34,13 +34,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     public class ApplicationListResult
     {
         public ApplicationListResult(string appId, string appName, string appType,
-            EAppState state, string finalState, int progess, string trackingUrl)
+            EAppState state, EFinalStatus finalStatus, int progess, string trackingUrl)
         {
             AppId = appId;
             AppName = appName;
             AppType = appType;
             State = state;
-            FinalState = finalState;
+            FinalStatus = finalStatus;
             Progess = progess;
             TrackingUrl = trackingUrl;
         }
@@ -66,9 +66,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public EAppState State { get; }
 
         /// <summary>
-        /// Final-State
+        /// Final status
         /// </summary>
-        public string FinalState { get; }
+        public EFinalStatus FinalStatus { get; }
 
         /// <summary>
         /// Progress
@@ -91,7 +91,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         protected bool Equals(ApplicationListResult other)
         {
             return string.Equals(AppId, other.AppId) && string.Equals(AppName, other.AppName) && string.Equals(AppType, other.AppType) &&
-                   State == other.State && string.Equals(FinalState, other.FinalState) && Progess == other.Progess &&
+                   State == other.State && FinalStatus == other.FinalStatus && Progess == other.Progess &&
                    string.Equals(TrackingUrl, other.TrackingUrl);
         }
 
@@ -103,7 +103,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 hashCode = (hashCode * 397) ^ (AppName != null ? AppName.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (AppType != null ? AppType.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (int)State;
-                hashCode = (hashCode * 397) ^ (FinalState != null ? FinalState.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (int)FinalStatus;
                 hashCode = (hashCode * 397) ^ Progess;
                 hashCode = (hashCode * 397) ^ (TrackingUrl != null ? TrackingUrl.GetHashCode() : 0);
                 return hashCode;
@@ -119,9 +119,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     public class ApplicationDetailsResult : ApplicationListResult
     {
         public ApplicationDetailsResult(string appId, string appName, string appType, EAppState state,
-            string finalState, int progess, string trackingUrl, DateTime startTime,
+            EFinalStatus finalStatus, int progess, string trackingUrl, DateTime startTime,
             DateTime finishTime, YarnNode amHost, int mbSeconds, int vcoreSeconds)
-            : base(appId, appName, appType, state, finalState, progess, trackingUrl)
+            : base(appId, appName, appType, state, finalStatus, progess, trackingUrl)
         {
             StartTime = startTime;
             FinishTime = finishTime;

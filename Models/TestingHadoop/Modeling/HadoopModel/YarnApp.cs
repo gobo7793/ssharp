@@ -66,7 +66,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Current state
         /// </summary>
-        public EAppState State { get; set; } = EAppState.NOT_STARTED_YET;
+        public EAppState State { get; set; } = EAppState.NotStartedYet;
+
+        /// <summary>
+        /// Final status
+        /// </summary>
+        public EFinalStatus FinalStatus { get; set; } = EFinalStatus.None;
 
         /// <summary>
         /// Name of the app
@@ -111,9 +116,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Indicates if the app can be killed
         /// </summary>
-        public bool IsKillable => State != EAppState.None &&
-                                  (State & (EAppState.FAILED | EAppState.FINISHED | EAppState.KILLED | EAppState.NOT_STARTED_YET)) ==
-                                  EAppState.None;
+        //public bool IsKillable => State != EAppState.None &&
+        //                          (State & (EAppState.FAILED | EAppState.FINISHED | EAppState.KILLED | EAppState.NotStartedYet)) ==
+        //                          EAppState.None;
+        public bool IsKillable => FinalStatus == EFinalStatus.UNDEFINED;
 
         #endregion
 
@@ -138,6 +144,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 EndTime = parsed.FinishTime;
                 Progress = parsed.Progess;
                 State = parsed.State;
+                FinalStatus = parsed.FinalStatus;
                 AmHost = parsed.AmHost;
                 AllocatedMemory = parsed.MbSeconds;
                 AllocatedCpu = parsed.VcoreSeconds;

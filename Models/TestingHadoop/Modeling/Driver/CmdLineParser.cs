@@ -111,6 +111,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             Enum.TryParse(state, true, out parsedState);
             return parsedState;
         }
+        
+        /// <summary>
+        /// Parses the <see cref="EFinalStatus"/> or returns the default value <see cref="EFinalStatus.None"/>
+        /// </summary>
+        /// <param name="finalStatus">The state to parse</param>
+        /// <returns>The parsed <see cref="EFinalStatus"/></returns>
+        private EFinalStatus ParseFinalStatus(string finalStatus)
+        {
+            EFinalStatus parsedState;
+            Enum.TryParse(finalStatus, true, out parsedState);
+            return parsedState;
+        }
 
         /// <summary>
         /// Parses the integer or returns the default value 0

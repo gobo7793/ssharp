@@ -1,6 +1,6 @@
 ﻿// The MIT License (MIT)
 // 
-// Copyright (c) 2014-2018, Institute for Software & Systems Engineering
+// Copyright (c) 2014-2016, Institute for Software & Systems Engineering
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,17 +25,17 @@ using System;
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
     /// <summary>
-    /// <see cref="YarnApp" /> execution states
+    /// Final status of <see cref="YarnApp"/>
     /// </summary>
     /// <remarks>
-    /// The application state according to the ResourceManager
-    ///     - valid values are members of the YarnApplicationState enum:
-    ///     NEW, NEW_SAVING, SUBMITTED, ACCEPTED, RUNNING, FINISHED, FAILED, KILLED 
+    /// The final status of the application if finished
+    ///     - reported by the application itself - valid values are:
+    ///     UNDEFINED, SUCCEEDED, FAILED, KILLED 
     /// 
     /// via http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html#Cluster_Application_API
     /// </remarks>
     [Flags]
-    public enum EAppState
+    public enum EFinalStatus
     {
         /// <summary>
         /// Default value
@@ -43,43 +43,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         None = 0,
 
         /// <summary>
-        /// Job not started yet. State only for use inside model.
-        /// Can be used to indicate, that the instance was not in use.
+        /// Undefined status
         /// </summary>
-        NotStartedYet = 1,
-
-        ALL = 2,
-        NEW = 4,
-        NEW_SAVING = 8,
+        UNDEFINED = 1,
 
         /// <summary>
-        /// Job is submitted
+        /// Execution successfully finished
         /// </summary>
-        SUBMITTED = 16,
+        SUCCEEDED = 2,
 
         /// <summary>
-        /// Job can be executed
+        /// Execution failed
         /// </summary>
-        ACCEPTED = 32,
+        FAILED = 4,
 
         /// <summary>
-        /// Job is running
+        /// Execution was killed
         /// </summary>
-        RUNNING = 64,
-
-        /// <summary>
-        /// Job is finished
-        /// </summary>
-        FINISHED = 128,
-
-        /// <summary>
-        /// Job execution failed
-        /// </summary>
-        FAILED = 256,
-
-        /// <summary>
-        /// Job was killed while execution
-        /// </summary>
-        KILLED = 512
+        KILLED = 8
     }
 }
