@@ -200,10 +200,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     continue;
 
                 var state = ParseState(appMatches[5].Groups[1].Value);
+                var finalStatus = ParseFinalStatus(appMatches[6].Groups[1].Value);
                 var progress = ParseIntText(appMatches[7].Groups[1].Value);
 
                 var app = new ApplicationListResult(appMatches[0].Groups[1].Value, appMatches[1].Groups[1].Value,
-                    appMatches[2].Groups[1].Value, state, appMatches[6].Groups[1].Value, progress, appMatches[8].Groups[1].Value);
+                    appMatches[2].Groups[1].Value, state, finalStatus, progress, appMatches[8].Groups[1].Value);
 
                 appList.Add(app);
             }
@@ -287,6 +288,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             if(matches.Count == 15)
             {
                 var state = ParseState(matches[8].Groups[2].Value);
+                var finalStatus = ParseFinalStatus(matches[9].Groups[2].Value);
                 var progress = ParseIntText(matches[7].Groups[2].Value);
                 var startTime = ParseTimestamp(matches[5].Groups[2].Value, null);
                 var finishTime = ParseTimestamp(matches[6].Groups[2].Value, null);
@@ -297,7 +299,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 var vcSec = ParseInt(resMatches[1].Value);
 
                 var app = new ApplicationDetailsResult(matches[0].Groups[2].Value, matches[1].Groups[2].Value, matches[2].Groups[2].Value,
-                    state, matches[9].Groups[2].Value, progress, matches[10].Groups[2].Value, startTime, finishTime, node, mbSec, vcSec);
+                    state, finalStatus, progress, matches[10].Groups[2].Value, startTime, finishTime, node, mbSec, vcSec);
 
                 return app;
             }
