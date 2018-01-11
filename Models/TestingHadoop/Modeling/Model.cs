@@ -44,12 +44,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 
         #region Model components
 
+        public string Name { get; }
+
         public Client Client { get; set; }
+
+        [Root(RootKind.Controller)]
         public YarnController Controller { get; set; }
+
+        [Root(RootKind.Plant)]
         public Dictionary<string, YarnNode> Nodes { get; } = new Dictionary<string, YarnNode>();
 
+        [Root(RootKind.Plant)]
         public List<YarnApp> Applications { get; } = new List<YarnApp>();
+
+        [Root(RootKind.Plant)]
         public List<YarnAppAttempt> AppAttempts { get; } = new List<YarnAppAttempt>();
+
+        [Root(RootKind.Plant)]
         public List<YarnAppContainer> AppContainers { get; } = new List<YarnAppContainer>();
 
         #endregion
@@ -59,9 +70,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Initializes a new model
         /// </summary>
-        public Model()
+        /// <param name="name">Model name</param>
+        public Model(string name = "")
         {
-
+            Name = name;
         }
 
         #endregion
