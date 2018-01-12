@@ -90,7 +90,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ConceptModel.cd" />
+    <None Include="YarnModel.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
