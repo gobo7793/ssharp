@@ -34,7 +34,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     {
         private string _HttpUrl;
 
-        protected virtual string HttpPort => "8088";
+        protected abstract string HttpPort{ get; }
 
         /// <summary>
         /// Name of the Host
