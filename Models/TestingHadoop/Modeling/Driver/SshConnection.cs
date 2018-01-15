@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Renci.SshNet;
 
@@ -161,7 +162,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             var cmd = Client.CreateCommand(command);
             cmd.Execute();
-            if (consoleOut) Console.WriteLine(cmd.Result);
+            Out(cmd.Result);
             return cmd.Result;
         }
 
@@ -183,13 +184,25 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 line = Stream.ReadLine();
 
                 result.AppendLine(line);
-                if (consoleOut)
-                    Console.WriteLine(line);
+                Out(line, consoleOut);
 
-                if (count <= 1) count++;
-            } while (!line.ToLower().Contains(exitStr) || count <= 1);
+                if(count <= 1) count++;
+            } while(!line.ToLower().Contains(exitStr) || count <= 1);
 
             return result.ToString();
+        }
+
+        /// <summary>
+        /// Writes the given line to log file and shows on console
+        /// </summary>
+        /// <param name="line">The line to write</param>
+        /// <param name="consoleOut">True to show the output directly on the own shell</param>
+        /// <param name="callingMember">The calling member for log</param>
+        private void Out(string line, bool consoleOut = false, [CallerMemberName] string callingMember = "")
+        {
+            if(consoleOut)
+                Console.WriteLine(line);
+            // TODO: Log to file
         }
 
         /// <summary>
