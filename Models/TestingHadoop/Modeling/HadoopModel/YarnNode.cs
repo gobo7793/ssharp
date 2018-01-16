@@ -98,27 +98,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Current State
         /// </summary>
-        public string State { get; set; }
+        public ENodeState State { get; set; } = ENodeState.None;
 
         /// <summary>
         /// Current Memory in use in MB
         /// </summary>
-        public int MemoryUsed { get; set; }
+        public long MemoryUsed { get; set; }
 
         /// <summary>
         /// Total Memory available in MB
         /// </summary>
-        public int MemoryCapacity { get; set; }
+        public long MemoryCapacity { get; set; }
 
         /// <summary>
         /// Current CPU vcores in use
         /// </summary>
-        public int CpuUsed { get; set; }
+        public long CpuUsed { get; set; }
 
         /// <summary>
         /// Total CPU vcores available
         /// </summary>
-        public int CpuCapacity { get; set; }
+        public long CpuCapacity { get; set; }
 
         /// <summary>
         /// Number of current running containers

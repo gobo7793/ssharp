@@ -101,17 +101,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Allocated Memory MB-seconds
         /// </summary>
-        public int AllocatedMemory { get; set; }
+        public long AllocatedMemory { get; set; }
 
         /// <summary>
         /// Allocated CPU vcore-seconds
         /// </summary>
-        public int AllocatedCpu { get; set; }
+        public long AllocatedCpu { get; set; }
 
         /// <summary>
         /// Current Progress
         /// </summary>
-        public int Progress { get; set; }
+        public float Progress { get; set; }
 
         /// <summary>
         /// Indicates if the app can be killed

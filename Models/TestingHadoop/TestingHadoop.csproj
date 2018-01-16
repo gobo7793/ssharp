@@ -33,6 +33,9 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\Dependencies\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <HintPath>..\..\Dependencies\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
       <Private>True</Private>
@@ -42,6 +45,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,9 +64,13 @@
     <Compile Include="Modeling\Driver\CmdLineParser.cs" />
     <Compile Include="Modeling\Driver\IHadoopConnector.cs" />
     <Compile Include="Modeling\Driver\IHadoopParser.cs" />
+    <Compile Include="Modeling\Driver\JsonParser.cs" />
     <Compile Include="Modeling\Driver\ParserDataClasses.cs" />
+    <Compile Include="Modeling\Driver\ParserUtilities.cs" />
     <Compile Include="Modeling\Driver\SshConnection.cs" />
+    <Compile Include="Modeling\HadoopModel\EContainerState.cs" />
     <Compile Include="Modeling\HadoopModel\EFinalStatus.cs" />
+    <Compile Include="Modeling\HadoopModel\ENodeState.cs" />
     <Compile Include="Modeling\HadoopModel\IYarnReadable.cs" />
     <Compile Include="Modeling\HadoopModel\EAppState.cs" />
     <Compile Include="Modeling\HadoopModel\Client.cs" />

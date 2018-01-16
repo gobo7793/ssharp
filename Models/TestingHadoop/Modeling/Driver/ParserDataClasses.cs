@@ -21,7 +21,11 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
@@ -45,69 +49,78 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             TrackingUrl = trackingUrl;
         }
 
+        public ApplicationListResult()
+        {
+
+        }
+
         /// <summary>
         /// Application-Id
         /// </summary>
-        public string AppId { get; }
+        [JsonProperty("id")]
+        public string AppId { get; set; }
 
         /// <summary>
         /// Application-Name
         /// </summary>
-        public string AppName { get; }
+        [JsonProperty("name")]
+        public string AppName { get; set; }
 
         /// <summary>
         /// Application-Type
         /// </summary>
-        public string AppType { get; }
+        [JsonProperty("applicationType")]
+        public string AppType { get; set; }
 
         /// <summary>
         /// State
         /// </summary>
-        public EAppState State { get; }
+        [JsonProperty("state")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public EAppState State { get; set; }
 
         /// <summary>
         /// Final status
         /// </summary>
-        public EFinalStatus FinalStatus { get; }
+        [JsonProperty("finalStatus")]
+        public EFinalStatus FinalStatus { get; set; }
 
         /// <summary>
         /// Progress
         /// </summary>
-        public int Progess { get; }
+        [JsonProperty("progress")]
+        public float Progess { get; set; }
 
         /// <summary>
         /// Tracking-URL
         /// </summary>
-        public string TrackingUrl { get; }
+        [JsonProperty("trackingUrl")]
+        public string TrackingUrl { get; set; }
 
         public override bool Equals(object obj)
         {
-            var ob = obj as ApplicationListResult;
-            if(ob == null)
-                return false;
-            return Equals(ob);
-        }
-
-        protected bool Equals(ApplicationListResult other)
-        {
-            return string.Equals(AppId, other.AppId) && string.Equals(AppName, other.AppName) && string.Equals(AppType, other.AppType) &&
-                   State == other.State && FinalStatus == other.FinalStatus && Progess == other.Progess &&
-                   string.Equals(TrackingUrl, other.TrackingUrl);
+            var result = obj as ApplicationListResult;
+            return result != null &&
+                   AppId == result.AppId &&
+                   AppName == result.AppName &&
+                   AppType == result.AppType &&
+                   State == result.State &&
+                   FinalStatus == result.FinalStatus &&
+                   Progess == result.Progess &&
+                   TrackingUrl == result.TrackingUrl;
         }
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = (AppId != null ? AppId.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (AppName != null ? AppName.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (AppType != null ? AppType.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (int)State;
-                hashCode = (hashCode * 397) ^ (int)FinalStatus;
-                hashCode = (hashCode * 397) ^ Progess;
-                hashCode = (hashCode * 397) ^ (TrackingUrl != null ? TrackingUrl.GetHashCode() : 0);
-                return hashCode;
-            }
+            var hashCode = 897232150;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AppId);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AppName);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AppType);
+            hashCode = hashCode * -1521134295 + State.GetHashCode();
+            hashCode = hashCode * -1521134295 + FinalStatus.GetHashCode();
+            hashCode = hashCode * -1521134295 + Progess.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TrackingUrl);
+            return hashCode;
         }
     }
 
@@ -130,57 +143,72 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             VcoreSeconds = vcoreSeconds;
         }
 
+        public ApplicationDetailsResult()
+        { }
+
         /// <summary>
         /// Start-Time
         /// </summary>
-        public DateTime StartTime { get; }
+        [JsonProperty("startedTime")]
+        [JsonConverter(typeof(JsonJavaEpochConverter))]
+        public DateTime StartTime { get; set; }
 
         /// <summary>
         /// Finish-Time
         /// </summary>
-        public DateTime FinishTime { get; }
+        [JsonProperty("finishedTime")]
+        [JsonConverter(typeof(JsonJavaEpochConverter))]
+        public DateTime FinishTime { get; set; }
 
         /// <summary>
         /// AM Host
         /// </summary>
-        public YarnNode AmHost { get; }
+        //[JsonProperty("amHostHttpAddress")]
+        //[JsonConverter(typeof(JsonConverter))]
+        public YarnNode AmHost { get; set; }
+
+        /// <summary>
+        /// AM Host HTTP Address
+        /// </summary>
+        [JsonProperty("amHostHttpAddress")]
+        public string AmHostHttpAddress { get; set; }
 
         /// <summary>
         /// Aggregate Resource Allocation MB-seconds
         /// </summary>
-        public int MbSeconds { get; }
+        [JsonProperty("memorySeconds")]
+        public long MbSeconds { get; }
 
         /// <summary>
         /// Aggregate Resource Allocation vcore-seconds
         /// </summary>
-        public int VcoreSeconds { get; }
+        [JsonProperty("vcoreSeconds")]
+        public long VcoreSeconds { get; }
 
         public override bool Equals(object obj)
         {
-            var ob = obj as ApplicationDetailsResult;
-            if(ob == null)
-                return false;
-            return Equals(ob);
-        }
-
-        protected bool Equals(ApplicationDetailsResult other)
-        {
-            return base.Equals(other) && StartTime.Equals(other.StartTime) && FinishTime.Equals(other.FinishTime) &&
-                   Equals(AmHost, other.AmHost) && MbSeconds == other.MbSeconds && VcoreSeconds == other.VcoreSeconds;
+            var result = obj as ApplicationDetailsResult;
+            return result != null &&
+                   base.Equals(obj) &&
+                   StartTime == result.StartTime &&
+                   FinishTime == result.FinishTime &&
+                   EqualityComparer<YarnNode>.Default.Equals(AmHost, result.AmHost) &&
+                   AmHostHttpAddress == result.AmHostHttpAddress &&
+                   MbSeconds == result.MbSeconds &&
+                   VcoreSeconds == result.VcoreSeconds;
         }
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                int hashCode = base.GetHashCode();
-                hashCode = (hashCode * 397) ^ StartTime.GetHashCode();
-                hashCode = (hashCode * 397) ^ FinishTime.GetHashCode();
-                hashCode = (hashCode * 397) ^ (AmHost != null ? AmHost.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ MbSeconds;
-                hashCode = (hashCode * 397) ^ VcoreSeconds;
-                return hashCode;
-            }
+            var hashCode = -229278949;
+            hashCode = hashCode * -1521134295 + base.GetHashCode();
+            hashCode = hashCode * -1521134295 + StartTime.GetHashCode();
+            hashCode = hashCode * -1521134295 + FinishTime.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<YarnNode>.Default.GetHashCode(AmHost);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AmHostHttpAddress);
+            hashCode = hashCode * -1521134295 + MbSeconds.GetHashCode();
+            hashCode = hashCode * -1521134295 + VcoreSeconds.GetHashCode();
+            return hashCode;
         }
     }
 
@@ -199,50 +227,48 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             TrackingUrl = trackingUrl;
         }
 
+        public ApplicationAttemptListResult() { }
+
         /// <summary>
         /// ApplicationAttempt-Id
         /// </summary>
-        public string AttemptId { get; }
+        [JsonProperty("id")]
+        public string AttemptId { get; set; }
 
         /// <summary>
         /// State
         /// </summary>
-        public EAppState State { get; }
+        public EAppState State { get; set; }
 
         /// <summary>
         /// AM-Container-Id
         /// </summary>
-        public string AmContainerId { get; }
+        [JsonProperty("containerId")]
+        public string AmContainerId { get; set; }
 
         /// <summary>
         /// Tracking-URL
         /// </summary>
-        public string TrackingUrl { get; }
+        public string TrackingUrl { get; set; }
 
         public override bool Equals(object obj)
         {
-            var ob = obj as ApplicationAttemptListResult;
-            if(ob == null)
-                return false;
-            return Equals(ob);
-        }
-
-        protected bool Equals(ApplicationAttemptListResult other)
-        {
-            return string.Equals(AttemptId, other.AttemptId) && State == other.State && string.Equals(AmContainerId, other.AmContainerId) &&
-                   string.Equals(TrackingUrl, other.TrackingUrl);
+            var result = obj as ApplicationAttemptListResult;
+            return result != null &&
+                   AttemptId == result.AttemptId &&
+                   State == result.State &&
+                   AmContainerId == result.AmContainerId &&
+                   TrackingUrl == result.TrackingUrl;
         }
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = (AttemptId != null ? AttemptId.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (int)State;
-                hashCode = (hashCode * 397) ^ (AmContainerId != null ? AmContainerId.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (TrackingUrl != null ? TrackingUrl.GetHashCode() : 0);
-                return hashCode;
-            }
+            var hashCode = -103363039;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AttemptId);
+            hashCode = hashCode * -1521134295 + State.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AmContainerId);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TrackingUrl);
+            return hashCode;
         }
     }
 
@@ -259,30 +285,44 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             AmHost = amHost;
         }
 
+        public ApplicationAttemptDetailsResult() { }
+
         /// <summary>
         /// AM Host
         /// </summary>
-        public YarnNode AmHost { get; }
+        public YarnNode AmHost { get; set; }
+
+        /// <summary>
+        /// AM Host Node ID
+        /// </summary>
+        [JsonProperty("nodeId")]
+        public string AmHostId { get; set; }
+
+        /// <summary>
+        /// Start-Time
+        /// </summary>
+        [JsonProperty("startTime")]
+        [JsonConverter(typeof(JsonJavaEpochConverter))]
+        public DateTime StartTime { get; set; }
 
         public override bool Equals(object obj)
         {
-            var ob = obj as ApplicationAttemptDetailsResult;
-            if(ob == null)
-                return false;
-            return Equals(ob);
-        }
-
-        protected bool Equals(ApplicationAttemptDetailsResult other)
-        {
-            return base.Equals(other) && Equals(AmHost, other.AmHost);
+            var result = obj as ApplicationAttemptDetailsResult;
+            return result != null &&
+                   base.Equals(obj) &&
+                   EqualityComparer<YarnNode>.Default.Equals(AmHost, result.AmHost) &&
+                   AmHostId == result.AmHostId &&
+                   StartTime == result.StartTime;
         }
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return (base.GetHashCode() * 397) ^ (AmHost != null ? AmHost.GetHashCode() : 0);
-            }
+            var hashCode = -1210208605;
+            hashCode = hashCode * -1521134295 + base.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<YarnNode>.Default.GetHashCode(AmHost);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AmHostId);
+            hashCode = hashCode * -1521134295 + StartTime.GetHashCode();
+            return hashCode;
         }
     }
 
@@ -296,7 +336,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     public class ContainerListResult
     {
         public ContainerListResult(string containerId, DateTime startTime, DateTime finishTime,
-            EAppState state, YarnNode host, string logUrl)
+                                   EContainerState state, YarnNode host, string logUrl)
         {
             ContainerId = containerId;
             StartTime = startTime;
@@ -306,63 +346,103 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             LogUrl = logUrl;
         }
 
+        public ContainerListResult() { }
+
         /// <summary>
         /// Container-Id
         /// </summary>
-        public string ContainerId { get; }
+        [JsonProperty("id")]
+        public string ContainerId { get; set; }
 
         /// <summary>
         /// Start Time
         /// </summary>
-        public DateTime StartTime { get; }
+        public DateTime StartTime { get; set; }
 
         /// <summary>
         /// Finish Time
         /// </summary>
-        public DateTime FinishTime { get; }
+        public DateTime FinishTime { get; set; }
 
         /// <summary>
         /// State
         /// </summary>
-        public EAppState State { get; }
+        [JsonProperty("state")]
+        public EContainerState State { get; set; }
 
         /// <summary>
         /// Host
         /// </summary>
-        public YarnNode Host { get; }
+        public YarnNode Host { get; set; }
+
+        /// <summary>
+        /// AM Host Node ID
+        /// </summary>
+        [JsonProperty("nodeId")]
+        public string HostId { get; set; }
 
         /// <summary>
         /// LOG-URL
         /// </summary>
-        public string LogUrl { get; }
+        [JsonProperty("containerLogsLink")]
+        public string LogUrl { get; set; }
+
+        /// <summary>
+        /// Exit code
+        /// </summary>
+        [JsonProperty("exitCode")]
+        public int ExitCode { get; set; }
+
+        /// <summary>
+        /// Diagnostics message for failed containers
+        /// </summary>
+        [JsonProperty("diagnostics")]
+        public string Diagnostics { get; set; }
+
+        /// <summary>
+        /// Amount of needed Memory in MB
+        /// </summary>
+        [JsonProperty("totalMemoryNeededMB")]
+        public long MemoryNeeded { get; }
+
+        /// <summary>
+        /// Amound of needed VCores
+        /// </summary>
+        [JsonProperty("totalVCoresNeeded")]
+        public long VcoresNeeded { get; }
 
         public override bool Equals(object obj)
         {
-            var ob = obj as ContainerListResult;
-            if(ob == null)
-                return false;
-            return Equals(ob);
-        }
-
-        protected bool Equals(ContainerListResult other)
-        {
-            return string.Equals(ContainerId, other.ContainerId) && StartTime.Equals(other.StartTime) &&
-                   FinishTime.Equals(other.FinishTime) && State == other.State && Equals(Host, other.Host) &&
-                   string.Equals(LogUrl, other.LogUrl);
+            var result = obj as ContainerListResult;
+            return result != null &&
+                   ContainerId == result.ContainerId &&
+                   StartTime == result.StartTime &&
+                   FinishTime == result.FinishTime &&
+                   State == result.State &&
+                   EqualityComparer<YarnNode>.Default.Equals(Host, result.Host) &&
+                   HostId == result.HostId &&
+                   LogUrl == result.LogUrl &&
+                   ExitCode == result.ExitCode &&
+                   Diagnostics == result.Diagnostics &&
+                   MemoryNeeded == result.MemoryNeeded &&
+                   VcoresNeeded == result.VcoresNeeded;
         }
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = (ContainerId != null ? ContainerId.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ StartTime.GetHashCode();
-                hashCode = (hashCode * 397) ^ FinishTime.GetHashCode();
-                hashCode = (hashCode * 397) ^ (int)State;
-                hashCode = (hashCode * 397) ^ (Host != null ? Host.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (LogUrl != null ? LogUrl.GetHashCode() : 0);
-                return hashCode;
-            }
+            var hashCode = -524235881;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContainerId);
+            hashCode = hashCode * -1521134295 + StartTime.GetHashCode();
+            hashCode = hashCode * -1521134295 + FinishTime.GetHashCode();
+            hashCode = hashCode * -1521134295 + State.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<YarnNode>.Default.GetHashCode(Host);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(HostId);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LogUrl);
+            hashCode = hashCode * -1521134295 + ExitCode.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Diagnostics);
+            hashCode = hashCode * -1521134295 + MemoryNeeded.GetHashCode();
+            hashCode = hashCode * -1521134295 + VcoresNeeded.GetHashCode();
+            return hashCode;
         }
     }
 
@@ -373,7 +453,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     [DebuggerDisplay("Node {" + nameof(NodeId) + "}")]
     public class NodeListResult
     {
-        public NodeListResult(string nodeId, string nodeState, string nodeHttpAdd, int runningContainerCount)
+        public NodeListResult(string nodeId, ENodeState nodeState, string nodeHttpAdd, int runningContainerCount)
         {
             NodeId = nodeId;
             NodeState = nodeState;
@@ -381,50 +461,58 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             RunningContainerCount = runningContainerCount;
         }
 
+        public NodeListResult() { }
+
         /// <summary>
         /// Node-Id
         /// </summary>
-        public string NodeId { get; }
+        [JsonProperty("id")]
+        public string NodeId { get; set; }
+
+        /// <summary>
+        /// Node hostname
+        /// </summary>
+        [JsonProperty("nodeHostName")]
+        public string Hostname { get; set; }
 
         /// <summary>
         /// Node-State
         /// </summary>
-        public string NodeState { get; }
+        [JsonProperty("state")]
+        public ENodeState NodeState { get; set; }
 
         /// <summary>
         /// Node-Http-Address
         /// </summary>
-        public string NodeHttpAdd { get; }
+        [JsonProperty("nodeHTTPAddress")]
+        public string NodeHttpAdd { get; set; }
 
         /// <summary>
         /// Number-of-Running-Containers
         /// </summary>
-        public int RunningContainerCount { get; }
+        [JsonProperty("numContainers")]
+        public int RunningContainerCount { get; set; }
 
         public override bool Equals(object obj)
         {
-            var ob = obj as NodeListResult;
-            if(ob == null)
-                return false;
-            return Equals(ob);
-        }
-
-        protected bool Equals(NodeListResult other)
-        {
-            return string.Equals(NodeId, other.NodeId) && string.Equals(NodeState, other.NodeState) &&
-                   string.Equals(NodeHttpAdd, other.NodeHttpAdd) && RunningContainerCount == other.RunningContainerCount;
+            var result = obj as NodeListResult;
+            return result != null &&
+                   NodeId == result.NodeId &&
+                   Hostname == result.Hostname &&
+                   NodeState == result.NodeState &&
+                   NodeHttpAdd == result.NodeHttpAdd &&
+                   RunningContainerCount == result.RunningContainerCount;
         }
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                var hashCode = (NodeId != null ? NodeId.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (NodeState != null ? NodeState.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (NodeHttpAdd != null ? NodeHttpAdd.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ RunningContainerCount;
-                return hashCode;
-            }
+            var hashCode = 372698320;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NodeId);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Hostname);
+            hashCode = hashCode * -1521134295 + NodeState.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NodeHttpAdd);
+            hashCode = hashCode * -1521134295 + RunningContainerCount.GetHashCode();
+            return hashCode;
         }
     }
 
@@ -435,7 +523,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     [DebuggerDisplay("Node {" + nameof(NodeId) + "}")]
     public class NodeDetailsResult : NodeListResult
     {
-        public NodeDetailsResult(string nodeId, string nodeState, string nodeHttpAdd, int runningContainerCount,
+        public NodeDetailsResult(string nodeId, ENodeState nodeState, string nodeHttpAdd, int runningContainerCount,
             int memoryUsed, int memoryCapacity, int cpuUsed, int cpuCapacity)
             : base(nodeId, nodeState, nodeHttpAdd, runningContainerCount)
         {
@@ -445,51 +533,49 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             CpuCapacity = cpuCapacity;
         }
 
+        public NodeDetailsResult() { }
+
         /// <summary>
         /// Memory-Used in MB
         /// </summary>
-        public int MemoryUsed { get; }
+        [JsonProperty("usedMemoryMB")]
+        public long MemoryUsed { get; }
 
         /// <summary>
         /// Memory-Capacity in MB
         /// </summary>
-        public int MemoryCapacity { get; }
+        [JsonProperty("availMemoryMB")]
+        public long MemoryCapacity { get; }
 
         /// <summary>
         /// CPU-Used in vcores
         /// </summary>
-        public int CpuUsed { get; }
+        [JsonProperty("usedVirtualCores")]
+        public long CpuUsed { get; }
 
         /// <summary>
         /// CPU-Capacity in vcores
         /// </summary>
-        public int CpuCapacity { get; }
+        [JsonProperty("availableVirtualCores")]
+        public long CpuCapacity { get; }
 
-        public override bool Equals(object obj)
-        {
-            var ob = obj as NodeDetailsResult;
-            if(ob == null)
-                return false;
-            return Equals(ob);
-        }
+        /// <summary>
+        /// Health status
+        /// </summary>
+        [JsonProperty("healthStatus")]
+        public string HealthStatus { get; set; }
 
-        protected bool Equals(NodeDetailsResult other)
-        {
-            return base.Equals(other) && MemoryUsed == other.MemoryUsed && MemoryCapacity == other.MemoryCapacity &&
-                   CpuUsed == other.CpuUsed && CpuCapacity == other.CpuCapacity;
-        }
+        /// <summary>
+        /// Health Report
+        /// </summary>
+        [JsonProperty("healthReport")]
+        public string HealthReport { get; set; }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hashCode = base.GetHashCode();
-                hashCode = (hashCode * 397) ^ MemoryUsed;
-                hashCode = (hashCode * 397) ^ MemoryCapacity;
-                hashCode = (hashCode * 397) ^ CpuUsed;
-                hashCode = (hashCode * 397) ^ CpuCapacity;
-                return hashCode;
-            }
-        }
+        /// <summary>
+        /// Last Health update
+        /// </summary>
+        [JsonProperty("lastHealthUpdate")]
+        [JsonConverter(typeof(JsonJavaEpochConverter))]
+        public DateTime LastHealthUpdate { get; set; }
     }
 }

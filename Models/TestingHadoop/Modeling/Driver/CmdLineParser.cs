@@ -105,13 +105,37 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="state">The state to parse</param>
         /// <returns>The parsed <see cref="EAppState"/></returns>
-        private EAppState ParseState(string state)
+        private EAppState ParseAppState(string state)
         {
             EAppState parsedState;
             Enum.TryParse(state, true, out parsedState);
             return parsedState;
         }
-        
+
+        /// <summary>
+        /// Parses the <see cref="EContainerState"/> or returns the default value <see cref="EContainerState.None"/>
+        /// </summary>
+        /// <param name="state">The state to parse</param>
+        /// <returns>The parsed <see cref="EContainerState"/></returns>
+        private EContainerState ParseContainerState(string state)
+        {
+            EContainerState parsedState;
+            Enum.TryParse(state, true, out parsedState);
+            return parsedState;
+        }
+
+        /// <summary>
+        /// Parses the <see cref="ENodeState"/> or returns the default value <see cref="ENodeState.None"/>
+        /// </summary>
+        /// <param name="state">The state to parse</param>
+        /// <returns>The parsed <see cref="ENodeState"/></returns>
+        private ENodeState ParseNodeState(string state)
+        {
+            ENodeState parsedState;
+            Enum.TryParse(state, true, out parsedState);
+            return parsedState;
+        }
+
         /// <summary>
         /// Parses the <see cref="EFinalStatus"/> or returns the default value <see cref="EFinalStatus.None"/>
         /// </summary>
@@ -199,7 +223,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 if(appMatches.Count != 9 || !appMatches[0].Groups[1].Value.StartsWith("application"))
                     continue;
 
-                var state = ParseState(appMatches[5].Groups[1].Value);
+                var state = ParseAppState(appMatches[5].Groups[1].Value);
                 var finalStatus = ParseFinalStatus(appMatches[6].Groups[1].Value);
                 var progress = ParseIntText(appMatches[7].Groups[1].Value);
 
@@ -230,7 +254,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 if(attemptMatches.Count != 4 || !attemptMatches[0].Groups[1].Value.StartsWith("appattempt"))
                     continue;
 
-                var state = ParseState(attemptMatches[1].Groups[1].Value);
+                var state = ParseAppState(attemptMatches[1].Groups[1].Value);
 
                 var attempt = new ApplicationAttemptListResult(attemptMatches[0].Groups[1].Value, state, attemptMatches[2].Groups[1].Value,
                     attemptMatches[3].Groups[1].Value);
@@ -261,7 +285,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
                 var startTime = ParseTimestamp(containerMatches[1].Groups[1].Value, HadoopDateFormat);
                 var finishTime = ParseTimestamp(containerMatches[2].Groups[1].Value, HadoopDateFormat);
-                var state = ParseState(containerMatches[3].Groups[1].Value);
+                var state = ParseContainerState(containerMatches[3].Groups[1].Value);
 
                 var node = ParseNode(containerMatches[4].Groups[1].Value);
 
@@ -287,7 +311,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
             if(matches.Count == 15)
             {
-                var state = ParseState(matches[8].Groups[2].Value);
+                var state = ParseAppState(matches[8].Groups[2].Value);
                 var finalStatus = ParseFinalStatus(matches[9].Groups[2].Value);
                 var progress = ParseIntText(matches[7].Groups[2].Value);
                 var startTime = ParseTimestamp(matches[5].Groups[2].Value, null);
@@ -320,7 +344,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
             if(matches.Count == 7)
             {
-                var state = ParseState(matches[1].Groups[2].Value);
+                var state = ParseAppState(matches[1].Groups[2].Value);
                 var node = ParseNode(matches[5].Groups[2].Value);
 
                 var attempt = new ApplicationAttemptDetailsResult(matches[0].Groups[2].Value, state, matches[2].Groups[2].Value,
@@ -347,7 +371,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             {
                 var startTime = ParseTimestamp(matches[1].Groups[2].Value, null);
                 var finishTime = ParseTimestamp(matches[2].Groups[2].Value, null);
-                var state = ParseState(matches[3].Groups[2].Value);
+                var state = ParseContainerState(matches[3].Groups[2].Value);
                 var node = ParseNode(matches[5].Groups[2].Value);
 
                 var container = new ContainerListResult(matches[0].Groups[2].Value, startTime, finishTime, state, node,
@@ -377,8 +401,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     continue;
 
                 int containerCount = ParseInt(nodeMatches[3].Groups[1].Value);
+                var state = ParseNodeState(nodeMatches[1].Groups[1].Value);
 
-                var app = new NodeListResult(nodeMatches[0].Groups[1].Value, nodeMatches[1].Groups[1].Value,
+                var app = new NodeListResult(nodeMatches[0].Groups[1].Value, state,
                     nodeMatches[2].Groups[1].Value, containerCount);
 
                 nodeList.Add(app);
@@ -405,8 +430,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 var memCap = ParseIntText(matches[8].Groups[2].Value);
                 var cpuUsed = ParseIntText(matches[9].Groups[2].Value);
                 var cpuCap = ParseIntText(matches[10].Groups[2].Value);
+                var state = ParseNodeState(matches[2].Groups[2].Value);
 
-                var node = new NodeDetailsResult(matches[0].Groups[2].Value, matches[2].Groups[2].Value, matches[3].Groups[2].Value,
+                var node = new NodeDetailsResult(matches[0].Groups[2].Value, state, matches[3].Groups[2].Value,
                     containers, memUsed, memCap, cpuUsed, cpuCap);
 
                 return node;
