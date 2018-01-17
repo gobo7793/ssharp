@@ -1,0 +1,1 @@
+{"node":{"rack":"/default-rack","state":"LOST","id":"compute-6:45454","nodeHostName":"compute-6","nodeHTTPAddress":"","lastHealthUpdate":1516181190494,"version":"2.7.1","healthReport":"","numContainers":0,"usedMemoryMB":0,"availMemoryMB":0,"usedVirtualCores":0,"availableVirtualCores":0}}
