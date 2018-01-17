@@ -85,6 +85,7 @@
     <Compile Include="Tests\CmdLineParserTest.cs" />
     <Compile Include="Tests\DummyHadoopCmdConnector.cs" />
     <Compile Include="Tests\FullYarnAppArchitecutreTest.cs" />
+    <Compile Include="Tests\ParserUtilitiesTest.cs" />
     <Compile Include="Tests\YarnNodeTest.cs" />
   </ItemGroup>
   <ItemGroup>
