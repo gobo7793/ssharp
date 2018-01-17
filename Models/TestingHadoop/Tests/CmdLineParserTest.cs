@@ -48,40 +48,38 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         }
 
         [Test]
-        [TestCase("Wed Jan 10 19:42:01 +0000 2018", CmdLineParser.HadoopDateFormat, Result = "2018-01-10T20:42:01.0000000+01:00")]
-        [TestCase("1512187108523", null, Result = "2017-12-02T04:58:28.5230000+01:00")]
-        [TestCase("0", null, Result = "0001-01-01T00:00:00.0000000")]
-        public string TestParseTimestamp(string date, string format)
-        {
-            return _Parser.ParseTimestamp(date, format).ToString("o");
-            //// Hadoop converted
-            //var date1Exp = new DateTime(2018, 1, 10, 20, 42, 1);
-            //var date1Val = "Wed Jan 10 19:42:01 +0000 2018";
-
-            //// Java millisec
-            //var date2Exp = new DateTime(2017, 12, 2, 4, 58, 28, 523);
-            //var date2Val = "1512187108523";
-            //var date3Exp = DateTime.MinValue;
-            //var date3Val = "0";
-
-            //var date1 = _Parser.ParseTimestamp(date1Val, CmdLineParser.HadoopDateFormat);
-            //var date2 = _Parser.ParseTimestamp(date2Val, null);
-            //var date3 = _Parser.ParseTimestamp(date3Val, null);
-
-            //Assert.AreEqual(date1Exp, date1, "hadoop converted parsing failed");
-            //Assert.AreEqual(date2Exp, date2, "java millisec parsing failed");
-            //Assert.AreEqual(date3Exp, date3, "java millisec fault parsing failed");
-        }
-
-        [Test]
         public void TestParseAppList()
         {
-            var app1 = new ApplicationListResult("application_1515488762656_0001", "random-text-writer", "MAPREDUCE",
-                EAppState.FINISHED, EFinalStatus.SUCCEEDED, 100, "http://controller:19888/jobhistory/job/job_1515488762656_0001");
-            var app2 = new ApplicationListResult("application_1515488762656_0002", "word count", "MAPREDUCE",
-                EAppState.FINISHED, EFinalStatus.SUCCEEDED, 100, "http://controller:19888/jobhistory/job/job_1515488762656_0002");
-            var app3 = new ApplicationListResult("application_1515488762656_0003", "sorter", "MAPREDUCE",
-                EAppState.FINISHED, EFinalStatus.SUCCEEDED, 100, "http://controller:19888/jobhistory/job/job_1515488762656_0003");
+            var app1 = new ApplicationResult
+            {
+                AppId = "application_1515488762656_0001",
+                AppName = "random-text-writer",
+                AppType = "MAPREDUCE",
+                State = EAppState.FINISHED,
+                FinalStatus = EFinalStatus.SUCCEEDED,
+                Progess = 100,
+                TrackingUrl = "http://controller:19888/jobhistory/job/job_1515488762656_0001",
+            };
+            var app2 = new ApplicationResult
+            {
+                AppId = "application_1515488762656_0002",
+                AppName = "word count",
+                AppType = "MAPREDUCE",
+                State = EAppState.FINISHED,
+                FinalStatus = EFinalStatus.SUCCEEDED,
+                Progess = 100,
+                TrackingUrl = "http://controller:19888/jobhistory/job/job_1515488762656_0002",
+            };
+            var app3 = new ApplicationResult
+            {
+                AppId = "application_1515488762656_0003",
+                AppName = "sorter",
+                AppType = "MAPREDUCE",
+                State = EAppState.RUNNING,
+                FinalStatus = EFinalStatus.UNDEFINED,
+                Progess = 67,
+                TrackingUrl = "http://controller:19888/jobhistory/job/job_1515488762656_0003",
+            };
 
             var apps = _Parser.ParseAppList();
 
@@ -94,8 +92,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestParseAppAttemptList()
         {
-            var attempt1 = new ApplicationAttemptListResult("appattempt_1515488762656_0002_000001", EAppState.FINISHED,
-                "container_1515488762656_0002_01_000001", "http://controller:8088/proxy/application_1515488762656_0002/");
+            var attempt1 = new ApplicationAttemptResult
+            {
+                AttemptId = "appattempt_1515488762656_0002_000001",
+                State = EAppState.FINISHED,
+                AmContainerId = "container_1515488762656_0002_01_000001",
+                TrackingUrl = "http://controller:8088/proxy/application_1515488762656_0002/"
+            };
 
             var attempts = _Parser.ParseAppAttemptList("");
 
@@ -106,12 +109,33 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestParseContainerList()
         {
-            var container1 = new ContainerListResult("container_1515488762656_0011_01_000001", new DateTime(2018, 1, 9, 10, 41, 14),
-                DateTime.MinValue, EAppState.RUNNING, _Node1, "http://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000001/root");
-            var container2 = new ContainerListResult("container_1515488762656_0011_01_000002", new DateTime(2018, 1, 9, 10, 41, 19),
-                DateTime.MinValue, EAppState.RUNNING, _Node2, "http://compute-2:8042/node/containerlogs/container_1515488762656_0011_01_000002/root");
-            var container3 = new ContainerListResult("container_1515488762656_0011_01_000003", new DateTime(2018, 1, 9, 10, 41, 19),
-                DateTime.MinValue, EAppState.RUNNING, _Node1, "http://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000003/root");
+            var container1 = new ContainerResult
+            {
+                ContainerId = "container_1515488762656_0011_01_000001",
+                StartTime = new DateTime(2018, 1, 9, 10, 41, 14),
+                FinishTime = DateTime.MinValue,
+                State = EContainerState.RUNNING,
+                Host = _Node1,
+                LogUrl = "http://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000001/root",
+            };
+            var container2 = new ContainerResult
+            {
+                ContainerId = "container_1515488762656_0011_01_000002",
+                StartTime = new DateTime(2018, 1, 9, 10, 41, 19),
+                FinishTime = DateTime.MinValue,
+                State = EContainerState.RUNNING,
+                Host = _Node2,
+                LogUrl = "http://compute-2:8042/node/containerlogs/container_1515488762656_0011_01_000002/root",
+            };
+            var container3 = new ContainerResult
+            {
+                ContainerId = "container_1515488762656_0011_01_000003",
+                StartTime = new DateTime(2018, 1, 9, 10, 41, 19),
+                FinishTime = DateTime.MinValue,
+                State = EContainerState.RUNNING,
+                Host = _Node1,
+                LogUrl = "http://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000003/root",
+            };
 
             var containers = _Parser.ParseContainerList("");
 
@@ -124,10 +148,34 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestParseNodeList()
         {
-            var node1 = new NodeListResult("compute-1:45454", "RUNNING", "compute-1:8042", 0);
-            var node2 = new NodeListResult("compute-2:45454", "RUNNING", "compute-2:8042", 0);
-            var node3 = new NodeListResult("compute-3:45454", "RUNNING", "compute-3:8042", 0);
-            var node4 = new NodeListResult("compute-4:45454", "RUNNING", "compute-4:8042", 0);
+            var node1 = new NodeResult
+            {
+                NodeId = "compute-1:45454",
+                NodeState = ENodeState.RUNNING,
+                NodeHttpAdd = "compute-1:8042",
+                RunningContainerCount = 0,
+            };
+            var node2 = new NodeResult
+            {
+                NodeId = "compute-2:45454",
+                NodeState = ENodeState.RUNNING,
+                NodeHttpAdd = "compute-2:8042",
+                RunningContainerCount = 0,
+            };
+            var node3 = new NodeResult
+            {
+                NodeId = "compute-3:45454",
+                NodeState = ENodeState.RUNNING,
+                NodeHttpAdd = "compute-3:8042",
+                RunningContainerCount = 0,
+            };
+            var node4 = new NodeResult
+            {
+                NodeId = "compute-4:45454",
+                NodeState = ENodeState.RUNNING,
+                NodeHttpAdd = "compute-4:8042",
+                RunningContainerCount = 0,
+            };
 
             var nodes = _Parser.ParseNodeList();
 
@@ -141,9 +189,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestParseAppDetails()
         {
-            var app = new ApplicationDetailsResult("application_1515488762656_0002", "word count", "MAPREDUCE", EAppState.FINISHED,
-                EFinalStatus.SUCCEEDED, 100, "http://controller:19888/jobhistory/job/job_1515488762656_0002",
-                new DateTime(2018, 1, 9, 10, 10, 34, 402), new DateTime(2018, 1, 9, 10, 11, 48, 249), _Node1, 583396, 482);
+            var app = new ApplicationResult
+            {
+                AppId = "application_1515488762656_0002",
+                AppName = "word count",
+                AppType = "MAPREDUCE",
+                State = EAppState.FINISHED,
+                FinalStatus = EFinalStatus.SUCCEEDED,
+                Progess = 100,
+                TrackingUrl = "http://controller:19888/jobhistory/job/job_1515488762656_0002",
+                StartTime = new DateTime(2018, 1, 9, 10, 10, 34, 402),
+                FinishTime = new DateTime(2018, 1, 9, 10, 11, 48, 249),
+                AmHost = _Node1,
+                MbSeconds = 583396,
+                VcoreSeconds = 482,
+            };
 
             var res = _Parser.ParseAppDetails("");
 
@@ -153,8 +213,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestParseAppAttemptDetails()
         {
-            var attempt = new ApplicationAttemptDetailsResult("appattempt_1515577485762_0006_000001", EAppState.RUNNING,
-                "container_1515577485762_0006_01_000001", "http://controller:8088/proxy/application_1515577485762_0006/", _Node1);
+            var attempt = new ApplicationAttemptResult
+            {
+                AttemptId = "appattempt_1515577485762_0006_000001",
+                State = EAppState.RUNNING,
+                AmContainerId = "container_1515577485762_0006_01_000001",
+                TrackingUrl = "http://controller:8088/proxy/application_1515577485762_0006/",
+                AmHost = _Node1,
+            };
 
             var res = _Parser.ParseAppAttemptDetails("");
 
@@ -164,9 +230,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestParseContainerDetails()
         {
-            var container = new ContainerListResult("container_1515577485762_0008_01_000001", new DateTime(2018, 1, 10, 11, 22, 2, 594),
-                DateTime.MinValue, EAppState.RUNNING, _Node1,
-                "http://compute-1:8042/node/containerlogs/container_1515577485762_0008_01_000001/root");
+            var container = new ContainerResult
+            {
+                ContainerId = "container_1515577485762_0008_01_000001",
+                StartTime = new DateTime(2018, 1, 10, 11, 22, 2, 594),
+                FinishTime = DateTime.MinValue,
+                State = EContainerState.RUNNING,
+                Host = _Node1,
+                LogUrl = "http://compute-1:8042/node/containerlogs/container_1515577485762_0008_01_000001/root",
+            };
 
             var res = _Parser.ParseContainerDetails("");
 
@@ -176,7 +248,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestParseNodeDetails()
         {
-            var node = new NodeDetailsResult("compute-1:45454", "RUNNING", "compute-1:8042", 2, 3072, 8192, 2, 8);
+            var node = new NodeResult
+            {
+                NodeId = "compute-1:45454",
+                NodeState = ENodeState.RUNNING,
+                NodeHttpAdd = "compute-1:8042",
+                RunningContainerCount = 2,
+                CpuUsed = 2,
+                CpuCapacity = 8,
+                MemoryUsed = 3072,
+                MemoryCapacity = 8192,
+            };
 
             var res = _Parser.ParseNodeDetails("");
 
