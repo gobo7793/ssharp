@@ -38,19 +38,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
         #endregion
 
-        #region Lists
+        #region IHadoopParser
 
-        public ApplicationListResult[] ParseAppList(EAppState states = EAppState.None)
+        public ApplicationResult[] ParseAppList(EAppState states = EAppState.None)
         {
             throw new System.NotImplementedException();
         }
 
-        public ApplicationAttemptListResult[] ParseAppAttemptList(string appId)
+        public ApplicationAttemptResult[] ParseAppAttemptList(string appId)
         {
             throw new System.NotImplementedException();
         }
 
-        public ContainerListResult[] ParseContainerList(string attemptId)
+        public ContainerResult[] ParseContainerList(string attemptId)
         {
             throw new System.NotImplementedException();
         }
@@ -59,17 +59,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
         #region Details
 
-        public ApplicationDetailsResult ParseAppDetails(string appId)
+        public ApplicationResult ParseAppDetails(string appId)
         {
             throw new System.NotImplementedException();
         }
 
-        public ApplicationAttemptDetailsResult ParseAppAttemptDetails(string attemptId)
+        public ApplicationAttemptResult ParseAppAttemptDetails(string attemptId)
         {
             throw new System.NotImplementedException();
         }
 
-        public ContainerListResult ParseContainerDetails(string containerId)
+        public ContainerResult ParseContainerDetails(string containerId)
         {
             throw new System.NotImplementedException();
         }
@@ -78,12 +78,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
         #region Nodes
 
-        public NodeListResult[] ParseNodeList()
+        public NodeResult[] ParseNodeList()
         {
             throw new System.NotImplementedException();
         }
 
-        public NodeDetailsResult ParseNodeDetails(string nodeId)
+        public NodeResult ParseNodeDetails(string nodeId)
         {
             throw new System.NotImplementedException();
         }
