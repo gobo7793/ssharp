@@ -30,7 +30,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public string GetYarnApplicationList(string states) =>
             "application_1515488762656_0001\t  random-text-writer\t           MAPREDUCE\t      root\t   default\t          FINISHED\t         SUCCEEDED\t           100%\thttp://controller:19888/jobhistory/job/job_1515488762656_0001\n" +
             "application_1515488762656_0002\t          word count\t           MAPREDUCE\t      root\t   default\t          FINISHED\t         SUCCEEDED\t           100%\thttp://controller:19888/jobhistory/job/job_1515488762656_0002\n" +
-            "application_1515488762656_0003\t              sorter\t           MAPREDUCE\t      root\t   default\t          FINISHED\t         SUCCEEDED\t           100%\thttp://controller:19888/jobhistory/job/job_1515488762656_0003\n";
+            "application_1515488762656_0003\t              sorter\t           MAPREDUCE\t      root\t   default\t           RUNNING\t         UNDEFINED\t           67%\thttp://controller:19888/jobhistory/job/job_1515488762656_0003\n";
 
         public string GetYarnAppAttemptList(string appId) =>
             "appattempt_1515488762656_0002_000001\t            FINISHED\tcontainer_1515488762656_0002_01_000001\thttp://controller:8088/proxy/application_1515488762656_0002/\n";
