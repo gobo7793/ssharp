@@ -40,7 +40,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public void Setup()
         {
             _Model = new Model();
-            _Model.TestConfig(new DummyHadoopConnector());
+            _Model.TestConfig(new DummyHadoopCmdConnector());
 
             _App = _Model.Applications[0];
             _App.AppId = "application_1515488762656_0002";

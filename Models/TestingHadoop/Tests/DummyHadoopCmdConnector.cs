@@ -25,7 +25,7 @@ using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 {
-    public class DummyHadoopConnector : IHadoopConnector
+    public class DummyHadoopCmdConnector : IHadoopConnector
     {
         public string GetYarnApplicationList(string states) =>
             "application_1515488762656_0001\t  random-text-writer\t           MAPREDUCE\t      root\t   default\t          FINISHED\t         SUCCEEDED\t           100%\thttp://controller:19888/jobhistory/job/job_1515488762656_0001\n" +
