@@ -24,6 +24,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests
@@ -40,7 +41,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public void Setup()
         {
             _Model = new Model();
-            _Model.TestConfig(new DummyHadoopCmdConnector());
+            var parser = new CmdLineParser(_Model, new DummyHadoopCmdConnector());
+
+            _Model.TestConfig(parser, parser.Connection);
 
             _App = _Model.Applications[0];
             _App.AppId = "application_1515488762656_0002";

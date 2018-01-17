@@ -27,14 +27,31 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     public class JsonParser : IHadoopParser
     {
         #region Properties and Constants
+        
+        /// <summary>
+        /// Model with its components
+        /// </summary>
+        public Model Model { get; }
 
-
+        /// <summary>
+        /// The connection to Hadoop
+        /// </summary>
+        public IHadoopConnector Connection { get; }
 
         #endregion
 
         #region Methods
 
-
+        /// <summary>
+        /// Initializes the Parser with the given <see cref="Modeling.Model"/> and its components
+        /// </summary>
+        /// <param name="model">The model</param>
+        /// <param name="connection">The connector to Hadoop</param>
+        public JsonParser(Model model, IHadoopConnector connection)
+        {
+            Model = model;
+            Connection = connection;
+        }
 
         #endregion
 

@@ -40,11 +40,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public void Setup()
         {
             _Model = new Model();
-            _Model.TestConfig(new DummyHadoopCmdConnector());
+            _Parser = new CmdLineParser(_Model, new DummyHadoopCmdConnector());
+
+            _Model.TestConfig(_Parser, _Parser.Connection);
             _Node1 = _Model.Nodes[$"{Model.NodeNamePrefix}1"];
             _Node2 = _Model.Nodes[$"{Model.NodeNamePrefix}2"];
 
-            _Parser = new CmdLineParser(_Model, new DummyHadoopCmdConnector());
         }
 
         [Test]

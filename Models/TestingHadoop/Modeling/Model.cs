@@ -91,11 +91,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Configuration for model testing
         /// </summary>
+        /// <param name="parser">The parser to use</param>
         /// <param name="connector">The connector to use</param>
-        public void TestConfig(IHadoopConnector connector)
+        public void TestConfig(IHadoopParser parser, IHadoopConnector connector)
         {
-            var parser = new CmdLineParser(this, connector);
-
             InitBaseComponents();
             InitYarnNodes(4, parser, connector);
 

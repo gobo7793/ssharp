@@ -248,8 +248,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// <remarks>
     /// CMD List:       <c>yarn container -list &lt;attemptID&gt;</c>
     /// CMD Details:    <c>yarn container -status &lt;containerID&gt;</c>
-    /// REST Node List: <c>http://compute-{no.}/ws/v1/node/containers</c>
-    /// REST Details:   <c>http://compute-{no.}/ws/v1/node/containers/{containerid}</c>
+    /// REST Node List: <c>http://compute-{no}/ws/v1/node/containers</c>
+    /// REST Details:   <c>http://compute-{no}/ws/v1/node/containers/{containerid}</c>
     /// 
     /// The Containers for an app can be get via
     /// <c>http://compute-{no.}/ws/v1/node/apps</c> or<c>http://compute-{no.}/ws/v1/node/apps/{appid}</c>
