@@ -84,7 +84,9 @@
     <Compile Include="Modeling\HadoopModel\YarnAppAttempt.cs" />
     <Compile Include="Tests\CmdLineParserTest.cs" />
     <Compile Include="Tests\DummyHadoopCmdConnector.cs" />
+    <Compile Include="Tests\DummyHadoopRestConnector.cs" />
     <Compile Include="Tests\FullYarnAppArchitecutreTest.cs" />
+    <Compile Include="Tests\JsonParserTest.cs" />
     <Compile Include="Tests\ParserUtilitiesTest.cs" />
     <Compile Include="Tests\YarnNodeTest.cs" />
   </ItemGroup>
@@ -99,6 +101,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Tests\RestTestCases\appDetails.json" />
+    <None Include="Tests\RestTestCases\appsList.json" />
+    <None Include="Tests\RestTestCases\attempts.json" />
+    <None Include="Tests\RestTestCases\metrics.json" />
+    <None Include="Tests\RestTestCases\node1AppDetails.json" />
+    <None Include="Tests\RestTestCases\node1Containers.json" />
+    <None Include="Tests\RestTestCases\node3Apps.json" />
+    <None Include="Tests\RestTestCases\node3ContainerDetails.json" />
+    <None Include="Tests\RestTestCases\nodeDead.json" />
+    <None Include="Tests\RestTestCases\nodeList.json" />
+    <None Include="Tests\RestTestCases\nodeRunning.json" />
     <None Include="YarnModel.cd" />
     <None Include="packages.config" />
   </ItemGroup>
