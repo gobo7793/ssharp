@@ -42,12 +42,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine($@"Using ""{_JsonFilesPath}"" to search json test case sources");
         }
 
-        public string GetYarnApplicationList(string states) => File.ReadAllText($@"{_JsonFilesPath}\appsList.json");
+        /// <summary>
+        /// Reads the file in <see cref="_JsonFilesPath"/>
+        /// </summary>
+        /// <param name="filename">The filename</param>
+        /// <returns>File content</returns>
+        private string ReadFile(string filename) => File.ReadAllText($@"{_JsonFilesPath}\{filename}");
 
-        public string GetYarnAppAttemptList(string appId)
-        {
-            throw new NotImplementedException();
-        }
+        public string GetYarnApplicationList(string states) => ReadFile("appsList.json");
+
+        public string GetYarnAppAttemptList(string appId) => ReadFile("attempts.json");
 
         public string GetYarnAppContainerList(string attemptId)
         {
@@ -69,10 +73,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             throw new NotImplementedException();
         }
 
-        public string GetYarnNodeList()
-        {
-            throw new NotImplementedException();
-        }
+        public string GetYarnNodeList() => ReadFile("nodeList.json");
 
         public string GetYarnNodeDetails(string nodeId)
         {

@@ -101,8 +101,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// AM Host
         /// </summary>
-        //[JsonProperty("amHostHttpAddress")]
-        //[JsonConverter(typeof(JsonConverter))]
         [JsonIgnore]
         public YarnNode AmHost { get; set; }
 
@@ -220,9 +218,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     }
 
     /// <summary>
-    /// Helper class for deserializing jsons from hadoop rest api
+    /// Helper class for deserializing application list jsons from hadoop rest api
     /// </summary>
-    public class JsonApplicationResult
+    public class JsonApplicationListResult
     {
         /// <summary>
         /// The collection with the applications
@@ -239,7 +237,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             /// The application list
             /// </summary>
             [JsonProperty("app")]
-            public ApplicationResult[] Apps { get; set; }
+            public ApplicationResult[] List { get; set; }
         }
     }
 
@@ -274,12 +272,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// Tracking-URL
         /// </summary>
+        [JsonIgnore]
         public string TrackingUrl { get; set; }
 
         /// <summary>
         /// AM Host
         /// </summary>
+        [JsonIgnore]
         public YarnNode AmHost { get; set; }
+
+        /// <summary>
+        /// AM Host HTTP Address
+        /// </summary>
+        [JsonProperty("nodeHttpAddress")]
+        public string AmHostHttpAddress { get; set; }
 
         /// <summary>
         /// AM Host Node ID
@@ -294,6 +300,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         [JsonConverter(typeof(JsonJavaEpochConverter))]
         public DateTime StartTime { get; set; }
 
+        /// <summary>
+        /// Logs URL
+        /// </summary>
+        [JsonProperty("logsLink")]
+        public string LogsUrl { get; set; }
+
         public override bool Equals(object obj)
         {
             var result = obj as ApplicationAttemptResult;
@@ -303,21 +315,49 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                    AmContainerId == result.AmContainerId &&
                    TrackingUrl == result.TrackingUrl &&
                    EqualityComparer<YarnNode>.Default.Equals(AmHost, result.AmHost) &&
+                   AmHostHttpAddress == result.AmHostHttpAddress &&
                    AmHostId == result.AmHostId &&
-                   StartTime == result.StartTime;
+                   StartTime == result.StartTime &&
+                   LogsUrl == result.LogsUrl;
         }
 
         public override int GetHashCode()
         {
-            var hashCode = -1199140868;
+            var hashCode = 1494292438;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AttemptId);
             hashCode = hashCode * -1521134295 + State.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AmContainerId);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TrackingUrl);
             hashCode = hashCode * -1521134295 + EqualityComparer<YarnNode>.Default.GetHashCode(AmHost);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AmHostHttpAddress);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AmHostId);
             hashCode = hashCode * -1521134295 + StartTime.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LogsUrl);
             return hashCode;
+        }
+    }
+
+    /// <summary>
+    /// Helper class for deserializing app attempt list jsons from hadoop rest api
+    /// </summary>
+    public class JsonAppAttemptListResult
+    {
+        /// <summary>
+        /// The collection with the app attempts
+        /// </summary>
+        [JsonProperty("appAttempts")]
+        public JsonAppAttemptResultCollection Collection { get; set; }
+
+        /// <summary>
+        /// Helper class for containing the app attempt list
+        /// </summary>
+        public class JsonAppAttemptResultCollection
+        {
+            /// <summary>
+            /// The app attempt list
+            /// </summary>
+            [JsonProperty("appAttempt")]
+            public ApplicationAttemptResult[] List { get; set; }
         }
     }
 
@@ -447,6 +487,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     [DebuggerDisplay("Node {" + nameof(NodeId) + "}")]
     public class NodeResult
     {
+        private long _MemCap;
+        private long _MemAvail;
+        private long _CpuCap;
+        private long _CpuAvail;
+
         /// <summary>
         /// Node-Id
         /// </summary>
@@ -463,6 +508,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Node-State
         /// </summary>
         [JsonProperty("state")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public ENodeState NodeState { get; set; }
 
         /// <summary>
@@ -484,10 +530,34 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public long MemoryUsed { get; set; }
 
         /// <summary>
-        /// Memory-Capacity in MB
+        /// Available memory in MB
         /// </summary>
         [JsonProperty("availMemoryMB")]
-        public long MemoryCapacity { get; set; }
+        public long MemoryAvailable
+        {
+            get
+            {
+                if(_MemAvail <= 0)
+                    _MemAvail = _MemCap - MemoryUsed;
+                return _MemAvail;
+            }
+            set { _MemAvail = value; }
+        }
+
+        /// <summary>
+        /// Memory-Capacity in MB
+        /// </summary>
+        [JsonIgnore]
+        public long MemoryCapacity
+        {
+            get
+            {
+                if(_MemCap <= 0)
+                    _MemCap = _MemAvail + MemoryUsed;
+                return _MemCap;
+            }
+            set { _MemCap = value; }
+        }
 
         /// <summary>
         /// CPU-Used in vcores
@@ -496,10 +566,34 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public long CpuUsed { get; set; }
 
         /// <summary>
-        /// CPU-Capacity in vcores
+        /// Available CPU in vcores
         /// </summary>
         [JsonProperty("availableVirtualCores")]
-        public long CpuCapacity { get; set; }
+        public long CpuAvailable
+        {
+            get
+            {
+                if(_CpuAvail <= 0)
+                    _CpuAvail = _CpuCap - CpuUsed;
+                return _CpuAvail;
+            }
+            set { _CpuAvail = value; }
+        }
+
+        /// <summary>
+        /// CPU-Capacity in vcores
+        /// </summary>
+        [JsonIgnore]
+        public long CpuCapacity
+        {
+            get
+            {
+                if(_CpuCap <= 0)
+                    _CpuCap = _CpuAvail + CpuUsed;
+                return _CpuCap;
+            }
+            set { _CpuCap = value; }
+        }
 
         /// <summary>
         /// Health status
@@ -524,14 +618,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             var result = obj as NodeResult;
             return result != null &&
+                   _MemCap == result._MemCap &&
+                   _MemAvail == result._MemAvail &&
+                   _CpuCap == result._CpuCap &&
+                   _CpuAvail == result._CpuAvail &&
                    NodeId == result.NodeId &&
                    Hostname == result.Hostname &&
                    NodeState == result.NodeState &&
                    NodeHttpAdd == result.NodeHttpAdd &&
                    RunningContainerCount == result.RunningContainerCount &&
                    MemoryUsed == result.MemoryUsed &&
+                   MemoryAvailable == result.MemoryAvailable &&
                    MemoryCapacity == result.MemoryCapacity &&
                    CpuUsed == result.CpuUsed &&
+                   CpuAvailable == result.CpuAvailable &&
                    CpuCapacity == result.CpuCapacity &&
                    HealthStatus == result.HealthStatus &&
                    HealthReport == result.HealthReport &&
@@ -540,20 +640,50 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
         public override int GetHashCode()
         {
-            var hashCode = -188306626;
+            var hashCode = 810637;
+            hashCode = hashCode * -1521134295 + _MemCap.GetHashCode();
+            hashCode = hashCode * -1521134295 + _MemAvail.GetHashCode();
+            hashCode = hashCode * -1521134295 + _CpuCap.GetHashCode();
+            hashCode = hashCode * -1521134295 + _CpuAvail.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NodeId);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Hostname);
             hashCode = hashCode * -1521134295 + NodeState.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NodeHttpAdd);
             hashCode = hashCode * -1521134295 + RunningContainerCount.GetHashCode();
             hashCode = hashCode * -1521134295 + MemoryUsed.GetHashCode();
+            hashCode = hashCode * -1521134295 + MemoryAvailable.GetHashCode();
             hashCode = hashCode * -1521134295 + MemoryCapacity.GetHashCode();
             hashCode = hashCode * -1521134295 + CpuUsed.GetHashCode();
+            hashCode = hashCode * -1521134295 + CpuAvailable.GetHashCode();
             hashCode = hashCode * -1521134295 + CpuCapacity.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(HealthStatus);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(HealthReport);
             hashCode = hashCode * -1521134295 + LastHealthUpdate.GetHashCode();
             return hashCode;
+        }
+    }
+
+    /// <summary>
+    /// Helper class for deserializing node list jsons from hadoop rest api
+    /// </summary>
+    public class JsonNodeListResult
+    {
+        /// <summary>
+        /// The collection with the nodes
+        /// </summary>
+        [JsonProperty("nodes")]
+        public JsonNodeResultCollection Collection { get; set; }
+
+        /// <summary>
+        /// Helper class for containing the nodes list
+        /// </summary>
+        public class JsonNodeResultCollection
+        {
+            /// <summary>
+            /// The node list
+            /// </summary>
+            [JsonProperty("node")]
+            public NodeResult[] List { get; set; }
         }
     }
 }

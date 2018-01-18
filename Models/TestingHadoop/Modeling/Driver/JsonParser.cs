@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+using Newtonsoft.Json;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
@@ -57,52 +59,84 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
         #region IHadoopParser
 
+        /// <summary>
+        /// Gets and parses the <see cref="YarnApp"/> list for the given <see cref="EAppState"/>s.
+        /// </summary>
+        /// <param name="states">The states</param>
+        /// <returns>The applications</returns>
         public ApplicationResult[] ParseAppList(EAppState states = EAppState.None)
         {
-            throw new System.NotImplementedException();
+            var appStates = ParserUtilities.ConcatStates(states);
+
+            var fullResult = Connection.GetYarnApplicationList(appStates);
+            var appRes = JsonConvert.DeserializeObject<JsonApplicationListResult>(fullResult);
+
+            // convert AM Hosts
+            var apps = appRes.Collection.List;
+            foreach(var app in apps)
+                app.AmHost = ParserUtilities.ParseNode(app.AmHostHttpAddress, Model);
+
+            return apps;
         }
 
+        /// <summary>
+        /// Gets and parses the <see cref="YarnAppAttempt"/> list for the given <see cref="YarnApp.AppId"/>
+        /// </summary>
+        /// <param name="appId">The app id</param>
+        /// <returns>The attempts</returns>
         public ApplicationAttemptResult[] ParseAppAttemptList(string appId)
         {
-            throw new System.NotImplementedException();
+            var fullResult = Connection.GetYarnAppAttemptList(appId);
+            var attemptRes = JsonConvert.DeserializeObject<JsonAppAttemptListResult>(fullResult);
+
+            // convert AM Hosts
+            var attempts = attemptRes.Collection.List;
+            foreach(var attempt in attempts)
+                attempt.AmHost = ParserUtilities.ParseNode(attempt.AmHostId, Model);
+
+            return attempts;
         }
 
+        /// <summary>
+        /// Gets and parses the current running <see cref="YarnAppContainer"/> list for the given <see cref="YarnAppAttempt.AttemptId"/>
+        /// </summary>
+        /// <param name="attemptId">The attempt id</param>
+        /// <returns>The running containers</returns>
         public ContainerResult[] ParseContainerList(string attemptId)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
-
-        #endregion
-
-        #region Details
-
+        
         public ApplicationResult ParseAppDetails(string appId)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public ApplicationAttemptResult ParseAppAttemptDetails(string attemptId)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public ContainerResult ParseContainerDetails(string containerId)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        #endregion
-
-        #region Nodes
-
+        /// <summary>
+        /// Gets and parses the <see cref="YarnNode"/> list for the cluster
+        /// </summary>
+        /// <returns>All nodes in the cluster</returns
         public NodeResult[] ParseNodeList()
         {
-            throw new System.NotImplementedException();
+            var fullResult = Connection.GetYarnNodeList();
+            var nodeRes = JsonConvert.DeserializeObject<JsonNodeListResult>(fullResult);
+            
+            return nodeRes.Collection.List;
         }
 
         public NodeResult ParseNodeDetails(string nodeId)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         #endregion
