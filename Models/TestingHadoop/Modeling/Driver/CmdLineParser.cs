@@ -212,8 +212,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     AppId = matches[0].Groups[2].Value,
                     AppName = matches[1].Groups[2].Value,
                     AppType = matches[2].Groups[2].Value,
-                    StartTime = ParserUtilities.ParseJavaTimestamp(matches[5].Groups[2].Value, null),
-                    FinishTime = ParserUtilities.ParseJavaTimestamp(matches[6].Groups[2].Value, null),
+                    StartTime = ParserUtilities.ParseJavaTimestamp(matches[5].Groups[2].Value),
+                    FinishTime = ParserUtilities.ParseJavaTimestamp(matches[6].Groups[2].Value),
                     Progess = ParserUtilities.ParseIntText(matches[7].Groups[2].Value),
                     State = ParserUtilities.ParseAppState(matches[8].Groups[2].Value),
                     FinalStatus = ParserUtilities.ParseFinalStatus(matches[9].Groups[2].Value),
@@ -273,8 +273,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 var container = new ContainerResult
                 {
                     ContainerId = matches[0].Groups[2].Value,
-                    StartTime = ParserUtilities.ParseJavaTimestamp(matches[1].Groups[2].Value, null),
-                    FinishTime = ParserUtilities.ParseJavaTimestamp(matches[2].Groups[2].Value, null),
+                    StartTime = ParserUtilities.ParseJavaTimestamp(matches[1].Groups[2].Value),
+                    FinishTime = ParserUtilities.ParseJavaTimestamp(matches[2].Groups[2].Value),
                     State = ParserUtilities.ParseContainerState(matches[3].Groups[2].Value),
                     LogUrl = matches[4].Groups[2].Value,
                     Host = ParserUtilities.ParseNode(matches[5].Groups[2].Value, Model),

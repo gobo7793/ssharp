@@ -120,26 +120,44 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Parses the timestamp with the given format to <see cref="DateTime"/>
         /// or returns the default value <see cref="DateTime.MinValue"/>
         /// </summary>
+        /// <param name="javaMillis">The value to parse</param>
+        /// <returns>The parsed <see cref="DateTime"/></returns>
+        public static DateTime ParseJavaTimestamp(long javaMillis)
+        {
+            if(javaMillis == 0)
+                return DateTime.MinValue;
+            var javaTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(javaMillis);
+            return javaTimeUtc.ToLocalTime();
+        }
+
+        /// <summary>
+        /// Parses the timestamp with the given format to <see cref="DateTime"/>
+        /// or returns the default value <see cref="DateTime.MinValue"/>
+        /// </summary>
+        /// <param name="javaMillis">The value to parse</param>
+        /// <returns>The parsed <see cref="DateTime"/></returns>
+        public static DateTime ParseJavaTimestamp(string javaMillis)
+        {
+            long javaMillisL;
+            if(!Int64.TryParse(javaMillis, out javaMillisL))
+                return DateTime.MinValue;
+            return ParseJavaTimestamp(javaMillisL);
+        }
+
+        /// <summary>
+        /// Parses the timestamp with the given format to <see cref="DateTime"/>
+        /// or returns the default value <see cref="DateTime.MinValue"/>
+        /// </summary>
         /// <param name="value">The value to parse</param>
-        /// <param name="format">The time format for parsing or null if convert vom Java Time Millisec</param>
+        /// <param name="format">The time format for parsing</param>
         /// <param name="culture">The <see cref="CultureInfo"/> for parsing, default en-US</param>
         /// <returns>The parsed <see cref="DateTime"/></returns>
         public static DateTime ParseJavaTimestamp(string value, string format, CultureInfo culture = null)
         {
             culture = culture ?? new CultureInfo("en-US");
-            if(format != null)
-            {
-                DateTime time;
-                DateTime.TryParseExact(value, format, culture, DateTimeStyles.AssumeUniversal, out time);
-                return time;
-            }
-
-            // Java time if no format is given
-            long javaMillis;
-            if(!Int64.TryParse(value, out javaMillis) || javaMillis == 0)
-                return DateTime.MinValue;
-            var javaTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(javaMillis);
-            return javaTimeUtc.ToLocalTime();
+            DateTime time;
+            DateTime.TryParseExact(value, format, culture, DateTimeStyles.AssumeUniversal, out time);
+            return time;
         }
 
         /// <summary>
@@ -174,10 +192,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            //if(reader.Value == null || (long)reader.Value == 0)
-            //    return DateTime.MinValue;
-            //return _Epoch.AddMilliseconds((long)reader.Value);
-            return ParserUtilities.ParseJavaTimestamp((string)reader.Value, null);
+            return ParserUtilities.ParseJavaTimestamp((long)reader.Value);
         }
     }
 
