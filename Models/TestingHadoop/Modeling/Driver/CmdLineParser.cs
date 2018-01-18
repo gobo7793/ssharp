@@ -97,7 +97,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The applications</returns>
         public ApplicationResult[] ParseAppList(EAppState states = EAppState.None)
         {
-            var appStates = ParserUtilities.GetStateString(states);
+            var appStates = ParserUtilities.ConcatStates(states);
 
             var fullResult = Connection.GetYarnApplicationList(appStates);
 

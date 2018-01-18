@@ -147,7 +147,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="states">The states</param>
         /// <returns>The comma seperated string</returns>
-        public static string GetStateString(EAppState states)
+        public static string ConcatStates(EAppState states)
         {
             var appStates = String.Empty; // default return appStates by hadoop
             if(states != EAppState.None)
