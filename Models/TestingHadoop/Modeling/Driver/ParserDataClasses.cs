@@ -39,7 +39,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// REST Details:   <c>http://controller:8088/ws/v1/cluster/apps/{appid}</c>
     /// </remarks>
     [DebuggerDisplay("Application {" + nameof(AppId) + "}")]
-    [JsonObject("app")]
     public class ApplicationResult
     {
         /// <summary>
@@ -104,6 +103,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         //[JsonProperty("amHostHttpAddress")]
         //[JsonConverter(typeof(JsonConverter))]
+        [JsonIgnore]
         public YarnNode AmHost { get; set; }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// Preempted AM container count
         /// </summary>
-        [JsonProperty("allocatedVCores")]
+        [JsonProperty("numAMContainerPreempted")]
         public long AmContainerPreempted { get; set; }
 
         public override bool Equals(object obj)
@@ -220,6 +220,30 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     }
 
     /// <summary>
+    /// Helper class for deserializing jsons from hadoop rest api
+    /// </summary>
+    public class JsonApplicationResult
+    {
+        /// <summary>
+        /// The collection with the applications
+        /// </summary>
+        [JsonProperty("apps")]
+        public JsonApplicationResultCollection Collection { get; set; }
+
+        /// <summary>
+        /// Helper class for containing the application list
+        /// </summary>
+        public class JsonApplicationResultCollection
+        {
+            /// <summary>
+            /// The application list
+            /// </summary>
+            [JsonProperty("app")]
+            public ApplicationResult[] Apps { get; set; }
+        }
+    }
+
+    /// <summary>
     /// Data for application attempts
     /// </summary>
     /// <remarks>
@@ -228,7 +252,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// REST List:      <c>http://controller:8088/ws/v1/cluster/apps/{appid}/appattempts</c>
     /// </remarks>
     [DebuggerDisplay("Attempt {" + nameof(AttemptId) + "}")]
-    [JsonObject("appAttempt")]
     public class ApplicationAttemptResult
     {
         /// <summary>
@@ -311,7 +334,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// <c>http://compute-{no.}/ws/v1/node/apps</c> or<c>http://compute-{no.}/ws/v1/node/apps/{appid}</c>
     /// </remarks>
     [DebuggerDisplay("Container {" + nameof(ContainerId) + "}")]
-    [JsonObject("container")]
     public class ContainerResult
     {
         /// <summary>
@@ -423,7 +445,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// REST Details:   <c>http://controller:8088/ws/v1/cluster/nodes/{nodeid}</c>
     /// </remarks>
     [DebuggerDisplay("Node {" + nameof(NodeId) + "}")]
-    [JsonObject("node")]
     public class NodeResult
     {
         /// <summary>
