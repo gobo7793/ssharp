@@ -36,7 +36,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         /// </summary>
         public DummyHadoopRestConnector()
         {
-            var relativePath = @"..\..\Models\TestingHadoop\Tests\RestTestCases";
+            var relativePath = @"..\..\..\Models\TestingHadoop\Tests\RestTestCases";
             _JsonFilesPath = Path.GetFullPath(Environment.CurrentDirectory + relativePath);
 
             Console.WriteLine($@"Using ""{_JsonFilesPath}"" to search json test case sources");
