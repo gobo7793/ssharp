@@ -141,6 +141,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var javaTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(javaMillis);
             return javaTimeUtc.ToLocalTime();
         }
+
+        /// <summary>
+        /// Concatinates the states to a comma seperated string
+        /// </summary>
+        /// <param name="states">The states</param>
+        /// <returns>The comma seperated string</returns>
+        public static string GetStateString(EAppState states)
+        {
+            var appStates = String.Empty; // default return appStates by hadoop
+            if(states != EAppState.None)
+                appStates = states.ToString().Replace(" ", "");
+
+            return appStates;
+        }
     }
 
     #region Json

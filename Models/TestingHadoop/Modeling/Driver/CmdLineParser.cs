@@ -97,10 +97,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The applications</returns>
         public ApplicationResult[] ParseAppList(EAppState states = EAppState.None)
         {
-            //var appStates = String.Join(",", states);
-            var appStates = String.Empty; // default return appStates by hadoop
-            if(states != EAppState.None)
-                appStates = states.ToString().Replace(" ", "");
+            var appStates = ParserUtilities.GetStateString(states);
 
             var fullResult = Connection.GetYarnApplicationList(appStates);
 
