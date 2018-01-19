@@ -220,25 +220,37 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// <summary>
     /// Helper class for deserializing application list jsons from hadoop rest api
     /// </summary>
-    public class JsonApplicationListResult
+    public class ApplicationListJsonResult
     {
         /// <summary>
         /// The collection with the applications
         /// </summary>
         [JsonProperty("apps")]
-        public JsonApplicationResultCollection Collection { get; set; }
+        public ApplicationJsonResultCollection Collection { get; set; }
 
         /// <summary>
         /// Helper class for containing the application list
         /// </summary>
-        public class JsonApplicationResultCollection
+        public class ApplicationJsonResultCollection
         {
             /// <summary>
-            /// The application list
+            /// The application
             /// </summary>
             [JsonProperty("app")]
             public ApplicationResult[] List { get; set; }
         }
+    }
+
+    /// <summary>
+    /// Helper class for deserializing application details jsons from hadoop rest api
+    /// </summary>
+    public class ApplicationDetailsJsonResult
+    {
+        /// <summary>
+        /// The collection with the applications
+        /// </summary>
+        [JsonProperty("app")]
+        public ApplicationResult App { get; set; }
     }
 
     /// <summary>
@@ -666,18 +678,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// <summary>
     /// Helper class for deserializing node list jsons from hadoop rest api
     /// </summary>
-    public class JsonNodeListResult
+    public class NodeListJsonResult
     {
         /// <summary>
         /// The collection with the nodes
         /// </summary>
         [JsonProperty("nodes")]
-        public JsonNodeResultCollection Collection { get; set; }
+        public NodeJsonResultCollection Collection { get; set; }
 
         /// <summary>
         /// Helper class for containing the nodes list
         /// </summary>
-        public class JsonNodeResultCollection
+        public class NodeJsonResultCollection
         {
             /// <summary>
             /// The node list
@@ -685,5 +697,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             [JsonProperty("node")]
             public NodeResult[] List { get; set; }
         }
+    }
+
+    /// <summary>
+    /// Helper class for deserializing node details jsons from hadoop rest api
+    /// </summary>
+    public class NodeDetailsJsonResult
+    {
+        /// <summary>
+        /// The node
+        /// </summary>
+        [JsonProperty("node")]
+        public NodeResult Node { get; set; }
     }
 }

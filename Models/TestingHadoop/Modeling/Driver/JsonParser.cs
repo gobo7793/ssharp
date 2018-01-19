@@ -69,7 +69,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var appStates = ParserUtilities.ConcatStates(states);
 
             var fullResult = Connection.GetYarnApplicationList(appStates);
-            var appRes = JsonConvert.DeserializeObject<JsonApplicationListResult>(fullResult);
+            var appRes = JsonConvert.DeserializeObject<ApplicationListJsonResult>(fullResult);
 
             // convert AM Hosts
             var apps = appRes.Collection.List;
@@ -109,7 +109,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         
         public ApplicationResult ParseAppDetails(string appId)
         {
-            throw new NotImplementedException();
+            var fullResult = Connection.GetYarnApplicationDetails(appId);
+            var app = JsonConvert.DeserializeObject<ApplicationDetailsJsonResult>(fullResult).App;
+
+            // convert AM Hosts
+            app.AmHost = ParserUtilities.ParseNode(app.AmHostHttpAddress, Model);
+
+            return app;
         }
 
         public ApplicationAttemptResult ParseAppAttemptDetails(string attemptId)
@@ -129,14 +135,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public NodeResult[] ParseNodeList()
         {
             var fullResult = Connection.GetYarnNodeList();
-            var nodeRes = JsonConvert.DeserializeObject<JsonNodeListResult>(fullResult);
+            var nodeRes = JsonConvert.DeserializeObject<NodeListJsonResult>(fullResult);
             
             return nodeRes.Collection.List;
         }
 
         public NodeResult ParseNodeDetails(string nodeId)
         {
-            throw new NotImplementedException();
+            var fullResult = Connection.GetYarnNodeDetails(nodeId);
+            var node = JsonConvert.DeserializeObject<NodeDetailsJsonResult>(fullResult).Node;
+
+            return node;
         }
 
         #endregion

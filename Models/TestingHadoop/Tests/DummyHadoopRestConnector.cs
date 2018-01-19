@@ -58,15 +58,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             throw new NotImplementedException();
         }
 
-        public string GetYarnApplicationDetails(string appId)
-        {
-            throw new NotImplementedException();
-        }
+        public string GetYarnApplicationDetails(string appId) => ReadFile("appDetails.json");
 
-        public string GetYarnAppAttemptDetails(string attemptId)
-        {
-            throw new NotImplementedException();
-        }
+        public string GetYarnAppAttemptDetails(string attemptId) => ReadFile("attempts.json");
 
         public string GetYarnAppContainerDetails(string containerId)
         {
@@ -75,9 +69,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
         public string GetYarnNodeList() => ReadFile("nodeList.json");
 
+        /// <summary>
+        /// If given "dead": Returns the dead, else the running details
+        /// </summary>
+        /// <param name="nodeId">The given arg</param>
+        /// <returns>Dead or running details</returns>
         public string GetYarnNodeDetails(string nodeId)
         {
-            throw new NotImplementedException();
+            if(nodeId == "dead")
+                return ReadFile("nodeDead.json");
+            return ReadFile("nodeRunning.json");
         }
 
         public bool StartNode(string nodeName)

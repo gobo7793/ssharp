@@ -156,6 +156,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         }
 
         [Test]
+        public void TestParseContainerList()
+        {
+
+        }
+
+        [Test]
         public void TestParseNodeList()
         {
             #region expected nodes
@@ -274,6 +280,84 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Assert.AreEqual(node6, nodes[4], "node6 failed");
             Assert.AreEqual(node7, nodes[7], "node7 failed");
             Assert.AreEqual(node8, nodes[6], "node8 failed");
+        }
+
+        [Test]
+        public void TestParseApplicationDetails()
+        {
+            var app = new ApplicationResult
+            {
+                AppId = "application_1516180206337_0004",
+                AppName = "sorter",
+                State = EAppState.RUNNING,
+                FinalStatus = EFinalStatus.UNDEFINED,
+                Progess = 5,
+                TrackingUrl = "http://controller:8088/proxy/application_1516180206337_0004/",
+                AppType = "MAPREDUCE",
+                StartTime = new DateTime(2018, 1, 17, 14, 15, 30, 978),
+                FinishTime = DateTime.MinValue,
+                AmHostHttpAddress = "compute-4:8042",
+                AmHost = _Node4,
+                AllocatedMb = 10240,
+                AllocatedVcores = 9,
+                RunningContainers = 9,
+                MbSeconds = 279543,
+                VcoreSeconds = 234,
+                PreemptedMb = 0,
+                PreemptedVcores = 0,
+                NonAmContainerPreempted = 0,
+                AmContainerPreempted = 0,
+            };
+
+            var res = _Parser.ParseAppDetails("");
+
+            Assert.AreEqual(app, res);
+        }
+
+        [Test]
+        public void TestParseAppAttemptDetails()
+        {
+
+        }
+
+        [Test]
+        public void TestParseContainerDetails()
+        {
+
+        }
+
+        [Test]
+        public void TestParseNodeDetails()
+        {
+            var running = new NodeResult
+            {
+                NodeState = ENodeState.RUNNING,
+                NodeId = "compute-3:45454",
+                Hostname = "compute-3",
+                NodeHttpAdd = "compute-3:8042",
+                LastHealthUpdate = new DateTime(2018, 1, 17, 14, 14, 48, 21),
+                HealthReport = "",
+                RunningContainerCount = 2,
+                MemoryUsed = 2048,
+                MemoryAvailable = 6144,
+                CpuUsed = 2,
+                CpuAvailable = 6,
+            };
+            var dead = new NodeResult
+            {
+                NodeState = ENodeState.LOST,
+                NodeId = "compute-6:45454",
+                Hostname = "compute-6",
+                NodeHttpAdd = "",
+                LastHealthUpdate = new DateTime(2018, 1, 17, 10, 26, 30, 494),
+                HealthReport = "",
+            };
+
+            var runningRes = _Parser.ParseNodeDetails("");
+            var deadRes = _Parser.ParseNodeDetails("dead");
+
+            Assert.AreEqual(running, runningRes, "running node failed");
+            Assert.AreEqual(dead, deadRes, "dead node failed");
         }
     }
 }
