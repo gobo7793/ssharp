@@ -101,17 +101,23 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Tests\RestTestCases\appDetails.json" />
-    <None Include="Tests\RestTestCases\appsList.json" />
-    <None Include="Tests\RestTestCases\attempts.json" />
-    <None Include="Tests\RestTestCases\metrics.json" />
-    <None Include="Tests\RestTestCases\node1AppDetails.json" />
-    <None Include="Tests\RestTestCases\node1Containers.json" />
-    <None Include="Tests\RestTestCases\node3Apps.json" />
-    <None Include="Tests\RestTestCases\node3ContainerDetails.json" />
+    <None Include="Tests\RestTestCases\appattempts.json" />
+    <None Include="Tests\RestTestCases\apps.json" />
+    <None Include="Tests\RestTestCases\appsDetails.json" />
+    <None Include="Tests\RestTestCases\node1containers.json" />
+    <None Include="Tests\RestTestCases\node2containers.json" />
+    <None Include="Tests\RestTestCases\node3containers.json" />
+    <None Include="Tests\RestTestCases\node4containers.json" />
+    <None Include="Tests\RestTestCases\node4containersDetails.json" />
     <None Include="Tests\RestTestCases\nodeDead.json" />
-    <None Include="Tests\RestTestCases\nodeList.json" />
-    <None Include="Tests\RestTestCases\nodeRunning.json" />
+    <None Include="Tests\RestTestCases\nodes.json" />
+    <None Include="Tests\RestTestCases\nodesDetails.json" />
+    <None Include="Tests\RestTestCases\tlappattempts.json" />
+    <None Include="Tests\RestTestCases\tlappattemptsdetails.json" />
+    <None Include="Tests\RestTestCases\tlapps.json" />
+    <None Include="Tests\RestTestCases\tlappsDetails.json" />
+    <None Include="Tests\RestTestCases\tlcontainers.json" />
+    <None Include="Tests\RestTestCases\tlcontainersDetails.json" />
     <None Include="YarnModel.cd" />
     <None Include="packages.config" />
   </ItemGroup>

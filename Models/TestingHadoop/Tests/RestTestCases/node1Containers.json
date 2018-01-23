@@ -1,1 +1,17 @@
-{"containers":{"container":[{"id":"container_1516180206337_0003_01_000001","state":"RUNNING","exitCode":-1000,"diagnostics":"","user":"root","totalMemoryNeededMB":2048,"totalVCoresNeeded":1,"containerLogsLink":"http://compute-1:8042/node/containerlogs/container_1516180206337_0003_01_000001/root","nodeId":"compute-1:45454"},{"id":"container_1516180206337_0003_01_000002","state":"RUNNING","exitCode":-1000,"diagnostics":"","user":"root","totalMemoryNeededMB":1024,"totalVCoresNeeded":1,"containerLogsLink":"http://compute-1:8042/node/containerlogs/container_1516180206337_0003_01_000002/root","nodeId":"compute-1:45454"},{"id":"container_1516180206337_0003_01_000006","state":"RUNNING","exitCode":-1000,"diagnostics":"","user":"root","totalMemoryNeededMB":1024,"totalVCoresNeeded":1,"containerLogsLink":"http://compute-1:8042/node/containerlogs/container_1516180206337_0003_01_000006/root","nodeId":"compute-1:45454"}]}}
+{
+  "containers": {
+    "container": [
+      {
+        "id": "container_1516703400520_0010_01_000001",
+        "state": "LOCALIZING",
+        "exitCode": -1000,
+        "diagnostics": "",
+        "user": "root",
+        "totalMemoryNeededMB": 2048,
+        "totalVCoresNeeded": 1,
+        "containerLogsLink": "http://compute-1:8042/node/containerlogs/container_1516703400520_0010_01_000001/root",
+        "nodeId": "compute-1:45454"
+      }
+    ]
+  }
+}

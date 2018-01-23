@@ -1,0 +1,1 @@
+{"node":{"rack":"/default-rack","state":"RUNNING","id":"compute-3:45454","nodeHostName":"compute-3","nodeHTTPAddress":"compute-3:8042","lastHealthUpdate":1516716855514,"version":"2.7.1","healthReport":"","numContainers":0,"usedMemoryMB":0,"availMemoryMB":8192,"usedVirtualCores":0,"availableVirtualCores":8}}
