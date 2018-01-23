@@ -35,10 +35,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public string GetYarnAppAttemptList(string appId) =>
             "appattempt_1515488762656_0002_000001\t            FINISHED\tcontainer_1515488762656_0002_01_000001\thttp://controller:8088/proxy/application_1515488762656_0002/\n";
 
+        public string GetYarnAppAttemptListTl(string appId)
+        {
+            throw new NotImplementedException();
+        }
+
         public string GetYarnAppContainerList(string attemptId) =>
             "container_1515488762656_0011_01_000001\tTue Jan 09 09:41:14 +0000 2018\t                 N/A\t             RUNNING\t     compute-1:45454\thttp://compute-1:8042\thttp://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000001/root\n" +
             "container_1515488762656_0011_01_000002\tTue Jan 09 09:41:19 +0000 2018\t                 N/A\t             RUNNING\t     compute-2:45454\thttp://compute-2:8042\thttp://compute-2:8042/node/containerlogs/container_1515488762656_0011_01_000002/root\n" +
             "container_1515488762656_0011_01_000003\tTue Jan 09 09:41:19 +0000 2018\t                 N/A\t             RUNNING\t     compute-1:45454\thttp://compute-1:8042\thttp://compute-1:8042/node/containerlogs/container_1515488762656_0011_01_000003/root\n";
+
+        public string GetYarnAppContainerListTl(string attemptId)
+        {
+            throw new NotImplementedException();
+        }
 
         public string GetYarnApplicationDetails(string appId) => "Application Report : \n" +
                                                                  "\tApplication-Id : application_1515488762656_0002\n" +
@@ -63,17 +73,34 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                                                                     "\tTracking-URL : http://controller:8088/proxy/application_1515577485762_0006/\n" +
                                                                     "\tRPC Port : 44340\n" +
                                                                     "\tAM Host : compute-1\n" +
-                                                                    "\tDiagnostics : \n";
+                                                                    "\tDiagnostics : Container released by application\n";
 
-        public string GetYarnAppContainerDetails(string containerId) => "Container Report : \n" +
-                                                                        "\tContainer-Id : container_1515577485762_0008_01_000001\n" +
-                                                                        "\tStart-Time : 1515579722594\n" + // new DateTime(2018, 1, 10, 11, 22, 2, 594)
-                                                                        "\tFinish-Time : 0\n" + // DateTime.MinValue
-                                                                        "\tState : RUNNING\n" +
-                                                                        "\tLOG-URL : http://compute-1:8042/node/containerlogs/container_1515577485762_0008_01_000001/root\n" +
-                                                                        "\tHost : compute-1:45454\n" +
-                                                                        "\tNodeHttpAddress : http://compute-1:8042\n" +
-                                                                        "\tDiagnostics : null\n";
+        public string GetYarnAppAttemptDetailsTl(string attemptId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetYarnAppContainerDetails(string containerId) =>
+            "[hdp]: Using hadoop console command: yarn container -status container_1516703400520_0002_01_0000014\n" +
+            "18/01/23 13:40:22 INFO impl.TimelineClientImpl: Timeline service address: http://0.0.0.0:8188/ws/v1/timeline/\n" +
+            "18/01/23 13:40:22 INFO client.RMProxy: Connecting to ResourceManager at controller/10.0.0.3:8032\n" +
+            "18/01/23 13:40:22 INFO client.AHSProxy: Connecting to Application History server at /0.0.0.0:10200\n" +
+            "Container Report : \n" +
+            "\tContainer-Id : container_1515577485762_0008_01_000001\n" +
+            "\tStart-Time : 1515579722594\n" + // new DateTime(2018, 1, 10, 11, 22, 2, 594)
+            "\tFinish-Time : 0\n" + // DateTime.MinValue
+            "\tState : RUNNING\n" +
+            "\tLOG-URL : http://compute-1:8042/node/containerlogs/container_1515577485762_0008_01_000001/root\n" +
+            "\tHost : compute-1:45454\n" +
+            "\tNodeHttpAddress : http://compute-1:8042\n" +
+            "\tDiagnostics : Container killed by the ApplicationMaster.\n" +
+            "Container killed on request.Exit code is 143\n" +
+            "Container exited with a non-zero exit code 143\n";
+
+        public string GetYarnAppContainerDetailsTl(string containerId)
+        {
+            throw new NotImplementedException();
+        }
 
         public string GetYarnNodeList() => " compute-1:45454\t        RUNNING\t   compute-1:8042\t                           0\n" +
                                            " compute-2:45454\t        RUNNING\t   compute-2:8042\t                           0\n" +

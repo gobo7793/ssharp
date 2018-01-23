@@ -66,6 +66,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public YarnAppAttempt AppAttempt { get; set; }
 
         /// <summary>
+        /// Priority of the container
+        /// </summary>
+        public int Priority { get; set; }
+
+        /// <summary>
         /// Exit code of the container
         /// </summary>
         public int ExitCode { get; set; }
@@ -78,12 +83,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Amount of needed/allocated Memory in MB
         /// </summary>
-        public long MemoryNeeded { get; set; }
+        public long AllocatedMemory { get; set; }
 
         /// <summary>
         /// Amound of needed/allocated VCores
         /// </summary>
-        public long VcoresNeeded { get; set; }
+        public long AllocatedVcores { get; set; }
 
         #endregion
 
@@ -107,10 +112,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 EndTime = parsed.FinishTime;
                 State = parsed.State;
                 Host = parsed.Host;
+                Priority = parsed.Priority;
                 ExitCode = parsed.ExitCode;
                 Diagnostics = parsed.Diagnostics;
-                MemoryNeeded = parsed.MemoryNeeded;
-                VcoresNeeded = parsed.VcoresNeeded;
+                AllocatedMemory = parsed.MemoryNeeded;
+                AllocatedVcores = parsed.VcoresNeeded;
             }
         }
 

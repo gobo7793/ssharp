@@ -63,6 +63,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public string AmContainerId { get; set; }
 
         /// <summary>
+        /// ApplicationMaster Container, null if not available
+        /// </summary>
+        public YarnAppContainer AmContainer => Containers.FirstOrDefault(c => c.ContainerId == AmContainerId);
+
+        /// <summary>
         /// <see cref="YarnNode"/> the ApplicationMaster is running
         /// </summary>
         public YarnNode AmHost { get; set; }
@@ -76,6 +81,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Starting Time
         /// </summary>
         public DateTime StartTime { get; set; }
+
+        /// <summary>
+        /// Diagnostics message for failed containers
+        /// </summary>
+        public string Diagnostics { get; set; }
 
         #endregion
 
@@ -100,6 +110,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 AmHost = parsed.AmHost;
                 TrackingUrl = parsed.TrackingUrl;
                 StartTime = parsed.StartTime;
+                Diagnostics = parsed.Diagnostics;
 
                 var containers = Parser.ParseContainerList(AttemptId);
                 if(containers.Length > 0)

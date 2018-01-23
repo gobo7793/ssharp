@@ -204,6 +204,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                 AmHost = _Node1,
                 MbSeconds = 583396,
                 VcoreSeconds = 482,
+                Diagnostics = "",
             };
 
             var res = _Parser.ParseAppDetails("");
@@ -221,6 +222,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                 AmContainerId = "container_1515577485762_0006_01_000001",
                 TrackingUrl = "http://controller:8088/proxy/application_1515577485762_0006/",
                 AmHost = _Node1,
+                Diagnostics = "Container released by application",
             };
 
             var res = _Parser.ParseAppAttemptDetails("");
@@ -239,6 +241,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                 State = EContainerState.RUNNING,
                 Host = _Node1,
                 LogUrl = "http://compute-1:8042/node/containerlogs/container_1515577485762_0008_01_000001/root",
+                Diagnostics = "Container killed by the ApplicationMaster.\n" +
+                              "Container killed on request.Exit code is 143\n" +
+                              "Container exited with a non-zero exit code 143\n",
             };
 
             var res = _Parser.ParseContainerDetails("");

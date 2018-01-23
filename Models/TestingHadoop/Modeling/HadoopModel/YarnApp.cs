@@ -154,6 +154,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public long CurrentRunningContainers { get; set; }
 
         /// <summary>
+        /// Diagnostics message for failed containers
+        /// </summary>
+        public string Diagnostics { get; set; }
+
+        /// <summary>
         /// Indicates that the app can be killed
         /// </summary>
         //public bool IsKillable => State != EAppState.None &&
@@ -195,6 +200,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 AmContainerPreempted = parsed.AmContainerPreempted;
                 NonAmContainerPreempted = parsed.NonAmContainerPreempted;
                 CurrentRunningContainers = parsed.RunningContainers;
+                Diagnostics = parsed.Diagnostics;
 
                 var attempts = Parser.ParseAppAttemptList(AppId);
                 if(attempts.Length > 0)
