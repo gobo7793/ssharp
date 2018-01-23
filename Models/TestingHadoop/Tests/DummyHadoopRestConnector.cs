@@ -52,8 +52,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public string GetYarnApplicationList(string states) => ReadFile("appsList.json");
 
         public string GetYarnAppAttemptList(string appId) => ReadFile("attempts.json");
+        public string GetYarnAppAttemptListTl(string appId)
+        {
+            throw new NotImplementedException();
+        }
 
         public string GetYarnAppContainerList(string attemptId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetYarnAppContainerListTl(string attemptId)
         {
             throw new NotImplementedException();
         }
@@ -61,8 +70,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public string GetYarnApplicationDetails(string appId) => ReadFile("appDetails.json");
 
         public string GetYarnAppAttemptDetails(string attemptId) => ReadFile("attempts.json");
+        public string GetYarnAppAttemptDetailsTl(string attemptId)
+        {
+            throw new NotImplementedException();
+        }
 
         public string GetYarnAppContainerDetails(string containerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetYarnAppContainerDetailsTl(string containerId)
         {
             throw new NotImplementedException();
         }

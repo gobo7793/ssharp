@@ -241,9 +241,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                 State = EContainerState.RUNNING,
                 Host = _Node1,
                 LogUrl = "http://compute-1:8042/node/containerlogs/container_1515577485762_0008_01_000001/root",
-                Diagnostics = "Container killed by the ApplicationMaster.\n" +
-                              "Container killed on request.Exit code is 143\n" +
-                              "Container exited with a non-zero exit code 143\n",
+                Diagnostics = "Container killed by the ApplicationMaster. " +
+                              "Container killed on request.Exit code is 143 " +
+                              "Container exited with a non-zero exit code 143",
             };
 
             var res = _Parser.ParseContainerDetails("");

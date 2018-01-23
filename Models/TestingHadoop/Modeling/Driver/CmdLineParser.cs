@@ -221,7 +221,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     AmHost = ParserUtilities.ParseNode(matches[12].Groups[2].Value, Model),
                     MbSeconds = ParserUtilities.ParseInt(resourcesMatches[0].Value),
                     VcoreSeconds = ParserUtilities.ParseInt(resourcesMatches[1].Value),
-                    Diagnostics = matches[14].Groups[2].Value,
+                    Diagnostics = matches[14].Groups[2].Value.Replace('\n', ' '),
                 };
 
                 return app;
@@ -250,7 +250,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     AmContainerId = matches[2].Groups[2].Value,
                     TrackingUrl = matches[3].Groups[2].Value,
                     AmHost = ParserUtilities.ParseNode(matches[5].Groups[2].Value, Model),
-                    Diagnostics = matches[6].Groups[2].Value,
+                    Diagnostics = matches[6].Groups[2].Value.Replace('\n', ' '),
                 };
 
                 return attempt;
@@ -280,7 +280,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     State = ParserUtilities.ParseContainerState(matches[3].Groups[2].Value),
                     LogUrl = matches[4].Groups[2].Value,
                     Host = ParserUtilities.ParseNode(matches[5].Groups[2].Value, Model),
-                    Diagnostics = matches[7].Groups[2].Value,
+                    Diagnostics = matches[7].Groups[2].Value.Replace('\n', ' '),
                 };
 
                 return container;
