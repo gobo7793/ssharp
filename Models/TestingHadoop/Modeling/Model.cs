@@ -100,7 +100,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 
             InitApplications(4, parser);
             InitAppAttempts(4, parser);
-            InitContainers(4, parser);
+            InitContainers(16, parser);
         }
 
 
@@ -117,7 +117,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 
             InitApplications(1, parser);
             InitAppAttempts(1, parser);
-            InitContainers(8, parser);
+            InitContainers(16, parser);
         }
 
         #endregion
