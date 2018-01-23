@@ -49,43 +49,33 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         /// <returns>File content</returns>
         private string ReadFile(string filename) => File.ReadAllText($@"{_JsonFilesPath}\{filename}");
 
-        public string GetYarnApplicationList(string states) => ReadFile("appsList.json");
+        public string GetYarnApplicationList(string states) => ReadFile("apps.json");
 
-        public string GetYarnAppAttemptList(string appId) => ReadFile("attempts.json");
-        public string GetYarnAppAttemptListTl(string appId)
-        {
-            throw new NotImplementedException();
-        }
+        public string GetYarnAppAttemptList(string appId) => ReadFile("appattempts.json");
+
+        public string GetYarnAppAttemptListTl(string appId) => ReadFile("tlappattempts.json");
 
         public string GetYarnAppContainerList(string attemptId)
         {
             throw new NotImplementedException();
         }
 
-        public string GetYarnAppContainerListTl(string attemptId)
+        public string GetYarnAppContainerListTl(string attemptId) => ReadFile("tlcontainers.json");
+
+        public string GetYarnApplicationDetails(string appId) => ReadFile("appsDetails.json");
+
+        public string GetYarnAppAttemptDetails(string attemptId)
         {
             throw new NotImplementedException();
         }
 
-        public string GetYarnApplicationDetails(string appId) => ReadFile("appDetails.json");
+        public string GetYarnAppAttemptDetailsTl(string attemptId) => ReadFile("tlappattemptsdetails.json");
 
-        public string GetYarnAppAttemptDetails(string attemptId) => ReadFile("attempts.json");
-        public string GetYarnAppAttemptDetailsTl(string attemptId)
-        {
-            throw new NotImplementedException();
-        }
+        public string GetYarnAppContainerDetails(string containerId) => ReadFile("node4containersDetails.json");
 
-        public string GetYarnAppContainerDetails(string containerId)
-        {
-            throw new NotImplementedException();
-        }
+        public string GetYarnAppContainerDetailsTl(string containerId) => ReadFile("tlcontainersDetails.json");
 
-        public string GetYarnAppContainerDetailsTl(string containerId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetYarnNodeList() => ReadFile("nodeList.json");
+        public string GetYarnNodeList() => ReadFile("nodes.json");
 
         /// <summary>
         /// If given "dead": Returns the dead, else the running details
@@ -96,7 +86,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         {
             if(nodeId == "dead")
                 return ReadFile("nodeDead.json");
-            return ReadFile("nodeRunning.json");
+            return ReadFile("nodesDetails.json");
         }
 
         public bool StartNode(string nodeName)

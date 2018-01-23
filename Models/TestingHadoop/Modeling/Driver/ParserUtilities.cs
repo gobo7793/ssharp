@@ -32,6 +32,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     public static class ParserUtilities
     {
 
+        private static readonly Regex _ParseNodeRegex = new Regex(@"(https?:\/\/)?([^\:]+)(:\d*)?");
+        private static readonly Regex _DigitRegex = new Regex(@"\d+");
+        private static readonly Regex _DigitIdRegex = new Regex(@"\d+(?:\d|_)*\d+");
+
+        private static readonly CultureInfo _DefaultDtCulture = new CultureInfo("en-US");
+
         /// <summary>
         /// Parses the <see cref="YarnNode"/> or returns null if node not found
         /// </summary>
@@ -40,7 +46,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The parsed <see cref="YarnNode"/></returns>
         public static YarnNode ParseNode(string node, Model model)
         {
-            var nodeName = Regex.Match(node, @"(https?:\/\/)?([^\:]+)(:\d*)?").Groups[2].Value;
+            var nodeName = _ParseNodeRegex.Match(node).Groups[2].Value;
             if(!model.Nodes.ContainsKey(nodeName))
                 return null;
             return model.Nodes[nodeName];
@@ -113,7 +119,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The progress</returns>
         public static int ParseIntText(string value)
         {
-            return ParseInt(Regex.Match(value, @"\d+").Value);
+            return ParseInt(_DigitRegex.Match(value).Value);
         }
 
         /// <summary>
@@ -154,7 +160,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The parsed <see cref="DateTime"/></returns>
         public static DateTime ParseJavaTimestamp(string value, string format, CultureInfo culture = null)
         {
-            culture = culture ?? new CultureInfo("en-US");
+            culture = culture ?? _DefaultDtCulture;
             DateTime time;
             DateTime.TryParseExact(value, format, culture, DateTimeStyles.AssumeUniversal, out time);
             return time;
@@ -172,6 +178,28 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 appStates = states.ToString().Replace(" ", "");
 
             return appStates;
+        }
+
+        /// <summary>
+        /// Get the numeric part of the ids, like
+        /// "application_1516703400520_0003" -> "1516703400520_0003"
+        /// </summary>
+        /// <param name="fullId">the full id</param>
+        /// <returns>The numeric part</returns>
+        public static string GetNumericAppIdPart(string fullId)
+        {
+            return _DigitIdRegex.Match(fullId).Value;
+        }
+
+        /// <summary>
+        /// Builds the full attempt id
+        /// </summary>
+        /// <param name="numericAppId">Numeric part of the app id</param>
+        /// <param name="shortAttemptId">Short attempt id</param>
+        /// <returns>The full attempt id</returns>
+        public static string BuildAttemptId(string numericAppId, int shortAttemptId)
+        {
+            return $"appattempt_{numericAppId}_{shortAttemptId:D6}";
         }
     }
 

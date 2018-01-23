@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using Newtonsoft.Json;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
@@ -29,7 +30,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     public class JsonParser : IHadoopParser
     {
         #region Properties and Constants
-        
+
         /// <summary>
         /// Model with its components
         /// </summary>
@@ -87,12 +88,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public ApplicationAttemptResult[] ParseAppAttemptList(string appId)
         {
             var fullResult = Connection.GetYarnAppAttemptList(appId);
+            var tlResult = Connection.GetYarnAppAttemptListTl(appId);
             var attemptRes = JsonConvert.DeserializeObject<JsonAppAttemptListResult>(fullResult);
+            var tlAttempts = JsonConvert.DeserializeObject<JsonAppAttemptResultCollection>(tlResult);
 
-            // convert AM Hosts
+            var numericAppId = ParserUtilities.GetNumericAppIdPart(appId);
             var attempts = attemptRes.Collection.List;
             foreach(var attempt in attempts)
+            {
                 attempt.AmHost = ParserUtilities.ParseNode(attempt.AmHostId, Model);
+
+                // get more info from timeline server
+                string attemptId = String.Empty;
+                var parsedId = ParserUtilities.ParseInt(attempt.AttemptId);
+                if(parsedId != 0)
+                    attemptId = ParserUtilities.BuildAttemptId(numericAppId, parsedId);
+                else attemptId = attempt.AttemptId;
+
+                var tlAttempt = tlAttempts.List.FirstOrDefault(a => a.AttemptId == attemptId);
+                if(tlAttempt != null)
+                {
+                    attempt.AttemptId = tlAttempt.AttemptId;
+                    attempt.State = tlAttempt.State;
+                    attempt.TrackingUrl = tlAttempt.TrackingUrl;
+                    attempt.Diagnostics = tlAttempt.Diagnostics;
+                }
+            }
 
             return attempts;
         }
@@ -106,7 +127,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             throw new NotImplementedException();
         }
-        
+
         public ApplicationResult ParseAppDetails(string appId)
         {
             var fullResult = Connection.GetYarnApplicationDetails(appId);
@@ -136,7 +157,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             var fullResult = Connection.GetYarnNodeList();
             var nodeRes = JsonConvert.DeserializeObject<NodeListJsonResult>(fullResult);
-            
+
             return nodeRes.Collection.List;
         }
 
