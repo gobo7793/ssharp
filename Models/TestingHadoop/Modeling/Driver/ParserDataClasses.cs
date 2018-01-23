@@ -176,6 +176,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         [JsonProperty("numAMContainerPreempted")]
         public long AmContainerPreempted { get; set; }
 
+        /// <summary>
+        /// Diagnostics info
+        /// </summary>
+        [JsonProperty("diagnosticsInfo")]
+        public string Diagnostics { get; set; }
+
         public override bool Equals(object obj)
         {
             var result = obj as ApplicationResult;
@@ -354,6 +360,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public DateTime StartTime { get; set; }
 
         /// <summary>
+        /// Diagnostics info
+        /// </summary>
+        [JsonProperty("diagnosticsInfo")]
+        public string Diagnostics { get; set; }
+
+        /// <summary>
         /// Logs URL
         /// </summary>
         [JsonProperty("logsLink")]
@@ -512,6 +524,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         }
 
         /// <summary>
+        /// Priority of container
+        /// </summary>
+        [JsonProperty("priority")]
+        public int Priority { get; set; }
+
+        /// <summary>
         /// Exit code
         /// </summary>
         [JsonProperty("exitCode")]
@@ -571,9 +589,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                    StartTime == result.StartTime &&
                    FinishTime == result.FinishTime &&
                    State == result.State &&
-                   EqualityComparer<YarnNode>.Default.Equals(Host, result.Host) &&
                    HostId == result.HostId &&
                    LogUrl == result.LogUrl &&
+                   Priority == result.Priority &&
                    ExitCode == result.ExitCode &&
                    Diagnostics == result.Diagnostics &&
                    MemoryNeeded == result.MemoryNeeded &&
@@ -582,14 +600,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
         public override int GetHashCode()
         {
-            var hashCode = -524235881;
+            var hashCode = 1415456545;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ContainerId);
             hashCode = hashCode * -1521134295 + StartTime.GetHashCode();
             hashCode = hashCode * -1521134295 + FinishTime.GetHashCode();
             hashCode = hashCode * -1521134295 + State.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<YarnNode>.Default.GetHashCode(Host);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(HostId);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(LogUrl);
+            hashCode = hashCode * -1521134295 + Priority.GetHashCode();
             hashCode = hashCode * -1521134295 + ExitCode.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Diagnostics);
             hashCode = hashCode * -1521134295 + MemoryNeeded.GetHashCode();
