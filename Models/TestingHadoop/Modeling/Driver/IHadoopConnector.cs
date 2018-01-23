@@ -47,11 +47,25 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         string GetYarnAppAttemptList(string appId);
 
         /// <summary>
+        /// Gets the YARN application attempt list itself for the given app id from the timeline server
+        /// </summary>
+        /// <param name="appId">The app id</param>
+        /// <returns>The YARN application attempt list</returns>
+        string GetYarnAppAttemptListTl(string appId);
+
+        /// <summary>
         /// Gets the YARN application container list itself for the given application attempt id
         /// </summary>
         /// <param name="attemptId">The attempt id</param>
         /// <returns>The YARN application container list</returns>
         string GetYarnAppContainerList(string attemptId);
+
+        /// <summary>
+        /// Gets the YARN application container list itself for the given application attempt id from the timeline server
+        /// </summary>
+        /// <param name="attemptId">The attempt id</param>
+        /// <returns>The YARN application container list</returns>
+        string GetYarnAppContainerListTl(string attemptId);
 
         #endregion
 
@@ -72,11 +86,25 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         string GetYarnAppAttemptDetails(string attemptId);
 
         /// <summary>
+        /// Gets the YARN application attempt details itself for the given attempt id from the timeline server
+        /// </summary>
+        /// <param name="attemptId">The attempt id</param>
+        /// <returns>The YARN application attempt details</returns>
+        string GetYarnAppAttemptDetailsTl(string attemptId);
+
+        /// <summary>
         /// Gets the YARN application container details itself for the given container id
         /// </summary>
         /// <param name="containerId">The container id</param>
         /// <returns>The YARN application container details</returns>
         string GetYarnAppContainerDetails(string containerId);
+
+        /// <summary>
+        /// Gets the YARN application container details itself for the given container id from the timeline server
+        /// </summary>
+        /// <param name="containerId">The container id</param>
+        /// <returns>The YARN application container details</returns>
+        string GetYarnAppContainerDetailsTl(string containerId);
 
         #endregion
 
