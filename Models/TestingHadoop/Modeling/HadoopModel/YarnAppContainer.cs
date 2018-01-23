@@ -65,6 +65,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public YarnAppAttempt AppAttempt { get; set; }
 
+        /// <summary>
+        /// Exit code of the container
+        /// </summary>
+        public int ExitCode { get; set; }
+
+        /// <summary>
+        /// Diagnostics message for failed containers
+        /// </summary>
+        public string Diagnostics { get; set; }
+
+        /// <summary>
+        /// Amount of needed/allocated Memory in MB
+        /// </summary>
+        public long MemoryNeeded { get; set; }
+
+        /// <summary>
+        /// Amound of needed/allocated VCores
+        /// </summary>
+        public long VcoresNeeded { get; set; }
+
         #endregion
 
         #region IYarnReadable Methods
@@ -87,6 +107,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 EndTime = parsed.FinishTime;
                 State = parsed.State;
                 Host = parsed.Host;
+                ExitCode = parsed.ExitCode;
+                Diagnostics = parsed.Diagnostics;
+                MemoryNeeded = parsed.MemoryNeeded;
+                VcoresNeeded = parsed.VcoresNeeded;
             }
         }
 

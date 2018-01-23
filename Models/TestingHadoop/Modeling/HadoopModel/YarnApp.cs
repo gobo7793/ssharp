@@ -89,7 +89,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public DateTime StartTime { get; set; }
 
         /// <summary>
-        /// Ending Time
+        /// Ending Time, <see cref="DateTime.MinValue"/> if running
         /// </summary>
         public DateTime EndTime { get; set; }
 
@@ -99,14 +99,44 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public YarnNode AmHost { get; set; }
 
         /// <summary>
-        /// Allocated Memory MB-seconds
+        /// Allocated Memory in MB
         /// </summary>
-        public long AllocatedMemory { get; set; }
+        public long AllocatedMb { get; set; }
 
         /// <summary>
-        /// Allocated CPU vcore-seconds
+        /// Allocated CPU in VCores
         /// </summary>
-        public long AllocatedCpu { get; set; }
+        public long AllocatedVcores { get; set; }
+
+        /// <summary>
+        /// Aggregate Resource Allocation MB-seconds
+        /// </summary>
+        public long MbSeconds { get; set; }
+
+        /// <summary>
+        /// Aggregate Resource Allocation vcore-seconds
+        /// </summary>
+        public long VcoreSeconds { get; set; }
+
+        /// <summary>
+        /// Preempted Memory in MB
+        /// </summary>
+        public long PreemptedMb { get; set; }
+
+        /// <summary>
+        /// Preempted CPU in VCores
+        /// </summary>
+        public long PreemptedVcores { get; set; }
+
+        /// <summary>
+        /// Preempted Non-AM container count
+        /// </summary>
+        public long NonAmContainerPreempted { get; set; }
+
+        /// <summary>
+        /// Preempted AM container count
+        /// </summary>
+        public long AmContainerPreempted { get; set; }
 
         /// <summary>
         /// Current Progress
@@ -114,7 +144,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public float Progress { get; set; }
 
         /// <summary>
-        /// Indicates if the app can be killed
+        /// The tracking url for web UI
+        /// </summary>
+        public string TrackingUrl { get; set; }
+
+        /// <summary>
+        /// The current running container count on the cluster
+        /// </summary>
+        public long CurrentRunningContainers { get; set; }
+
+        /// <summary>
+        /// Indicates that the app can be killed
         /// </summary>
         //public bool IsKillable => State != EAppState.None &&
         //                          (State & (EAppState.FAILED | EAppState.FINISHED | EAppState.KILLED | EAppState.NotStartedYet)) ==
@@ -146,8 +186,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 State = parsed.State;
                 FinalStatus = parsed.FinalStatus;
                 AmHost = parsed.AmHost;
-                AllocatedMemory = parsed.MbSeconds;
-                AllocatedCpu = parsed.VcoreSeconds;
+                AllocatedMb = parsed.AllocatedMb;
+                AllocatedVcores = parsed.AllocatedVcores;
+                MbSeconds = parsed.MbSeconds;
+                VcoreSeconds = parsed.VcoreSeconds;
+                PreemptedMb = parsed.PreemptedMb;
+                PreemptedVcores = parsed.PreemptedVcores;
+                AmContainerPreempted = parsed.AmContainerPreempted;
+                NonAmContainerPreempted = parsed.NonAmContainerPreempted;
+                CurrentRunningContainers = parsed.RunningContainers;
 
                 var attempts = Parser.ParseAppAttemptList(AppId);
                 if(attempts.Length > 0)

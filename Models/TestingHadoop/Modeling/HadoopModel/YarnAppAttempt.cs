@@ -67,6 +67,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public YarnNode AmHost { get; set; }
 
+        /// <summary>
+        /// The tracking url for web UI
+        /// </summary>
+        public string TrackingUrl { get; set; }
+
+        /// <summary>
+        /// Starting Time
+        /// </summary>
+        public DateTime StartTime { get; set; }
+
         #endregion
 
         #region IYarnReadable Methods
@@ -88,6 +98,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 State = parsed.State;
                 AmContainerId = parsed.AmContainerId;
                 AmHost = parsed.AmHost;
+                TrackingUrl = parsed.TrackingUrl;
+                StartTime = parsed.StartTime;
 
                 var containers = Parser.ParseContainerList(AttemptId);
                 if(containers.Length > 0)

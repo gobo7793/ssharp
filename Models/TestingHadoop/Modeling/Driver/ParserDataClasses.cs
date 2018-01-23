@@ -175,6 +175,58 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         [JsonProperty("numAMContainerPreempted")]
         public long AmContainerPreempted { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            var result = obj as ApplicationResult;
+            return result != null &&
+                   AppId == result.AppId &&
+                   AppName == result.AppName &&
+                   AppType == result.AppType &&
+                   State == result.State &&
+                   FinalStatus == result.FinalStatus &&
+                   Progess == result.Progess &&
+                   TrackingUrl == result.TrackingUrl &&
+                   StartTime == result.StartTime &&
+                   FinishTime == result.FinishTime &&
+                   EqualityComparer<YarnNode>.Default.Equals(AmHost, result.AmHost) &&
+                   AmHostHttpAddress == result.AmHostHttpAddress &&
+                   RunningContainers == result.RunningContainers &&
+                   AllocatedMb == result.AllocatedMb &&
+                   AllocatedVcores == result.AllocatedVcores &&
+                   MbSeconds == result.MbSeconds &&
+                   VcoreSeconds == result.VcoreSeconds &&
+                   PreemptedMb == result.PreemptedMb &&
+                   PreemptedVcores == result.PreemptedVcores &&
+                   NonAmContainerPreempted == result.NonAmContainerPreempted &&
+                   AmContainerPreempted == result.AmContainerPreempted;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -2097537572;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AppId);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AppName);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AppType);
+            hashCode = hashCode * -1521134295 + State.GetHashCode();
+            hashCode = hashCode * -1521134295 + FinalStatus.GetHashCode();
+            hashCode = hashCode * -1521134295 + Progess.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TrackingUrl);
+            hashCode = hashCode * -1521134295 + StartTime.GetHashCode();
+            hashCode = hashCode * -1521134295 + FinishTime.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<YarnNode>.Default.GetHashCode(AmHost);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AmHostHttpAddress);
+            hashCode = hashCode * -1521134295 + RunningContainers.GetHashCode();
+            hashCode = hashCode * -1521134295 + AllocatedMb.GetHashCode();
+            hashCode = hashCode * -1521134295 + AllocatedVcores.GetHashCode();
+            hashCode = hashCode * -1521134295 + MbSeconds.GetHashCode();
+            hashCode = hashCode * -1521134295 + VcoreSeconds.GetHashCode();
+            hashCode = hashCode * -1521134295 + PreemptedMb.GetHashCode();
+            hashCode = hashCode * -1521134295 + PreemptedVcores.GetHashCode();
+            hashCode = hashCode * -1521134295 + NonAmContainerPreempted.GetHashCode();
+            hashCode = hashCode * -1521134295 + AmContainerPreempted.GetHashCode();
+            return hashCode;
+        }
     }
 
     /// <summary>
@@ -430,6 +482,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// Host
         /// </summary>
+        [JsonIgnore]
         public YarnNode Host { get; set; }
 
         /// <summary>

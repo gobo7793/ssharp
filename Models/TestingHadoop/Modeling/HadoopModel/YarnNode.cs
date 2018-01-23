@@ -106,9 +106,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public long MemoryUsed { get; set; }
 
         /// <summary>
-        /// Total Memory available in MB
+        /// Current Memory available in MB
         /// </summary>
-        public long MemoryCapacity { get; set; }
+        public long MemoryAvailable { get; set; }
+
+        /// <summary>
+        /// Total Memory capacity in MB
+        /// </summary>
+        public long MemoryCapacity => MemoryUsed + MemoryAvailable;
 
         /// <summary>
         /// Current CPU vcores in use
@@ -116,14 +121,24 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public long CpuUsed { get; set; }
 
         /// <summary>
-        /// Total CPU vcores available
+        /// Current CPU vcores available
         /// </summary>
-        public long CpuCapacity { get; set; }
+        public long CpuAvailable { get; set; }
+
+        /// <summary>
+        /// Total CPU vcores capacity
+        /// </summary>
+        public long CpuCapacity => CpuUsed + CpuAvailable;
 
         /// <summary>
         /// Number of current running containers
         /// </summary>
-        public int ContainerCount { get; set; }
+        public int RunningContainerCount { get; set; }
+
+        /// <summary>
+        /// Latest health update to <see cref="YarnController"/>
+        /// </summary>
+        public DateTime LastHealthUpdate { get; set; }
 
         #endregion
 
@@ -144,11 +159,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             if(parsed != null)
             {
                 State = parsed.NodeState;
-                ContainerCount = parsed.RunningContainerCount;
+                RunningContainerCount = parsed.RunningContainerCount;
                 MemoryUsed = parsed.MemoryUsed;
-                MemoryCapacity = parsed.MemoryCapacity;
+                MemoryAvailable = parsed.MemoryAvailable;
                 CpuUsed = parsed.CpuUsed;
-                CpuCapacity = parsed.CpuCapacity;
+                CpuAvailable = parsed.CpuAvailable;
+                LastHealthUpdate = parsed.LastHealthUpdate;
             }
         }
 
