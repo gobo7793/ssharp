@@ -186,20 +186,44 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="fullId">the full id</param>
         /// <returns>The numeric part</returns>
-        public static string GetNumericAppIdPart(string fullId)
+        public static string GetNumericIdPart(string fullId)
         {
             return _DigitIdRegex.Match(fullId).Value;
         }
 
         /// <summary>
+        /// Builds the full application id from an attempt id
+        /// </summary>
+        /// <param name="attemptId">The full attempt id</param>
+        /// <returns>The full application id</returns>
+        public static string BuildAppIdFromAttempt(string attemptId)
+        {
+            var id = $"application_{GetNumericIdPart(attemptId)}";
+            return id.Substring(0, id.Length - 7);
+        }
+
+        /// <summary>
         /// Builds the full attempt id
         /// </summary>
-        /// <param name="numericAppId">Numeric part of the app id</param>
+        /// <param name="appId">The app id</param>
         /// <param name="shortAttemptId">Short attempt id</param>
         /// <returns>The full attempt id</returns>
-        public static string BuildAttemptId(string numericAppId, int shortAttemptId)
+        public static string BuildAttemptIdFromApp(string appId, int shortAttemptId)
         {
-            return $"appattempt_{numericAppId}_{shortAttemptId:D6}";
+            return $"appattempt_{GetNumericIdPart(appId)}_{shortAttemptId:D6}";
+        }
+
+        /// <summary>
+        /// Builds the basic container id from the full attempt id
+        /// like "appattempt_1516703400520_0010_000001" -> "container_1516703400520_0010_01"_000001
+        /// </summary>
+        /// <param name="attemptId"></param>
+        /// <returns></returns>
+        public static string BuildBaseContainerIdFromAttempt(string attemptId)
+        {
+            var numAttempt = GetNumericIdPart(attemptId);
+            var conBaseNum = numAttempt.Remove(numAttempt.Length - 6, 4);
+            return $"container_{conBaseNum}";
         }
     }
 

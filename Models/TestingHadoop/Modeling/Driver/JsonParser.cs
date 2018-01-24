@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
@@ -90,9 +91,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var fullResult = Connection.GetYarnAppAttemptList(appId);
             var tlResult = Connection.GetYarnAppAttemptListTl(appId);
             var attemptRes = JsonConvert.DeserializeObject<JsonAppAttemptListResult>(fullResult);
-            var tlAttempts = JsonConvert.DeserializeObject<JsonAppAttemptResultCollection>(tlResult);
 
-            var numericAppId = ParserUtilities.GetNumericAppIdPart(appId);
+            JsonAppAttemptResultCollection tlAttempts = null;
+            if(!String.IsNullOrWhiteSpace(tlResult))
+                tlAttempts = JsonConvert.DeserializeObject<JsonAppAttemptResultCollection>(tlResult);
+
             var attempts = attemptRes.Collection.List;
             foreach(var attempt in attempts)
             {
@@ -102,10 +105,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 string attemptId = String.Empty;
                 var parsedId = ParserUtilities.ParseInt(attempt.AttemptId);
                 if(parsedId != 0)
-                    attemptId = ParserUtilities.BuildAttemptId(numericAppId, parsedId);
+                    attemptId = ParserUtilities.BuildAttemptIdFromApp(appId, parsedId);
                 else attemptId = attempt.AttemptId;
 
-                var tlAttempt = tlAttempts.List.FirstOrDefault(a => a.AttemptId == attemptId);
+                var tlAttempt = tlAttempts?.List?.FirstOrDefault(a => a.AttemptId == attemptId);
                 if(tlAttempt != null)
                 {
                     attempt.AttemptId = tlAttempt.AttemptId;
@@ -119,13 +122,65 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         }
 
         /// <summary>
-        /// Gets and parses the current running <see cref="YarnAppContainer"/> list for the given <see cref="YarnAppAttempt.AttemptId"/>
+        /// Gets and parses the current running <see cref="YarnAppContainer"/> list for the given <see cref="YarnAppAttempt.AttemptId"/>.
+        /// Timeline data overrides RM data!
         /// </summary>
         /// <param name="attemptId">The attempt id</param>
         /// <returns>The running containers</returns>
         public ContainerResult[] ParseContainerList(string attemptId)
         {
-            throw new NotImplementedException();
+            var containerList = new List<ContainerResult>();
+
+            var baseContainerId = ParserUtilities.BuildBaseContainerIdFromAttempt(attemptId);
+            var tlContainerResult = Connection.GetYarnAppContainerListTl(attemptId);
+
+            // Get from RM
+            foreach(var node in Model.Nodes)
+            {
+                var containerResult = Connection.GetYarnAppContainerList(node.Value.HttpUrl);
+                var containers = JsonConvert.DeserializeObject<JsonContainerListResult>(containerResult);
+                if(containers?.Collection?.List?.Length > 0)
+                    foreach(var con in containers.Collection.List)
+                    {
+                        if(con.ContainerId.StartsWith(baseContainerId))
+                        {
+                            con.Host = node.Value;
+                            containerList.Add(con);
+                        }
+                    }
+            }
+
+            // Add TL infos
+            if(!String.IsNullOrWhiteSpace(tlContainerResult))
+            {
+                var tlContainers = JsonConvert.DeserializeObject<JsonContainerResultCollection>(tlContainerResult);
+
+                if(containerList.Count == 0 && tlContainers?.List?.Length > 0)
+                    return tlContainers.List; // if only TL
+                if(tlContainers?.List == null || tlContainers.List.Length == 0)
+                    return containerList.ToArray(); // if nothing in TL
+
+                // if booth
+                var originalContainers = containerList.ToDictionary(c => c.ContainerId);
+                foreach(var tlContainer in tlContainers.List)
+                {
+                    // merge tl data to rm data
+                    if(originalContainers.ContainsKey(tlContainer.ContainerId))
+                    {
+                        originalContainers[tlContainer.ContainerId].Priority = tlContainer.Priority;
+                        originalContainers[tlContainer.ContainerId].StartTime = tlContainer.StartTime;
+                        originalContainers[tlContainer.ContainerId].FinishTime = tlContainer.FinishTime;
+                    }
+                    else // copy else
+                    {
+                        tlContainer.Host = ParserUtilities.ParseNode(tlContainer.HostId, Model);
+                        originalContainers[tlContainer.ContainerId] = tlContainer;
+                    }
+                }
+                return originalContainers.Values.ToArray();
+            }
+
+            return containerList.ToArray();
         }
 
         public ApplicationResult ParseAppDetails(string appId)
@@ -141,7 +196,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
         public ApplicationAttemptResult ParseAppAttemptDetails(string attemptId)
         {
-            throw new NotImplementedException();
+            var appId = ParserUtilities.BuildAppIdFromAttempt(attemptId);
+
+            var allAttemptsRes = Connection.GetYarnAppAttemptList(appId);
+            var tlDetailsRes = Connection.GetYarnAppAttemptDetailsTl(attemptId);
+            var allAttempts = JsonConvert.DeserializeObject<JsonAppAttemptListResult>(allAttemptsRes);
+
+            var attempt = allAttempts.Collection.List.FirstOrDefault(a => attemptId.EndsWith(a.AttemptId));
+            if(attempt != null)
+            {
+                attempt.AttemptId = attemptId;
+                attempt.AmHost = ParserUtilities.ParseNode(attempt.AmHostId, Model);
+                if(!String.IsNullOrWhiteSpace(tlDetailsRes))
+                {
+                    var tlDetails = JsonConvert.DeserializeObject<ApplicationAttemptResult>(tlDetailsRes);
+                    attempt.TrackingUrl = tlDetails.TrackingUrl;
+                    attempt.Diagnostics = tlDetails.Diagnostics;
+                    attempt.State = tlDetails.State;
+                }
+            }
+
+            return attempt;
         }
 
         public ContainerResult ParseContainerDetails(string containerId)

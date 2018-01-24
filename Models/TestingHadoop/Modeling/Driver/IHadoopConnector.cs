@@ -20,8 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
-
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 {
     /// <summary>
@@ -54,11 +52,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         string GetYarnAppAttemptListTl(string appId);
 
         /// <summary>
-        /// Gets the YARN application container list itself for the given application attempt id
+        /// Gets the YARN application container list itself for the given id of application attempt or node
         /// </summary>
-        /// <param name="attemptId">The attempt id</param>
+        /// <param name="id">The attempt or node id</param>
         /// <returns>The YARN application container list</returns>
-        string GetYarnAppContainerList(string attemptId);
+        string GetYarnAppContainerList(string id);
 
         /// <summary>
         /// Gets the YARN application container list itself for the given application attempt id from the timeline server

@@ -177,7 +177,57 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestParseContainerList()
         {
+            #region expected containers
+            var container1 = new ContainerResult
+            {
+                ContainerId = "container_1516703400520_0013_01_000001",
+                State = EContainerState.RUNNING,
+                ExitCode = -1000,
+                Diagnostics = "",
+                MemoryNeeded = 2048,
+                VcoresNeeded = 1,
+                LogUrl = "http://compute-2:8042/node/containerlogs/container_1516703400520_0013_01_000001/root",
+                HostId = "compute-2:45454",
+                Host = _Node2,
+                StartTime = new DateTime(2018, 1, 24, 14, 1, 44, 268),
+                FinishTime = DateTime.MinValue,
+                Priority = 0,
+            };
+            var container7 = new ContainerResult
+            {
+                ContainerId = "container_1516703400520_0013_01_000007",
+                State = EContainerState.KILLING,
+                ExitCode = -105,
+                Diagnostics = "Container killed by the ApplicationMaster.\n",
+                MemoryNeeded = 1024,
+                VcoresNeeded = 1,
+                LogUrl = "http://compute-2:8042/node/containerlogs/container_1516703400520_0013_01_000007/root",
+                HostId = "compute-2:45454",
+                Host = _Node2,
+            };
+            var container21 = new ContainerResult
+            {
+                ContainerId = "container_1516703400520_0013_01_000021",
+                State = EContainerState.COMPLETE,
+                ExitCode = 0,
+                Diagnostics = "Container killed by the ApplicationMaster.\n",
+                MemoryNeeded = 1024,
+                VcoresNeeded = 1,
+                LogUrl = "http://0.0.0.0:8188/applicationhistory/logs/compute-4:45454/container_1516703400520_0013_01_000021/container_1516703400520_0013_01_000021/root",
+                HostId = "compute-4:45454",
+                Host = _Node4,
+                StartTime = new DateTime(2018, 1, 24, 14, 1, 50, 858),
+                FinishTime = new DateTime(2018, 1, 24, 14, 2,23,122),
+                Priority = 20,
+            };
+            #endregion
 
+            var containers = _Parser.ParseContainerList("appattempt_1516703400520_0013_000001");
+
+            Assert.AreEqual(5, containers.Length, "wrong parsed containers count");
+            Assert.AreEqual(container1, containers[1], "container1 failed");
+            Assert.AreEqual(container7, containers[2], "container7 failed");
+            Assert.AreEqual(container21, containers[4], "container21 failed");
         }
 
         [Test]
@@ -286,7 +336,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestParseAppAttemptDetails()
         {
+            var attempt = new ApplicationAttemptResult
+            {
+                AttemptId = "appattempt_1516703400520_0010_000002",
+                StartTime = new DateTime(2018, 1, 23, 15, 23, 10, 696),
+                AmContainerId = "container_1516703400520_0010_02_000001",
+                AmHostHttpAddress = "compute-1:8042",
+                AmHostId = "compute-1:45454",
+                AmHost = _Node1,
+                LogsUrl = "//compute-1:8042/node/containerlogs/container_1516703400520_0010_02_000001/root",
+                TrackingUrl = "http://controller:8088/proxy/application_1516703400520_0010/",
+                Diagnostics = "",
+                State = EAppState.FINISHED,
+            };
 
+            var res = _Parser.ParseAppAttemptDetails("appattempt_1516703400520_0010_000002");
+
+            Assert.AreEqual(attempt, res);
         }
 
         [Test]

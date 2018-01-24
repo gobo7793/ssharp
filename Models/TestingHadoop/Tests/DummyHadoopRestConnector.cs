@@ -55,18 +55,29 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
         public string GetYarnAppAttemptListTl(string appId) => ReadFile("tlappattempts.json");
 
-        public string GetYarnAppContainerList(string attemptId)
+        public string GetYarnAppContainerList(string id)
         {
-            throw new NotImplementedException();
+            switch(id)
+            {
+                case "http://compute-1:8042":
+                    return ReadFile("node1runningContainers.json");
+                case "http://compute-2:8042":
+                    return ReadFile("node2runningContainers.json");
+                case "http://compute-3:8042":
+                    return ReadFile("node3runningContainers.json");
+                case "http://compute-4:8042":
+                    return ReadFile("node4runningContainers.json");
+            }
+            return String.Empty;
         }
 
-        public string GetYarnAppContainerListTl(string attemptId) => ReadFile("tlcontainers.json");
+        public string GetYarnAppContainerListTl(string attemptId) => ReadFile("tlrunningContainers.json");
 
         public string GetYarnApplicationDetails(string appId) => ReadFile("appsDetails.json");
 
         public string GetYarnAppAttemptDetails(string attemptId)
         {
-            throw new NotImplementedException();
+            throw new PlatformNotSupportedException();
         }
 
         public string GetYarnAppAttemptDetailsTl(string attemptId) => ReadFile("tlappattemptsdetails.json");
