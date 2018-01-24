@@ -32,8 +32,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     ///     NEW, LOCALIZING, LOCALIZATION_FAILED, LOCALIZED, RUNNING,
     ///     EXITED_WITH_SUCCESS, EXITED_WITH_FAILURE, KILLING,
     ///     CONTAINER_CLEANEDUP_AFTER_KILL, CONTAINER_RESOURCES_CLEANINGUP, DONE
+    /// TL: COMPLETE
     /// 
     /// via http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/NodeManagerRest.html#Container_API
+    /// and http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/TimelineServer.html#GENERIC_DATA_REST_APIS
     /// </remarks>
     [Flags]
     public enum EContainerState
@@ -49,6 +51,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         KILLING,
         CONTAINER_CLEANEDUP_AFTER_KILL,
         CONTAINER_RESOURCES_CLEANINGUP,
-        DONE
+        DONE,
+        COMPLETE
     }
 }
