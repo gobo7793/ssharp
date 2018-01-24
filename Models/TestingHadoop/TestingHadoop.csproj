@@ -105,10 +105,14 @@
     <None Include="Tests\RestTestCases\apps.json" />
     <None Include="Tests\RestTestCases\appsDetails.json" />
     <None Include="Tests\RestTestCases\node1containers.json" />
+    <None Include="Tests\RestTestCases\node1runningContainers.json" />
     <None Include="Tests\RestTestCases\node2containers.json" />
+    <None Include="Tests\RestTestCases\node2runningContainers.json" />
     <None Include="Tests\RestTestCases\node3containers.json" />
+    <None Include="Tests\RestTestCases\node3runningContainers.json" />
     <None Include="Tests\RestTestCases\node4containers.json" />
     <None Include="Tests\RestTestCases\node4containersDetails.json" />
+    <None Include="Tests\RestTestCases\node4runningContainers.json" />
     <None Include="Tests\RestTestCases\nodeDead.json" />
     <None Include="Tests\RestTestCases\nodes.json" />
     <None Include="Tests\RestTestCases\nodesDetails.json" />
@@ -118,6 +122,7 @@
     <None Include="Tests\RestTestCases\tlappsDetails.json" />
     <None Include="Tests\RestTestCases\tlcontainers.json" />
     <None Include="Tests\RestTestCases\tlcontainersDetails.json" />
+    <None Include="Tests\RestTestCases\tlrunningContainers.json" />
     <None Include="YarnModel.cd" />
     <None Include="packages.config" />
   </ItemGroup>
