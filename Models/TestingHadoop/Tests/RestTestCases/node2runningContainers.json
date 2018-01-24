@@ -1,0 +1,28 @@
+{
+  "containers": {
+    "container": [
+      {
+        "id": "container_1516703400520_0013_01_000001",
+        "state": "RUNNING",
+        "exitCode": -1000,
+        "diagnostics": "",
+        "user": "root",
+        "totalMemoryNeededMB": 2048,
+        "totalVCoresNeeded": 1,
+        "containerLogsLink": "http://compute-2:8042/node/containerlogs/container_1516703400520_0013_01_000001/root",
+        "nodeId": "compute-2:45454"
+      },
+      {
+        "id": "container_1516703400520_0013_01_000007",
+        "state": "KILLING",
+        "exitCode": -105,
+        "diagnostics": "Container killed by the ApplicationMaster.\n",
+        "user": "root",
+        "totalMemoryNeededMB": 1024,
+        "totalVCoresNeeded": 1,
+        "containerLogsLink": "http://compute-2:8042/node/containerlogs/container_1516703400520_0013_01_000007/root",
+        "nodeId": "compute-2:45454"
+      }
+    ]
+  }
+}

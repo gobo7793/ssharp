@@ -1,0 +1,17 @@
+{
+  "containers": {
+    "container": [
+      {
+        "id": "container_1516703400520_0013_01_000016",
+        "state": "RUNNING",
+        "exitCode": -1000,
+        "diagnostics": "",
+        "user": "root",
+        "totalMemoryNeededMB": 1024,
+        "totalVCoresNeeded": 1,
+        "containerLogsLink": "http://compute-4:8042/node/containerlogs/container_1516703400520_0013_01_000016/root",
+        "nodeId": "compute-4:45454"
+      }
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "container": [
+  {
+      "containerId": "container_1516703400520_0013_01_000021",
+      "allocatedMB": 1024,
+      "allocatedVCores": 1,
+      "assignedNodeId": "compute-4:45454",
+      "priority": 20,
+      "startedTime": 1516798910858,
+      "finishedTime": 1516798943122,
+      "elapsedTime": 32264,
+      "diagnosticsInfo": "Container killed by the ApplicationMaster.\n",
+      "logUrl": "http://0.0.0.0:8188/applicationhistory/logs/compute-4:45454/container_1516703400520_0013_01_000021/container_1516703400520_0013_01_000021/root",
+      "containerExitStatus": 0,
+      "containerState": "COMPLETE",
+      "nodeHttpAddress": "http://compute-4:8042"
+    },{
+      "containerId": "container_1516703400520_0013_01_000016",
+      "allocatedMB": 1024,
+      "allocatedVCores": 1,
+      "assignedNodeId": "compute-4:45454",
+      "priority": 20,
+      "startedTime": 1516798910856,
+      "finishedTime": 1516798943121,
+      "elapsedTime": 32265,
+      "diagnosticsInfo": "Container killed by the ApplicationMaster.\n",
+      "logUrl": "http://0.0.0.0:8188/applicationhistory/logs/compute-4:45454/container_1516703400520_0013_01_000016/container_1516703400520_0013_01_000016/root",
+      "containerExitStatus": 0,
+      "containerState": "COMPLETE",
+      "nodeHttpAddress": "http://compute-4:8042"
+    },
+    {
+      "containerId": "container_1516703400520_0013_01_000008",
+      "allocatedMB": 1024,
+      "allocatedVCores": 1,
+      "assignedNodeId": "compute-1:45454",
+      "priority": 20,
+      "startedTime": 1516798910740,
+      "finishedTime": 0,
+      "elapsedTime": 32698,
+      "logUrl": "http://0.0.0.0:8188/applicationhistory/logs/compute-1:45454/container_1516703400520_0013_01_000008/container_1516703400520_0013_01_000008/root",
+      "containerExitStatus": -1000,
+      "nodeHttpAddress": "http://compute-1:8042"
+    },
+    {
+      "containerId": "container_1516703400520_0013_01_000001",
+      "allocatedMB": 2048,
+      "allocatedVCores": 1,
+      "assignedNodeId": "compute-2:45454",
+      "priority": 0,
+      "startedTime": 1516798904268,
+      "finishedTime": 0,
+      "elapsedTime": 39170,
+      "logUrl": "http://0.0.0.0:8188/applicationhistory/logs/compute-2:45454/container_1516703400520_0013_01_000001/container_1516703400520_0013_01_000001/root",
+      "containerExitStatus": -1000,
+      "nodeHttpAddress": "http://compute-2:8042"
+    }
+  ]
+}
