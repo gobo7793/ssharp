@@ -27,8 +27,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 {
     public class DummyHadoopCmdConnector : IHadoopConnector
     {
-        public string Host { get; set; }
-
         public string GetYarnApplicationList(string states) =>
             "application_1515488762656_0001\t  random-text-writer\t           MAPREDUCE\t      root\t   default\t          FINISHED\t         SUCCEEDED\t           100%\thttp://controller:19888/jobhistory/job/job_1515488762656_0001\n" +
             "application_1515488762656_0002\t          word count\t           MAPREDUCE\t      root\t   default\t          FINISHED\t         SUCCEEDED\t           100%\thttp://controller:19888/jobhistory/job/job_1515488762656_0002\n" +

@@ -27,10 +27,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// </summary>
     public interface IHadoopConnector
     {
-        /// <summary>
-        /// The controller/timeline host to connect
-        /// </summary>
-        string Host { get; set; }
 
         #region YARN Lists
 
