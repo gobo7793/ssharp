@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Renci.SshNet;
 
@@ -10,6 +9,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// </summary>
     public class SshConnection : IDisposable
     {
+        #region Properties
 
         /// <summary>
         /// Random generator
@@ -40,6 +40,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// The private key file
         /// </summary>
         private PrivateKeyFile PrivateKeyFile { get; }
+
+        /// <summary>
+        /// Indicates if the connection is currently executing something
+        /// </summary>
+        public bool InUse { get; private set; }
+
+        #endregion
+
+        #region Main Methods
 
         /// <summary>
         /// Create a ssh connection instance for the given host and given username
@@ -84,6 +93,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             Dispose();
         }
+
+        /// <summary>
+        /// Releases all ressources
+        /// </summary>
+        public void Dispose()
+        {
+            Disconnect();
+            Client?.Dispose();
+            Stream?.Dispose();
+            PrivateKeyFile?.Dispose();
+        }
+
+        #endregion
+
+        #region Connection Methods
 
         /// <summary>
         /// Connects to the Host via SSH using the given password
@@ -136,6 +160,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             Connect();
         }
 
+        #endregion
+
+        #region Executing Methods
+
         /// <summary>
         /// Runs the given command on the host and returns the output immediately
         /// </summary>
@@ -144,11 +172,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The command output</returns>
         public string RunIm(string command, bool consoleOut = false)
         {
+            InUse = true;
+
             var exitStr = GetExitString();
             var sendStr = $"{command}; echo '{exitStr}'";
 
             Stream.WriteLine(sendStr);
             var answer = Read(exitStr, consoleOut);
+
+            InUse = false;
             return answer;
         }
 
@@ -160,9 +192,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The command output</returns>
         public string Run(string command, bool consoleOut = false)
         {
+            InUse = true;
+
             var cmd = Client.CreateCommand(command);
             cmd.Execute();
             Out(cmd.Result);
+
+            InUse = false;
             return cmd.Result;
         }
 
@@ -197,8 +233,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="line">The line to write</param>
         /// <param name="consoleOut">True to show the output directly on the own shell</param>
-        /// <param name="callingMember">The calling member for log</param>
-        private void Out(string line, bool consoleOut = false, [CallerMemberName] string callingMember = "")
+        ///// <param name="callingMember">The calling member for log</param>
+        private void Out(string line, bool consoleOut = false/*, [CallerMemberName] string callingMember = ""*/)
         {
             if(consoleOut)
                 Console.WriteLine(line);
@@ -214,15 +250,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             return $"[cmd-end]id-{_RandomGen.Next(0xffff):x4}";
         }
 
-        /// <summary>
-        /// Releases all ressources
-        /// </summary>
-        public void Dispose()
-        {
-            Disconnect();
-            Client?.Dispose();
-            Stream?.Dispose();
-            PrivateKeyFile?.Dispose();
-        }
+        #endregion
     }
 }
