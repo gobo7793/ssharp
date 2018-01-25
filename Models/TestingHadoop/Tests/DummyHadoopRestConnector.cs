@@ -139,5 +139,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         {
             throw new NotImplementedException();
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

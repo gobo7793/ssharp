@@ -20,12 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 {
     /// <summary>
     /// Interface for Hadoop connection
     /// </summary>
-    public interface IHadoopConnector
+    public interface IHadoopConnector : IDisposable
     {
 
         #region YARN Lists
