@@ -27,6 +27,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// </summary>
     public interface IHadoopConnector
     {
+        /// <summary>
+        /// The controller/timeline host to connect
+        /// </summary>
+        string Host { get; set; }
 
         #region YARN Lists
 
@@ -52,7 +56,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         string GetYarnAppAttemptListTl(string appId);
 
         /// <summary>
-        /// Gets the YARN application container list itself for the given id of application attempt or node
+        /// Gets the YARN application container list itself for the given id of application attempt or node http url
         /// </summary>
         /// <param name="id">The attempt or node id</param>
         /// <returns>The YARN application container list</returns>
@@ -122,28 +126,28 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         string GetYarnNodeDetails(string nodeId);
 
         /// <summary>
-        /// Starts the VM and Hadoop for the given node and returns true if no errors occurs
+        /// Starts the docker container for the given node and returns true if no errors occurs
         /// </summary>
         /// <param name="nodeName">Node name</param>
         /// <returns>True if YARN Node started successfully</returns>
         bool StartNode(string nodeName);
 
         /// <summary>
-        /// Stops the VM for the given node and returns true if no errors occurs
+        /// Stops the docker container for the given node and returns true if no errors occurs
         /// </summary>
         /// <param name="nodeName">Node name</param>
         /// <returns>True if VM stopped successfully</returns>
         bool StopNode(string nodeName);
 
         /// <summary>
-        /// Starts the VM network connection for the given node and returns true if no errors occurs
+        /// Starts the docker container network connection for the given node and returns true if no errors occurs
         /// </summary>
         /// <param name="nodeName">Node name</param>
         /// <returns>True if network connection started successfully</returns>
         bool StartNodeNetConnection(string nodeName);
 
         /// <summary>
-        /// Stops the VM network connection for the given node and returns true if no errors occurs
+        /// Stops the docker container network connection for the given node and returns true if no errors occurs
         /// </summary>
         /// <param name="nodeName">Node name</param>
         /// <returns>True if network connection stopped successfully</returns>
@@ -160,8 +164,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>True if application killed</returns>
         bool KillApplication(string appId);
 
-        #endregion
+        /// <summary>
+        /// Submits the given application with the given arguments to Hadoop
+        /// </summary>
+        /// <param name="name">The application to submit</param>
+        /// <param name="arguments">The arguments</param>
+        void StartApplication(string name, params string[] arguments);
 
-        // TODO: Start benchmark or other things...
+        #endregion
     }
 }

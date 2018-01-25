@@ -49,6 +49,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         /// <returns>File content</returns>
         private string ReadFile(string filename) => File.ReadAllText($@"{_JsonFilesPath}\{filename}");
 
+        public string Host { get; set; }
+
         public string GetYarnApplicationList(string states) => ReadFile("apps.json");
 
         public string GetYarnAppAttemptList(string appId) => ReadFile("appattempts.json");
