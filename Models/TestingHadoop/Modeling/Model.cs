@@ -81,33 +81,33 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         #region Configurations
 
         /// <summary>
-        /// Default Config
+        /// Initializes the default Config
         /// </summary>
         public void InitializeDefaultInstance()
         {
-            Config1();
+            InitConfig1();
         }
 
         /// <summary>
-        /// Configuration for model testing
+        /// Initialize configuration for model testing
         /// </summary>
         /// <param name="parser">The parser to use</param>
         /// <param name="connector">The connector to use</param>
-        public void TestConfig(IHadoopParser parser, IHadoopConnector connector)
+        public void InitTestConfig(IHadoopParser parser, IHadoopConnector connector)
         {
             InitBaseComponents();
             InitYarnNodes(4, parser, connector);
 
-            InitApplications(4, parser);
+            InitApplications(4, parser, connector);
             InitAppAttempts(4, parser);
             InitContainers(16, parser);
         }
 
 
         /// <summary>
-        /// Only one pi calculation
+        /// Initizalizes the config for only one pi calculation
         /// </summary>
-        public void Config1()
+        public void InitConfig1()
         {
             IHadoopConnector connector = null;
             var parser = new CmdLineParser(this, connector);
@@ -115,7 +115,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             InitBaseComponents();
             InitYarnNodes(4, parser, connector);
 
-            InitApplications(1, parser);
+            InitApplications(1, parser, connector);
             InitAppAttempts(1, parser);
             InitContainers(16, parser);
         }
@@ -141,10 +141,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// </summary>
         /// <param name="nodeCount">Instances count</param>
         /// <param name="parser">Hadoop parser to use</param>
-        /// <param name="connector">Hadoop connector to use</param>
+        /// <param name="connector">Hadoop connector to use for faults</param>
         private void InitYarnNodes(int nodeCount, IHadoopParser parser, IHadoopConnector connector)
         {
-            for (int i = 1; i <= nodeCount; i++)
+            for(int i = 1; i <= nodeCount; i++)
             {
                 var node = new YarnNode
                 {
@@ -164,14 +164,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// </summary>
         /// <param name="appCount">Instances count</param>
         /// <param name="parser">Hadoop-Parser to use</param>
-        private void InitApplications(int appCount, IHadoopParser parser)
+        /// <param name="connector">Hadoop connector to use for faults</param>
+        private void InitApplications(int appCount, IHadoopParser parser, IHadoopConnector connector)
         {
-            for (int i = 0; i < appCount; i++)
+            for(int i = 0; i < appCount; i++)
             {
                 var app = new YarnApp
                 {
                     StartingClient = Client,
                     Parser = parser,
+                    Connector = connector,
                 };
 
                 Client.StartingYarnApps.Add(app);
@@ -186,9 +188,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <param name="parser">Hadoop-Parser to use</param>
         private void InitAppAttempts(int attemptCount, IHadoopParser parser)
         {
-            foreach (var app in Applications)
+            foreach(var app in Applications)
             {
-                for (int i = 0; i < attemptCount; i++)
+                for(int i = 0; i < attemptCount; i++)
                 {
                     var attempt = new YarnAppAttempt
                     {
@@ -209,9 +211,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <param name="parser">Hadoop-Parser to use</param>
         private void InitContainers(int containerCount, IHadoopParser parser)
         {
-            foreach (var attempt in AppAttempts)
+            foreach(var attempt in AppAttempts)
             {
-                for (int i = 0; i < containerCount; i++)
+                for(int i = 0; i < containerCount; i++)
                 {
                     var container = new YarnAppContainer
                     {

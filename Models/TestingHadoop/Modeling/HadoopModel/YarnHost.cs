@@ -42,7 +42,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public string Name { get; set; }
 
         /// <summary>
-        /// HTTP URL of the Host, requires a <see cref="Name"/>
+        /// HTTP URL of the Host with port, requires a <see cref="Name"/>
         /// </summary>
         public string HttpUrl
         {
