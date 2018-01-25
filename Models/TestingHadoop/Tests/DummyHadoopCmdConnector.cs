@@ -145,5 +145,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         {
             throw new NotImplementedException();
         }
+
+        public void StartApplication(string name, params string[] arguments)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

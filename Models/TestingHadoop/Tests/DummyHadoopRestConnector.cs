@@ -28,7 +28,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 {
     public class DummyHadoopRestConnector : IHadoopConnector
     {
-        private string _JsonFilesPath;
+        private readonly string _JsonFilesPath;
 
         /// <summary>
         /// Creates a new dummy connector for Hadoop YARN REST API
@@ -82,9 +82,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
         public string GetYarnAppAttemptDetailsTl(string attemptId) => ReadFile("tlappattemptsdetails.json");
 
-        public string GetYarnAppContainerDetails(string containerId) => ReadFile("node4containersDetails.json");
+        public string GetYarnAppContainerDetails(string containerId)
+        {
+            if(containerId== "container_1516703400520_0013_01_000016")
+                return ReadFile("node4completedContainersDetails.json");
+            return ReadFile("node4containersDetails.json");
+        }
 
-        public string GetYarnAppContainerDetailsTl(string containerId) => ReadFile("tlcontainersDetails.json");
+    public string GetYarnAppContainerDetailsTl(string containerId)
+        {
+            if(containerId== "container_1516703400520_0013_01_000016")
+                return ReadFile("tlcontainersDetailsOriginCompletedContainer.json");
+            return ReadFile("tlcontainersDetails.json");
+        }
 
         public string GetYarnNodeList() => ReadFile("nodes.json");
 
@@ -95,7 +105,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         /// <returns>Dead or running details</returns>
         public string GetYarnNodeDetails(string nodeId)
         {
-            if(nodeId == "dead")
+            if(nodeId == "compute-6:45454")
                 return ReadFile("nodeDead.json");
             return ReadFile("nodesDetails.json");
         }
@@ -121,6 +131,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         }
 
         public bool KillApplication(string appId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StartApplication(string name, params string[] arguments)
         {
             throw new NotImplementedException();
         }

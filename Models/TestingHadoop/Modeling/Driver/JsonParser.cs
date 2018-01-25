@@ -183,6 +183,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             return containerList.ToArray();
         }
 
+        /// <summary>
+        /// Gets and parses the <see cref="YarnApp"/> details
+        /// </summary>
+        /// <param name="appId">The <see cref="YarnApp.AppId"/> from the app</param>
+        /// <returns>The application details</returns>
         public ApplicationResult ParseAppDetails(string appId)
         {
             var fullResult = Connection.GetYarnApplicationDetails(appId);
@@ -194,6 +199,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             return app;
         }
 
+        /// <summary>
+        /// Gets and parses the <see cref="YarnAppAttempt"/> details
+        /// </summary>
+        /// <param name="attemptId">The <see cref="YarnAppAttempt.AttemptId"/> from the attempt</param>
+        /// <returns>The attempt details</returns>
         public ApplicationAttemptResult ParseAppAttemptDetails(string attemptId)
         {
             var appId = ParserUtilities.BuildAppIdFromAttempt(attemptId);
@@ -219,9 +229,40 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             return attempt;
         }
 
+        /// <summary>
+        /// Gets and parses the <see cref="YarnAppContainer"/> details
+        /// </summary>
+        /// <param name="containerId">The <see cref="YarnAppContainer.ContainerId"/> from the container</param>
+        /// <returns>The container details</returns>
         public ContainerResult ParseContainerDetails(string containerId)
         {
-            throw new NotImplementedException();
+            var containerResult = Connection.GetYarnAppContainerDetails(containerId);
+            var tlContainerResult = Connection.GetYarnAppContainerDetailsTl(containerId);
+
+            ContainerResult container = null;
+            if(!String.IsNullOrWhiteSpace(containerResult))
+            {
+                var containerRes = JsonConvert.DeserializeObject<ContainerDetailsJsonResult>(containerResult);
+                if(containerRes != null)
+                    container = containerRes.Container;
+            }
+
+            if(!String.IsNullOrWhiteSpace(tlContainerResult))
+            {
+                var tlContainerRes = JsonConvert.DeserializeObject<ContainerResult>(tlContainerResult);
+                if(container == null)
+                    container = tlContainerRes;
+                else
+                {
+                    container.Priority = tlContainerRes.Priority;
+                    container.StartTime = tlContainerRes.StartTime;
+                    container.FinishTime = tlContainerRes.FinishTime;
+                }
+            }
+
+            if(container != null)
+                container.Host = ParserUtilities.ParseNode(container.HostId, Model);
+            return container;
         }
 
         /// <summary>
@@ -236,6 +277,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             return nodeRes.Collection.List;
         }
 
+        /// <summary>
+        /// Gets and parses the <see cref="YarnNode"/> details
+        /// </summary>
+        /// <param name="nodeId">The <see cref="YarnNode.NodeId"/> from the node</param>
+        /// <returns>The node details</returns>
         public NodeResult ParseNodeDetails(string nodeId)
         {
             var fullResult = Connection.GetYarnNodeDetails(nodeId);

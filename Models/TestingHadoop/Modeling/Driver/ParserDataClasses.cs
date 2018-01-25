@@ -648,7 +648,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// The container
         /// </summary>
-        [JsonProperty("app")]
+        [JsonProperty("container")]
         public ContainerResult Container { get; set; }
     }
 

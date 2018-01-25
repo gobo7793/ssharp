@@ -1,0 +1,15 @@
+{
+  "containerId": "container_1516703400520_0013_01_000016",
+  "allocatedMB": 1024,
+  "allocatedVCores": 1,
+  "assignedNodeId": "compute-4:45454",
+  "priority": 20,
+  "startedTime": 1516798910856,
+  "finishedTime": 1516798943121,
+  "elapsedTime": 32265,
+  "diagnosticsInfo": "Container killed by the ApplicationMaster.\n",
+  "logUrl": "http://0.0.0.0:8188/applicationhistory/logs/compute-4:45454/container_1516703400520_0013_01_000016/container_1516703400520_0013_01_000016/root",
+  "containerExitStatus": 0,
+  "containerState": "COMPLETE",
+  "nodeHttpAddress": "http://compute-4:8042"
+}

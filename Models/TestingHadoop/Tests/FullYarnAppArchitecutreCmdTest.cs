@@ -30,7 +30,7 @@ using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 {
     [TestFixture]
-    public class FullYarnAppArchitecutreTest
+    public class FullYarnAppArchitecutreCmdTest
     {
         private Model _Model;
         private YarnApp _App;
@@ -51,24 +51,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             _Attempt = _App.Attempts[0];
             _Container = _Attempt.Containers[0];
         }
-
-        //[Test]
-        //[TestCase(EAppState.None, Result = false)]
-        //[TestCase(EAppState.ACCEPTED, Result = true)]
-        //[TestCase(EAppState.ALL, Result = true)]
-        //[TestCase(EAppState.FAILED, Result = false)]
-        //[TestCase(EAppState.FINISHED, Result = false)]
-        //[TestCase(EAppState.KILLED, Result = false)]
-        //[TestCase(EAppState.NEW, Result = true)]
-        //[TestCase(EAppState.NEW_SAVING, Result = true)]
-        //[TestCase(EAppState.NotStartedYet, Result = false)]
-        //[TestCase(EAppState.RUNNING, Result = true)]
-        //[TestCase(EAppState.SUBMITTED, Result = true)]
-        //public bool TestIsKillable(EAppState state)
-        //{
-        //    _App.State = state;
-        //    return _App.IsKillable;
-        //}
 
         [Test]
         public void TestGetAppStatus()

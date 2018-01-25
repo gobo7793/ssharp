@@ -217,7 +217,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                 HostId = "compute-4:45454",
                 Host = _Node4,
                 StartTime = new DateTime(2018, 1, 24, 14, 1, 50, 858),
-                FinishTime = new DateTime(2018, 1, 24, 14, 2,23,122),
+                FinishTime = new DateTime(2018, 1, 24, 14, 2, 23, 122),
                 Priority = 20,
             };
             #endregion
@@ -358,7 +358,43 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestParseContainerDetails()
         {
+            var runningContainer = new ContainerResult
+            {
+                ContainerId = "container_1516703400520_0010_02_000008",
+                State = EContainerState.RUNNING,
+                ExitCode = -1000,
+                Diagnostics = "",
+                MemoryNeeded = 1024,
+                VcoresNeeded = 1,
+                LogUrl = "http://compute-4:8042/node/containerlogs/container_1516703400520_0010_02_000008/root",
+                HostId = "compute-4:45454",
+                Host = _Node4,
+                Priority = 20,
+                StartTime = new DateTime(2018, 1, 23, 15, 23, 22, 866),
+                FinishTime = new DateTime(2018, 1, 23, 15, 24, 1, 355),
+            };
+            var completedContainer = new ContainerResult
+            {
+                ContainerId = "container_1516703400520_0013_01_000016",
+                MemoryNeeded = 1024,
+                VcoresNeeded = 1,
+                HostId = "compute-4:45454",
+                Host = _Node4,
+                Priority = 20,
+                StartTime = new DateTime(2018, 1, 24, 14, 1, 50, 856),
+                FinishTime = new DateTime(2018, 1, 24, 14, 2, 23, 121),
+                Diagnostics = "Container killed by the ApplicationMaster.\n",
+                LogUrl =
+                    "http://0.0.0.0:8188/applicationhistory/logs/compute-4:45454/container_1516703400520_0013_01_000016/container_1516703400520_0013_01_000016/root",
+                ExitCode = 0,
+                State = EContainerState.COMPLETE,
+            };
 
+            var runningConAct = _Parser.ParseContainerDetails("container_1516703400520_0010_02_000008");
+            var completedConAct = _Parser.ParseContainerDetails("container_1516703400520_0013_01_000016");
+
+            Assert.AreEqual(runningContainer, runningConAct);
+            Assert.AreEqual(completedContainer, completedConAct);
         }
 
         [Test]
@@ -388,8 +424,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                 HealthReport = "",
             };
 
-            var runningRes = _Parser.ParseNodeDetails("");
-            var deadRes = _Parser.ParseNodeDetails("dead");
+            var runningRes = _Parser.ParseNodeDetails("compute-3:45454");
+            var deadRes = _Parser.ParseNodeDetails("compute-6:45454");
 
             Assert.AreEqual(running, runningRes, "running node failed");
             Assert.AreEqual(dead, deadRes, "dead node failed");
