@@ -61,12 +61,14 @@
     <Compile Include="..\..\Source\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Modeling\Driver\CmdConnector.cs" />
     <Compile Include="Modeling\Driver\CmdLineParser.cs" />
     <Compile Include="Modeling\Driver\IHadoopConnector.cs" />
     <Compile Include="Modeling\Driver\IHadoopParser.cs" />
     <Compile Include="Modeling\Driver\JsonParser.cs" />
     <Compile Include="Modeling\Driver\ParserDataClasses.cs" />
     <Compile Include="Modeling\Driver\ParserUtilities.cs" />
+    <Compile Include="Modeling\Driver\RestConnector.cs" />
     <Compile Include="Modeling\Driver\SshConnection.cs" />
     <Compile Include="Modeling\HadoopModel\EContainerState.cs" />
     <Compile Include="Modeling\HadoopModel\EFinalStatus.cs" />
@@ -83,9 +85,10 @@
     <Compile Include="Modeling\HadoopModel\YarnAppContainer.cs" />
     <Compile Include="Modeling\HadoopModel\YarnAppAttempt.cs" />
     <Compile Include="Tests\CmdLineParserTest.cs" />
+    <Compile Include="Tests\CmdRestCompareTest.cs" />
     <Compile Include="Tests\DummyHadoopCmdConnector.cs" />
     <Compile Include="Tests\DummyHadoopRestConnector.cs" />
-    <Compile Include="Tests\FullYarnAppArchitecutreTest.cs" />
+    <Compile Include="Tests\FullYarnAppArchitecutreCmdTest.cs" />
     <Compile Include="Tests\JsonParserTest.cs" />
     <Compile Include="Tests\ParserUtilitiesTest.cs" />
     <Compile Include="Tests\YarnNodeTest.cs" />
@@ -104,13 +107,10 @@
     <None Include="Tests\RestTestCases\appattempts.json" />
     <None Include="Tests\RestTestCases\apps.json" />
     <None Include="Tests\RestTestCases\appsDetails.json" />
-    <None Include="Tests\RestTestCases\node1containers.json" />
     <None Include="Tests\RestTestCases\node1runningContainers.json" />
-    <None Include="Tests\RestTestCases\node2containers.json" />
     <None Include="Tests\RestTestCases\node2runningContainers.json" />
-    <None Include="Tests\RestTestCases\node3containers.json" />
     <None Include="Tests\RestTestCases\node3runningContainers.json" />
-    <None Include="Tests\RestTestCases\node4containers.json" />
+    <None Include="Tests\RestTestCases\node4completedContainersDetails.json" />
     <None Include="Tests\RestTestCases\node4containersDetails.json" />
     <None Include="Tests\RestTestCases\node4runningContainers.json" />
     <None Include="Tests\RestTestCases\nodeDead.json" />
@@ -118,10 +118,8 @@
     <None Include="Tests\RestTestCases\nodesDetails.json" />
     <None Include="Tests\RestTestCases\tlappattempts.json" />
     <None Include="Tests\RestTestCases\tlappattemptsdetails.json" />
-    <None Include="Tests\RestTestCases\tlapps.json" />
-    <None Include="Tests\RestTestCases\tlappsDetails.json" />
-    <None Include="Tests\RestTestCases\tlcontainers.json" />
     <None Include="Tests\RestTestCases\tlcontainersDetails.json" />
+    <None Include="Tests\RestTestCases\tlcontainersDetailsOriginCompletedContainer.json" />
     <None Include="Tests\RestTestCases\tlrunningContainers.json" />
     <None Include="YarnModel.cd" />
     <None Include="packages.config" />
