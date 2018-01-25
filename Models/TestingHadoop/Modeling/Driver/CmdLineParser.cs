@@ -95,7 +95,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="states">The states</param>
         /// <returns>The applications</returns>
-        public ApplicationResult[] ParseAppList(EAppState states = EAppState.None)
+        public ApplicationResult[] ParseAppList(EAppState states = EAppState.ALL)
         {
             var appStates = ParserUtilities.ConcatStates(states);
 
