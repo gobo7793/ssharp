@@ -105,7 +105,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public string GetYarnApplicationList(string states)
         {
             if(Monitoring == null)
-                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+                throw new InvalidOperationException(nameof(CmdConnector) + " not for monitoring initialized!");
 
             var cmd = $"{Model.HadoopSetupScript} cmd yarn application -list";
             if(!String.IsNullOrWhiteSpace(states))
@@ -122,7 +122,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public string GetYarnAppAttemptList(string appId)
         {
             if(Monitoring == null)
-                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+                throw new InvalidOperationException(nameof(CmdConnector) + " not for monitoring initialized!");
 
             return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn applicationattempt -list {appId}");
         }
@@ -145,7 +145,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public string GetYarnAppContainerList(string id)
         {
             if(Monitoring == null)
-                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+                throw new InvalidOperationException(nameof(CmdConnector) + " not for monitoring initialized!");
 
             return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn container -list {id}");
         }
@@ -171,7 +171,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public string GetYarnApplicationDetails(string appId)
         {
             if(Monitoring == null)
-                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+                throw new InvalidOperationException(nameof(CmdConnector) + " not for monitoring initialized!");
 
             return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn application -status {appId}");
         }
@@ -184,7 +184,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public string GetYarnAppAttemptDetails(string attemptId)
         {
             if(Monitoring == null)
-                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+                throw new InvalidOperationException(nameof(CmdConnector) + " not for monitoring initialized!");
 
             return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn applicationattempt -status {attemptId}");
         }
@@ -207,7 +207,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public string GetYarnAppContainerDetails(string containerId)
         {
             if(Monitoring == null)
-                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+                throw new InvalidOperationException(nameof(CmdConnector) + " not for monitoring initialized!");
 
             return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn container -status {containerId}");
         }
@@ -232,7 +232,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public string GetYarnNodeList()
         {
             if(Monitoring == null)
-                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+                throw new InvalidOperationException(nameof(CmdConnector) + " not for monitoring initialized!");
 
             return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn node -list -all");
         }
@@ -245,7 +245,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public string GetYarnNodeDetails(string nodeId)
         {
             if(Monitoring == null)
-                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+                throw new InvalidOperationException(nameof(CmdConnector) + " not for monitoring initialized!");
 
             return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn node -status {nodeId}");
         }
