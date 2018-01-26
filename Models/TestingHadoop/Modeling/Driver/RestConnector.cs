@@ -21,12 +21,11 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 {
     /// <summary>
-    /// Hadoop connector for using the REST API
+    /// Hadoop connector for monitoring using the REST API
     /// </summary>
     public class RestConnector : IHadoopConnector
     {
@@ -37,16 +36,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// The monitoring connection
         /// </summary>
         private SshConnection Monitoring { get; }
-
-        /// <summary>
-        /// The fault handling connections
-        /// </summary>
-        private List<SshConnection> Faulting { get; } = new List<SshConnection>();
-
-        /// <summary>
-        /// The application submitting connections
-        /// </summary>
-        private List<SshConnection> Submitting { get; } = new List<SshConnection>();
 
         /// <summary>
         /// ResourceManager URL
@@ -63,7 +52,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         #region Methods
 
         /// <summary>
-        /// Initializes a new connection to the hadoop cluster.
+        /// Initializes a new connection to the hadoop cluster only for monitoring using the REST API.
         /// Note that one connection is needed for Monitoring, so maybe set <c>/etc/ssh/sshd_config</c>
         /// MaxSessions to the needed value (default 10)!
         /// </summary>
@@ -72,21 +61,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="privateKeyFilePath">The private key file path</param>
         /// <param name="rmUrl">HTTP URL of ResourceManager</param>
         /// <param name="tlUrl">HTTP URL of Timeline server</param>
-        /// <param name="forMonitoring">True to use this connection for monitoring</param>
-        /// <param name="faultingConnections">The count for fault handling connections</param>
-        /// <param name="submittingConnections">The count for submitting application connections</param>
-        public RestConnector(string host, string username, string privateKeyFilePath, string rmUrl, string tlUrl,
-                             bool forMonitoring = true, int faultingConnections = 2, int submittingConnections = 4)
+        public RestConnector(string host, string username, string privateKeyFilePath, string rmUrl, string tlUrl)
         {
             RmUrl = rmUrl;
             TlUrl = tlUrl;
 
-            if(forMonitoring)
-                Monitoring = new SshConnection(host, username, privateKeyFilePath);
-            for(int i = 0; i < faultingConnections; i++)
-                Faulting.Add(new SshConnection(host, username, privateKeyFilePath));
-            for(int i = 0; i < submittingConnections; i++)
-                Submitting.Add(new SshConnection(host, username, privateKeyFilePath));
+            Monitoring = new SshConnection(host, username, privateKeyFilePath);
         }
 
         /// <summary>
@@ -95,10 +75,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public void Dispose()
         {
             Monitoring?.Dispose();
-            foreach(var con in Faulting)
-                con.Dispose();
-            foreach(var con in Submitting)
-                con.Dispose();
         }
 
         #endregion
@@ -280,43 +256,35 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         }
 
         /// <summary>
-        /// Starts the docker container for the given node and returns true if no errors occurs
+        /// Not supported
         /// </summary>
-        /// <param name="nodeName">Node name</param>
-        /// <returns>True if YARN Node started successfully</returns>
         public bool StartNode(string nodeName)
         {
-            throw new NotImplementedException();
+            throw new PlatformNotSupportedException("Hadoop REST API does not support starting node!");
         }
 
         /// <summary>
-        /// Stops the docker container for the given node and returns true if no errors occurs
+        /// Not supported
         /// </summary>
-        /// <param name="nodeName">Node name</param>
-        /// <returns>True if VM stopped successfully</returns>
         public bool StopNode(string nodeName)
         {
-            throw new NotImplementedException();
+            throw new PlatformNotSupportedException("Hadoop REST API does not support stopping node!");
         }
 
         /// <summary>
-        /// Starts the docker container network connection for the given node and returns true if no errors occurs
+        /// Not supported
         /// </summary>
-        /// <param name="nodeName">Node name</param>
-        /// <returns>True if network connection started successfully</returns>
         public bool StartNodeNetConnection(string nodeName)
         {
-            throw new NotImplementedException();
+            throw new PlatformNotSupportedException("Hadoop REST API does not support starting node connection!");
         }
 
         /// <summary>
-        /// Stops the docker container network connection for the given node and returns true if no errors occurs
+        /// Not supported
         /// </summary>
-        /// <param name="nodeName">Node name</param>
-        /// <returns>True if network connection stopped successfully</returns>
         public bool StopNodeNetConnection(string nodeName)
         {
-            throw new NotImplementedException();
+            throw new PlatformNotSupportedException("Hadoop REST API does not support stopping node connection!");
         }
 
         #endregion
@@ -324,23 +292,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         #region Application Control
 
         /// <summary>
-        /// Kills the given application and returns true if no errors occurs
+        /// Not supported
         /// </summary>
-        /// <param name="appId">The app id for the application</param>
-        /// <returns>True if application killed</returns>
         public bool KillApplication(string appId)
         {
-            throw new NotImplementedException();
+            throw new PlatformNotSupportedException("Hadoop REST API does not support killing application!");
         }
 
         /// <summary>
-        /// Submits the given application with the given arguments to Hadoop
+        /// Not supported
         /// </summary>
-        /// <param name="name">The application to submit</param>
-        /// <param name="arguments">The arguments</param>
         public void StartApplication(string name, params string[] arguments)
         {
-            throw new NotImplementedException();
+            throw new PlatformNotSupportedException("Hadoop REST API does not support starting application!");
         }
 
         /// <summary>
@@ -349,7 +313,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>Hadoop version</returns>
         public string GetHadoopVersion()
         {
-            throw new NotImplementedException();
+            return Monitoring.Run($"curl {RmUrl}/ws/v1/cluster/info");
         }
 
         #endregion

@@ -39,9 +39,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         private SshConnection Monitoring { get; }
 
         /// <summary>
-        /// The fault handling connections
+        /// The fault handling connection
         /// </summary>
-        private List<SshConnection> Faulting { get; } = new List<SshConnection>();
+        private SshConnection Faulting { get; }
 
         /// <summary>
         /// The application submitting connections
@@ -66,16 +66,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="username">The username for the ssh connections</param>
         /// <param name="privateKeyFilePath">The private key file path</param>
         /// <param name="forMonitoring">True to use this connection for monitoring</param>
-        /// <param name="faultingConnections">The count for fault handling connections</param>
+        /// <param name="forFaulting">True to use this connection for fault handling</param>
         /// <param name="submittingConnections">The count for submitting application connections</param>
-        public CmdConnector(string host, string username, string privateKeyFilePath, bool forMonitoring = true, int faultingConnections = 2, int submittingConnections = 4)
+        public CmdConnector(string host, string username, string privateKeyFilePath, bool forMonitoring = true,
+                            bool forFaulting = true, int submittingConnections = 4)
         {
             Host = host;
 
             if(forMonitoring)
                 Monitoring = new SshConnection(Host, username, privateKeyFilePath);
-            for(int i = 0; i < faultingConnections; i++)
-                Faulting.Add(new SshConnection(Host, username, privateKeyFilePath));
+            if(forFaulting)
+                Faulting = new SshConnection(Host, username, privateKeyFilePath);
             for(int i = 0; i < submittingConnections; i++)
                 Submitting.Add(new SshConnection(Host, username, privateKeyFilePath));
         }
@@ -86,8 +87,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public void Dispose()
         {
             Monitoring?.Dispose();
-            foreach(var con in Faulting)
-                con.Dispose();
+            Faulting?.Dispose();
             foreach(var con in Submitting)
                 con.Dispose();
         }
