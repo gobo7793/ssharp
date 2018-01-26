@@ -262,9 +262,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Gets and parses the <see cref="YarnAppContainer"/> details, returns null if error appears
         /// </summary>
         /// <param name="containerId">The <see cref="YarnAppContainer.ContainerId"/> from the container</param>
-        /// <param name="nodeId">Not needed</param>
+        /// <param name="node">Not needed</param>
         /// <returns>The container details or null on errors</returns>
-        public ContainerResult ParseContainerDetails(string containerId, string nodeId = null)
+        public ContainerResult ParseContainerDetails(string containerId, YarnNode node = null)
         {
             var fullResult = Connection.GetYarnAppContainerDetails(containerId);
 

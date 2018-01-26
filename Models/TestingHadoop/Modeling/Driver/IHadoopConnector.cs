@@ -96,9 +96,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Gets the YARN application container details itself for the given container id
         /// </summary>
         /// <param name="containerId">The container id</param>
-        /// <param name="nodeId">The node id from the container</param>
+        /// <param name="nodeUrl">The node url from the container</param>
         /// <returns>The YARN application container details</returns>
-        string GetYarnAppContainerDetails(string containerId, string nodeId = null);
+        string GetYarnAppContainerDetails(string containerId, string nodeUrl = null);
 
         /// <summary>
         /// Gets the YARN application container details itself for the given container id from the timeline server

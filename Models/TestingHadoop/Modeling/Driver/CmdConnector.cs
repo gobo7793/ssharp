@@ -203,9 +203,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Gets the YARN application container details itself for the given container id
         /// </summary>
         /// <param name="containerId">The container id</param>
-        /// <param name="nodeId">Node id not needed</param>
+        /// <param name="nodeUrl">Not needed</param>
         /// <returns>The YARN application container details</returns>
-        public string GetYarnAppContainerDetails(string containerId, string nodeId = null)
+        public string GetYarnAppContainerDetails(string containerId, string nodeUrl = null)
         {
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for monitoring initialized!");

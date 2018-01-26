@@ -82,14 +82,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
         public string GetYarnAppAttemptDetailsTl(string attemptId) => ReadFile("tlappattemptsdetails.json");
 
-        public string GetYarnAppContainerDetails(string containerId)
+        public string GetYarnAppContainerDetails(string containerId, string nodeUrl = null)
         {
             if(containerId == "container_1516703400520_0013_01_000016")
                 return ReadFile("node4completedContainersDetails.json");
             return ReadFile("node4containersDetails.json");
         }
 
-        public string GetYarnAppContainerDetailsTl(string containerId, string nodeId = null)
+        public string GetYarnAppContainerDetailsTl(string containerId)
         {
             if(containerId == "container_1516703400520_0013_01_000016")
                 return ReadFile("tlcontainersDetailsOriginCompletedContainer.json");
