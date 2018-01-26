@@ -195,8 +195,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             InUse = true;
 
             var cmd = Client.CreateCommand(command);
+            Out($"Executing: {cmd.CommandText}", consoleOut);
             cmd.Execute();
-            Out(cmd.Result);
+            Out(cmd.Result, consoleOut);
 
             InUse = false;
             return cmd.Result;
@@ -205,12 +206,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// Runs the given command async and waits NOT for the output
         /// </summary>
+        /// <param name="consoleOut">True to show the cmd on the own shell</param>
         /// <param name="command">Command to run</param>
-        public void RunAsync(string command)
+        public void RunAsync(string command, bool consoleOut = false)
         {
             InUse = true;
 
             var cmd = Client.CreateCommand(command);
+            Out($"Executing: {cmd.CommandText}", consoleOut);
             cmd.BeginExecute();
 
             InUse = false;

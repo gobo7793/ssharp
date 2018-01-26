@@ -195,7 +195,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             public override void Update()
             {
-                IsConnected = !Connector.StopNodeNetConnection(Name);
+                if(IsActive)
+                    IsConnected = !Connector.StopNodeNetConnection(Name);
             }
         }
 

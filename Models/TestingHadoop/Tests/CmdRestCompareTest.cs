@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Threading;
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
@@ -41,6 +42,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private string _AttemptId = "appattempt_1516703400520_0001_000001";
         private string _ContainerId = "container_1516703400520_0001_01_000001";
         private string _NodeId = "compute-1:45454";
+        // For Fault Handling
+        private string _FaultNodeName = "compute-4";
+        private string _FaultAppId = "application_1516703400520_0016";
 
         [TestFixtureSetUp]
         public void Setup()
@@ -52,7 +56,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine("Login to shell");
 
             var startTime = DateTime.Now;
-            _Cmd = new CmdConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFilePath, true, false, 0);
+            _Cmd = new CmdConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFilePath, true, true, 1, true);
             var cmdTime = DateTime.Now;
             _Rest = new RestConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFilePath,
                 model.Controller.HttpUrl, model.Controller.TimelineHttpUrl);
@@ -66,6 +70,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine($"Attempt id: {_AttemptId}");
             Console.WriteLine($"Container id: {_ContainerId}");
             Console.WriteLine($"Node id: {_NodeId}");
+            Console.WriteLine();
+            Console.WriteLine($"Fault Node name: {_FaultNodeName}");
+            Console.WriteLine($"Fault Application id: {_FaultAppId}");
         }
 
         [TestFixtureTearDown]
@@ -80,6 +87,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         {
             Console.Write("Comparing CMD Line and REST API:");
         }
+
+        #region Monitoring
 
         [Test]
         public void TestGetYarnApplicationList()
@@ -344,5 +353,84 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
             Assert.Pass();
         }
+
+        #endregion
+
+        #region Faulting/Submitting
+
+        [Test]
+        public void TestStopAndStartNode()
+        {
+            Console.WriteLine("Stop and start node");
+
+            var startTime = DateTime.Now;
+            var stopOut = _Cmd.StopNode(_FaultNodeName);
+            var stoppingTime = DateTime.Now - startTime;
+            Thread.Sleep(500);
+            startTime = DateTime.Now;
+            var startOut = _Cmd.StartNode(_FaultNodeName);
+            var startingTime = DateTime.Now - startTime;
+
+            Console.WriteLine($"Stop needed:  {stoppingTime}");
+            Console.WriteLine($"Start needed: {startingTime}");
+            Console.WriteLine();
+
+            Console.WriteLine($"Stop Output:\n{stopOut}");
+            Console.WriteLine();
+            Console.WriteLine($"Start Output:\n{startOut}");
+
+            Assert.Pass();
+        }
+
+        [Test]
+        public void TestStopAndStartNodeNetwork()
+        {
+            Console.WriteLine("Stop and start node network connection");
+
+            var startTime = DateTime.Now;
+            var stopOut = _Cmd.StopNodeNetConnection(_FaultNodeName);
+            var stoppingTime = DateTime.Now - startTime;
+            Thread.Sleep(500);
+            startTime = DateTime.Now;
+            var startOut = _Cmd.StartNodeNetConnection(_FaultNodeName);
+            var startingTime = DateTime.Now - startTime;
+
+            Console.WriteLine($"Stop needed:  {stoppingTime}");
+            Console.WriteLine($"Start needed: {startingTime}");
+            Console.WriteLine();
+
+            Console.WriteLine($"Stop Output:\n{stopOut}");
+            Console.WriteLine();
+            Console.WriteLine($"Start Output:\n{startOut}");
+
+            Assert.Pass();
+        }
+
+        [Test]
+        public void TestStartAndKillingApplication()
+        {
+            Console.WriteLine("Start and killing application");
+
+            var startTime = DateTime.Now;
+            _Cmd.StartApplication("pi");
+            var stoppingTime = DateTime.Now - startTime;
+            Console.WriteLine("waiting...");
+            Thread.Sleep(30000);
+            startTime = DateTime.Now;
+            var stopOut = _Cmd.KillApplication(_FaultAppId);
+            var startingTime = DateTime.Now - startTime;
+
+            Console.WriteLine($"Stop needed:  {stoppingTime}");
+            Console.WriteLine($"Start needed: {startingTime}");
+            Console.WriteLine();
+
+            Console.WriteLine("Start Output: N/A");
+            Console.WriteLine();
+            Console.WriteLine($"Stop Output:\n{stopOut}");
+
+            Assert.Pass();
+        }
+
+        #endregion
     }
 }
