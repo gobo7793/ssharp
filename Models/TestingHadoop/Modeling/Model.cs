@@ -38,7 +38,33 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         //public const int MaxAppAttemptCount = 0xF;
         //public const int MaxContainerCount = 0xF;
 
+        /// <summary>
+        /// Prefix for compute nodes
+        /// </summary>
         public const string NodeNamePrefix = "compute-";
+
+        /// <summary>
+        /// Command (full path) for Hadoop setup script
+        /// </summary>
+        /// <remarks>
+        /// Generic options for all commands can be inserted here.
+        /// </remarks>
+        public const string HadoopSetupScript = "/home/siegerge/hadoop-benchmark/setup-hadoop.sh -q";
+
+        /// <summary>
+        /// Hostname for the Hadoop cluster pc
+        /// </summary>
+        public const string SshHost = "swth11";
+
+        /// <summary>
+        /// Username for the Hadoop cluster pc
+        /// </summary>
+        public const string SshUsername = "siegerge";
+
+        /// <summary>
+        /// Full file path to the private key file to login
+        /// </summary>
+        public const string SshPrivateKeyFilePath = @"C:\Users\siegerge\sshnet";
 
         #endregion
 
@@ -100,7 +126,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 
             InitApplications(4, parser, connector);
             InitAppAttempts(4, parser);
-            InitContainers(16, parser);
+            InitContainers(32, parser);
         }
 
 
