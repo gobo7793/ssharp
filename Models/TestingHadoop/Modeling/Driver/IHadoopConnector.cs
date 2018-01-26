@@ -169,6 +169,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="arguments">The arguments</param>
         void StartApplication(string name, params string[] arguments);
 
+        /// <summary>
+        /// Returns the version information from Hadoop
+        /// </summary>
+        /// <returns>Hadoop version</returns>
+        string GetHadoopVersion();
+
         #endregion
     }
 }

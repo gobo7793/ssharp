@@ -289,6 +289,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Returns the version information from Hadoop
+        /// </summary>
+        /// <returns>Hadoop version</returns>
+        public string GetHadoopVersion()
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 

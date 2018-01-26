@@ -151,6 +151,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             throw new NotImplementedException();
         }
 
+        public string GetHadoopVersion()
+        {
+            throw new NotImplementedException();
+        }
+
         public void Dispose()
         {
         }
