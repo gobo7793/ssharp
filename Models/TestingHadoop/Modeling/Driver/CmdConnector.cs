@@ -65,13 +65,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="host">The host name or ip of the cluster</param>
         /// <param name="username">The username for the ssh connections</param>
         /// <param name="privateKeyFilePath">The private key file path</param>
+        /// <param name="forMonitoring">True to use this connection for monitoring</param>
         /// <param name="faultingConnections">The count for fault handling connections</param>
         /// <param name="submittingConnections">The count for submitting application connections</param>
-        public CmdConnector(string host, string username, string privateKeyFilePath, int faultingConnections = 2, int submittingConnections = 4)
+        public CmdConnector(string host, string username, string privateKeyFilePath, bool forMonitoring = true, int faultingConnections = 2, int submittingConnections = 4)
         {
             Host = host;
 
-            Monitoring = new SshConnection(Host, username, privateKeyFilePath);
+            if(forMonitoring)
+                Monitoring = new SshConnection(Host, username, privateKeyFilePath);
             for(int i = 0; i < faultingConnections; i++)
                 Faulting.Add(new SshConnection(Host, username, privateKeyFilePath));
             for(int i = 0; i < submittingConnections; i++)
@@ -102,7 +104,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The YARN application list</returns>
         public string GetYarnApplicationList(string states)
         {
-            var cmd = "hdp cmd yarn application -list";
+            if(Monitoring == null)
+                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+
+            var cmd = $"{Model.HadoopSetupScript} cmd yarn application -list";
             if(!String.IsNullOrWhiteSpace(states))
                 cmd = $"{cmd} -appStates {states}";
 
@@ -116,7 +121,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The YARN application attempt list</returns>
         public string GetYarnAppAttemptList(string appId)
         {
-            throw new NotImplementedException();
+            if(Monitoring == null)
+                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+
+            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn applicationattempt -list {appId}");
         }
 
         /// <summary>
@@ -130,13 +138,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         }
 
         /// <summary>
-        /// Gets the YARN application container list itself for the given id of application attempt or node http url
+        /// Gets the YARN application container list itself for the given application attempt id
         /// </summary>
-        /// <param name="id">The attempt or node id</param>
+        /// <param name="id">The attempt id</param>
         /// <returns>The YARN application container list</returns>
         public string GetYarnAppContainerList(string id)
         {
-            throw new NotImplementedException();
+            if(Monitoring == null)
+                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+
+            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn container -list {id}");
         }
 
         /// <summary>
@@ -159,7 +170,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The YARN application details</returns>
         public string GetYarnApplicationDetails(string appId)
         {
-            throw new NotImplementedException();
+            if(Monitoring == null)
+                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+
+            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn application -status {appId}");
         }
 
         /// <summary>
@@ -169,7 +183,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The YARN application attempt details</returns>
         public string GetYarnAppAttemptDetails(string attemptId)
         {
-            throw new NotImplementedException();
+            if(Monitoring == null)
+                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+
+            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn applicationattempt -status {attemptId}");
         }
 
         /// <summary>
@@ -189,7 +206,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The YARN application container details</returns>
         public string GetYarnAppContainerDetails(string containerId)
         {
-            throw new NotImplementedException();
+            if(Monitoring == null)
+                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+
+            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn container -status {containerId}");
         }
 
         /// <summary>
@@ -211,7 +231,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The YARN node list</returns>
         public string GetYarnNodeList()
         {
-            throw new NotImplementedException();
+            if(Monitoring == null)
+                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+
+            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn node -list -all");
         }
 
         /// <summary>
@@ -221,7 +244,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The YARN node details</returns>
         public string GetYarnNodeDetails(string nodeId)
         {
-            throw new NotImplementedException();
+            if(Monitoring == null)
+                throw new InvalidOperationException("CmdConnector not for monitoring initialized!");
+
+            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn node -status {nodeId}");
         }
 
         /// <summary>
