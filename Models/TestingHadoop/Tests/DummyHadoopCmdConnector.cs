@@ -80,7 +80,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             throw new NotImplementedException();
         }
 
-        public string GetYarnAppContainerDetails(string containerId) =>
+        public string GetYarnAppContainerDetails(string containerId, string nodeId = null) =>
             "[hdp]: Using hadoop console command: yarn container -status container_1516703400520_0002_01_0000014\n" +
             "18/01/23 13:40:22 INFO impl.TimelineClientImpl: Timeline service address: http://0.0.0.0:8188/ws/v1/timeline/\n" +
             "18/01/23 13:40:22 INFO client.RMProxy: Connecting to ResourceManager at controller/10.0.0.3:8032\n" +
