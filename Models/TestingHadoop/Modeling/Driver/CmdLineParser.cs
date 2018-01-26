@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
@@ -263,8 +262,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Gets and parses the <see cref="YarnAppContainer"/> details, returns null if error appears
         /// </summary>
         /// <param name="containerId">The <see cref="YarnAppContainer.ContainerId"/> from the container</param>
+        /// <param name="nodeId">Not needed</param>
         /// <returns>The container details or null on errors</returns>
-        public ContainerResult ParseContainerDetails(string containerId)
+        public ContainerResult ParseContainerDetails(string containerId, string nodeId = null)
         {
             var fullResult = Connection.GetYarnAppContainerDetails(containerId);
 

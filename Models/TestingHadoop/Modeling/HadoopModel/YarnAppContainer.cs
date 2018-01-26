@@ -104,7 +104,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void GetStatus()
         {
-            var parsed = Parser.ParseContainerDetails(ContainerId);
+            var parsed = Parser.ParseContainerDetails(ContainerId, Host.NodeId);
 
             if(parsed != null)
             {

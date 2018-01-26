@@ -102,7 +102,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 attempt.AmHost = ParserUtilities.ParseNode(attempt.AmHostId, Model);
 
                 // get more info from timeline server
-                string attemptId = String.Empty;
+                string attemptId;
                 var parsedId = ParserUtilities.ParseInt(attempt.AttemptId);
                 if(parsedId != 0)
                     attemptId = ParserUtilities.BuildAttemptIdFromApp(appId, parsedId);
@@ -230,13 +230,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         }
 
         /// <summary>
-        /// Gets and parses the <see cref="YarnAppContainer"/> details
+        /// Gets and parses the <see cref="YarnAppContainer"/> details from the given <see cref="YarnNode"/>
         /// </summary>
         /// <param name="containerId">The <see cref="YarnAppContainer.ContainerId"/> from the container</param>
+        /// <param name="nodeId">The <see cref="YarnNode.NodeId"/> from the node executing the container</param>
         /// <returns>The container details</returns>
-        public ContainerResult ParseContainerDetails(string containerId)
+        public ContainerResult ParseContainerDetails(string containerId, string nodeId = null)
         {
-            var containerResult = Connection.GetYarnAppContainerDetails(containerId);
+            var containerResult = Connection.GetYarnAppContainerDetails(containerId, nodeId);
             var tlContainerResult = Connection.GetYarnAppContainerDetailsTl(containerId);
 
             ContainerResult container = null;
@@ -268,7 +269,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// Gets and parses the <see cref="YarnNode"/> list for the cluster
         /// </summary>
-        /// <returns>All nodes in the cluster</returns
+        /// <returns>All nodes in the cluster</returns>
         public NodeResult[] ParseNodeList()
         {
             var fullResult = Connection.GetYarnNodeList();

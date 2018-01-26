@@ -71,11 +71,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         ApplicationAttemptResult ParseAppAttemptDetails(string attemptId);
 
         /// <summary>
-        /// Gets and parses the <see cref="YarnAppContainer"/> details
+        /// Gets and parses the <see cref="YarnAppContainer"/> details from the given <see cref="YarnNode"/>
         /// </summary>
         /// <param name="containerId">The <see cref="YarnAppContainer.ContainerId"/> from the container</param>
         /// <returns>The container details</returns>
-        ContainerResult ParseContainerDetails(string containerId);
+        ContainerResult ParseContainerDetails(string containerId, string nodeId = null);
 
         #endregion
 
