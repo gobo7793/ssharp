@@ -32,6 +32,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         protected override string HttpPort => "8088";
 
         /// <summary>
+        /// HTTP URL of the timeline server
+        /// </summary>
+        public string TimelineHttpUrl => $"http://{Name}:8188";
+
+        /// <summary>
         /// Connected <see cref="YarnNode" />s
         /// </summary>
         public List<YarnNode> ConnectedNodes { get; }
