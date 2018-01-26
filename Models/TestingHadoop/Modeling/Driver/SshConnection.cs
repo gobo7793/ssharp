@@ -203,6 +203,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         }
 
         /// <summary>
+        /// Runs the given command async and waits NOT for the output
+        /// </summary>
+        /// <param name="command">Command to run</param>
+        public void RunAsync(string command)
+        {
+            InUse = true;
+
+            var cmd = Client.CreateCommand(command);
+            cmd.BeginExecute();
+
+            InUse = false;
+        }
+
+        /// <summary>
         /// Reads the output of the shell till the output contains the given exit string
         /// </summary>
         /// <param name="exitStr">The output exit string</param>
