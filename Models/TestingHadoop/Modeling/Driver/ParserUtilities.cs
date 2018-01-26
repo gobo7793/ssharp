@@ -203,7 +203,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         }
 
         /// <summary>
-        /// Builds the full attempt id
+        /// Builds the full attempt id from an app id
         /// </summary>
         /// <param name="appId">The app id</param>
         /// <param name="shortAttemptId">Short attempt id</param>
@@ -218,12 +218,25 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// like "appattempt_1516703400520_0010_000001" -> "container_1516703400520_0010_01"_000001
         /// </summary>
         /// <param name="attemptId"></param>
-        /// <returns></returns>
+        /// <returns>The base container id</returns>
         public static string BuildBaseContainerIdFromAttempt(string attemptId)
         {
             var numAttempt = GetNumericIdPart(attemptId);
             var conBaseNum = numAttempt.Remove(numAttempt.Length - 6, 4);
             return $"container_{conBaseNum}";
+        }
+
+        /// <summary>
+        /// Builds the full attempt id from a container id
+        /// </summary>
+        /// <param name="containerId">The container id</param>
+        /// <returns>The full attempt id</returns>
+        public static string BuildAttemptIdFromContainer(string containerId)
+        {
+            var numContainerParts = GetNumericIdPart(containerId).Split('_');
+            var appPart = $"{numContainerParts[0]}_{numContainerParts[1]}";
+            var attemptPart = ParseInt(numContainerParts[2]);
+            return BuildAttemptIdFromApp(appPart, attemptPart);
         }
     }
 

@@ -39,20 +39,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Connected <see cref="YarnNode" />s
         /// </summary>
-        public List<YarnNode> ConnectedNodes { get; }
+        public List<YarnNode> ConnectedNodes { get; } = new List<YarnNode>();
 
         /// <summary>
         /// Connected <see cref="Client" />
         /// </summary>
         public Client ConnectedClient { get; set; }
-
-        /// <summary>
-        /// Initializes a new <see cref="YarnController"/>
-        /// </summary>
-        public YarnController()
-        {
-            ConnectedNodes = new List<YarnNode>();
-        }
 
         /// <summary>
         /// Indicates the <see cref="YarnNode"/> which executes the given <see cref="YarnApp"/> and saves it

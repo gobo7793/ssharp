@@ -196,7 +196,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The YARN application attempt details</returns>
         public string GetYarnAppAttemptDetailsTl(string attemptId)
         {
-            return GetYarnAppContainerDetailsTl(attemptId);
+            return GetYarnAppAttemptDetails(attemptId);
         }
 
         /// <summary>

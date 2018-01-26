@@ -155,7 +155,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// </summary>
         private void InitBaseComponents()
         {
-            Controller = new YarnController();
+            Controller = new YarnController
+            {
+                Name = "controller",
+            };
             Client = new Client();
 
             Controller.ConnectedClient = Client;

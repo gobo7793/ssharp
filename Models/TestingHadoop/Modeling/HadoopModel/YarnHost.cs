@@ -33,13 +33,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     public abstract class YarnHost : Component
     {
         private string _HttpUrl;
+        private string _Name;
 
-        protected abstract string HttpPort{ get; }
+        protected abstract string HttpPort { get; }
 
         /// <summary>
         /// Name of the Host
         /// </summary>
-        public string Name { get; set; }
+        public string Name
+        {
+            get { return _Name; }
+            set { _HttpUrl = null; _Name = value; }
+        }
 
         /// <summary>
         /// HTTP URL of the Host with port, requires a <see cref="Name"/>
@@ -48,7 +53,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             get
             {
-                if (String.IsNullOrWhiteSpace(_HttpUrl))
+                if(String.IsNullOrWhiteSpace(_HttpUrl))
                     _HttpUrl = $"http://{Name}:{HttpPort}";
                 return _HttpUrl;
             }
