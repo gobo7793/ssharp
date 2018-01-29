@@ -96,7 +96,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The applications</returns>
         public ApplicationResult[] ParseAppList(EAppState states = EAppState.ALL)
         {
-            var appStates = ParserUtilities.ConcatStates(states);
+            var appStates = DriverUtilities.ConcatStates(states);
 
             var fullResult = Connection.GetYarnApplicationList(appStates);
 
@@ -114,9 +114,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     AppId = appMatches[0].Groups[1].Value,
                     AppName = appMatches[1].Groups[1].Value,
                     AppType = appMatches[2].Groups[1].Value,
-                    State = ParserUtilities.ParseAppState(appMatches[5].Groups[1].Value),
-                    FinalStatus = ParserUtilities.ParseFinalStatus(appMatches[6].Groups[1].Value),
-                    Progess = ParserUtilities.ParseIntText(appMatches[7].Groups[1].Value),
+                    State = DriverUtilities.ParseAppState(appMatches[5].Groups[1].Value),
+                    FinalStatus = DriverUtilities.ParseFinalStatus(appMatches[6].Groups[1].Value),
+                    Progess = DriverUtilities.ParseIntText(appMatches[7].Groups[1].Value),
                     TrackingUrl = appMatches[8].Groups[1].Value,
                 };
 
@@ -147,7 +147,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 var attempt = new ApplicationAttemptResult
                 {
                     AttemptId = attemptMatches[0].Groups[1].Value,
-                    State = ParserUtilities.ParseAppState(attemptMatches[1].Groups[1].Value),
+                    State = DriverUtilities.ParseAppState(attemptMatches[1].Groups[1].Value),
                     AmContainerId = attemptMatches[2].Groups[1].Value,
                     TrackingUrl = attemptMatches[3].Groups[1].Value,
                 };
@@ -179,10 +179,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 var container = new ContainerResult
                 {
                     ContainerId = containerMatches[0].Groups[1].Value,
-                    StartTime = ParserUtilities.ParseJavaTimestamp(containerMatches[1].Groups[1].Value, HadoopDateFormat),
-                    FinishTime = ParserUtilities.ParseJavaTimestamp(containerMatches[2].Groups[1].Value, HadoopDateFormat),
-                    State = ParserUtilities.ParseContainerState(containerMatches[3].Groups[1].Value),
-                    Host = ParserUtilities.ParseNode(containerMatches[4].Groups[1].Value, Model),
+                    StartTime = DriverUtilities.ParseJavaTimestamp(containerMatches[1].Groups[1].Value, HadoopDateFormat),
+                    FinishTime = DriverUtilities.ParseJavaTimestamp(containerMatches[2].Groups[1].Value, HadoopDateFormat),
+                    State = DriverUtilities.ParseContainerState(containerMatches[3].Groups[1].Value),
+                    Host = DriverUtilities.ParseNode(containerMatches[4].Groups[1].Value, Model),
                     LogUrl = containerMatches[6].Groups[1].Value,
                 };
 
@@ -211,15 +211,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     AppId = matches[0].Groups[2].Value,
                     AppName = matches[1].Groups[2].Value,
                     AppType = matches[2].Groups[2].Value,
-                    StartTime = ParserUtilities.ParseJavaTimestamp(matches[5].Groups[2].Value),
-                    FinishTime = ParserUtilities.ParseJavaTimestamp(matches[6].Groups[2].Value),
-                    Progess = ParserUtilities.ParseIntText(matches[7].Groups[2].Value),
-                    State = ParserUtilities.ParseAppState(matches[8].Groups[2].Value),
-                    FinalStatus = ParserUtilities.ParseFinalStatus(matches[9].Groups[2].Value),
+                    StartTime = DriverUtilities.ParseJavaTimestamp(matches[5].Groups[2].Value),
+                    FinishTime = DriverUtilities.ParseJavaTimestamp(matches[6].Groups[2].Value),
+                    Progess = DriverUtilities.ParseIntText(matches[7].Groups[2].Value),
+                    State = DriverUtilities.ParseAppState(matches[8].Groups[2].Value),
+                    FinalStatus = DriverUtilities.ParseFinalStatus(matches[9].Groups[2].Value),
                     TrackingUrl = matches[10].Groups[2].Value,
-                    AmHost = ParserUtilities.ParseNode(matches[12].Groups[2].Value, Model),
-                    MbSeconds = ParserUtilities.ParseInt(resourcesMatches[0].Value),
-                    VcoreSeconds = ParserUtilities.ParseInt(resourcesMatches[1].Value),
+                    AmHost = DriverUtilities.ParseNode(matches[12].Groups[2].Value, Model),
+                    MbSeconds = DriverUtilities.ParseInt(resourcesMatches[0].Value),
+                    VcoreSeconds = DriverUtilities.ParseInt(resourcesMatches[1].Value),
                     Diagnostics = matches[14].Groups[2].Value.Replace('\n', ' '),
                 };
 
@@ -245,10 +245,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 var attempt = new ApplicationAttemptResult
                 {
                     AttemptId = matches[0].Groups[2].Value,
-                    State = ParserUtilities.ParseAppState(matches[1].Groups[2].Value),
+                    State = DriverUtilities.ParseAppState(matches[1].Groups[2].Value),
                     AmContainerId = matches[2].Groups[2].Value,
                     TrackingUrl = matches[3].Groups[2].Value,
-                    AmHost = ParserUtilities.ParseNode(matches[5].Groups[2].Value, Model),
+                    AmHost = DriverUtilities.ParseNode(matches[5].Groups[2].Value, Model),
                     Diagnostics = matches[6].Groups[2].Value.Replace('\n', ' '),
                 };
 
@@ -274,11 +274,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 var container = new ContainerResult
                 {
                     ContainerId = matches[0].Groups[2].Value,
-                    StartTime = ParserUtilities.ParseJavaTimestamp(matches[1].Groups[2].Value),
-                    FinishTime = ParserUtilities.ParseJavaTimestamp(matches[2].Groups[2].Value),
-                    State = ParserUtilities.ParseContainerState(matches[3].Groups[2].Value),
+                    StartTime = DriverUtilities.ParseJavaTimestamp(matches[1].Groups[2].Value),
+                    FinishTime = DriverUtilities.ParseJavaTimestamp(matches[2].Groups[2].Value),
+                    State = DriverUtilities.ParseContainerState(matches[3].Groups[2].Value),
                     LogUrl = matches[4].Groups[2].Value,
-                    Host = ParserUtilities.ParseNode(matches[5].Groups[2].Value, Model),
+                    Host = DriverUtilities.ParseNode(matches[5].Groups[2].Value, Model),
                     Diagnostics = matches[7].Groups[2].Value.Replace('\n', ' '),
                 };
 
@@ -308,9 +308,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 var node = new NodeResult
                 {
                     NodeId = nodeMatches[0].Groups[1].Value,
-                    NodeState = ParserUtilities.ParseNodeState(nodeMatches[1].Groups[1].Value),
+                    NodeState = DriverUtilities.ParseNodeState(nodeMatches[1].Groups[1].Value),
                     NodeHttpAdd = nodeMatches[2].Groups[1].Value,
-                    RunningContainerCount = ParserUtilities.ParseInt(nodeMatches[3].Groups[1].Value),
+                    RunningContainerCount = DriverUtilities.ParseInt(nodeMatches[3].Groups[1].Value),
                 };
 
                 nodeList.Add(node);
@@ -335,13 +335,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 var node = new NodeResult
                 {
                     NodeId = matches[0].Groups[2].Value,
-                    NodeState = ParserUtilities.ParseNodeState(matches[2].Groups[2].Value),
+                    NodeState = DriverUtilities.ParseNodeState(matches[2].Groups[2].Value),
                     NodeHttpAdd = matches[3].Groups[2].Value,
-                    RunningContainerCount = ParserUtilities.ParseInt(matches[6].Groups[2].Value),
-                    MemoryUsed = ParserUtilities.ParseIntText(matches[7].Groups[2].Value),
-                    MemoryCapacity = ParserUtilities.ParseIntText(matches[8].Groups[2].Value),
-                    CpuUsed = ParserUtilities.ParseIntText(matches[9].Groups[2].Value),
-                    CpuCapacity = ParserUtilities.ParseIntText(matches[10].Groups[2].Value),
+                    RunningContainerCount = DriverUtilities.ParseInt(matches[6].Groups[2].Value),
+                    MemoryUsed = DriverUtilities.ParseIntText(matches[7].Groups[2].Value),
+                    MemoryCapacity = DriverUtilities.ParseIntText(matches[8].Groups[2].Value),
+                    CpuUsed = DriverUtilities.ParseIntText(matches[9].Groups[2].Value),
+                    CpuCapacity = DriverUtilities.ParseIntText(matches[10].Groups[2].Value),
                 };
 
                 return node;

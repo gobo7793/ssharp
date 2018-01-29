@@ -68,7 +68,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The applications</returns>
         public ApplicationResult[] ParseAppList(EAppState states = EAppState.None)
         {
-            var appStates = ParserUtilities.ConcatStates(states);
+            var appStates = DriverUtilities.ConcatStates(states);
 
             var fullResult = Connection.GetYarnApplicationList(appStates);
             var appRes = JsonConvert.DeserializeObject<ApplicationListJsonResult>(fullResult);
@@ -76,7 +76,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             // convert AM Hosts
             var apps = appRes.Collection.List;
             foreach(var app in apps)
-                app.AmHost = ParserUtilities.ParseNode(app.AmHostHttpAddress, Model);
+                app.AmHost = DriverUtilities.ParseNode(app.AmHostHttpAddress, Model);
 
             return apps;
         }
@@ -99,13 +99,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var attempts = attemptRes.Collection.List;
             foreach(var attempt in attempts)
             {
-                attempt.AmHost = ParserUtilities.ParseNode(attempt.AmHostId, Model);
+                attempt.AmHost = DriverUtilities.ParseNode(attempt.AmHostId, Model);
 
                 // get more info from timeline server
                 string attemptId;
-                var parsedId = ParserUtilities.ParseInt(attempt.AttemptId);
+                var parsedId = DriverUtilities.ParseInt(attempt.AttemptId);
                 if(parsedId != 0)
-                    attemptId = ParserUtilities.BuildAttemptIdFromApp(appId, parsedId);
+                    attemptId = DriverUtilities.BuildAttemptIdFromApp(appId, parsedId);
                 else attemptId = attempt.AttemptId;
 
                 var tlAttempt = tlAttempts?.List?.FirstOrDefault(a => a.AttemptId == attemptId);
@@ -131,7 +131,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             var containerList = new List<ContainerResult>();
 
-            var baseContainerId = ParserUtilities.BuildBaseContainerIdFromAttempt(attemptId);
+            var baseContainerId = DriverUtilities.BuildBaseContainerIdFromAttempt(attemptId);
             var tlContainerResult = Connection.GetYarnAppContainerListTl(attemptId);
 
             // Get from RM
@@ -173,7 +173,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     }
                     else // copy else
                     {
-                        tlContainer.Host = ParserUtilities.ParseNode(tlContainer.HostId, Model);
+                        tlContainer.Host = DriverUtilities.ParseNode(tlContainer.HostId, Model);
                         originalContainers[tlContainer.ContainerId] = tlContainer;
                     }
                 }
@@ -194,7 +194,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var app = JsonConvert.DeserializeObject<ApplicationDetailsJsonResult>(fullResult).App;
 
             // convert AM Hosts
-            app.AmHost = ParserUtilities.ParseNode(app.AmHostHttpAddress, Model);
+            app.AmHost = DriverUtilities.ParseNode(app.AmHostHttpAddress, Model);
 
             return app;
         }
@@ -206,7 +206,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The attempt details</returns>
         public ApplicationAttemptResult ParseAppAttemptDetails(string attemptId)
         {
-            var appId = ParserUtilities.BuildAppIdFromAttempt(attemptId);
+            var appId = DriverUtilities.BuildAppIdFromAttempt(attemptId);
 
             var allAttemptsRes = Connection.GetYarnAppAttemptList(appId);
             var tlDetailsRes = Connection.GetYarnAppAttemptDetailsTl(attemptId);
@@ -216,7 +216,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             if(attempt != null)
             {
                 attempt.AttemptId = attemptId;
-                attempt.AmHost = ParserUtilities.ParseNode(attempt.AmHostId, Model);
+                attempt.AmHost = DriverUtilities.ParseNode(attempt.AmHostId, Model);
                 if(!String.IsNullOrWhiteSpace(tlDetailsRes))
                 {
                     var tlDetails = JsonConvert.DeserializeObject<ApplicationAttemptResult>(tlDetailsRes);
@@ -236,7 +236,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The container details</returns>
         public ContainerResult ParseContainerDetails(string containerId)
         {
-            var attemptId = ParserUtilities.BuildAttemptIdFromContainer(containerId);
+            var attemptId = DriverUtilities.BuildAttemptIdFromContainer(containerId);
             var allContainers = ParseContainerList(attemptId);
             return allContainers.FirstOrDefault(c => c.ContainerId == containerId);
             //var containerResult = Connection.GetYarnAppContainerDetails(containerId, node.HttpUrl);

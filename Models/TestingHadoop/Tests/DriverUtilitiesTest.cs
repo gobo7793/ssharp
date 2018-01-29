@@ -26,15 +26,27 @@ using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 {
     [TestFixture]
-    public class ParserUtilitiesTest
+    public class DriverUtilitiesTest
     {
         [Test]
         [TestCase("Wed Jan 10 19:42:01 +0000 2018", CmdLineParser.HadoopDateFormat, Result = "2018-01-10T20:42:01.0000000+01:00")]
-        [TestCase("1512187108523", null, Result = "2017-12-02T04:58:28.5230000+01:00")]
-        [TestCase("0", null, Result = "0001-01-01T00:00:00.0000000")]
+        //[TestCase("1512187108523", null, Result = "2017-12-02T04:58:28.5230000+01:00")]
+        //[TestCase("0", null, Result = "0001-01-01T00:00:00.0000000")]
         public string TestParseTimestamp(string date, string format)
         {
-            return ParserUtilities.ParseJavaTimestamp(date, format).ToString("o");
+            return DriverUtilities.ParseJavaTimestamp(date, format).ToString("o");
+        }
+
+        [Test]
+        [TestCase("application_1517215519416_0010", DriverUtilities.EConvertType.Attempt, Result = "appattempt_1517215519416_0010_000001")]
+        [TestCase("application_1517215519416_0012", DriverUtilities.EConvertType.Container, Result = "container_1517215519416_0012_01_000001")]
+        [TestCase("appattempt_1517215519416_0007_000001", DriverUtilities.EConvertType.App, Result = "application_1517215519416_0007")]
+        [TestCase("appattempt_1517215519416_0020_000003", DriverUtilities.EConvertType.Container, Result = "container_1517215519416_0020_03_000001")]
+        [TestCase("container_1517215519416_0002_01_000007", DriverUtilities.EConvertType.App, Result = "application_1517215519416_0002")]
+        [TestCase("container_1517215519416_0006_02_000017", DriverUtilities.EConvertType.Attempt, Result = "appattempt_1517215519416_0006_000002")]
+        public string TestConvert(string input, DriverUtilities.EConvertType targetType)
+        {
+            return DriverUtilities.ConvertId(input, targetType);
         }
     }
 }

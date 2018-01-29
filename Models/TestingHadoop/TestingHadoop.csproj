@@ -67,7 +67,7 @@
     <Compile Include="Modeling\Driver\IHadoopParser.cs" />
     <Compile Include="Modeling\Driver\JsonParser.cs" />
     <Compile Include="Modeling\Driver\ParserDataClasses.cs" />
-    <Compile Include="Modeling\Driver\ParserUtilities.cs" />
+    <Compile Include="Modeling\Driver\DriverUtilities.cs" />
     <Compile Include="Modeling\Driver\RestConnector.cs" />
     <Compile Include="Modeling\Driver\SshConnection.cs" />
     <Compile Include="Modeling\HadoopModel\EContainerState.cs" />
@@ -91,7 +91,7 @@
     <Compile Include="Tests\FullYarnAppArchitecutreRealTest.cs" />
     <Compile Include="Tests\FullYarnAppArchitecutreCmdTest.cs" />
     <Compile Include="Tests\JsonParserTest.cs" />
-    <Compile Include="Tests\ParserUtilitiesTest.cs" />
+    <Compile Include="Tests\DriverUtilitiesTest.cs" />
     <Compile Include="Tests\YarnNodeTest.cs" />
   </ItemGroup>
   <ItemGroup>
