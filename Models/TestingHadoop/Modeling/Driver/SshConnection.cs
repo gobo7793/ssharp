@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using Renci.SshNet;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
@@ -177,6 +178,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var exitStr = GetExitString();
             var sendStr = $"{command}; echo '{exitStr}'";
 
+            Out($"Executing: {sendStr}", consoleOut);
             Stream.WriteLine(sendStr);
             var answer = Read(exitStr, consoleOut);
 
@@ -212,9 +214,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             InUse = true;
 
-            var cmd = Client.CreateCommand(command);
-            Out($"Executing: {cmd.CommandText}", consoleOut);
-            cmd.BeginExecute();
+            //var cmd = Client.CreateCommand(command);
+            //Out($"Executing: {cmd.CommandText}", consoleOut);
+            //cmd.BeginExecute();
+
+            Task.Run(() => RunIm(command, consoleOut));
+            //exec.Wait();
 
             InUse = false;
         }

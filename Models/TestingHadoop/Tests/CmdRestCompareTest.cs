@@ -44,7 +44,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private string _NodeId = "compute-1:45454";
         // For Fault Handling
         private string _FaultNodeName = "compute-4";
-        private string _FaultAppId = "application_1516703400520_0016";
+        private string _FaultAppId = "application_1517215519416_0010";
 
         [TestFixtureSetUp]
         public void Setup()
@@ -415,18 +415,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             _Cmd.StartApplication("pi");
             var stoppingTime = DateTime.Now - startTime;
             Console.WriteLine("waiting...");
-            Thread.Sleep(30000);
+            Thread.Sleep(35000);
             startTime = DateTime.Now;
             var stopOut = _Cmd.KillApplication(_FaultAppId);
             var startingTime = DateTime.Now - startTime;
 
-            Console.WriteLine($"Stop needed:  {stoppingTime}");
-            Console.WriteLine($"Start needed: {startingTime}");
+            Console.WriteLine($"Start needed:  {stoppingTime}");
+            Console.WriteLine($"Kill needed: {startingTime}");
             Console.WriteLine();
 
             Console.WriteLine("Start Output: N/A");
             Console.WriteLine();
-            Console.WriteLine($"Stop Output:\n{stopOut}");
+            Console.WriteLine($"Kill Output:\n{stopOut}");
 
             Assert.Pass();
         }

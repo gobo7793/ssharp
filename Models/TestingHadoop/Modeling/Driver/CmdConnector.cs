@@ -272,8 +272,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = ParserUtilities.ParseIntText(nodeName);
-            var result = Faulting.Run($"{Model.HadoopSetupScript} hadoop start {id}", IsConsoleOut);
-            return String.IsNullOrWhiteSpace(result) || result == nodeName;
+            Faulting.Run($"{Model.HadoopSetupScript} hadoop start {id}", IsConsoleOut);
+            var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {id} | grep Running", IsConsoleOut);
+            return runCheckRes.Contains("true");
         }
 
         /// <summary>
@@ -287,8 +288,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = ParserUtilities.ParseIntText(nodeName);
-            var result = Faulting.Run($"{Model.HadoopSetupScript} hadoop stop {id}", IsConsoleOut);
-            return String.IsNullOrWhiteSpace(result) || result.Trim() == nodeName;
+            Faulting.Run($"{Model.HadoopSetupScript} hadoop stop {id}", IsConsoleOut);
+            var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {id} | grep Running", IsConsoleOut);
+            return runCheckRes.Contains("false");
         }
 
         /// <summary>
@@ -302,8 +304,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = ParserUtilities.ParseIntText(nodeName);
-            var result = Faulting.Run($"{Model.HadoopSetupScript} net start {id}", IsConsoleOut);
-            return String.IsNullOrWhiteSpace(result) || result == nodeName;
+            Faulting.Run($"{Model.HadoopSetupScript} net start {id}", IsConsoleOut);
+            var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {id} | grep NetworkID", IsConsoleOut);
+            return !String.IsNullOrWhiteSpace(runCheckRes);
         }
 
         /// <summary>
@@ -317,8 +320,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = ParserUtilities.ParseIntText(nodeName);
-            var result = Faulting.Run($"{Model.HadoopSetupScript} net stop {id}", IsConsoleOut);
-            return String.IsNullOrWhiteSpace(result) || result == nodeName;
+            Faulting.Run($"{Model.HadoopSetupScript} net stop {id}", IsConsoleOut);
+            var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {id} | grep NetworkID", IsConsoleOut);
+            return String.IsNullOrWhiteSpace(runCheckRes);
         }
 
         #endregion
@@ -336,7 +340,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var cmd = Faulting.Run($"{Model.HadoopSetupScript} cmd yarn application -kill {appId}", IsConsoleOut);
-            return cmd.EndsWith($"Killed application {appId}");
+            return cmd.StartsWith($"Killed application {appId}") || cmd.StartsWith($"Killing application {appId}");
         }
 
         /// <summary>
