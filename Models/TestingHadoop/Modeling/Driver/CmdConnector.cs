@@ -353,6 +353,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             if(Submitting.Count < 1)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for starting applications initialized!");
 
+            string args = String.Empty;
+            foreach(var arg in arguments)
+                args += $"{arg} ";
+
             SshConnection submitter;
             do
             {
@@ -360,10 +364,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 if(submitter == null)
                     Thread.Sleep(100); // waiting for free submitter
             } while(submitter == null);
-
-            string args = String.Empty;
-            foreach(var arg in arguments)
-                args += $"{arg} ";
 
             submitter.RunAsync($"{Model.HadoopSetupScript} bench {name} {args}", IsConsoleOut);
         }

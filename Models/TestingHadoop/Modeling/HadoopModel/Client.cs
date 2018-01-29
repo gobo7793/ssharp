@@ -20,7 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
@@ -33,7 +35,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Started <see cref="YarnApp"/>s of the client
         /// </summary>
-        public List<YarnApp> StartingYarnApps { get; }
+        public List<YarnApp> StartingYarnApps { get; } = new List<YarnApp>();
 
         /// <summary>
         /// Connected <see cref="YarnController"/> for the client
@@ -41,20 +43,29 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public YarnController ConnectedYarnController { get; set; }
 
         /// <summary>
-        /// Initializes a new <see cref="Client"/>
+        /// The connector to submit a <see cref="YarnApp"/>
         /// </summary>
-        public Client()
-        {
-            StartingYarnApps = new List<YarnApp>();
-        }
+        public IHadoopConnector SubmittingConnector { get; set; }
 
         /// <summary>
-        /// Starts the given <see cref="YarnApp"/> on <see cref="ConnectedYarnController" />
+        /// Starts the given <see cref="YarnApp"/>
+        /// if <see cref="YarnApp.StartName"/> is not null
         /// </summary>
         /// <param name="app"><see cref="YarnApp"/> to start</param>
         public void StartJob(YarnApp app)
         {
-            throw new System.NotImplementedException();
+            if(!String.IsNullOrWhiteSpace(app.StartName))
+                SubmittingConnector.StartApplication(app.StartName, app.StartArgs);
+        }
+
+        /// <summary>
+        /// Starts the given command
+        /// </summary>
+        /// <param name="cmd">Command to start</param>
+        /// <param name="args">The arguments</param>
+        public void StartJob(string cmd, string args)
+        {
+            SubmittingConnector.StartApplication(cmd, args);
         }
     }
 }

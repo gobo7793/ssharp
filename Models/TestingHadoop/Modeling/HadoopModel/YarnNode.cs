@@ -53,9 +53,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         protected override string HttpPort => "8042";
 
         /// <summary>
-        /// The connector to use for node control
+        /// The connector to use for fault handling
         /// </summary>
-        public IHadoopConnector Connector { get; set; }
+        public IHadoopConnector FaultConnector { get; set; }
 
         /// <summary>
         /// <see cref="YarnApp" />s executing by this node
@@ -176,8 +176,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             if(!String.IsNullOrWhiteSpace(NodeId))
             {
-                IsActive = Connector.StartNode(Name);
-                IsConnected = Connector.StartNodeNetConnection(Name);
+                IsActive = FaultConnector.StartNode(Name);
+                IsConnected = FaultConnector.StartNodeNetConnection(Name);
                 GetStatus();
             }
         }
@@ -196,7 +196,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             public override void Update()
             {
                 if(IsActive)
-                    IsConnected = !Connector.StopNodeNetConnection(Name);
+                    IsConnected = !FaultConnector.StopNodeNetConnection(Name);
             }
         }
 
@@ -209,7 +209,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             public override void Update()
             {
-                IsActive = !Connector.StopNode(Name);
+                IsActive = !FaultConnector.StopNode(Name);
             }
         }
 

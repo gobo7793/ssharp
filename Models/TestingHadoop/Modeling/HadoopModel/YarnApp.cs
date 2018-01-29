@@ -49,9 +49,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region Properties
 
         /// <summary>
-        /// The connector to use for node control
+        /// The connector to use for fault handling
         /// </summary>
-        public IHadoopConnector Connector { get; set; }
+        public IHadoopConnector FaultConnector { get; set; }
 
         /// <summary>
         /// <see cref="YarnAppAttempt"/> for this <see cref="YarnApp"/>
@@ -62,6 +62,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Starting <see cref="Client"/> of this app
         /// </summary>
         public Client StartingClient { get; set; }
+
+        /// <summary>
+        /// The command name to start the app
+        /// </summary>
+        public string StartName { get; set; }
+
+        /// <summary>
+        /// The command arguments to start the app
+        /// </summary>
+        public string StartArgs { get; set; }
 
         /// <summary>
         /// Current state
@@ -244,7 +254,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             {
                 base.Update();
                 if(IsKillable)
-                    Connector.KillApplication(AppId);
+                    FaultConnector.KillApplication(AppId);
             }
         }
 
