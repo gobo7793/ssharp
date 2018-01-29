@@ -74,9 +74,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Gets and parses the <see cref="YarnAppContainer"/> details from the given <see cref="YarnNode"/>
         /// </summary>
         /// <param name="containerId">The <see cref="YarnAppContainer.ContainerId"/> from the container</param>
-        /// <param name="node">The <see cref="YarnNode"/> executing the container</param>
         /// <returns>The container details</returns>
-        ContainerResult ParseContainerDetails(string containerId, YarnNode node = null);
+        ContainerResult ParseContainerDetails(string containerId);
 
         #endregion
 

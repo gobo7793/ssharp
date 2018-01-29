@@ -21,7 +21,9 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using ISSE.SafetyChecking.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
@@ -152,7 +154,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
-        public void GetStatus()
+        public void ReadStatus()
         {
             var parsed = Parser.ParseNodeDetails(NodeId);
 
@@ -168,6 +170,38 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             }
         }
 
+        /// <summary>
+        /// Returns the current status as comma seperated string
+        /// </summary>
+        /// <returns>The status as string</returns>
+        public string StatusAsString()
+        {
+            var type = GetType();
+            var properties = new List<PropertyInfo>(type.GetProperties());
+            var status = String.Empty;
+            foreach(var p in properties)
+            {
+                var value = String.Empty;
+                if(p.PropertyType.IsValueType || p.PropertyType.Name == typeof(String).Name)
+                    value = p.GetValue(this)?.ToString();
+                else if(typeof(IEnumerable).IsAssignableFrom(p.PropertyType))
+                {
+                    var propVal = p.GetValue(this) as IEnumerable;
+                    if(propVal != null)
+                    {
+                        var cnt = 0;
+                        foreach(var unused in propVal) cnt++;
+                        value = cnt.ToString();
+                    }
+                }
+                else
+                    value = p.GetValue(this)?.GetType().Name;
+                status += $"{p.Name}={value},";
+            }
+
+            return status;
+        }
+
         #endregion
 
         #region Methods
@@ -178,7 +212,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             {
                 IsActive = FaultConnector.StartNode(Name);
                 IsConnected = FaultConnector.StartNodeNetConnection(Name);
-                GetStatus();
+                ReadStatus();
             }
         }
 

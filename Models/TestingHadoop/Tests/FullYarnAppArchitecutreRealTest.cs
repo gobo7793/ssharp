@@ -24,29 +24,28 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
-using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 {
     [TestFixture]
-    public class FullYarnAppArchitecutreCmdTest
+    public class FullYarnAppArchitecutreRealTest
     {
         private Model _Model;
         private YarnApp _App;
         private YarnAppAttempt _Attempt;
         private YarnAppContainer _Container;
 
+        private string _AppBase = "1517215519416_0010";
+
         [TestFixtureSetUp]
         public void Setup()
         {
             _Model = new Model();
-            var parser = new CmdLineParser(_Model, new DummyHadoopCmdConnector());
-
-            _Model.InitTestConfig(parser, parser.Connection);
+            _Model.InitConfig1();
 
             _App = _Model.Applications[0];
-            _App.AppId = "application_1515488762656_0002";
+            _App.AppId = $"application_{_AppBase}";
 
             _Attempt = _App.Attempts[0];
             _Container = _Attempt.Containers[0];
@@ -55,39 +54,51 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestGetAppStatus()
         {
+            var startTime = DateTime.Now;
             _App.ReadStatus();
+            var elapsedTime = DateTime.Now - startTime;
 
-            Assert.AreEqual("application_1515488762656_0002", _App.AppId);
-            Assert.AreEqual(new DateTime(2018, 1, 9, 10, 10, 34, 402), _App.StartTime);
-            Assert.AreEqual(_Model.Nodes["compute-1"], _App.AmHost);
-            Assert.AreEqual(1, _App.Attempts.Count(a => !String.IsNullOrWhiteSpace(a.AttemptId)));
-            Assert.AreEqual("appattempt_1515488762656_0002_000001", _App.Attempts[0].AttemptId);
+            Console.WriteLine($"Time needed: {elapsedTime}");
+            var fullStatus = _App.StatusAsString();
+            Console.WriteLine(fullStatus);
+
+            Assert.AreEqual($"appattempt_{_AppBase}_000001", _App.Attempts[0].AttemptId);
+            Assert.IsNotNullOrEmpty(_App.Name);
         }
 
         [Test]
         public void TestGetAttemptStatus()
         {
-            _Attempt.AttemptId = "appattempt_1515577485762_0006_000001";
+            if(String.IsNullOrWhiteSpace(_Attempt.AttemptId))
+                _Attempt.AttemptId = $"appattempt_{_AppBase}_000001";
 
+            var startTime = DateTime.Now;
             _Attempt.ReadStatus();
+            var elapsedTime = DateTime.Now - startTime;
 
-            Assert.AreEqual("appattempt_1515577485762_0006_000001", _Attempt.AttemptId);
-            Assert.AreEqual("container_1515577485762_0006_01_000001", _Attempt.AmContainerId);
-            Assert.AreEqual(_Model.Nodes[$"{Model.NodeNamePrefix}1"], _Attempt.AmHost);
-            Assert.AreEqual(3, _Attempt.Containers.Count(c => !String.IsNullOrWhiteSpace(c.ContainerId)));
-            Assert.AreEqual("container_1515488762656_0011_01_000002", _Attempt.Containers[1].ContainerId);
+            Console.WriteLine($"Time needed: {elapsedTime}");
+            var fullStatus = _Attempt.StatusAsString();
+            Console.WriteLine(fullStatus);
+
+            Assert.AreEqual($"container_{_AppBase}_01_000001", _Attempt.AmContainerId);
+            Assert.IsNotNullOrEmpty(_Attempt.AmContainerId);
         }
 
         [Test]
         public void TestGetContainerStatus()
         {
-            _Container.ContainerId = "container_1515577485762_0008_01_000001";
+            if(String.IsNullOrWhiteSpace(_Container.ContainerId))
+                _Container.ContainerId = $"container_{_AppBase}_01_000001";
 
+            var startTime = DateTime.Now;
             _Container.ReadStatus();
+            var elapsedTime = DateTime.Now - startTime;
 
-            Assert.AreEqual("container_1515577485762_0008_01_000001", _Container.ContainerId);
-            Assert.AreEqual(new DateTime(2018, 1, 10, 11, 22, 2, 594), _Container.StartTime);
-            Assert.AreEqual(_Model.Nodes[$"{Model.NodeNamePrefix}1"], _Container.Host);
+            Console.WriteLine($"Time needed: {elapsedTime}");
+            var fullStatus = _Container.StatusAsString();
+            Console.WriteLine(fullStatus);
+
+            Assert.AreNotEqual(DateTime.MinValue, _Container.StartTime);
         }
     }
 }

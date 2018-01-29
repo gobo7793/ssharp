@@ -147,7 +147,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             InitYarnNodes(4, restParser, cmdConnector);
 
             InitApplications(1, restParser, cmdConnector);
-            InitAppAttempts(1, restParser);
+            InitAppAttempts(2, restParser);
             InitContainers(32, restParser);
         }
 

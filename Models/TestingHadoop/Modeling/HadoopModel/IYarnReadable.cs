@@ -15,6 +15,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Reads the current status from Hadoop
         /// </summary>
-        void GetStatus();
+        void ReadStatus();
+
+        /// <summary>
+        /// Returns the current status as comma seperated string
+        /// </summary>
+        /// <returns>The status as string</returns>
+        string StatusAsString();
     }
 }

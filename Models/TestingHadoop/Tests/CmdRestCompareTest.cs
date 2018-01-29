@@ -379,7 +379,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine();
             Console.WriteLine($"Start Output:\n{startOut}");
 
-            Assert.Pass();
+            Assert.IsTrue(stopOut);
+            Assert.IsTrue(startOut);
         }
 
         [Test]
@@ -403,7 +404,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine();
             Console.WriteLine($"Start Output:\n{startOut}");
 
-            Assert.Pass();
+            Assert.IsTrue(stopOut);
+            Assert.IsTrue(startOut);
         }
 
         [Test]
@@ -428,7 +430,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine();
             Console.WriteLine($"Kill Output:\n{stopOut}");
 
-            Assert.Pass();
+            Assert.IsTrue(stopOut);
         }
 
         #endregion

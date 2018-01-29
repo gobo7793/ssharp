@@ -233,37 +233,39 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Gets and parses the <see cref="YarnAppContainer"/> details from the given <see cref="YarnNode"/>
         /// </summary>
         /// <param name="containerId">The <see cref="YarnAppContainer.ContainerId"/> from the container</param>
-        /// <param name="node">The <see cref="YarnNode"/> executing the container</param>
         /// <returns>The container details</returns>
-        public ContainerResult ParseContainerDetails(string containerId, YarnNode node = null)
+        public ContainerResult ParseContainerDetails(string containerId)
         {
-            var containerResult = Connection.GetYarnAppContainerDetails(containerId, node.HttpUrl);
-            var tlContainerResult = Connection.GetYarnAppContainerDetailsTl(containerId);
+            var attemptId = ParserUtilities.BuildAttemptIdFromContainer(containerId);
+            var allContainers = ParseContainerList(attemptId);
+            return allContainers.FirstOrDefault(c => c.ContainerId == containerId);
+            //var containerResult = Connection.GetYarnAppContainerDetails(containerId, node.HttpUrl);
+            //var tlContainerResult = Connection.GetYarnAppContainerDetailsTl(containerId);
 
-            ContainerResult container = null;
-            if(!String.IsNullOrWhiteSpace(containerResult))
-            {
-                var containerRes = JsonConvert.DeserializeObject<ContainerDetailsJsonResult>(containerResult);
-                if(containerRes != null)
-                    container = containerRes.Container;
-            }
+            //ContainerResult container = null;
+            //if(!String.IsNullOrWhiteSpace(containerResult))
+            //{
+            //    var containerRes = JsonConvert.DeserializeObject<ContainerDetailsJsonResult>(containerResult);
+            //    if(containerRes != null)
+            //        container = containerRes.Container;
+            //}
 
-            if(!String.IsNullOrWhiteSpace(tlContainerResult))
-            {
-                var tlContainerRes = JsonConvert.DeserializeObject<ContainerResult>(tlContainerResult);
-                if(container == null)
-                    container = tlContainerRes;
-                else
-                {
-                    container.Priority = tlContainerRes.Priority;
-                    container.StartTime = tlContainerRes.StartTime;
-                    container.FinishTime = tlContainerRes.FinishTime;
-                }
-            }
+            //if(!String.IsNullOrWhiteSpace(tlContainerResult))
+            //{
+            //    var tlContainerRes = JsonConvert.DeserializeObject<ContainerResult>(tlContainerResult);
+            //    if(container == null)
+            //        container = tlContainerRes;
+            //    else
+            //    {
+            //        container.Priority = tlContainerRes.Priority;
+            //        container.StartTime = tlContainerRes.StartTime;
+            //        container.FinishTime = tlContainerRes.FinishTime;
+            //    }
+            //}
 
-            if(container != null)
-                container.Host = ParserUtilities.ParseNode(container.HostId, Model);
-            return container;
+            //if(container != null)
+            //    container.Host = ParserUtilities.ParseNode(container.HostId, Model);
+            //return container;
         }
 
         /// <summary>

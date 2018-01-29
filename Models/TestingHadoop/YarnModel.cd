@@ -42,13 +42,13 @@
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>BAQggAAAAQAgBABBEggAAEAEICIDAAAAAAgABAACAAg=</HashCode>
+      <HashCode>FAQggAAAAQAgBABBEggAAEAAICIDAAAACAgABAACAAg=</HashCode>
       <FileName>Modeling\HadoopModel\YarnNode.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Controller" />
     </ShowAsAssociation>
-    <Lollipop Orientation="Left" Position="3.268" />
+    <Lollipop Orientation="Left" Position="3.231" />
   </Class>
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.Client">
     <Position X="2.5" Y="6.25" Width="1.75" />
@@ -96,7 +96,7 @@
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAQgAABAAAABAAKEBGgAAAwkIAAgAEAhACAABg2AAAA=</HashCode>
+      <HashCode>EAQgAABAAAABAAKEBGgAAAwgIAAgAEAhCCAABg2AAAA=</HashCode>
       <FileName>Modeling\HadoopModel\YarnApp.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -117,7 +117,7 @@
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAQgAAAAAQAAACIGAAIAAAAEIAAgCAABAAAABAAAAAA=</HashCode>
+      <HashCode>EAQgAAAAAQAAACIGAAIAAAAAIAAgCAABCAAABAAAAAA=</HashCode>
       <FileName>Modeling\HadoopModel\YarnAppContainer.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -144,7 +144,7 @@
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAQgAABAAAAAAAKQAAAAAAAEIAAAAAAAAAgARAEgAAA=</HashCode>
+      <HashCode>EAQgAABAAAAAAAKQAAAAAAAAIAAAAAAACAgARAEgAAA=</HashCode>
       <FileName>Modeling\HadoopModel\YarnAppAttempt.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -164,7 +164,7 @@
   <Interface Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.IYarnReadable">
     <Position X="2.5" Y="9.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>EAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
       <FileName>Modeling\HadoopModel\IYarnReadable.cs</FileName>
     </TypeIdentifier>
   </Interface>

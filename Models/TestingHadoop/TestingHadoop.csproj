@@ -88,6 +88,7 @@
     <Compile Include="Tests\CmdRestCompareTest.cs" />
     <Compile Include="Tests\DummyHadoopCmdConnector.cs" />
     <Compile Include="Tests\DummyHadoopRestConnector.cs" />
+    <Compile Include="Tests\FullYarnAppArchitecutreRealTest.cs" />
     <Compile Include="Tests\FullYarnAppArchitecutreCmdTest.cs" />
     <Compile Include="Tests\JsonParserTest.cs" />
     <Compile Include="Tests\ParserUtilitiesTest.cs" />
