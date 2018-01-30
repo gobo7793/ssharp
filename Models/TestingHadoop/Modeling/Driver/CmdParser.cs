@@ -29,7 +29,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     /// <summary>
     /// Parser for informations about Hadoop states via command line
     /// </summary>
-    public class CmdLineParser : IHadoopParser
+    public class CmdParser : IHadoopParser
     {
         #region Constants and Properties
 
@@ -79,7 +79,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="model">The model</param>
         /// <param name="connection">The connector to Hadoop</param>
-        public CmdLineParser(Model model, IHadoopConnector connection)
+        public CmdParser(Model model, IHadoopConnector connection)
         {
             Model = model;
             Connection = connection;
@@ -116,7 +116,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     AppType = appMatches[2].Groups[1].Value,
                     State = DriverUtilities.ParseAppState(appMatches[5].Groups[1].Value),
                     FinalStatus = DriverUtilities.ParseFinalStatus(appMatches[6].Groups[1].Value),
-                    Progess = DriverUtilities.ParseIntText(appMatches[7].Groups[1].Value),
+                    Progess = DriverUtilities.ParseInt(appMatches[7].Groups[1].Value),
                     TrackingUrl = appMatches[8].Groups[1].Value,
                 };
 
@@ -213,7 +213,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     AppType = matches[2].Groups[2].Value,
                     StartTime = DriverUtilities.ParseJavaTimestamp(matches[5].Groups[2].Value),
                     FinishTime = DriverUtilities.ParseJavaTimestamp(matches[6].Groups[2].Value),
-                    Progess = DriverUtilities.ParseIntText(matches[7].Groups[2].Value),
+                    Progess = DriverUtilities.ParseInt(matches[7].Groups[2].Value),
                     State = DriverUtilities.ParseAppState(matches[8].Groups[2].Value),
                     FinalStatus = DriverUtilities.ParseFinalStatus(matches[9].Groups[2].Value),
                     TrackingUrl = matches[10].Groups[2].Value,
@@ -338,10 +338,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     NodeState = DriverUtilities.ParseNodeState(matches[2].Groups[2].Value),
                     NodeHttpAdd = matches[3].Groups[2].Value,
                     RunningContainerCount = DriverUtilities.ParseInt(matches[6].Groups[2].Value),
-                    MemoryUsed = DriverUtilities.ParseIntText(matches[7].Groups[2].Value),
-                    MemoryCapacity = DriverUtilities.ParseIntText(matches[8].Groups[2].Value),
-                    CpuUsed = DriverUtilities.ParseIntText(matches[9].Groups[2].Value),
-                    CpuCapacity = DriverUtilities.ParseIntText(matches[10].Groups[2].Value),
+                    MemoryUsed = DriverUtilities.ParseInt(matches[7].Groups[2].Value),
+                    MemoryCapacity = DriverUtilities.ParseInt(matches[8].Groups[2].Value),
+                    CpuUsed = DriverUtilities.ParseInt(matches[9].Groups[2].Value),
+                    CpuCapacity = DriverUtilities.ParseInt(matches[10].Groups[2].Value),
                 };
 
                 return node;

@@ -35,7 +35,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
         private static readonly Regex _ParseNodeRegex = new Regex(@"(https?:\/\/)?([^\:]+)(:\d*)?");
         private static readonly Regex _DigitRegex = new Regex(@"\d+");
-        private static readonly Regex _DigitIdRegex = new Regex(@"\d+(?:\d|_)*\d+");
 
         private static readonly CultureInfo _DefaultDtCulture = new CultureInfo("en-US");
 
@@ -106,39 +105,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         }
 
         /// <summary>
-        /// Parses the integer or returns the default value 0
+        /// Parses the first integer value in the string or returns the default value 0
         /// </summary>
         /// <param name="value">The value to parse</param>
         /// <returns>The parsed integer</returns>
         public static int ParseInt(string value)
         {
             int val;
-            Int32.TryParse(value, out val);
+            Int32.TryParse(_DigitRegex.Match(value).Value, out val);
             return val;
-        }
-
-        /// <summary>
-        /// Parses an integer with leading or trailing text or returns the default value 0
-        /// </summary>
-        /// <param name="value">The value to parse</param>
-        /// <returns>The progress</returns>
-        public static int ParseIntText(string value)
-        {
-            return ParseInt(_DigitRegex.Match(value).Value);
-        }
-
-        /// <summary>
-        /// Parses the timestamp with the given format to <see cref="DateTime"/>
-        /// or returns the default value <see cref="DateTime.MinValue"/>
-        /// </summary>
-        /// <param name="javaMillis">The value to parse</param>
-        /// <returns>The parsed <see cref="DateTime"/></returns>
-        public static DateTime ParseJavaTimestamp(long javaMillis)
-        {
-            if(javaMillis == 0)
-                return DateTime.MinValue;
-            var javaTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(javaMillis);
-            return javaTimeUtc.ToLocalTime();
         }
 
         /// <summary>
@@ -153,6 +128,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             if(!Int64.TryParse(javaMillis, out javaMillisL))
                 return DateTime.MinValue;
             return ParseJavaTimestamp(javaMillisL);
+        }
+
+        /// <summary>
+        /// Parses the timestamp with the given format to <see cref="DateTime"/>
+        /// or returns the default value <see cref="DateTime.MinValue"/>
+        /// </summary>
+        /// <param name="javaMillis">The value to parse</param>
+        /// <returns>The parsed <see cref="DateTime"/></returns>
+        public static DateTime ParseJavaTimestamp(long javaMillis)
+        {
+            if(javaMillis < 1)
+                return DateTime.MinValue;
+            var javaTimeUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(javaMillis);
+            return javaTimeUtc.ToLocalTime();
         }
 
         /// <summary>
@@ -190,69 +179,95 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         #region Converting
 
         /// <summary>
-        /// Supported converting types
-        /// </summary>
-        public enum EConvertType
-        {
-            App,
-            Attempt,
-            Container
-        }
-
-        /// <summary>
-        /// Get the numeric part of the ids, like
-        /// "application_1516703400520_0003" -> "1516703400520_0003"
-        /// </summary>
-        /// <param name="fullId">the full id</param>
-        /// <returns>The numeric part</returns>
-        public static string GetNumericIdPart(string fullId)
-        {
-            return _DigitIdRegex.Match(fullId).Value;
-        }
-
-        /// <summary>
         /// Converts the given ID type to the target type.
-        /// If the input id contains not enough data, the first attempt or container will be returned.
+        /// If the input id contains not enough data, the base id for the target type will be returned.
         /// </summary>
         /// <param name="inputId">The id to convert</param>
         /// <param name="targetType">The target type</param>
         /// <returns>The converted id</returns>
         /// <exception cref="ArgumentException">If the inputId is no valid source type id</exception>
+        /// <remarks>
+        /// Examples:
+        /// Attempt->Container: application_1517215519416_0010_000001 -> application_1517215519416_0010_01
+        /// Container->App: application_1517215519416_0010_01_000015 -> application_1517215519416_0010
+        /// </remarks>
         public static string ConvertId(string inputId, EConvertType targetType)
         {
+            return ConvertId(inputId, 1, targetType);
+        }
+
+        /// <summary>
+        /// Converts the given ID type to the target type with the given target id (only the first level under the source).
+        /// If the input id contains not enough data, the base id for the target type will be returned.
+        /// </summary>
+        /// <param name="inputId">The id to convert</param>
+        /// <param name="shortTargetId">The short target id</param>
+        /// <param name="targetType">The target type</param>
+        /// <returns>The converted id</returns>
+        /// <exception cref="ArgumentException">If the inputId is no valid source type id</exception>
+        /// <remarks>
+        /// Examples:
+        /// Attempt->Container: application_1517215519416_0010_000001 -> application_1517215519416_0010_01
+        /// Container->App: application_1517215519416_0010_01_000015 -> application_1517215519416_0010
+        /// App->Attempt: application_1517215519416_0010 + 2 -> application_1517215519416_0010_000002
+        /// </remarks>
+        public static string ConvertId(string inputId, string shortTargetId, EConvertType targetType)
+        {
+            var shortTargetIdInt = ParseInt(shortTargetId);
+
+            return ConvertId(inputId, shortTargetIdInt > 0 ? shortTargetIdInt : 1, targetType);
+        }
+
+        /// <summary>
+        /// Converts the given ID type to the target type with the given target id (only the first level under the source).
+        /// If the input id contains not enough data, the base id for the target type will be returned.
+        /// </summary>
+        /// <param name="inputId">The id to convert</param>
+        /// <param name="shortTargetId">The short target id, not needed from container source</param>
+        /// <param name="targetType">The target type</param>
+        /// <returns>The converted id</returns>
+        /// <exception cref="ArgumentException">If the inputId is no valid source type id</exception>
+        /// <remarks>
+        /// Examples:
+        /// Attempt->Container: application_1517215519416_0010_000001 -> application_1517215519416_0010_01
+        /// Container->App: application_1517215519416_0010_01_000015 -> application_1517215519416_0010
+        /// App->Attempt: application_1517215519416_0010 + 2 -> application_1517215519416_0010_000002
+        /// </remarks>
+        public static string ConvertId(string inputId, int shortTargetId, EConvertType targetType)
+        {
             if(inputId.StartsWith("application"))
-                return ConvertAppId(inputId, targetType);
+                return ConvertAppId(inputId, shortTargetId, targetType);
             if(inputId.StartsWith("appattempt"))
-                return ConvertAttemptId(inputId, targetType);
+                return ConvertAttemptId(inputId, shortTargetId, targetType);
             if(inputId.StartsWith("container"))
                 return ConvertContainerId(inputId, targetType);
             throw new ArgumentException($"{inputId} cannot be convert to {targetType}: source type not supported");
         }
 
-        private static string ConvertAppId(string inputId, EConvertType targetType)
+        private static string ConvertAppId(string inputId, int shortId, EConvertType targetType)
         {
             var matches = _DigitRegex.Matches(inputId);
             if(matches.Count != 2)
-                throw new ArgumentException($"{inputId} cannot be convert to {targetType}: unvalid application id format");
+                throw new ArgumentException($"{inputId} cannot be convert to {targetType}: invalid application id format");
 
             switch(targetType)
             {
                 case EConvertType.Attempt:
-                    return $"appattempt_{matches[0].Value}_{matches[1].Value}_000001";
+                    return $"appattempt_{matches[0].Value}_{matches[1].Value}_{shortId:D6}";
 
                 case EConvertType.Container:
-                    return $"container_{matches[0].Value}_{matches[1].Value}_01_000001";
+                    return $"container_{matches[0].Value}_{matches[1].Value}_{shortId:D2}_000001";
 
                 default:
                     return inputId;
             }
         }
 
-        private static string ConvertAttemptId(string inputId, EConvertType targetType)
+        private static string ConvertAttemptId(string inputId, int shortId, EConvertType targetType)
         {
             var matches = _DigitRegex.Matches(inputId);
             if(matches.Count != 3)
-                throw new ArgumentException($"{inputId} cannot be convert to {targetType}: unvalid appattempt id format");
+                throw new ArgumentException($"{inputId} cannot be convert to {targetType}: invalid appattempt id format");
 
             var attemptInt = ParseInt(matches[2].Value);
 
@@ -262,7 +277,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     return $"application_{matches[0].Value}_{matches[1].Value}";
 
                 case EConvertType.Container:
-                    return $"container_{matches[0].Value}_{matches[1].Value}_{attemptInt:D2}_000001";
+                    return $"container_{matches[0].Value}_{matches[1].Value}_{attemptInt:D2}_{shortId:D6}";
 
                 default:
                     return inputId;
@@ -273,7 +288,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             var matches = _DigitRegex.Matches(inputId);
             if(matches.Count != 4)
-                throw new ArgumentException($"{inputId} cannot be convert to {targetType}: unvalid container id format");
+                throw new ArgumentException($"{inputId} cannot be convert to {targetType}: invalid container id format");
 
             var attemptInt = ParseInt(matches[2].Value);
 
@@ -290,56 +305,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             }
         }
 
-        /// <summary>
-        /// Builds the full application id from an attempt id
-        /// </summary>
-        /// <param name="attemptId">The full attempt id</param>
-        /// <returns>The full application id</returns>
-        public static string BuildAppIdFromAttempt(string attemptId)
-        {
-            var id = $"application_{GetNumericIdPart(attemptId)}";
-            return id.Substring(0, id.Length - 7);
-        }
-
-        /// <summary>
-        /// Builds the full attempt id from an app id
-        /// </summary>
-        /// <param name="appId">The app id</param>
-        /// <param name="shortAttemptId">Short attempt id</param>
-        /// <returns>The full attempt id</returns>
-        public static string BuildAttemptIdFromApp(string appId, int shortAttemptId)
-        {
-            return $"appattempt_{GetNumericIdPart(appId)}_{shortAttemptId:D6}";
-        }
-
-        /// <summary>
-        /// Builds the basic container id from the full attempt id
-        /// like "appattempt_1516703400520_0010_000001" -> "container_1516703400520_0010_01"_000001
-        /// </summary>
-        /// <param name="attemptId"></param>
-        /// <returns>The base container id</returns>
-        public static string BuildBaseContainerIdFromAttempt(string attemptId)
-        {
-            var numAttempt = GetNumericIdPart(attemptId);
-            var conBaseNum = numAttempt.Remove(numAttempt.Length - 6, 4);
-            return $"container_{conBaseNum}";
-        }
-
-        /// <summary>
-        /// Builds the full attempt id from a container id
-        /// </summary>
-        /// <param name="containerId">The container id</param>
-        /// <returns>The full attempt id</returns>
-        public static string BuildAttemptIdFromContainer(string containerId)
-        {
-            var numContainerParts = GetNumericIdPart(containerId).Split('_');
-            var appPart = $"{numContainerParts[0]}_{numContainerParts[1]}";
-            var attemptPart = ParseInt(numContainerParts[2]);
-            return BuildAttemptIdFromApp(appPart, attemptPart);
-        }
-
         #endregion
     }
+
+    #region EConverting
+
+    /// <summary>
+    /// Supported converting types
+    /// </summary>
+    public enum EConvertType
+    {
+        App,
+        Attempt,
+        Container
+    }
+
+    #endregion
 
     #region Json
 

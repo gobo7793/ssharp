@@ -148,7 +148,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
 
-            var appId = DriverUtilities.BuildAppIdFromAttempt(attemptId);
+            var appId = DriverUtilities.ConvertId(attemptId, EConvertType.App);
 
             return Monitoring.Run($"curl {TlUrl}/ws/v1/applicationhistory/apps/{appId}/appattempts/{attemptId}/containers");
         }
@@ -190,7 +190,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
 
-            var appId = DriverUtilities.BuildAppIdFromAttempt(attemptId);
+            var appId = DriverUtilities.ConvertId(attemptId, EConvertType.App);
 
             return Monitoring.Run($"curl {TlUrl}/ws/v1/applicationhistory/apps/{appId}/appattempts/{attemptId}");
         }
@@ -221,8 +221,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
 
-            var attemptId = DriverUtilities.BuildAttemptIdFromContainer(containerId);
-            var appId = DriverUtilities.BuildAppIdFromAttempt(attemptId);
+            var attemptId = DriverUtilities.ConvertId(containerId, EConvertType.Attempt);
+            var appId = DriverUtilities.ConvertId(containerId, EConvertType.App);
 
             return Monitoring.Run($"curl {TlUrl}/ws/v1/applicationhistory/apps/{appId}/appattempts/{attemptId}/containers/{containerId}");
         }

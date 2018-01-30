@@ -271,7 +271,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             if(Faulting == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
-            var id = DriverUtilities.ParseIntText(nodeName);
+            var id = DriverUtilities.ParseInt(nodeName);
             Faulting.Run($"{Model.HadoopSetupScript} hadoop start {id}", IsConsoleOut);
             var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {id} | grep Running", IsConsoleOut);
             return runCheckRes.Contains("true");
@@ -287,7 +287,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             if(Faulting == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
-            var id = DriverUtilities.ParseIntText(nodeName);
+            var id = DriverUtilities.ParseInt(nodeName);
             Faulting.Run($"{Model.HadoopSetupScript} hadoop stop {id}", IsConsoleOut);
             var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {id} | grep Running", IsConsoleOut);
             return runCheckRes.Contains("false");
@@ -303,7 +303,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             if(Faulting == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
-            var id = DriverUtilities.ParseIntText(nodeName);
+            var id = DriverUtilities.ParseInt(nodeName);
             Faulting.Run($"{Model.HadoopSetupScript} net start {id}", IsConsoleOut);
             var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {id} | grep NetworkID", IsConsoleOut);
             return !String.IsNullOrWhiteSpace(runCheckRes);
@@ -319,7 +319,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             if(Faulting == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
-            var id = DriverUtilities.ParseIntText(nodeName);
+            var id = DriverUtilities.ParseInt(nodeName);
             Faulting.Run($"{Model.HadoopSetupScript} net stop {id}", IsConsoleOut);
             var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {id} | grep NetworkID", IsConsoleOut);
             return String.IsNullOrWhiteSpace(runCheckRes);

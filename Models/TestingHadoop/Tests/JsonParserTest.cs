@@ -31,7 +31,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
     [TestFixture]
     public class JsonParserTest
     {
-        private JsonParser _Parser;
+        private RestParser _Parser;
         private Model _Model;
         private YarnNode _Node1;
         private YarnNode _Node2;
@@ -43,7 +43,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         {
             // Setup modell
             _Model = new Model();
-            _Parser = new JsonParser(_Model, new DummyHadoopRestConnector());
+            _Parser = new RestParser(_Model, new DummyHadoopRestConnector());
 
             _Model.InitTestConfig(_Parser, _Parser.Connection);
             _Node1 = _Model.Nodes[$"{Model.NodeNamePrefix}1"];

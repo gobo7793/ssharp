@@ -62,10 +62,10 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Modeling\Driver\CmdConnector.cs" />
-    <Compile Include="Modeling\Driver\CmdLineParser.cs" />
+    <Compile Include="Modeling\Driver\CmdParser.cs" />
     <Compile Include="Modeling\Driver\IHadoopConnector.cs" />
     <Compile Include="Modeling\Driver\IHadoopParser.cs" />
-    <Compile Include="Modeling\Driver\JsonParser.cs" />
+    <Compile Include="Modeling\Driver\RestParser.cs" />
     <Compile Include="Modeling\Driver\ParserDataClasses.cs" />
     <Compile Include="Modeling\Driver\DriverUtilities.cs" />
     <Compile Include="Modeling\Driver\RestConnector.cs" />

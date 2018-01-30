@@ -41,7 +41,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public void Setup()
         {
             _Model = new Model();
-            var parser = new CmdLineParser(_Model, new DummyHadoopCmdConnector());
+            var parser = new CmdParser(_Model, new DummyHadoopCmdConnector());
 
             _Model.InitTestConfig(parser, parser.Connection);
 

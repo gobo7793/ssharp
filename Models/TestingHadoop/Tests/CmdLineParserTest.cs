@@ -31,7 +31,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
     [TestFixture]
     public class CmdLineParserTest
     {
-        private CmdLineParser _Parser;
+        private CmdParser _Parser;
         private Model _Model;
         private YarnNode _Node1;
         private YarnNode _Node2;
@@ -40,7 +40,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public void Setup()
         {
             _Model = new Model();
-            _Parser = new CmdLineParser(_Model, new DummyHadoopCmdConnector());
+            _Parser = new CmdParser(_Model, new DummyHadoopCmdConnector());
 
             _Model.InitTestConfig(_Parser, _Parser.Connection);
             _Node1 = _Model.Nodes[$"{Model.NodeNamePrefix}1"];

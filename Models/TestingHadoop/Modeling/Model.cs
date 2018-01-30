@@ -141,7 +141,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 
             var cmdConnector = new CmdConnector(SshHost, SshUsername, SshPrivateKeyFilePath, false, true, 1);
             var restConnector = new RestConnector(SshHost, SshUsername, SshPrivateKeyFilePath, Controller.HttpUrl, Controller.TimelineHttpUrl);
-            var restParser = new JsonParser(this, restConnector);
+            var restParser = new RestParser(this, restConnector);
 
             InitBaseComponents(cmdConnector);
             InitYarnNodes(4, restParser, cmdConnector);
