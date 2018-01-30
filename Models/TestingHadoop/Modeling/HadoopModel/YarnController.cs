@@ -20,7 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
@@ -47,12 +49,35 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public Client ConnectedClient { get; set; }
 
         /// <summary>
-        /// Indicates the <see cref="YarnNode"/> which executes the given <see cref="YarnApp"/> and saves it
+        /// The executed <see cref="YarnApp"/>s
         /// </summary>
-        /// <param name="app">The app/job</param>
-        public void FindNodesForApp(YarnApp app)
+        public List<YarnApp> Apps { get; set; } = new List<YarnApp>();
+
+        /// <summary>
+        /// Gets all apps executed on the cluster
+        /// </summary>
+        public void GetApps()
         {
-            throw new System.NotImplementedException();
+            var apps = Parser.ParseAppList(EAppState.ALL);
+            if(apps.Length > 0)
+            {
+                foreach(var con in apps)
+                {
+                    if(Apps.All(c => c.AppId != con.AppId))
+                    {
+                        var usingApp = Apps.FirstOrDefault(c => String.IsNullOrWhiteSpace(c.AppId));
+                        if(usingApp == null)
+                            throw new OutOfMemoryException("No more applications available!" +
+                                                           " Try to initialize more application space.");
+                        usingApp.AppId = con.AppId;
+                    }
+                }
+            }
+        }
+
+        public override void Update()
+        {
+            GetApps();
         }
     }
 }
