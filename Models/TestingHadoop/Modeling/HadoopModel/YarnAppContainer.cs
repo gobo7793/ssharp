@@ -103,6 +103,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public IHadoopParser Parser { get; set; }
 
         /// <summary>
+        /// Indicates if details parsing is required for full informations
+        /// </summary>
+        public bool IsRequireDetailsParsing { get; set; }
+
+        /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
         public void ReadStatus()
@@ -110,17 +115,25 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             var parsed = Parser.ParseContainerDetails(ContainerId);
 
             if(parsed != null)
-            {
-                StartTime = parsed.StartTime;
-                EndTime = parsed.FinishTime;
-                State = parsed.State;
-                Host = parsed.Host;
-                Priority = parsed.Priority;
-                ExitCode = parsed.ExitCode;
-                Diagnostics = parsed.Diagnostics;
-                AllocatedMemory = parsed.MemoryNeeded;
-                AllocatedVcores = parsed.VcoresNeeded;
-            }
+                SetStatus(parsed);
+        }
+
+        /// <summary>
+        /// Sets the status based on the parsed component
+        /// </summary>
+        /// <param name="parsed">The parsed component</param>
+        public void SetStatus(IParsedComponent parsed)
+        {
+            var container = parsed as IContainerResult;
+            StartTime = container.StartTime;
+            EndTime = container.FinishTime;
+            State = container.State;
+            Host = container.Host;
+            Priority = container.Priority;
+            ExitCode = container.ExitCode;
+            Diagnostics = container.Diagnostics;
+            AllocatedMemory = container.MemoryNeeded;
+            AllocatedVcores = container.VcoresNeeded;
         }
 
         /// <summary>

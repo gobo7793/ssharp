@@ -23,6 +23,8 @@
 using System.Collections.Generic;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling

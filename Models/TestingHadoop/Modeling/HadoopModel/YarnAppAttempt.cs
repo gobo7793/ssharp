@@ -99,6 +99,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public IHadoopParser Parser { get; set; }
 
         /// <summary>
+        /// Indicates if details parsing is required for full informations
+        /// </summary>
+        public bool IsRequireDetailsParsing { get; set; }
+
+        /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
         public void ReadStatus()
@@ -107,12 +112,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             if(parsed != null)
             {
-                State = parsed.State;
-                AmContainerId = parsed.AmContainerId;
-                AmHost = parsed.AmHost;
-                TrackingUrl = parsed.TrackingUrl;
-                StartTime = parsed.StartTime;
-                Diagnostics = parsed.Diagnostics;
+                SetStatus(parsed);
 
                 var containers = Parser.ParseContainerList(AttemptId);
                 if(containers.Length > 0)
@@ -130,6 +130,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Sets the status based on the parsed component
+        /// </summary>
+        /// <param name="parsed">The parsed component</param>
+        public void SetStatus(IParsedComponent parsed)
+        {
+            var attempt = parsed as IAppAttemptResult;
+            State = attempt.State;
+            AmContainerId = attempt.AmContainerId;
+            AmHost = attempt.AmHost;
+            TrackingUrl = attempt.TrackingUrl;
+            StartTime = attempt.StartTime;
+            Diagnostics = attempt.Diagnostics;
         }
 
         /// <summary>

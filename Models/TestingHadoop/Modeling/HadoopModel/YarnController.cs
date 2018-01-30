@@ -39,14 +39,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public string TimelineHttpUrl => $"http://{Name}:8188";
 
         /// <summary>
-        /// Connected <see cref="YarnNode" />s
-        /// </summary>
-        public List<YarnNode> ConnectedNodes { get; } = new List<YarnNode>();
-
-        /// <summary>
         /// Connected <see cref="Client" />
         /// </summary>
         public Client ConnectedClient { get; set; }
+
+        /// <summary>
+        /// Connected <see cref="YarnNode" />s
+        /// </summary>
+        public List<YarnNode> ConnectedNodes { get; } = new List<YarnNode>();
 
         /// <summary>
         /// The executed <see cref="YarnApp"/>s
@@ -54,22 +54,41 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public List<YarnApp> Apps { get; set; } = new List<YarnApp>();
 
         /// <summary>
-        /// Gets all apps executed on the cluster
+        /// Gets all apps executed on the cluster and their informations
         /// </summary>
-        public void GetApps()
+        public void GetAppInfos()
         {
             var apps = Parser.ParseAppList(EAppState.ALL);
             if(apps.Length > 0)
             {
-                foreach(var con in apps)
+                foreach(var app in apps)
                 {
-                    if(Apps.All(c => c.AppId != con.AppId))
+                    if(Apps.All(c => c.AppId != app.AppId))
                     {
                         var usingApp = Apps.FirstOrDefault(c => String.IsNullOrWhiteSpace(c.AppId));
                         if(usingApp == null)
                             throw new OutOfMemoryException("No more applications available!" +
                                                            " Try to initialize more application space.");
-                        usingApp.AppId = con.AppId;
+                        usingApp.AppId = app.AppId;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets all node informations
+        /// </summary>
+        public void GetNodeInfos()
+        {
+            var nodes = Parser.ParseNodeList();
+            if(nodes.Length > 0)
+            {
+                foreach(var node in nodes)
+                {
+                    if(ConnectedNodes.All(c => c.NodeId != node.NodeId))
+                    {
+                        var usingNode = ConnectedNodes.First(c => String.IsNullOrWhiteSpace(c.NodeId));
+                        // TODO: Node details
                     }
                 }
             }
@@ -77,7 +96,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
-            GetApps();
+            GetAppInfos();
         }
     }
 }

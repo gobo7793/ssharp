@@ -188,6 +188,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public IHadoopParser Parser { get; set; }
 
         /// <summary>
+        /// Indicates if details parsing is required for full informations
+        /// </summary>
+        public bool IsRequireDetailsParsing { get; set; }
+
+        /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
         public void ReadStatus()
@@ -196,23 +201,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             if(parsed != null)
             {
-                Name = parsed.AppName;
-                StartTime = parsed.StartTime;
-                EndTime = parsed.FinishTime;
-                Progress = parsed.Progess;
-                State = parsed.State;
-                FinalStatus = parsed.FinalStatus;
-                AmHost = parsed.AmHost;
-                AllocatedMb = parsed.AllocatedMb;
-                AllocatedVcores = parsed.AllocatedVcores;
-                MbSeconds = parsed.MbSeconds;
-                VcoreSeconds = parsed.VcoreSeconds;
-                PreemptedMb = parsed.PreemptedMb;
-                PreemptedVcores = parsed.PreemptedVcores;
-                AmContainerPreempted = parsed.AmContainerPreempted;
-                NonAmContainerPreempted = parsed.NonAmContainerPreempted;
-                CurrentRunningContainers = parsed.RunningContainers;
-                Diagnostics = parsed.Diagnostics;
+                SetStatus(parsed);
 
                 var attempts = Parser.ParseAppAttemptList(AppId);
                 if(attempts.Length > 0)
@@ -230,6 +219,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Sets the status based on the parsed component
+        /// </summary>
+        /// <param name="parsed">The parsed component</param>
+        public void SetStatus(IParsedComponent parsed)
+        {
+            var app = parsed as IApplicationResult;
+            Name = app.AppName;
+            StartTime = app.StartTime;
+            EndTime = app.FinishTime;
+            Progress = app.Progess;
+            State = app.State;
+            FinalStatus = app.FinalStatus;
+            AmHost = app.AmHost;
+            AllocatedMb = app.AllocatedMb;
+            AllocatedVcores = app.AllocatedVcores;
+            MbSeconds = app.MbSeconds;
+            VcoreSeconds = app.VcoreSeconds;
+            PreemptedMb = app.PreemptedMb;
+            PreemptedVcores = app.PreemptedVcores;
+            AmContainerPreempted = app.AmContainerPreempted;
+            NonAmContainerPreempted = app.NonAmContainerPreempted;
+            CurrentRunningContainers = app.RunningContainers;
+            Diagnostics = app.Diagnostics;
         }
 
         /// <summary>

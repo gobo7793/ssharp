@@ -147,22 +147,37 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region IYarnReadable Methods
 
         /// <summary>
+        /// Indicates if details parsing is required for full informations
+        /// </summary>
+        public bool IsRequireDetailsParsing { get; set; }
+
+        /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
         public void ReadStatus()
         {
-            var parsed = Parser.ParseNodeDetails(NodeId);
+            if(!IsRequireDetailsParsing)
+                return;
 
+            var parsed = Parser.ParseNodeDetails(NodeId);
             if(parsed != null)
-            {
-                State = parsed.NodeState;
-                RunningContainerCount = parsed.RunningContainerCount;
-                MemoryUsed = parsed.MemoryUsed;
-                MemoryAvailable = parsed.MemoryAvailable;
-                CpuUsed = parsed.CpuUsed;
-                CpuAvailable = parsed.CpuAvailable;
-                LastHealthUpdate = parsed.LastHealthUpdate;
-            }
+                SetStatus(parsed);
+        }
+
+        /// <summary>
+        /// Sets the status based on the parsed component
+        /// </summary>
+        /// <param name="parsed">The parsed component</param>
+        public void SetStatus(IParsedComponent parsed)
+        {
+            var node = parsed as INodeResult;
+            State = node.NodeState;
+            RunningContainerCount = node.RunningContainerCount;
+            MemoryUsed = node.MemoryUsed;
+            MemoryAvailable = node.MemoryAvailable;
+            CpuUsed = node.CpuUsed;
+            CpuAvailable = node.CpuAvailable;
+            LastHealthUpdate = node.LastHealthUpdate;
         }
 
         /// <summary>
