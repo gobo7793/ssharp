@@ -56,7 +56,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine("Login to shell");
 
             var startTime = DateTime.Now;
-            _Cmd = new CmdConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFilePath, true, true, 1, true);
+            _Cmd = new CmdConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFilePath, true, true, 1);
             var cmdTime = DateTime.Now;
             _Rest = new RestConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFilePath,
                 model.Controller.HttpUrl, model.Controller.TimelineHttpUrl);
@@ -98,7 +98,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             var startTime = DateTime.Now;
             var cmdOut = _Cmd.GetYarnApplicationList("ALL");
             var cmdTime = DateTime.Now;
-            var restOut = _Rest.GetYarnApplicationList("");
+            var restOut = _Rest.GetYarnApplicationList("None");
             var restTime = DateTime.Now;
 
             Console.WriteLine($"CMD needed:  {cmdTime - startTime}");
