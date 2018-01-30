@@ -38,13 +38,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private RestConnector _Rest;
 
         // After restart cluster and executing applications change these values for the app!
-        private string _AppId = "application_1516703400520_0001";
-        private string _AttemptId = "appattempt_1516703400520_0001_000001";
-        private string _ContainerId = "container_1516703400520_0001_01_000001";
+        private string _AppId = "application_1517215519416_0001";
+        private string _AttemptId = "appattempt_1517215519416_0001_000001";
+        private string _ContainerId = "container_1517215519416_0001_01_000001";
         private string _NodeId = "compute-1:45454";
         // For Fault Handling
         private string _FaultNodeName = "compute-4";
-        private string _FaultAppId = "application_1517215519416_0010";
+        private string _FaultAppId = "application_1517215519416_0011";
 
         [TestFixtureSetUp]
         public void Setup()

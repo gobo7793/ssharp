@@ -45,10 +45,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         }
 
         [Test]
-        [TestCase("application_1517215519416_0010", EConvertType.Attempt, Result = "appattempt_1517215519416_0010_000001")]
-        [TestCase("application_1517215519416_0012", EConvertType.Container, Result = "container_1517215519416_0012_01_000001")]
+        [TestCase("application_1517215519416_0010", EConvertType.Attempt, Result = "appattempt_1517215519416_0010")]
+        [TestCase("application_1517215519416_0012", EConvertType.Container, Result = "container_1517215519416_0012")]
         [TestCase("appattempt_1517215519416_0007_000001", EConvertType.App, Result = "application_1517215519416_0007")]
-        [TestCase("appattempt_1517215519416_0020_000003", EConvertType.Container, Result = "container_1517215519416_0020_03_000001")]
+        [TestCase("appattempt_1517215519416_0020_000003", EConvertType.Container, Result = "container_1517215519416_0020_03")]
         [TestCase("container_1517215519416_0002_01_000007", EConvertType.App, Result = "application_1517215519416_0002")]
         [TestCase("container_1517215519416_0006_02_000017", EConvertType.Attempt, Result = "appattempt_1517215519416_0006_000002")]
         public string TestConvert(string input, EConvertType targetType)
@@ -58,7 +58,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
         [Test]
         [TestCase("application_1517215519416_0010", 2, EConvertType.Attempt, Result = "appattempt_1517215519416_0010_000002")]
-        [TestCase("application_1517215519416_0012", 4, EConvertType.Container, Result = "container_1517215519416_0012_04_000001")]
+        [TestCase("application_1517215519416_0012", 4, EConvertType.Container, Result = "container_1517215519416_0012_04")]
         [TestCase("appattempt_1517215519416_0007_000001", 5, EConvertType.App, Result = "application_1517215519416_0007")]
         [TestCase("appattempt_1517215519416_0020_000003", 3, EConvertType.Container, Result = "container_1517215519416_0020_03_000003")]
         [TestCase("container_1517215519416_0002_01_000007", 6, EConvertType.App, Result = "application_1517215519416_0002")]

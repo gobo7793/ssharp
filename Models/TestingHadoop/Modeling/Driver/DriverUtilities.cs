@@ -193,12 +193,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </remarks>
         public static string ConvertId(string inputId, EConvertType targetType)
         {
-            return ConvertId(inputId, 1, targetType);
+            return ConvertId(inputId, -1, targetType);
         }
 
         /// <summary>
         /// Converts the given ID type to the target type with the given target id (only the first level under the source).
-        /// If the input id contains not enough data, the base id for the target type will be returned.
+        /// If the input id contains not enough data or shortTargetId &gt; 0, the base id for the target type will be returned.
         /// </summary>
         /// <param name="inputId">The id to convert</param>
         /// <param name="shortTargetId">The short target id</param>
@@ -220,7 +220,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
         /// <summary>
         /// Converts the given ID type to the target type with the given target id (only the first level under the source).
-        /// If the input id contains not enough data, the base id for the target type will be returned.
+        /// If the input id contains not enough data or shortTargetId &gt; 0, the base id for the target type will be returned.
         /// </summary>
         /// <param name="inputId">The id to convert</param>
         /// <param name="shortTargetId">The short target id, not needed from container source</param>
@@ -253,10 +253,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             switch(targetType)
             {
                 case EConvertType.Attempt:
-                    return $"appattempt_{matches[0].Value}_{matches[1].Value}_{shortId:D6}";
+                    if(shortId > 0)
+                        return $"appattempt_{matches[0].Value}_{matches[1].Value}_{shortId:D6}";
+                    else
+                        return $"appattempt_{matches[0].Value}_{matches[1].Value}";
 
                 case EConvertType.Container:
-                    return $"container_{matches[0].Value}_{matches[1].Value}_{shortId:D2}_000001";
+                    if(shortId > 0)
+                        return $"container_{matches[0].Value}_{matches[1].Value}_{shortId:D2}";
+                    else
+                        return $"container_{matches[0].Value}_{matches[1].Value}";
 
                 default:
                     return inputId;
@@ -277,7 +283,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                     return $"application_{matches[0].Value}_{matches[1].Value}";
 
                 case EConvertType.Container:
-                    return $"container_{matches[0].Value}_{matches[1].Value}_{attemptInt:D2}_{shortId:D6}";
+                    if(shortId > 0)
+                        return $"container_{matches[0].Value}_{matches[1].Value}_{attemptInt:D2}_{shortId:D6}";
+                    else
+                        return $"container_{matches[0].Value}_{matches[1].Value}_{attemptInt:D2}";
 
                 default:
                     return inputId;

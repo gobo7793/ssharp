@@ -332,102 +332,106 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Assert.AreEqual(app, res);
         }
 
-        [Test]
-        public void TestParseAppAttemptDetails()
-        {
-            var attempt = new AppAttemptResult
-            {
-                AttemptId = "appattempt_1516703400520_0010_000002",
-                StartTime = new DateTime(2018, 1, 23, 15, 23, 10, 696),
-                AmContainerId = "container_1516703400520_0010_02_000001",
-                AmHostHttpAddress = "compute-1:8042",
-                AmHostId = "compute-1:45454",
-                AmHost = _Node1,
-                LogsUrl = "//compute-1:8042/node/containerlogs/container_1516703400520_0010_02_000001/root",
-                TrackingUrl = "http://controller:8088/proxy/application_1516703400520_0010/",
-                Diagnostics = "",
-                State = EAppState.FINISHED,
-            };
+        #region Deprecated Tests
 
-            var res = _Parser.ParseAppAttemptDetails("appattempt_1516703400520_0010_000002");
+        //[Test]
+        //public void TestParseAppAttemptDetails()
+        //{
+        //    var attempt = new AppAttemptResult
+        //    {
+        //        AttemptId = "appattempt_1516703400520_0010_000002",
+        //        StartTime = new DateTime(2018, 1, 23, 15, 23, 10, 696),
+        //        AmContainerId = "container_1516703400520_0010_02_000001",
+        //        AmHostHttpAddress = "compute-1:8042",
+        //        AmHostId = "compute-1:45454",
+        //        AmHost = _Node1,
+        //        LogsUrl = "//compute-1:8042/node/containerlogs/container_1516703400520_0010_02_000001/root",
+        //        TrackingUrl = "http://controller:8088/proxy/application_1516703400520_0010/",
+        //        Diagnostics = "",
+        //        State = EAppState.FINISHED,
+        //    };
 
-            Assert.AreEqual(attempt, res);
-        }
+        //    var res = _Parser.ParseAppAttemptDetails("appattempt_1516703400520_0010_000002");
 
-        [Test]
-        public void TestParseContainerDetails()
-        {
-            var runningContainer = new ContainerResult
-            {
-                ContainerId = "container_1516703400520_0010_02_000008",
-                State = EContainerState.RUNNING,
-                ExitCode = -1000,
-                Diagnostics = "",
-                MemoryNeeded = 1024,
-                VcoresNeeded = 1,
-                LogUrl = "http://compute-4:8042/node/containerlogs/container_1516703400520_0010_02_000008/root",
-                HostId = "compute-4:45454",
-                Host = _Node4,
-                Priority = 20,
-                StartTime = new DateTime(2018, 1, 23, 15, 23, 22, 866),
-                FinishTime = new DateTime(2018, 1, 23, 15, 24, 1, 355),
-            };
-            var completedContainer = new ContainerResult
-            {
-                ContainerId = "container_1516703400520_0013_01_000016",
-                MemoryNeeded = 1024,
-                VcoresNeeded = 1,
-                HostId = "compute-4:45454",
-                Host = _Node4,
-                Priority = 20,
-                StartTime = new DateTime(2018, 1, 24, 14, 1, 50, 856),
-                FinishTime = new DateTime(2018, 1, 24, 14, 2, 23, 121),
-                Diagnostics = "Container killed by the ApplicationMaster.\n",
-                LogUrl =
-                    "http://0.0.0.0:8188/applicationhistory/logs/compute-4:45454/container_1516703400520_0013_01_000016/container_1516703400520_0013_01_000016/root",
-                ExitCode = 0,
-                State = EContainerState.COMPLETE,
-            };
+        //    Assert.AreEqual(attempt, res);
+        //}
 
-            var runningConAct = _Parser.ParseContainerDetails("container_1516703400520_0010_02_000008");
-            var completedConAct = _Parser.ParseContainerDetails("container_1516703400520_0013_01_000016");
+        //[Test]
+        //public void TestParseContainerDetails()
+        //{
+        //    var runningContainer = new ContainerResult
+        //    {
+        //        ContainerId = "container_1516703400520_0010_02_000008",
+        //        State = EContainerState.RUNNING,
+        //        ExitCode = -1000,
+        //        Diagnostics = "",
+        //        MemoryNeeded = 1024,
+        //        VcoresNeeded = 1,
+        //        LogUrl = "http://compute-4:8042/node/containerlogs/container_1516703400520_0010_02_000008/root",
+        //        HostId = "compute-4:45454",
+        //        Host = _Node4,
+        //        Priority = 20,
+        //        StartTime = new DateTime(2018, 1, 23, 15, 23, 22, 866),
+        //        FinishTime = new DateTime(2018, 1, 23, 15, 24, 1, 355),
+        //    };
+        //    var completedContainer = new ContainerResult
+        //    {
+        //        ContainerId = "container_1516703400520_0013_01_000016",
+        //        MemoryNeeded = 1024,
+        //        VcoresNeeded = 1,
+        //        HostId = "compute-4:45454",
+        //        Host = _Node4,
+        //        Priority = 20,
+        //        StartTime = new DateTime(2018, 1, 24, 14, 1, 50, 856),
+        //        FinishTime = new DateTime(2018, 1, 24, 14, 2, 23, 121),
+        //        Diagnostics = "Container killed by the ApplicationMaster.\n",
+        //        LogUrl =
+        //            "http://0.0.0.0:8188/applicationhistory/logs/compute-4:45454/container_1516703400520_0013_01_000016/container_1516703400520_0013_01_000016/root",
+        //        ExitCode = 0,
+        //        State = EContainerState.COMPLETE,
+        //    };
 
-            Assert.AreEqual(runningContainer, runningConAct);
-            Assert.AreEqual(completedContainer, completedConAct);
-        }
+        //    var runningConAct = _Parser.ParseContainerDetails("container_1516703400520_0010_02_000008");
+        //    var completedConAct = _Parser.ParseContainerDetails("container_1516703400520_0013_01_000016");
 
-        [Test]
-        public void TestParseNodeDetails()
-        {
-            var running = new NodeResult
-            {
-                NodeState = ENodeState.RUNNING,
-                NodeId = "compute-3:45454",
-                Hostname = "compute-3",
-                NodeHttpAdd = "compute-3:8042",
-                LastHealthUpdate = new DateTime(2018, 1, 17, 14, 14, 48, 21),
-                HealthReport = "",
-                RunningContainerCount = 2,
-                MemoryUsed = 2048,
-                MemoryAvailable = 6144,
-                CpuUsed = 2,
-                CpuAvailable = 6,
-            };
-            var dead = new NodeResult
-            {
-                NodeState = ENodeState.LOST,
-                NodeId = "compute-6:45454",
-                Hostname = "compute-6",
-                NodeHttpAdd = "",
-                LastHealthUpdate = new DateTime(2018, 1, 17, 10, 26, 30, 494),
-                HealthReport = "",
-            };
+        //    Assert.AreEqual(runningContainer, runningConAct);
+        //    Assert.AreEqual(completedContainer, completedConAct);
+        //}
 
-            var runningRes = _Parser.ParseNodeDetails("compute-3:45454");
-            var deadRes = _Parser.ParseNodeDetails("compute-6:45454");
+        //[Test]
+        //public void TestParseNodeDetails()
+        //{
+        //    var running = new NodeResult
+        //    {
+        //        NodeState = ENodeState.RUNNING,
+        //        NodeId = "compute-3:45454",
+        //        Hostname = "compute-3",
+        //        NodeHttpAdd = "compute-3:8042",
+        //        LastHealthUpdate = new DateTime(2018, 1, 17, 14, 14, 48, 21),
+        //        HealthReport = "",
+        //        RunningContainerCount = 2,
+        //        MemoryUsed = 2048,
+        //        MemoryAvailable = 6144,
+        //        CpuUsed = 2,
+        //        CpuAvailable = 6,
+        //    };
+        //    var dead = new NodeResult
+        //    {
+        //        NodeState = ENodeState.LOST,
+        //        NodeId = "compute-6:45454",
+        //        Hostname = "compute-6",
+        //        NodeHttpAdd = "",
+        //        LastHealthUpdate = new DateTime(2018, 1, 17, 10, 26, 30, 494),
+        //        HealthReport = "",
+        //    };
 
-            Assert.AreEqual(running, runningRes, "running node failed");
-            Assert.AreEqual(dead, deadRes, "dead node failed");
-        }
+        //    var runningRes = _Parser.ParseNodeDetails("compute-3:45454");
+        //    var deadRes = _Parser.ParseNodeDetails("compute-6:45454");
+
+        //    Assert.AreEqual(running, runningRes, "running node failed");
+        //    Assert.AreEqual(dead, deadRes, "dead node failed");
+        //}
+
+        #endregion
     }
 }
