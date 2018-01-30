@@ -94,7 +94,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
             var cmd = $"curl {RmUrl}/ws/v1/cluster/apps";
             if(!String.IsNullOrWhiteSpace(states))
+            {
+                states = states.Replace("ALL", "").Replace("None", "").Replace("NotStartedYet", "");
                 cmd = $"{cmd}?states={states}";
+            }
 
             return Monitoring.Run(cmd);
         }
