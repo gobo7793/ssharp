@@ -22,6 +22,7 @@
 
 using System;
 using System.Diagnostics;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
@@ -58,5 +59,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 return _HttpUrl;
             }
         }
+
+        /// <summary>
+        /// Parser to read
+        /// </summary>
+        public IHadoopParser Parser { get; set; }
     }
 }

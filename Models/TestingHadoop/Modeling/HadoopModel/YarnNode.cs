@@ -147,11 +147,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region IYarnReadable Methods
 
         /// <summary>
-        /// Parser to read
-        /// </summary>
-        public IHadoopParser Parser { get; set; }
-
-        /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
         public void ReadStatus()

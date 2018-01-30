@@ -123,8 +123,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                         {
                             var usingCont = Containers.First(c => String.IsNullOrWhiteSpace(c.ContainerId));
                             if(usingCont == null)
-                                throw new InsufficientMemoryException("No more application attempt containers available!" +
-                                                                      " Try to initialize more container space.");
+                                throw new OutOfMemoryException("No more application attempt containers available!" +
+                                                               " Try to initialize more container space.");
                             usingCont.ContainerId = con.ContainerId;
                         }
                     }
