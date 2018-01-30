@@ -208,26 +208,30 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
         public IAppAttemptResult ParseAppAttemptDetails(string attemptId)
         {
             var appId = DriverUtilities.ConvertId(attemptId, EConvertType.App);
+            var attempts = ParseAppAttemptList(appId);
+            return attempts.FirstOrDefault(a => a.AttemptId == attemptId);
 
-            var allAttemptsRes = Connection.GetYarnAppAttemptList(appId);
-            var tlDetailsRes = Connection.GetYarnAppAttemptDetailsTl(attemptId);
-            var allAttempts = JsonConvert.DeserializeObject<JsonAppAttemptListResult>(allAttemptsRes);
+            //var appId = DriverUtilities.ConvertId(attemptId, EConvertType.App);
 
-            var attempt = allAttempts.Collection.List.FirstOrDefault(a => attemptId.EndsWith(a.AttemptId));
-            if(attempt != null)
-            {
-                attempt.AttemptId = attemptId;
-                attempt.AmHost = DriverUtilities.ParseNode(attempt.AmHostId, Model);
-                if(!String.IsNullOrWhiteSpace(tlDetailsRes))
-                {
-                    var tlDetails = JsonConvert.DeserializeObject<AppAttemptResult>(tlDetailsRes);
-                    attempt.TrackingUrl = tlDetails.TrackingUrl;
-                    attempt.Diagnostics = tlDetails.Diagnostics;
-                    attempt.State = tlDetails.State;
-                }
-            }
+            //var allAttemptsRes = Connection.GetYarnAppAttemptList(appId);
+            //var tlDetailsRes = Connection.GetYarnAppAttemptDetailsTl(attemptId);
+            //var allAttempts = JsonConvert.DeserializeObject<JsonAppAttemptListResult>(allAttemptsRes);
 
-            return attempt;
+            //var attempt = allAttempts.Collection.List.FirstOrDefault(a => attemptId.EndsWith(a.AttemptId));
+            //if(attempt != null)
+            //{
+            //    attempt.AttemptId = attemptId;
+            //    attempt.AmHost = DriverUtilities.ParseNode(attempt.AmHostId, Model);
+            //    if(!String.IsNullOrWhiteSpace(tlDetailsRes))
+            //    {
+            //        var tlDetails = JsonConvert.DeserializeObject<AppAttemptResult>(tlDetailsRes);
+            //        attempt.TrackingUrl = tlDetails.TrackingUrl;
+            //        attempt.Diagnostics = tlDetails.Diagnostics;
+            //        attempt.State = tlDetails.State;
+            //    }
+            //}
+
+            //return attempt;
         }
 
         /// <summary>
@@ -240,6 +244,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
             var attemptId = DriverUtilities.ConvertId(containerId, EConvertType.Attempt);
             var allContainers = ParseContainerList(attemptId);
             return allContainers.FirstOrDefault(c => c.ContainerId == containerId);
+
             //var containerResult = Connection.GetYarnAppContainerDetails(containerId, node.HttpUrl);
             //var tlContainerResult = Connection.GetYarnAppContainerDetailsTl(containerId);
 
