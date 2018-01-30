@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
@@ -36,21 +37,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="states">The states</param>
         /// <returns>The applications</returns>
-        ApplicationResult[] ParseAppList(EAppState states = EAppState.None);
+        IApplicationResult[] ParseAppList(EAppState states = EAppState.None);
 
         /// <summary>
         /// Gets and parses the <see cref="YarnAppAttempt"/> list for the given <see cref="YarnApp.AppId"/>
         /// </summary>
         /// <param name="appId">The app id</param>
         /// <returns>The attempts</returns>
-        ApplicationAttemptResult[] ParseAppAttemptList(string appId);
+        IAppAttemptResult[] ParseAppAttemptList(string appId);
 
         /// <summary>
         /// Gets and parses the current running <see cref="YarnAppContainer"/> list for the given <see cref="YarnAppAttempt.AttemptId"/>
         /// </summary>
         /// <param name="attemptId">The attempt id</param>
         /// <returns>The running containers</returns>
-        ContainerResult[] ParseContainerList(string attemptId);
+        IContainerResult[] ParseContainerList(string attemptId);
 
         #endregion
 
@@ -61,21 +62,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="appId">The <see cref="YarnApp.AppId"/> from the app</param>
         /// <returns>The application details</returns>
-        ApplicationResult ParseAppDetails(string appId);
+        IApplicationResult ParseAppDetails(string appId);
 
         /// <summary>
         /// Gets and parses the <see cref="YarnAppAttempt"/> details
         /// </summary>
         /// <param name="attemptId">The <see cref="YarnAppAttempt.AttemptId"/> from the attempt</param>
         /// <returns>The attempt details</returns>
-        ApplicationAttemptResult ParseAppAttemptDetails(string attemptId);
+        IAppAttemptResult ParseAppAttemptDetails(string attemptId);
 
         /// <summary>
         /// Gets and parses the <see cref="YarnAppContainer"/> details from the given <see cref="YarnNode"/>
         /// </summary>
         /// <param name="containerId">The <see cref="YarnAppContainer.ContainerId"/> from the container</param>
         /// <returns>The container details</returns>
-        ContainerResult ParseContainerDetails(string containerId);
+        IContainerResult ParseContainerDetails(string containerId);
 
         #endregion
 
@@ -85,14 +86,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Gets and parses the <see cref="YarnNode"/> list for the cluster
         /// </summary>
         /// <returns>All nodes in the cluster</returns>
-        NodeResult[] ParseNodeList();
+        INodeResult[] ParseNodeList();
 
         /// <summary>
         /// Gets and parses the <see cref="YarnNode"/> details
         /// </summary>
         /// <param name="nodeId">The <see cref="YarnNode.NodeId"/> from the node</param>
         /// <returns>The node details</returns>
-        NodeResult ParseNodeDetails(string nodeId);
+        INodeResult ParseNodeDetails(string nodeId);
 
         #endregion
     }

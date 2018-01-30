@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 
 using System;
-using System.Linq;
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;

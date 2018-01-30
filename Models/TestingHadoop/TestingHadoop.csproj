@@ -61,14 +61,18 @@
     <Compile Include="..\..\Source\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Modeling\Driver\CmdConnector.cs" />
-    <Compile Include="Modeling\Driver\CmdParser.cs" />
+    <Compile Include="Modeling\Driver\Connector\CmdConnector.cs" />
+    <Compile Include="Modeling\Driver\DataClasses\AppAttemptResult.cs" />
+    <Compile Include="Modeling\Driver\DataClasses\ApplicationResult.cs" />
+    <Compile Include="Modeling\Driver\DataClasses\ContainerResult.cs" />
+    <Compile Include="Modeling\Driver\DataClasses\NodeResult.cs" />
+    <Compile Include="Modeling\Driver\Parser\CmdParser.cs" />
     <Compile Include="Modeling\Driver\IHadoopConnector.cs" />
     <Compile Include="Modeling\Driver\IHadoopParser.cs" />
-    <Compile Include="Modeling\Driver\RestParser.cs" />
-    <Compile Include="Modeling\Driver\ParserDataClasses.cs" />
+    <Compile Include="Modeling\Driver\Parser\RestParser.cs" />
+    <Compile Include="Modeling\Driver\IParsedComponents.cs" />
     <Compile Include="Modeling\Driver\DriverUtilities.cs" />
-    <Compile Include="Modeling\Driver\RestConnector.cs" />
+    <Compile Include="Modeling\Driver\Connector\RestConnector.cs" />
     <Compile Include="Modeling\Driver\SshConnection.cs" />
     <Compile Include="Modeling\HadoopModel\EContainerState.cs" />
     <Compile Include="Modeling\HadoopModel\EFinalStatus.cs" />

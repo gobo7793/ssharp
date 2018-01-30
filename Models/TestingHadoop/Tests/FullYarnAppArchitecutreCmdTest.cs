@@ -24,7 +24,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
-using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests

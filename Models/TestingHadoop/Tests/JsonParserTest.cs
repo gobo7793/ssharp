@@ -23,7 +23,8 @@
 using System;
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
-using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests
@@ -35,7 +36,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private Model _Model;
         private YarnNode _Node1;
         private YarnNode _Node2;
-        private YarnNode _Node3;
         private YarnNode _Node4;
 
         [SetUp]
@@ -48,7 +48,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             _Model.InitTestConfig(_Parser, _Parser.Connection);
             _Node1 = _Model.Nodes[$"{Model.NodeNamePrefix}1"];
             _Node2 = _Model.Nodes[$"{Model.NodeNamePrefix}2"];
-            _Node3 = _Model.Nodes[$"{Model.NodeNamePrefix}3"];
             _Node4 = _Model.Nodes[$"{Model.NodeNamePrefix}4"];
         }
 
@@ -139,7 +138,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public void TestParseAppAttemptList()
         {
             #region expected attempts
-            var attempt1 = new ApplicationAttemptResult
+            var attempt1 = new AppAttemptResult
             {
                 AttemptId = "appattempt_1516703400520_0010_000001",
                 StartTime = new DateTime(2018, 1, 23, 15, 22, 59, 491),
@@ -152,7 +151,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                 Diagnostics = "ApplicationMaster for attempt appattempt_1516703400520_0010_000001 timed out",
                 State = EAppState.FAILED,
             };
-            var attempt2 = new ApplicationAttemptResult
+            var attempt2 = new AppAttemptResult
             {
                 AttemptId = "appattempt_1516703400520_0010_000002",
                 StartTime = new DateTime(2018, 1, 23, 15, 23, 10, 696),
@@ -336,7 +335,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestParseAppAttemptDetails()
         {
-            var attempt = new ApplicationAttemptResult
+            var attempt = new AppAttemptResult
             {
                 AttemptId = "appattempt_1516703400520_0010_000002",
                 StartTime = new DateTime(2018, 1, 23, 15, 23, 10, 696),

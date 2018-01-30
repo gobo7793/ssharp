@@ -22,7 +22,7 @@
 
 using System;
 
-namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
+namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 {
     /// <summary>
     /// Hadoop connector for monitoring using the REST API

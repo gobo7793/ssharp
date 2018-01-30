@@ -22,6 +22,7 @@
 
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 {

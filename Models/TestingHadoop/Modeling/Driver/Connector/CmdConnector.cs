@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
+namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 {
     /// <summary>
     /// Hadoop connector for using the cmd line

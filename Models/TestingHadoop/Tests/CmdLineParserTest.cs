@@ -23,7 +23,8 @@
 using System;
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
-using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests
@@ -93,7 +94,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestParseAppAttemptList()
         {
-            var attempt1 = new ApplicationAttemptResult
+            var attempt1 = new AppAttemptResult
             {
                 AttemptId = "appattempt_1515488762656_0002_000001",
                 State = EAppState.FINISHED,
@@ -215,7 +216,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestParseAppAttemptDetails()
         {
-            var attempt = new ApplicationAttemptResult
+            var attempt = new AppAttemptResult
             {
                 AttemptId = "appattempt_1515577485762_0006_000001",
                 State = EAppState.RUNNING,

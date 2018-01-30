@@ -22,9 +22,10 @@
 
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
-namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
+namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
 {
     /// <summary>
     /// Parser for informations about Hadoop states via command line
@@ -94,7 +95,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="states">The states</param>
         /// <returns>The applications</returns>
-        public ApplicationResult[] ParseAppList(EAppState states = EAppState.ALL)
+        public IApplicationResult[] ParseAppList(EAppState states = EAppState.None)
         {
             var appStates = DriverUtilities.ConcatStates(states);
 
@@ -131,11 +132,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="appId">The app id</param>
         /// <returns>The attempts</returns>
-        public ApplicationAttemptResult[] ParseAppAttemptList(string appId)
+        public IAppAttemptResult[] ParseAppAttemptList(string appId)
         {
             var fullResult = Connection.GetYarnAppAttemptList(appId);
 
-            var attemptList = new List<ApplicationAttemptResult>();
+            var attemptList = new List<AppAttemptResult>();
             var resLines = _LineSplitterRegex.Split(fullResult);
 
             foreach(var resLine in resLines)
@@ -144,7 +145,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 if(attemptMatches.Count != 4 || !attemptMatches[0].Groups[1].Value.StartsWith("appattempt"))
                     continue;
 
-                var attempt = new ApplicationAttemptResult
+                var attempt = new AppAttemptResult
                 {
                     AttemptId = attemptMatches[0].Groups[1].Value,
                     State = DriverUtilities.ParseAppState(attemptMatches[1].Groups[1].Value),
@@ -163,7 +164,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="attemptId">The attempt id</param>
         /// <returns>The running containers</returns>
-        public ContainerResult[] ParseContainerList(string attemptId)
+        public IContainerResult[] ParseContainerList(string attemptId)
         {
             var fullResult = Connection.GetYarnAppContainerList(attemptId);
 
@@ -197,7 +198,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="appId">The <see cref="YarnApp.AppId"/> from the app</param>
         /// <returns>The application details or null on errors</returns>
-        public ApplicationResult ParseAppDetails(string appId)
+        public IApplicationResult ParseAppDetails(string appId)
         {
             var fullResult = Connection.GetYarnApplicationDetails(appId);
 
@@ -234,7 +235,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="attemptId">The <see cref="YarnAppAttempt.AttemptId"/> from the attempt</param>
         /// <returns>The attempt details or null on errors</returns>
-        public ApplicationAttemptResult ParseAppAttemptDetails(string attemptId)
+        public IAppAttemptResult ParseAppAttemptDetails(string attemptId)
         {
             var fullResult = Connection.GetYarnAppAttemptDetails(attemptId);
 
@@ -242,7 +243,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
             if(matches.Count == 7)
             {
-                var attempt = new ApplicationAttemptResult
+                var attempt = new AppAttemptResult
                 {
                     AttemptId = matches[0].Groups[2].Value,
                     State = DriverUtilities.ParseAppState(matches[1].Groups[2].Value),
@@ -263,7 +264,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="containerId">The <see cref="YarnAppContainer.ContainerId"/> from the container</param>
         /// <returns>The container details or null on errors</returns>
-        public ContainerResult ParseContainerDetails(string containerId)
+        public IContainerResult ParseContainerDetails(string containerId)
         {
             var fullResult = Connection.GetYarnAppContainerDetails(containerId);
 
@@ -292,7 +293,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Gets and parses the <see cref="YarnNode"/> list for the cluster
         /// </summary>
         /// <returns>All nodes in the cluster</returns>
-        public NodeResult[] ParseNodeList()
+        public INodeResult[] ParseNodeList()
         {
             var fullResult = Connection.GetYarnNodeList();
 
@@ -324,7 +325,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="nodeId">The <see cref="YarnNode.NodeId"/> from the node</param>
         /// <returns>The node details or null on errors</returns>
-        public NodeResult ParseNodeDetails(string nodeId)
+        public INodeResult ParseNodeDetails(string nodeId)
         {
             var fullResult = Connection.GetYarnNodeDetails(nodeId);
 
