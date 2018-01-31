@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
@@ -35,19 +36,40 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private YarnAppAttempt _Attempt;
         private YarnAppContainer _Container;
 
-        private string _AppBase = "1517215519416_0010";
+        private string _AppBase = "1517215519416_0001";
 
         [TestFixtureSetUp]
         public void Setup()
         {
-            _Model = new Model();
-            _Model.InitConfig1();
+            _Model = new Model("Full architecture test");
+            _Model.InitModel();
 
             _App = _Model.Applications[0];
             _App.AppId = $"application_{_AppBase}";
 
             _Attempt = _App.Attempts[0];
             _Container = _Attempt.Containers[0];
+        }
+
+        [Test]
+        public void TestControllerUpdate()
+        {
+            var startTime = DateTime.Now;
+            _Model.Controller.Update();
+            var elapsedTime = DateTime.Now - startTime;
+
+            Console.WriteLine($"Time needed: {elapsedTime}");
+
+            var app = _Model.Applications.FirstOrDefault(a => a.AppId == $"application_{_AppBase}");
+
+            Assert.AreEqual(ENodeState.RUNNING, _Model.Nodes["compute-1"].State);
+            Assert.NotNull(app);
+
+            var attempt = app.Attempts.FirstOrDefault(a => a.AttemptId == $"appattempt_{_AppBase}_000001");
+            Assert.NotNull(attempt);
+
+            Assert.AreEqual($"container_{_AppBase}_01_000001", _Attempt.AmContainerId);
+            Assert.AreNotEqual(DateTime.MinValue, attempt.AmContainer.StartTime);
         }
 
         [Test]

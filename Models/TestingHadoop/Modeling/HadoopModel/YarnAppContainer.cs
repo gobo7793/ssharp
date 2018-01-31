@@ -105,15 +105,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Indicates if details parsing is required for full informations
         /// </summary>
-        public bool IsRequireDetailsParsing { get; set; }
+        public bool IsRequireDetailsParsing { get; set; } = true;
 
         /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
         public void ReadStatus()
         {
-            var parsed = Parser.ParseContainerDetails(ContainerId);
+            if(!IsRequireDetailsParsing)
+                return;
 
+            var parsed = Parser.ParseContainerDetails(ContainerId);
             if(parsed != null)
                 SetStatus(parsed);
         }
@@ -125,6 +127,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public void SetStatus(IParsedComponent parsed)
         {
             var container = parsed as IContainerResult;
+            ContainerId = container.ContainerId;
             StartTime = container.StartTime;
             EndTime = container.FinishTime;
             State = container.State;
@@ -174,7 +177,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
-            if(!String.IsNullOrWhiteSpace(ContainerId))
+            if(IsRequireDetailsParsing && !String.IsNullOrWhiteSpace(ContainerId))
                 ReadStatus();
         }
 

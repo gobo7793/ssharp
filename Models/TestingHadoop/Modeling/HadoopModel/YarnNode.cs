@@ -149,7 +149,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Indicates if details parsing is required for full informations
         /// </summary>
-        public bool IsRequireDetailsParsing { get; set; }
+        public bool IsRequireDetailsParsing { get; set; } = true;
 
         /// <summary>
         /// Reads the current state from Hadoop

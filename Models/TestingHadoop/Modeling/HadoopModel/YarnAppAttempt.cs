@@ -101,33 +101,36 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Indicates if details parsing is required for full informations
         /// </summary>
-        public bool IsRequireDetailsParsing { get; set; }
+        public bool IsRequireDetailsParsing { get; set; } = true;
 
         /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
         public void ReadStatus()
         {
-            var parsed = Parser.ParseAppAttemptDetails(AttemptId);
-
-            if(parsed != null)
+            if(IsRequireDetailsParsing)
             {
-                SetStatus(parsed);
+                var parsed = Parser.ParseAppAttemptDetails(AttemptId);
+                if(parsed != null)
+                    SetStatus(parsed);
+            }
 
-                var containers = Parser.ParseContainerList(AttemptId);
-                if(containers.Length > 0)
+            var parsedContainers = Parser.ParseContainerList(AttemptId);
+            foreach(var parsed in parsedContainers)
+            {
+                var container = Containers.FirstOrDefault(c => c.ContainerId == parsed.ContainerId) ??
+                              Containers.FirstOrDefault(c => String.IsNullOrWhiteSpace(c.ContainerId));
+                if(container == null)
+                    throw new OutOfMemoryException("No more containers available! Try to initialize more containers.");
+
+                if(IsRequireDetailsParsing)
                 {
-                    foreach(var con in containers)
-                    {
-                        if(Containers.All(c => c.ContainerId != con.ContainerId))
-                        {
-                            var usingCont = Containers.First(c => String.IsNullOrWhiteSpace(c.ContainerId));
-                            if(usingCont == null)
-                                throw new OutOfMemoryException("No more application attempt containers available!" +
-                                                               " Try to initialize more container space.");
-                            usingCont.ContainerId = con.ContainerId;
-                        }
-                    }
+                    container.ContainerId = parsed.ContainerId;
+                }
+                else
+                {
+                    container.SetStatus(parsed);
+                    container.IsRequireDetailsParsing = IsRequireDetailsParsing;
                 }
             }
         }
@@ -139,6 +142,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public void SetStatus(IParsedComponent parsed)
         {
             var attempt = parsed as IAppAttemptResult;
+            AttemptId = attempt.AttemptId;
             State = attempt.State;
             AmContainerId = attempt.AmContainerId;
             AmHost = attempt.AmHost;
@@ -185,7 +189,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
-            if(!String.IsNullOrWhiteSpace(AttemptId))
+            if(IsRequireDetailsParsing && !String.IsNullOrWhiteSpace(AttemptId))
                 ReadStatus();
         }
 

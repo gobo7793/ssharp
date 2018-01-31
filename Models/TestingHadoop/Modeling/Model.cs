@@ -109,14 +109,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         #region Configurations
 
         /// <summary>
-        /// Initializes the default Config
-        /// </summary>
-        public void InitDefaultInstance()
-        {
-            InitConfig1();
-        }
-
-        /// <summary>
         /// Initialize configuration for model testing
         /// </summary>
         /// <param name="parser">The monitorParser to use</param>
@@ -125,7 +117,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         {
             if(Controller == null)
                 InitController();
-            InitBaseComponents(connector);
+            InitBaseComponents(connector, parser);
             InitYarnNodes(4, parser, connector);
 
             InitApplications(4, parser, connector);
@@ -135,9 +127,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 
 
         /// <summary>
-        /// Initizalizes the config for only one application
+        /// Initizalizes the config with the given component counts
         /// </summary>
-        public void InitConfig1()
+        /// <param name="appCount">The application count to initialize</param>
+        /// <param name="attemptCount">The attempt count per application to initialize</param>
+        /// <param name="containerCount">The container count per attempt to initialize</param>
+        /// <param name="nodeCount">The node count to initialize</param>
+        public void InitModel(int appCount = 16, int attemptCount = 4, int containerCount = 32, int nodeCount = 4)
         {
             InitController();
 
@@ -145,12 +141,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             var restConnector = new RestConnector(SshHost, SshUsername, SshPrivateKeyFilePath, Controller.HttpUrl, Controller.TimelineHttpUrl);
             var restParser = new RestParser(this, restConnector);
 
-            InitBaseComponents(cmdConnector);
-            InitYarnNodes(4, restParser, cmdConnector);
+            InitBaseComponents(cmdConnector, restParser);
+            InitYarnNodes(nodeCount, restParser, cmdConnector);
 
-            InitApplications(1, restParser, cmdConnector);
-            InitAppAttempts(2, restParser);
-            InitContainers(32, restParser);
+            InitApplications(appCount, restParser, cmdConnector);
+            InitAppAttempts(attemptCount, restParser);
+            InitContainers(containerCount, restParser);
         }
 
         #endregion
@@ -160,7 +156,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Init hadoop controller
         /// </summary>
-        public void InitController()
+        private void InitController()
         {
             Controller = new YarnController
             {
@@ -172,8 +168,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Init other base components like client
         /// </summary>
         /// <param name="submittingConnector">Connector to submitting <see cref="YarnApp"/></param>
-        private void InitBaseComponents(IHadoopConnector submittingConnector)
+        /// <param name="monitoringParser">Parser to monitoring the model</param>
+        private void InitBaseComponents(IHadoopConnector submittingConnector, IHadoopParser monitoringParser)
         {
+            if(Controller == null)
+                InitController();
+
             Client = new Client
             {
                 SubmittingConnector = submittingConnector,
@@ -181,6 +181,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 
             Controller.ConnectedClient = Client;
             Client.ConnectedYarnController = Controller;
+
+            Controller.Parser = monitoringParser;
         }
 
         /// <summary>
@@ -224,6 +226,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
                 };
 
                 Client.StartingYarnApps.Add(app);
+                Controller.Apps.Add(app);
                 Applications.Add(app);
             }
         }

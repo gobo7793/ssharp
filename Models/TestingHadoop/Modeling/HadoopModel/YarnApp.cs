@@ -190,33 +190,37 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Indicates if details parsing is required for full informations
         /// </summary>
-        public bool IsRequireDetailsParsing { get; set; }
+        public bool IsRequireDetailsParsing { get; set; } = true;
 
         /// <summary>
         /// Reads the current state from Hadoop
         /// </summary>
         public void ReadStatus()
         {
-            var parsed = Parser.ParseAppDetails(AppId);
-
-            if(parsed != null)
+            if(IsRequireDetailsParsing)
             {
-                SetStatus(parsed);
+                var parsed = Parser.ParseAppDetails(AppId);
+                if(parsed != null)
+                    SetStatus(parsed);
+            }
 
-                var attempts = Parser.ParseAppAttemptList(AppId);
-                if(attempts.Length > 0)
+            var parsedAttempts = Parser.ParseAppAttemptList(AppId);
+            foreach(var parsed in parsedAttempts)
+            {
+                var attempt = Attempts.FirstOrDefault(a => a.AttemptId == parsed.AttemptId) ??
+                              Attempts.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AttemptId));
+                if(attempt == null)
+                    throw new OutOfMemoryException("No more application attempts available! Try to initialize more attempts.");
+
+                if(IsRequireDetailsParsing)
                 {
-                    foreach(var con in attempts)
-                    {
-                        if(Attempts.All(c => c.AttemptId != con.AttemptId))
-                        {
-                            var usingAttempt = Attempts.Find(c => String.IsNullOrWhiteSpace(c.AttemptId));
-                            if(usingAttempt == null)
-                                throw new OutOfMemoryException("No more application attempts available!" +
-                                                               " Try to initialize more attempt space.");
-                            usingAttempt.AttemptId = con.AttemptId;
-                        }
-                    }
+                    attempt.AttemptId = parsed.AttemptId;
+                }
+                else
+                {
+                    attempt.SetStatus(parsed);
+                    attempt.IsRequireDetailsParsing = IsRequireDetailsParsing;
+                    attempt.ReadStatus();
                 }
             }
         }
@@ -228,6 +232,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public void SetStatus(IParsedComponent parsed)
         {
             var app = parsed as IApplicationResult;
+            AppId = app.AppId;
             Name = app.AppName;
             StartTime = app.StartTime;
             EndTime = app.FinishTime;
@@ -285,7 +290,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
-            if(!String.IsNullOrWhiteSpace(AppId))
+            if(IsRequireDetailsParsing && !String.IsNullOrWhiteSpace(AppId))
                 ReadStatus();
         }
 

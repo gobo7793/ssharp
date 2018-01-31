@@ -58,20 +58,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void GetAppInfos()
         {
-            var apps = Parser.ParseAppList(EAppState.ALL);
-            if(apps.Length > 0)
+            var parsedApps = Parser.ParseAppList(EAppState.ALL);
+            foreach(var parsed in parsedApps)
             {
-                foreach(var app in apps)
-                {
-                    if(Apps.All(c => c.AppId != app.AppId))
-                    {
-                        var usingApp = Apps.FirstOrDefault(c => String.IsNullOrWhiteSpace(c.AppId));
-                        if(usingApp == null)
-                            throw new OutOfMemoryException("No more applications available!" +
-                                                           " Try to initialize more application space.");
-                        usingApp.AppId = app.AppId;
-                    }
-                }
+                var app = Apps.FirstOrDefault(a => a.AppId == parsed.AppId) ??
+                          Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));
+                if(app == null)
+                    throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
+
+                app.SetStatus(parsed);
+                app.IsRequireDetailsParsing = false;
+                app.ReadStatus();
             }
         }
 
@@ -80,22 +77,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void GetNodeInfos()
         {
-            var nodes = Parser.ParseNodeList();
-            if(nodes.Length > 0)
+            var parsedNodes = Parser.ParseNodeList();
+            foreach(var parsed in parsedNodes)
             {
-                foreach(var node in nodes)
-                {
-                    if(ConnectedNodes.All(c => c.NodeId != node.NodeId))
-                    {
-                        var usingNode = ConnectedNodes.First(c => String.IsNullOrWhiteSpace(c.NodeId));
-                        // TODO: Node details
-                    }
-                }
+                var node = ConnectedNodes.FirstOrDefault(n => n.NodeId == parsed.NodeId);
+                if(node == null)
+                    continue;
+
+                node.SetStatus(parsed);
+                node.IsRequireDetailsParsing = false;
             }
         }
 
         public override void Update()
         {
+            GetNodeInfos();
             GetAppInfos();
         }
     }
