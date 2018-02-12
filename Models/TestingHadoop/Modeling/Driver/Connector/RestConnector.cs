@@ -47,6 +47,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         private string TlUrl { get; }
 
+        /// <summary>
+        /// The curl base command
+        /// </summary>
+        private const string Curl = "curl --compressed -H \"Accept: application/json\" -X GET";
+
         #endregion
 
         #region Methods
@@ -92,7 +97,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
 
-            var cmd = $"curl {RmUrl}/ws/v1/cluster/apps";
+            var cmd = $"{Curl} {RmUrl}/ws/v1/cluster/apps";
             if(!String.IsNullOrWhiteSpace(states))
             {
                 states = states.Replace("ALL", "").Replace("None", "").Replace("NotStartedYet", "");
@@ -112,7 +117,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"curl {RmUrl}/ws/v1/cluster/apps/{appId}/appattempts");
+            return Monitoring.Run($"{Curl} {RmUrl}/ws/v1/cluster/apps/{appId}/appattempts");
         }
 
         /// <summary>
@@ -125,7 +130,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"curl {TlUrl}/ws/v1/applicationhistory/apps/{appId}/appattempts");
+            return Monitoring.Run($"{Curl} {TlUrl}/ws/v1/applicationhistory/apps/{appId}/appattempts");
         }
 
         /// <summary>
@@ -138,7 +143,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"curl {nodeUrl}/ws/v1/node/containers");
+            return Monitoring.Run($"{Curl} {nodeUrl}/ws/v1/node/containers");
         }
 
         /// <summary>
@@ -153,7 +158,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
             var appId = DriverUtilities.ConvertId(attemptId, EConvertType.App);
 
-            return Monitoring.Run($"curl {TlUrl}/ws/v1/applicationhistory/apps/{appId}/appattempts/{attemptId}/containers");
+            return Monitoring.Run($"{Curl} {TlUrl}/ws/v1/applicationhistory/apps/{appId}/appattempts/{attemptId}/containers");
         }
 
         #endregion
@@ -169,7 +174,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"curl {RmUrl}/ws/v1/cluster/apps/{appId}");
+            return Monitoring.Run($"{Curl} {RmUrl}/ws/v1/cluster/apps/{appId}");
         }
 
         /// <summary>
@@ -195,7 +200,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
             var appId = DriverUtilities.ConvertId(attemptId, EConvertType.App);
 
-            return Monitoring.Run($"curl {TlUrl}/ws/v1/applicationhistory/apps/{appId}/appattempts/{attemptId}");
+            return Monitoring.Run($"{Curl} {TlUrl}/ws/v1/applicationhistory/apps/{appId}/appattempts/{attemptId}");
         }
 
         /// <summary>
@@ -211,7 +216,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(nodeUrl == null)
                 throw new ArgumentNullException($"No node url given to get details for container {containerId}!");
 
-            return Monitoring.Run($"curl {nodeUrl}/ws/v1/node/containers/{containerId}");
+            return Monitoring.Run($"{Curl} {nodeUrl}/ws/v1/node/containers/{containerId}");
         }
 
         /// <summary>
@@ -227,7 +232,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             var attemptId = DriverUtilities.ConvertId(containerId, EConvertType.Attempt);
             var appId = DriverUtilities.ConvertId(containerId, EConvertType.App);
 
-            return Monitoring.Run($"curl {TlUrl}/ws/v1/applicationhistory/apps/{appId}/appattempts/{attemptId}/containers/{containerId}");
+            return Monitoring.Run($"{Curl} {TlUrl}/ws/v1/applicationhistory/apps/{appId}/appattempts/{attemptId}/containers/{containerId}");
         }
 
         #endregion
@@ -242,7 +247,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"curl {RmUrl}/ws/v1/cluster/nodes");
+            return Monitoring.Run($"{Curl} {RmUrl}/ws/v1/cluster/nodes");
         }
 
         /// <summary>
@@ -255,7 +260,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"curl {RmUrl}/ws/v1/cluster/nodes/{nodeId}");
+            return Monitoring.Run($"{Curl} {RmUrl}/ws/v1/cluster/nodes/{nodeId}");
         }
 
         /// <summary>
@@ -316,7 +321,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>Hadoop version</returns>
         public string GetHadoopVersion()
         {
-            return Monitoring.Run($"curl {RmUrl}/ws/v1/cluster/info");
+            return Monitoring.Run($"{Curl} {RmUrl}/ws/v1/cluster/info");
         }
 
         #endregion
