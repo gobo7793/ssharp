@@ -50,7 +50,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <summary>
         /// The curl base command
         /// </summary>
-        private const string Curl = "curl --compressed -H \"Accept: application/json\" -X GET";
+        private const string Curl = "curl -H \"Accept: application/json\" -X GET";
 
         #endregion
 
