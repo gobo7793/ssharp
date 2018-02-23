@@ -62,6 +62,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Modeling\BenchModel\Benchmark.cs" />
+    <Compile Include="Modeling\BenchModel\BenchmarkAppData.cs" />
     <Compile Include="Modeling\Driver\Connector\CmdConnector.cs" />
     <Compile Include="Modeling\Driver\DataClasses\AppAttemptResult.cs" />
     <Compile Include="Modeling\Driver\DataClasses\ApplicationResult.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Modeling\HadoopModel\YarnHost.cs" />
     <Compile Include="Modeling\HadoopModel\YarnAppContainer.cs" />
     <Compile Include="Modeling\HadoopModel\YarnAppAttempt.cs" />
+    <Compile Include="Tests\BenchmarkTest.cs" />
     <Compile Include="Tests\CmdLineParserTest.cs" />
     <Compile Include="Tests\CmdRestCompareTest.cs" />
     <Compile Include="Tests\DummyHadoopCmdConnector.cs" />
