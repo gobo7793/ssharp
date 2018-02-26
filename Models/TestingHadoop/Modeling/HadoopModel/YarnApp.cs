@@ -180,10 +180,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #endregion
 
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new empty <see cref="YarnApp"/>
+        /// </summary>
+        public YarnApp() { }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnApp"/>
+        /// </summary>
+        /// <param name="faultConnector">The connector to use for fault handling</param>
+        /// <param name="startingClient">Starting <see cref="Client"/> of this app</param>
+        /// <param name="parser">Parser to read data from cluster</param>
+        public YarnApp(IHadoopConnector faultConnector, Client startingClient, IHadoopParser parser)
+        {
+            FaultConnector = faultConnector;
+            StartingClient = startingClient;
+            Parser = parser;
+        }
+
+        #endregion
+
         #region IYarnReadable Methods
 
         /// <summary>
-        /// Parser to read
+        /// Parser to read data from cluster
         /// </summary>
         public IHadoopParser Parser { get; set; }
 
@@ -294,6 +316,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 ReadStatus();
         }
 
+        /// <summary>
+        /// Stops/kills the app execution if possible and returns
+        /// true if app was stopped already or was succesfully killed
+        /// </summary>
+        /// <returns>True if app is stopped/killed</returns>
+        public bool StopApp()
+        {
+            if(State == EAppState.None && State == EAppState.NotStartedYet || !IsKillable)
+                return true;
+            return FaultConnector.KillApplication(AppId);
+        }
+
         #endregion
 
         #region Fault Effects
@@ -307,8 +341,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             public override void Update()
             {
                 base.Update();
-                if(IsKillable)
-                    FaultConnector.KillApplication(AppId);
+                StopApp();
             }
         }
 
