@@ -29,35 +29,53 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
     [TestFixture]
     public class BenchmarkTest
     {
-        private Benchmark _Bench;
+        private BenchmarkController _Bench1;
+        //private BenchmarkController _Bench2;
+        //private BenchmarkController _Bench3;
 
         [SetUp]
         public void Setup()
         {
-            _Bench = new Benchmark("", 3);
-            // Seed 3: 
-            // Bench 00: randomtextwriter
-            // Bench 01: sort
-            // Bench 02: testmapredsort
-            // Bench 03: randomtextwriter
-            // Bench 04: wordcount
-            // Bench 05: randomtextwriter
-            // Bench 06: randomtextwriter
-            // Bench 07: fail
-            // Bench 08: randomtextwriter
-            // Bench 09: wordcount
+            _Bench1 = new BenchmarkController("", 1);
+            //_Bench2 = new BenchmarkController("", 7);
+            //_Bench3 = new BenchmarkController("", 11);
+
+            /* Benchmarks for Seed 1:
+                Bench 01:randomtextwriter
+                Bench 02:randomtextwriter
+                Bench 03:randomtextwriter
+                Bench 04:sort            
+                Bench 05:sort            
+                Bench 06:sort            
+                Bench 07:randomtextwriter
+                Bench 08:dfsioePreparing 
+                Bench 09:dfsioePreparing 
+                Bench 10:dfsioePreparing 
+                Bench 11:dfsioe          
+                Bench 12:pi              
+                Bench 13:pentomino       
+                Bench 14:fail            
+                Bench 15:fail            
+                Bench 16:fail            
+                Bench 17:fail            
+                Bench 18:pentomino       
+                Bench 19:pentomino       
+                Bench 20:randomtextwriter
+            */
         }
 
         [Test]
         public void TestTransitions()
         {
-            var bench = _Bench.GetStartBench();
-            Console.WriteLine($"Bench 00: {bench.Name}");
-
+            _Bench1.InitStartBench();
+            //_Bench2.InitStartBench();
+            //_Bench3.InitStartBench();
             for(int i = 1; i < 100; i++)
             {
-                bench = _Bench.ChangeBenchmark();
-                Console.WriteLine($"Bench {i:D2}: {bench.Name,-20},cmd={bench.GetStartCmd()}");
+                Console.WriteLine($"Bench {i:D2}:{_Bench1.CurrentBenchmark.Name,-16}");
+                _Bench1.ChangeBenchmark();
+                //_Bench2.ChangeBenchmark();
+                //_Bench3.ChangeBenchmark();
             }
         }
     }
