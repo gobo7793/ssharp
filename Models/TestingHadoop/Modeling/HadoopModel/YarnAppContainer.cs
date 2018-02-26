@@ -41,7 +41,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Current State
         /// </summary>
-        public EContainerState State { get; set; } = EContainerState.None;
+        public EContainerState State { get; set; }
 
         /// <summary>
         /// Container ID
@@ -95,17 +95,42 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #endregion
 
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new empty <see cref="YarnAppContainer"/>
+        /// </summary>
+        public YarnAppContainer()
+        {
+            State = EContainerState.None;
+
+            IsRequireDetailsParsing = true;
+        }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnAppContainer"/>
+        /// </summary>
+        /// <param name="appAttempt"><see cref="YarnAppAttempt"/> running in this container</param>
+        /// <param name="parser">Parser to monitoring data from cluster</param>
+        public YarnAppContainer(YarnAppAttempt appAttempt, IHadoopParser parser) : this()
+        {
+            AppAttempt = appAttempt;
+            Parser = parser;
+        }
+
+        #endregion
+
         #region IYarnReadable Methods
 
         /// <summary>
-        /// Parser to read
+        /// Parser to monitoring data from cluster
         /// </summary>
         public IHadoopParser Parser { get; set; }
 
         /// <summary>
         /// Indicates if details parsing is required for full informations
         /// </summary>
-        public bool IsRequireDetailsParsing { get; set; } = true;
+        public bool IsRequireDetailsParsing { get; set; }
 
         /// <summary>
         /// Reads the current state from Hadoop

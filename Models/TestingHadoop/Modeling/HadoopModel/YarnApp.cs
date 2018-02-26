@@ -58,7 +58,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// <see cref="YarnAppAttempt"/> for this <see cref="YarnApp"/>
         /// </summary>
-        public List<YarnAppAttempt> Attempts { get; } = new List<YarnAppAttempt>();
+        public List<YarnAppAttempt> Attempts { get; }
 
         /// <summary>
         /// Starting <see cref="Client"/> of this app
@@ -78,12 +78,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Current state
         /// </summary>
-        public EAppState State { get; set; } = EAppState.NotStartedYet;
+        public EAppState State { get; set; }
 
         /// <summary>
         /// Final status
         /// </summary>
-        public EFinalStatus FinalStatus { get; set; } = EFinalStatus.None;
+        public EFinalStatus FinalStatus { get; set; }
 
         /// <summary>
         /// Name of the app
@@ -185,15 +185,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Initializes a new empty <see cref="YarnApp"/>
         /// </summary>
-        public YarnApp() { }
+        public YarnApp()
+        {
+            Attempts = new List<YarnAppAttempt>();
+            State = EAppState.NotStartedYet;
+            FinalStatus = EFinalStatus.None;
+
+            IsRequireDetailsParsing = true;
+        }
 
         /// <summary>
         /// Initializes a new <see cref="YarnApp"/>
         /// </summary>
         /// <param name="faultConnector">The connector to use for fault handling</param>
         /// <param name="startingClient">Starting <see cref="Client"/> of this app</param>
-        /// <param name="parser">Parser to read data from cluster</param>
-        public YarnApp(IHadoopConnector faultConnector, Client startingClient, IHadoopParser parser)
+        /// <param name="parser">Parser to monitoring data from cluster</param>
+        public YarnApp(IHadoopConnector faultConnector, Client startingClient, IHadoopParser parser) : this()
         {
             FaultConnector = faultConnector;
             StartingClient = startingClient;
@@ -205,14 +212,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region IYarnReadable Methods
 
         /// <summary>
-        /// Parser to read data from cluster
+        /// Parser to monitoring data from cluster
         /// </summary>
         public IHadoopParser Parser { get; set; }
 
         /// <summary>
         /// Indicates if details parsing is required for full informations
         /// </summary>
-        public bool IsRequireDetailsParsing { get; set; } = true;
+        public bool IsRequireDetailsParsing { get; set; }
 
         /// <summary>
         /// Reads the current state from Hadoop

@@ -74,22 +74,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 
         public string Name { get; }
 
-        public List<Client> Clients { get; set; } = new List<HadoopModel.Client>();
+        public List<Client> Clients { get; set; }
 
         [Root(RootKind.Controller)]
         public YarnController Controller { get; set; }
 
         [Root(RootKind.Plant)]
-        public Dictionary<string, YarnNode> Nodes { get; } = new Dictionary<string, YarnNode>();
+        public Dictionary<string, YarnNode> Nodes { get; }
 
         [Root(RootKind.Plant)]
-        public List<YarnApp> Applications { get; } = new List<YarnApp>();
+        public List<YarnApp> Applications { get; }
 
         [Root(RootKind.Plant)]
-        public List<YarnAppAttempt> AppAttempts { get; } = new List<YarnAppAttempt>();
+        public List<YarnAppAttempt> AppAttempts { get; }
 
         [Root(RootKind.Plant)]
-        public List<YarnAppContainer> AppContainers { get; } = new List<YarnAppContainer>();
+        public List<YarnAppContainer> AppContainers { get; }
 
         #endregion
 
@@ -102,6 +102,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public Model(string name = "")
         {
             Name = name;
+
+            Clients = new List<Client>();
+            Nodes = new Dictionary<string, YarnNode>();
+            Applications = new List<YarnApp>();
+            AppAttempts = new List<YarnAppAttempt>();
+            AppContainers = new List<YarnAppContainer>();
         }
 
         #endregion
@@ -117,10 +123,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         {
             if(Controller == null)
                 InitController();
-            InitBaseComponents(connector, parser);
-            InitYarnNodes(4, parser, connector);
 
-            InitApplications(4, parser, connector);
+            InitYarnNodes(4, parser, connector);
+            InitClients(1, connector);
+            InitApplications(8, parser, connector);
             InitAppAttempts(4, parser);
             InitContainers(32, parser);
         }
@@ -198,7 +204,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             for(int i = 0; i < clientCount; i++)
             {
                 var client = new Client($"client{i}", Controller, submittingConnector);
+
                 Controller.ConnectedClients.Add(client);
+                Clients.Add(client);
             }
         }
 
@@ -214,12 +222,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             {
                 for(int i = 0; i < appCount; i++)
                 {
-                    var app = new YarnApp
-                    {
-                        StartingClient = client,
-                        Parser = monitorParser,
-                        FaultConnector = faultConnector,
-                    };
+                    var app = new YarnApp(faultConnector, client, monitorParser);
 
                     client.StartingYarnApps.Add(app);
                     Controller.Apps.Add(app);
@@ -239,11 +242,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             {
                 for(int i = 0; i < attemptCount; i++)
                 {
-                    var attempt = new YarnAppAttempt
-                    {
-                        App = app,
-                        Parser = monitorParser,
-                    };
+                    var attempt = new YarnAppAttempt(app, monitorParser);
 
                     app.Attempts.Add(attempt);
                     AppAttempts.Add(attempt);
@@ -262,11 +261,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             {
                 for(int i = 0; i < containerCount; i++)
                 {
-                    var container = new YarnAppContainer
-                    {
-                        AppAttempt = attempt,
-                        Parser = monitorParser,
-                    };
+                    var container = new YarnAppContainer(attempt, monitorParser);
 
                     attempt.Containers.Add(container);
                     AppContainers.Add(container);

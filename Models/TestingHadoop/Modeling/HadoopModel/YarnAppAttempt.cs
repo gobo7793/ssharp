@@ -37,12 +37,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     [DebuggerDisplay("Attempt {" + nameof(AttemptId) + "}")]
     public class YarnAppAttempt : Component, IYarnReadable
     {
+
         #region Properties
 
         /// <summary>
         /// Running Containers
         /// </summary>
-        public List<YarnAppContainer> Containers { get; } = new List<YarnAppContainer>();
+        public List<YarnAppContainer> Containers { get; }
 
         /// <summary>
         /// <see cref="YarnApp"/> from this attempt
@@ -57,7 +58,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Current State
         /// </summary>
-        public EAppState State { get; set; } = EAppState.NotStartedYet;
+        public EAppState State { get; set; }
 
         /// <summary>
         /// ContainerId for ApplicationMaster
@@ -91,17 +92,43 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #endregion
 
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new empty <see cref="YarnAppAttempt"/>
+        /// </summary>
+        public YarnAppAttempt()
+        {
+            Containers = new List<YarnAppContainer>();
+            State = EAppState.NotStartedYet;
+
+            IsRequireDetailsParsing = true;
+        }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnAppAttempt"/>
+        /// </summary>
+        /// <param name="app"><see cref="YarnApp"/> from this attempt</param>
+        /// <param name="parser">Parser to monitoring data from cluster</param>
+        public YarnAppAttempt(YarnApp app, IHadoopParser parser) : this()
+        {
+            App = app;
+            Parser = parser;
+        }
+
+        #endregion
+
         #region IYarnReadable Methods
 
         /// <summary>
-        /// Parser to read
+        /// Parser to monitoring data from cluster
         /// </summary>
         public IHadoopParser Parser { get; set; }
 
         /// <summary>
         /// Indicates if details parsing is required for full informations
         /// </summary>
-        public bool IsRequireDetailsParsing { get; set; } = true;
+        public bool IsRequireDetailsParsing { get; set; }
 
         /// <summary>
         /// Reads the current state from Hadoop

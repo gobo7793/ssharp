@@ -8,7 +8,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     public interface IYarnReadable
     {
         /// <summary>
-        /// Parser to use for monitoring
+        /// Parser to monitoring data from cluster
         /// </summary>
         IHadoopParser Parser { get; set; }
 

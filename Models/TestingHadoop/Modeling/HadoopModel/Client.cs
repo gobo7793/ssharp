@@ -39,7 +39,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Started <see cref="YarnApp"/>s of the client
         /// </summary>
-        public List<YarnApp> StartingYarnApps { get; } = new List<YarnApp>();
+        public List<YarnApp> StartingYarnApps { get; }
 
         /// <summary>
         /// Connected <see cref="YarnController"/> for the client
@@ -58,15 +58,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #endregion
 
-        #region Constructor
+        #region Constructors
 
         /// <summary>
-        /// Initializes a new client for the cluster
+        /// Initializes a new empty <see cref="Client"/>
+        /// </summary>
+        public Client()
+        {
+            StartingYarnApps = new List<YarnApp>();
+        }
+
+        /// <summary>
+        /// Initializes a new <see cref="Client"/>
         /// </summary>
         /// <param name="clientHdfsDir">The hdfs base directory for this client</param>
         /// <param name="controller">Connected <see cref="YarnController"/> for the client</param>
         /// <param name="submittingConnector">The connector to submit a <see cref="YarnApp"/></param>
-        public Client(string clientHdfsDir, YarnController controller, IHadoopConnector submittingConnector)
+        public Client(string clientHdfsDir, YarnController controller, IHadoopConnector submittingConnector) : this()
         {
             BenchController = new BenchmarkController(clientHdfsDir);
             BenchController.InitStartBench();
