@@ -31,6 +31,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// </summary>
     public class YarnController : YarnHost
     {
+
+        #region Properties
+
         protected override string HttpPort => "8088";
 
         /// <summary>
@@ -41,17 +44,58 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Connected <see cref="Client" />
         /// </summary>
-        public List<Client> ConnectedClients { get; set; }
+        public List<Client> ConnectedClients { get; private set; }
 
         /// <summary>
         /// Connected <see cref="YarnNode" />s
         /// </summary>
-        public List<YarnNode> ConnectedNodes { get; } = new List<YarnNode>();
+        public List<YarnNode> ConnectedNodes { get; private set; }
 
         /// <summary>
         /// The executed <see cref="YarnApp"/>s
         /// </summary>
-        public List<YarnApp> Apps { get; set; } = new List<YarnApp>();
+        public List<YarnApp> Apps { get; private set; }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initialize a new empty <see cref="YarnController"/>
+        /// </summary>
+        public YarnController()
+        {
+            InitYarnController();
+        }
+
+        /// <summary>
+        /// Initialize a new <see cref="YarnController"/>
+        /// </summary>
+        /// <param name="name">Name of the Host</param>
+        public YarnController(string name) : base(name)
+        {
+            InitYarnController();
+        }
+
+        private void InitYarnController()
+        {
+            ConnectedClients = new List<Client>();
+            ConnectedNodes = new List<YarnNode>();
+            Apps = new List<YarnApp>();
+        }
+
+        #endregion
+
+        #region General methods
+
+        public override void Update()
+        {
+            GetNodeInfos();
+        }
+
+        #endregion
+
+        #region Node related methods
 
         /// <summary>
         /// Gets all node informations
@@ -66,13 +110,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                     continue;
 
                 node.SetStatus(parsed);
-                node.IsRequireDetailsParsing = false;
+                node.IsSelfMonitoring = false;
             }
         }
 
-        public override void Update()
-        {
-            GetNodeInfos();
-        }
+        #endregion
     }
 }

@@ -52,6 +52,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region Properties
 
         private string _NodeId;
+
         protected override string HttpPort => "8042";
 
         /// <summary>
@@ -62,12 +63,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// <see cref="YarnApp" />s executing by this node
         /// </summary>
-        public List<YarnApp> ExecutingApps { get; } = new List<YarnApp>();
+        public List<YarnApp> ExecutingApps { get; private set; }
 
         /// <summary>
         /// Running Containers on this Node
         /// </summary>
-        public List<YarnAppContainer> Containers { get; } = new List<YarnAppContainer>();
+        public List<YarnAppContainer> Containers { get; private set; }
 
         /// <summary>
         /// Node ID, based on its Name
@@ -90,17 +91,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Indicates if this <see cref="YarnNode"/> is aktive
         /// </summary>
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; }
 
         /// <summary>
         /// Indicates if this <see cref="YarnNode"/> connection is acitve
         /// </summary>
-        public bool IsConnected { get; set; } = true;
+        public bool IsConnected { get; set; }
 
         /// <summary>
         /// Current State
         /// </summary>
-        public ENodeState State { get; set; } = ENodeState.None;
+        public ENodeState State { get; set; }
 
         /// <summary>
         /// Current Memory in use in MB
@@ -144,19 +145,57 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #endregion
 
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new empty <see cref="YarnNode"/>
+        /// </summary>
+        public YarnNode()
+        {
+            InitYarnNode();
+        }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnNode"/>
+        /// </summary>
+        /// <param name="name">Name of the Host</param>
+        /// <param name="parser">Parser to monitoring data from cluster</param>
+        /// <param name="faultConnector">The connector to use for fault handling</param>
+        /// <param name="controller">Connected <see cref="YarnController"/></param>
+        public YarnNode(string name, IHadoopParser parser, IHadoopConnector faultConnector, YarnController controller)
+            : base(name, parser)
+        {
+            InitYarnNode();
+
+            FaultConnector = faultConnector;
+            Controller = controller;
+        }
+
+        private void InitYarnNode()
+        {
+            ExecutingApps = new List<YarnApp>();
+            Containers = new List<YarnAppContainer>();
+            IsActive = true;
+            IsConnected = true;
+            State = ENodeState.None;
+            IsSelfMonitoring = true;
+        }
+
+        #endregion
+
         #region IYarnReadable Methods
 
         /// <summary>
-        /// Indicates if details parsing is required for full informations
+        /// Indicates if the data is collected and parsed by the component itself
         /// </summary>
-        public bool IsRequireDetailsParsing { get; set; } = true;
+        public bool IsSelfMonitoring { get; set; }
 
         /// <summary>
-        /// Reads the current state from Hadoop
+        /// Monitors the current state from Hadoop
         /// </summary>
-        public void ReadStatus()
+        public void MonitorStatus()
         {
-            if(!IsRequireDetailsParsing)
+            if(!IsSelfMonitoring)
                 return;
 
             var parsed = Parser.ParseNodeDetails(NodeId);
@@ -165,7 +204,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// Sets the status based on the parsed component
+        /// Sets the status based on the given <see cref="IParsedComponent"/>
         /// </summary>
         /// <param name="parsed">The parsed component</param>
         public void SetStatus(IParsedComponent parsed)
@@ -222,7 +261,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             {
                 IsActive = FaultConnector.StartNode(Name);
                 IsConnected = FaultConnector.StartNodeNetConnection(Name);
-                ReadStatus();
+                MonitorStatus();
             }
         }
 

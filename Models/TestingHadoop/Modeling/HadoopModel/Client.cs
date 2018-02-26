@@ -139,8 +139,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                     throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
 
                 app.SetStatus(parsed);
-                app.IsRequireDetailsParsing = false;
-                app.ReadStatus();
+                app.IsSelfMonitoring = false;
+                app.MonitorStatus();
             }
         }
 

@@ -76,7 +76,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public void TestGetAppStatus()
         {
             var startTime = DateTime.Now;
-            _App.ReadStatus();
+            _App.MonitorStatus();
             var elapsedTime = DateTime.Now - startTime;
 
             Console.WriteLine($"Time needed: {elapsedTime}");
@@ -94,7 +94,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                 _Attempt.AttemptId = $"appattempt_{_AppBase}_000001";
 
             var startTime = DateTime.Now;
-            _Attempt.ReadStatus();
+            _Attempt.MonitorStatus();
             var elapsedTime = DateTime.Now - startTime;
 
             Console.WriteLine($"Time needed: {elapsedTime}");
@@ -112,7 +112,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                 _Container.ContainerId = $"container_{_AppBase}_01_000001";
 
             var startTime = DateTime.Now;
-            _Container.ReadStatus();
+            _Container.MonitorStatus();
             var elapsedTime = DateTime.Now - startTime;
 
             Console.WriteLine($"Time needed: {elapsedTime}");

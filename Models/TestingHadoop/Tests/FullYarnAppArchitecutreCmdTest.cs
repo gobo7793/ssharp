@@ -55,7 +55,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestGetAppStatus()
         {
-            _App.ReadStatus();
+            _App.MonitorStatus();
 
             Assert.AreEqual("application_1515488762656_0002", _App.AppId);
             Assert.AreEqual(new DateTime(2018, 1, 9, 10, 10, 34, 402), _App.StartTime);
@@ -69,7 +69,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         {
             _Attempt.AttemptId = "appattempt_1515577485762_0006_000001";
 
-            _Attempt.ReadStatus();
+            _Attempt.MonitorStatus();
 
             Assert.AreEqual("appattempt_1515577485762_0006_000001", _Attempt.AttemptId);
             Assert.AreEqual("container_1515577485762_0006_01_000001", _Attempt.AmContainerId);
@@ -83,7 +83,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         {
             _Container.ContainerId = "container_1515577485762_0008_01_000001";
 
-            _Container.ReadStatus();
+            _Container.MonitorStatus();
 
             Assert.AreEqual("container_1515577485762_0008_01_000001", _Container.ContainerId);
             Assert.AreEqual(new DateTime(2018, 1, 10, 11, 22, 2, 594), _Container.StartTime);

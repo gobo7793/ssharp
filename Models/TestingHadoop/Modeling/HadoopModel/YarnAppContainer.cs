@@ -104,7 +104,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             State = EContainerState.None;
 
-            IsRequireDetailsParsing = true;
+            IsSelfMonitoring = true;
         }
 
         /// <summary>
@@ -128,16 +128,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public IHadoopParser Parser { get; set; }
 
         /// <summary>
-        /// Indicates if details parsing is required for full informations
+        /// Indicates if the data is collected and parsed by the component itself
         /// </summary>
-        public bool IsRequireDetailsParsing { get; set; }
+        public bool IsSelfMonitoring { get; set; }
 
         /// <summary>
-        /// Reads the current state from Hadoop
+        /// Monitors the current state from Hadoop
         /// </summary>
-        public void ReadStatus()
+        public void MonitorStatus()
         {
-            if(!IsRequireDetailsParsing)
+            if(!IsSelfMonitoring)
                 return;
 
             var parsed = Parser.ParseContainerDetails(ContainerId);
@@ -146,7 +146,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// Sets the status based on the parsed component
+        /// Sets the status based on the given <see cref="IParsedComponent"/>
         /// </summary>
         /// <param name="parsed">The parsed component</param>
         public void SetStatus(IParsedComponent parsed)
@@ -202,8 +202,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
-            if(IsRequireDetailsParsing && !String.IsNullOrWhiteSpace(ContainerId))
-                ReadStatus();
+            if(IsSelfMonitoring && !String.IsNullOrWhiteSpace(ContainerId))
+                MonitorStatus();
         }
 
         #endregion

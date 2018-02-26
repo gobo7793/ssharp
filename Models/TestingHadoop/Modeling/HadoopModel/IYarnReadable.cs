@@ -13,17 +13,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         IHadoopParser Parser { get; set; }
 
         /// <summary>
-        /// Indicates if details parsing is required for full informations
+        /// Indicates if the data is collected and parsed by the component itself
         /// </summary>
-        bool IsRequireDetailsParsing { get; set; }
+        bool IsSelfMonitoring { get; set; }
 
         /// <summary>
-        /// Reads the current status from Hadoop
+        /// Monitors the current status from Hadoop
         /// </summary>
-        void ReadStatus();
+        void MonitorStatus();
 
         /// <summary>
-        /// Sets the status based on the parsed component
+        /// Sets the status based on the given <see cref="IParsedComponent"/>
         /// </summary>
         /// <param name="parsed">The parsed component</param>
         void SetStatus(IParsedComponent parsed);

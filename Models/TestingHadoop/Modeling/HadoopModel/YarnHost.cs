@@ -33,6 +33,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     [DebuggerDisplay("Name {" + nameof(Name) + "}")]
     public abstract class YarnHost : Component
     {
+
+        #region Properties
+
         private string _HttpUrl;
         private string _Name;
 
@@ -61,8 +64,38 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// Parser to read
+        /// Parser to monitoring data from cluster
         /// </summary>
         public IHadoopParser Parser { get; set; }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Initializes a new empty <see cref="YarnHost"/>
+        /// </summary>
+        protected YarnHost() { }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnHost"/>
+        /// </summary>
+        /// <param name="name">Name of the Host</param>
+        protected YarnHost(string name) : this()
+        {
+            Name = name;
+        }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnHost"/>
+        /// </summary>
+        /// <param name="name">Name of the Host</param>
+        /// <param name="parser">Parser to monitoring data from cluster</param>
+        protected YarnHost(string name, IHadoopParser parser) : this(name)
+        {
+            Parser = parser;
+        }
+
+        #endregion
     }
 }

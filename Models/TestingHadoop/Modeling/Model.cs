@@ -125,7 +125,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
                 InitController();
 
             InitYarnNodes(4, parser, connector);
-            InitClients(1, connector);
+            InitClients(1, parser, connector);
             InitApplications(8, parser, connector);
             InitAppAttempts(4, parser);
             InitContainers(32, parser);
@@ -165,10 +165,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// </summary>
         private void InitController()
         {
-            Controller = new YarnController
-            {
-                Name = "controller",
-            };
+            Controller = new YarnController("controller");
         }
 
         /// <summary>
@@ -181,13 +178,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         {
             for(int i = 1; i <= nodeCount; i++)
             {
-                var node = new YarnNode
-                {
-                    Name = NodeNamePrefix + i,
-                    Controller = Controller,
-                    Parser = monitorParser,
-                    FaultConnector = faultConnector,
-                };
+                var node = new YarnNode(NodeNamePrefix + i, monitorParser, faultConnector, Controller);
 
                 Controller.ConnectedNodes.Add(node);
                 Nodes[node.Name] = node;
