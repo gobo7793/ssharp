@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
 
@@ -32,6 +33,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// </summary>
     public class Client : Component
     {
+
+        #region Properties
+
         /// <summary>
         /// Started <see cref="YarnApp"/>s of the client
         /// </summary>
@@ -40,12 +44,39 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Connected <see cref="YarnController"/> for the client
         /// </summary>
-        public YarnController ConnectedYarnController { get; set; }
+        public YarnController ConnectedYarnController { get; }
 
         /// <summary>
         /// The connector to submit a <see cref="YarnApp"/>
         /// </summary>
-        public IHadoopConnector SubmittingConnector { get; set; }
+        public IHadoopConnector SubmittingConnector { get; }
+
+        /// <summary>
+        /// The benchmark controller
+        /// </summary>
+        public BenchmarkController BenchController { get; }
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new client for the cluster
+        /// </summary>
+        /// <param name="clientHdfsDir">The hdfs base directory for this client</param>
+        /// <param name="controller">Connected <see cref="YarnController"/> for the client</param>
+        /// <param name="submittingConnector">The connector to submit a <see cref="YarnApp"/></param>
+        public Client(string clientHdfsDir, YarnController controller, IHadoopConnector submittingConnector)
+        {
+            BenchController = new BenchmarkController(clientHdfsDir);
+            BenchController.InitStartBench();
+            ConnectedYarnController = controller;
+            SubmittingConnector = submittingConnector;
+        }
+
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Starts the given <see cref="YarnApp"/>
@@ -67,5 +98,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             SubmittingConnector.StartApplication(cmd, args);
         }
+
+        #endregion
+
     }
 }

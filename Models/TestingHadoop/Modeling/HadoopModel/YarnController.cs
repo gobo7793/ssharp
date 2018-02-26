@@ -41,7 +41,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Connected <see cref="Client" />
         /// </summary>
-        public Client ConnectedClient { get; set; }
+        public List<Client> ConnectedClients { get; set; }
 
         /// <summary>
         /// Connected <see cref="YarnNode" />s
