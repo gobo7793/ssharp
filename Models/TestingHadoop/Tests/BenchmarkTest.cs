@@ -57,7 +57,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             for(int i = 1; i < 100; i++)
             {
                 bench = _Bench.ChangeBenchmark();
-                Console.WriteLine($"Bench {i:D2}: {bench.Name}");
+                Console.WriteLine($"Bench {i:D2}: {bench.Name,-20},cmd={bench.GetStartCmd()}");
             }
         }
     }

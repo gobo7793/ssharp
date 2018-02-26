@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Diagnostics;
+using System.Text;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
 {
@@ -31,7 +31,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
     [DebuggerDisplay("Benchmark {" + nameof(Name) + "}")]
     public class BenchmarkAppData
     {
-        private string _StartCmd;
+        private readonly StringBuilder _StartCmdBuilder;
 
         /// <summary>
         /// Internal benchmark id
@@ -39,25 +39,34 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <remarks>
         /// Must be for all benchmarks in ascending order
         /// </remarks>
-        public int Id { get; set; }
+        public int Id { get; }
 
         /// <summary>
         /// Benchmark name
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; }
 
         /// <summary>
-        /// Benchmark start command (without bench.sh). Insert <see cref="OutDir"/> with {0}.
+        /// Gets the full start command for this benchmark (without the use of the benchmark start script)
         /// </summary>
-        public string StartCmd
+        /// <param name="clientDir">The base directory to use on hdfs, empty for root directory</param>
+        /// <returns>The start command without benchmark script</returns>
+        public string GetStartCmd(string clientDir = "")
         {
-            get { return String.Format(_StartCmd, OutDir); }
-            set { _StartCmd = value; }
+            return _StartCmdBuilder.Replace("$DIR", clientDir).ToString();
         }
 
         /// <summary>
-        /// Output directory
+        /// Initializes a new Benchmark
         /// </summary>
-        public string OutDir { get; set; }
+        /// <param name="id">Internal benchmark id</param>
+        /// <param name="name">Benchmark name</param>
+        /// <param name="startCmd">Benchmark start command (without benchmark start script), set the hdfs base directory using $DIR</param>
+        public BenchmarkAppData(int id, string name, string startCmd)
+        {
+            Id = id;
+            Name = name;
+            _StartCmdBuilder = new StringBuilder(startCmd);
+        }
     }
 }
