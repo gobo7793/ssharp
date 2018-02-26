@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
@@ -39,22 +40,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Started <see cref="YarnApp"/>s of the client
         /// </summary>
-        public List<YarnApp> StartingYarnApps { get; }
+        public List<YarnApp> Apps { get; }
 
         /// <summary>
         /// Connected <see cref="YarnController"/> for the client
         /// </summary>
-        public YarnController ConnectedYarnController { get; }
+        public YarnController ConnectedYarnController { get; set; }
+
+        /// <summary>
+        /// Parser to monitoring data from cluster
+        /// </summary>
+        public IHadoopParser Parser { get; set; }
 
         /// <summary>
         /// The connector to submit a <see cref="YarnApp"/>
         /// </summary>
-        public IHadoopConnector SubmittingConnector { get; }
+        public IHadoopConnector SubmittingConnector { get; set; }
 
         /// <summary>
         /// The benchmark controller
         /// </summary>
-        public BenchmarkController BenchController { get; }
+        public BenchmarkController BenchController { get; set; }
 
         #endregion
 
@@ -65,7 +71,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public Client()
         {
-            StartingYarnApps = new List<YarnApp>();
+            Apps = new List<YarnApp>();
         }
 
         /// <summary>
@@ -73,18 +79,30 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         /// <param name="clientHdfsDir">The hdfs base directory for this client</param>
         /// <param name="controller">Connected <see cref="YarnController"/> for the client</param>
+        /// <param name="parser">Parser to monitoring data from cluster</param>
         /// <param name="submittingConnector">The connector to submit a <see cref="YarnApp"/></param>
-        public Client(string clientHdfsDir, YarnController controller, IHadoopConnector submittingConnector) : this()
+        public Client(string clientHdfsDir, YarnController controller, IHadoopParser parser, IHadoopConnector submittingConnector)
+            : this()
         {
             BenchController = new BenchmarkController(clientHdfsDir);
             BenchController.InitStartBench();
             ConnectedYarnController = controller;
             SubmittingConnector = submittingConnector;
+            Parser = parser;
         }
 
         #endregion
 
-        #region Methods
+        #region General methods
+
+        public override void Update()
+        {
+            GetAppInfos();
+        }
+
+        #endregion
+
+        #region App related methods
 
         /// <summary>
         /// Starts the given <see cref="YarnApp"/>
@@ -105,6 +123,25 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public void StartJob(string cmd, string args)
         {
             SubmittingConnector.StartApplication(cmd, args);
+        }
+
+        /// <summary>
+        /// Gets all apps executed on the cluster and their informations
+        /// </summary>
+        public void GetAppInfos()
+        {
+            var parsedApps = Parser.ParseAppList(EAppState.ALL);
+            foreach(var parsed in parsedApps)
+            {
+                var app = Apps.FirstOrDefault(a => a.AppId == parsed.AppId) ??
+                          Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));
+                if(app == null)
+                    throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
+
+                app.SetStatus(parsed);
+                app.IsRequireDetailsParsing = false;
+                app.ReadStatus();
+            }
         }
 
         #endregion

@@ -150,7 +150,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             Controller.Parser = restParser;
 
             InitYarnNodes(nodeCount, restParser, cmdConnector);
-            InitClients(clientCound, cmdConnector);
+            InitClients(clientCound, restParser, cmdConnector);
             InitApplications(appCount, restParser, cmdConnector);
             InitAppAttempts(attemptCount, restParser);
             InitContainers(containerCount, restParser);
@@ -198,12 +198,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Init submitting clients
         /// </summary>
         /// <param name="clientCount">Instances count</param>
+        /// <param name="monitorParser">Parser to use for monitoring</param>
         /// <param name="submittingConnector">Connector to submitting <see cref="YarnApp"/></param>
-        private void InitClients(int clientCount, IHadoopConnector submittingConnector)
+        private void InitClients(int clientCount, IHadoopParser monitorParser, IHadoopConnector submittingConnector)
         {
             for(int i = 0; i < clientCount; i++)
             {
-                var client = new Client($"client{i}", Controller, submittingConnector);
+                var client = new Client($"client{i}", Controller, monitorParser, submittingConnector);
 
                 Controller.ConnectedClients.Add(client);
                 Clients.Add(client);
@@ -224,7 +225,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
                 {
                     var app = new YarnApp(faultConnector, client, monitorParser);
 
-                    client.StartingYarnApps.Add(app);
+                    client.Apps.Add(app);
                     Controller.Apps.Add(app);
                     Applications.Add(app);
                 }
