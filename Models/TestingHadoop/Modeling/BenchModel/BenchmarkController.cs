@@ -52,6 +52,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         private Random RandomGen { get; }
 
         /// <summary>
+        /// Indicates if the controller is initialized with starting benchmark
+        /// </summary>
+        public bool IsInit => CurrentBenchmark != null;
+
+        /// <summary>
         /// Previous executed benchmark
         /// </summary>
         public Benchmark PreviousBenchmark { get; set; }
@@ -123,10 +128,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <summary>
         /// Initializes the benchmarks
         /// </summary>
-        /// <param name="clientDir">The hdfs client directory</param>
-        public BenchmarkController(string clientDir)
-            : this(Environment.TickCount)
-        { }
+        public BenchmarkController()
+        {
+            RandomGen = new Random();
+        }
 
         #endregion
 

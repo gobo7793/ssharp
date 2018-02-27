@@ -43,7 +43,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             _Model = new Model();
             var parser = new CmdParser(_Model, new DummyHadoopCmdConnector());
 
-            _Model.InitTestConfig(parser, parser.Connection);
+            _Model.InitTestConfig(parser, parser.Connection, 1);
 
             _App = _Model.Applications[0];
             _App.AppId = "application_1515488762656_0002";

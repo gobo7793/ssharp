@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System.Collections.Generic;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector;
@@ -120,13 +121,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// </summary>
         /// <param name="parser">The monitorParser to use</param>
         /// <param name="connector">The faultConnector to use</param>
-        public void InitTestConfig(IHadoopParser parser, IHadoopConnector connector)
+        /// <param name="benchTransitionSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
+        public void InitTestConfig(IHadoopParser parser, IHadoopConnector connector, int benchTransitionSeed)
         {
             if(Controller == null)
                 InitController();
 
             InitYarnNodes(4, parser, connector);
-            InitClients(1, parser, connector);
+            InitClients(1, parser, connector, benchTransitionSeed);
             InitApplications(8, parser, connector);
             InitAppAttempts(4, parser);
             InitContainers(32, parser);
@@ -197,6 +199,24 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             for(int i = 0; i < clientCount; i++)
             {
                 var client = new Client(Controller, monitorParser, submittingConnector, $"client{i}");
+
+                Controller.ConnectedClients.Add(client);
+                Clients.Add(client);
+            }
+        }
+
+        /// <summary>
+        /// Init submitting clients
+        /// </summary>
+        /// <param name="clientCount">Instances count</param>
+        /// <param name="monitorParser">Parser to use for monitoring</param>
+        /// <param name="submittingConnector">Connector to submitting <see cref="YarnApp"/></param>
+        /// <param name="benchTransitionSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
+        private void InitClients(int clientCount, IHadoopParser monitorParser, IHadoopConnector submittingConnector, int benchTransitionSeed)
+        {
+            for(int i = 0; i < clientCount; i++)
+            {
+                var client = new Client(Controller, monitorParser, submittingConnector, $"client{i}", benchTransitionSeed);
 
                 Controller.ConnectedClients.Add(client);
                 Clients.Add(client);

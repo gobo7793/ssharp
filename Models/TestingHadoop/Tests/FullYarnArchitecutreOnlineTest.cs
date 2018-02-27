@@ -24,6 +24,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests
@@ -43,6 +44,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         {
             _Model = new Model("Full architecture test");
             _Model.InitModel();
+            _Model.Clients[0].BenchController = new BenchmarkController(1);
 
             _App = _Model.Applications[0];
             _App.AppId = $"application_{_AppBase}";

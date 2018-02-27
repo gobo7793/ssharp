@@ -92,8 +92,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             ConnectedYarnController = controller;
             Parser = parser;
             SubmittingConnector = submittingConnector;
-            BenchController = new BenchmarkController(clientHdfsDir);
-            BenchController.InitStartBench();
+            ClientDir = clientHdfsDir;
+
+            BenchController = new BenchmarkController();
+        }
+
+        /// <summary>
+        /// Initializes a new <see cref="Client"/>
+        /// </summary>
+        /// <param name="controller">Connected <see cref="YarnController"/> for the client</param>
+        /// <param name="parser">Parser to monitoring data from cluster</param>
+        /// <param name="submittingConnector">The connector to submit a <see cref="YarnApp"/></param>
+        /// <param name="clientHdfsDir">The hdfs base directory for this client</param>
+        /// <param name="benchControllerSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
+        public Client(YarnController controller, IHadoopParser parser, IHadoopConnector submittingConnector, string clientHdfsDir, int benchControllerSeed)
+            : this(controller, parser, submittingConnector, clientHdfsDir)
+        {
+            BenchController = new BenchmarkController(benchControllerSeed);
         }
 
         #endregion
@@ -103,6 +118,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public override void Update()
         {
             MonitorApps();
+            UpdateBenchmark();
+        }
+
+        #endregion
+
+        #region App related methods
+
+        /// <summary>
+        /// Updates the current executing benchmark
+        /// </summary>
+        public void UpdateBenchmark()
+        {
+            if(!BenchController.IsInit)
+                BenchController.InitStartBench();
 
             var benchChanged = BenchController.ChangeBenchmark();
             if(benchChanged)
@@ -111,10 +140,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 StartBenchmark(BenchController.CurrentBenchmark.GetStartCmd(ClientDir));
             }
         }
-
-        #endregion
-
-        #region App related methods
 
         /// <summary>
         /// Stops all currently running <see cref="Apps"/> from this <see cref="Client"/> and returns true on success
