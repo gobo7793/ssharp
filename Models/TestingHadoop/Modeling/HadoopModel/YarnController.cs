@@ -90,7 +90,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
-            GetNodeInfos();
+            MonitorNodes();
         }
 
         #endregion
@@ -100,7 +100,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Gets all node informations
         /// </summary>
-        public void GetNodeInfos()
+        public void MonitorNodes()
         {
             var parsedNodes = Parser.ParseNodeList();
             foreach(var parsed in parsedNodes)
