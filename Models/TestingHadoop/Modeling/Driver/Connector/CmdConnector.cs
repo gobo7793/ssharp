@@ -346,26 +346,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <summary>
         /// Submits the given application with the given arguments to Hadoop
         /// </summary>
-        /// <param name="name">The application to submit</param>
-        /// <param name="arguments">The arguments</param>
-        public void StartApplication(string name, params string[] arguments)
+        /// <param name="cmd">The command to submit</param>
+        public void StartApplication(string cmd)
         {
             if(Submitting.Count < 1)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for starting applications initialized!");
 
-            string args = String.Empty;
-            foreach(var arg in arguments)
-                args += $"{arg} ";
-
+            var sleepCnt = 0;
             SshConnection submitter;
             do
             {
                 submitter = Submitting.FirstOrDefault(c => !c.InUse);
                 if(submitter == null)
+                {
+                    ++sleepCnt;
+                    if(sleepCnt > 100)
+                        throw new TimeoutException($"No free application submitter available for starting application {cmd}.");
                     Thread.Sleep(100); // waiting for free submitter
+                }
             } while(submitter == null);
 
-            submitter.RunAsync($"{Model.HadoopSetupScript} bench {name} {args}", IsConsoleOut);
+            submitter.RunAsync($"{Model.BenchmarkStartupScript} {cmd}", IsConsoleOut);
         }
 
         /// <summary>

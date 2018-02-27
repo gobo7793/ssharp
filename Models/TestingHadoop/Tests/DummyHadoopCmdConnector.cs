@@ -143,12 +143,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
         public bool KillApplication(string appId)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
-        public void StartApplication(string name, params string[] arguments)
+        public void StartApplication(string cmd)
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"[]Application {cmd} started...");
         }
 
         public string GetHadoopVersion()

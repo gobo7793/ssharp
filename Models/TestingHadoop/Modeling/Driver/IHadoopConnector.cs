@@ -166,9 +166,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// Submits the given application with the given arguments to Hadoop
         /// </summary>
-        /// <param name="name">The application to submit</param>
-        /// <param name="arguments">The arguments</param>
-        void StartApplication(string name, params string[] arguments);
+        /// <param name="cmd">The command to submit</param>
+        void StartApplication(string cmd);
 
         /// <summary>
         /// Returns the version information from Hadoop
