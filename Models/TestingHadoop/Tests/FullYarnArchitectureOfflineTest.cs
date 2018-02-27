@@ -30,7 +30,7 @@ using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 {
     [TestFixture]
-    public class FullYarnAppArchitecutreCmdTest
+    public class FullYarnArchitectureOfflineTest
     {
         private Model _Model;
         private YarnApp _App;

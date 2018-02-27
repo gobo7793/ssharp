@@ -95,8 +95,8 @@
     <Compile Include="Tests\CmdRestCompareTest.cs" />
     <Compile Include="Tests\DummyHadoopCmdConnector.cs" />
     <Compile Include="Tests\DummyHadoopRestConnector.cs" />
-    <Compile Include="Tests\FullYarnAppArchitecutreRealTest.cs" />
-    <Compile Include="Tests\FullYarnAppArchitecutreCmdTest.cs" />
+    <Compile Include="Tests\FullYarnArchitecutreOnlineTest.cs" />
+    <Compile Include="Tests\FullYarnArchitectureOfflineTest.cs" />
     <Compile Include="Tests\JsonParserTest.cs" />
     <Compile Include="Tests\DriverUtilitiesTest.cs" />
     <Compile Include="Tests\YarnNodeTest.cs" />
