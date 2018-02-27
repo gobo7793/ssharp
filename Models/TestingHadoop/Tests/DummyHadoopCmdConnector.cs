@@ -143,6 +143,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
         public bool KillApplication(string appId)
         {
+            Console.WriteLine($"[]Application {appId} stopped...");
             return true;
         }
 

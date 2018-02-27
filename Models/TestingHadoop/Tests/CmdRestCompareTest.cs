@@ -56,9 +56,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine("Login to shell");
 
             var startTime = DateTime.Now;
-            _Cmd = new CmdConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFilePath, true, true, 1);
+            _Cmd = new CmdConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, true, true, 1);
             var cmdTime = DateTime.Now;
-            _Rest = new RestConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFilePath,
+            _Rest = new RestConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile,
                 model.Controller.HttpUrl, model.Controller.TimelineHttpUrl);
             var restTime = DateTime.Now;
 

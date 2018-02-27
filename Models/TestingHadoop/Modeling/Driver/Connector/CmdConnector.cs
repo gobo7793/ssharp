@@ -48,7 +48,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <summary>
         /// The application submitting connections
         /// </summary>
-        private List<SshConnection> Submitting { get; } = new List<SshConnection>();
+        private List<SshConnection> Submitting { get; }
 
         /// <summary>
         /// The controller/timeline host to connect
@@ -79,6 +79,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         public CmdConnector(string host, string username, string privateKeyFilePath, bool forMonitoring = true,
                             bool forFaulting = true, int submittingConnections = 4, bool isConsoleOut = false)
         {
+            Submitting = new List<SshConnection>();
+
             Host = host;
             IsConsoleOut = isConsoleOut;
 
@@ -88,6 +90,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 Faulting = new SshConnection(Host, username, privateKeyFilePath);
             for(int i = 0; i < submittingConnections; i++)
                 Submitting.Add(new SshConnection(Host, username, privateKeyFilePath));
+
+            //ThreadPool.SetMaxThreads(submittingConnections, submittingConnections);
         }
 
         /// <summary>
@@ -339,8 +343,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Faulting == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
-            var cmd = Faulting.Run($"{Model.HadoopSetupScript} cmd yarn application -kill {appId}", IsConsoleOut);
-            return cmd.StartsWith($"Killed application {appId}") || cmd.StartsWith($"Killing application {appId}");
+            var cmd = Faulting.Run($"{Model.HadoopSetupScript} cmd yarn application -kill {appId} | grep {appId}", IsConsoleOut);
+            return cmd.Contains($"Killed application {appId}") || cmd.Contains($"Killing application {appId}") ||
+                   cmd.Contains($"{appId} has already finished");
         }
 
         /// <summary>
@@ -367,6 +372,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             } while(submitter == null);
 
             submitter.RunAsync($"{Model.BenchmarkStartupScript} {cmd}", IsConsoleOut);
+            //submitter.Run($"{Model.BenchmarkStartupScript} {cmd}", true);
         }
 
         /// <summary>

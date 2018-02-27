@@ -33,6 +33,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
     public class FullYarnArchitectureOfflineTest
     {
         private Model _Model;
+        private Client _Client1;
         private YarnApp _App;
         private YarnAppAttempt _Attempt;
         private YarnAppContainer _Container;
@@ -45,11 +46,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
             _Model.InitTestConfig(parser, parser.Connection, 1);
 
+            _Client1 = _Model.Clients[0];
             _App = _Model.Applications[0];
             _App.AppId = "application_1515488762656_0002";
 
             _Attempt = _App.Attempts[0];
             _Container = _Attempt.Containers[0];
+        }
+
+        [Test]
+        public void TestBenchSubmitting()
+        {
+            for(int i = 0; i < 5; i++)
+            {
+                _Client1.UpdateBenchmark();
+                Console.WriteLine($"Bench {i:D2}: {_Client1.BenchController.CurrentBenchmark.Name}");
+            }
         }
 
         [Test]

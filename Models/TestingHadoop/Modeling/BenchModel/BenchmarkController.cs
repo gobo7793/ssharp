@@ -79,11 +79,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
             {
                 // BenchmarkController IDs have to be in ascending ordner, they will be needed for transitions
                 new Benchmark(00, "dfsioePreparing", "hibench bin/workloads/micro/dfsioe/prepare/prepare.sh"),
-                new Benchmark(01, "randomtextwriter", "example randomtextwriter $DIR/rantw"),
+                new Benchmark(01, "randomtextwriter", "example randomtextwriter -D mapreduce.randomtextwriter.totalbytes=32000 $DIR/rantw"),
                 new Benchmark(02, "teragen", "example teragen 50000 $DIR/teragen"),
                 new Benchmark(03, "dfsioe", "hibench bin/workloads/micro/dfsioe/hadoop/run.sh"),
                 new Benchmark(04, "wordcount", "example wordcount $DIR/rantw $DIR/wcout"),
-                new Benchmark(05, "randomwriter", "example randomwriter $DIR/ranwr"),
+                new Benchmark(05, "randomwriter", "example randomwriter -D mapreduce.randomwriter.totalbytes=32000 $DIR/ranwr"),
                 new Benchmark(06, "sort", "example sort $DIR/rantw $DIR/sort"),
                 new Benchmark(07, "terasort", "example terasort $DIR/teragen $DIR/terasort"),
                 new Benchmark(08, "pi", "pi"),

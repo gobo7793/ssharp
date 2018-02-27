@@ -58,17 +58,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Hostname for the Hadoop cluster pc
         /// </summary>
-        public const string SshHost = "swth11";
+        public const string SshHost = "swtse143.informatik.uni-augsburg.de";
 
         /// <summary>
         /// Username for the Hadoop cluster pc
         /// </summary>
-        public const string SshUsername = "siegerge";
+        public const string SshUsername = "hadoop";
 
         /// <summary>
         /// Full file path to the private key file to login
         /// </summary>
-        public const string SshPrivateKeyFilePath = @"C:\Users\siegerge\sshnet";
+        public const string SshPrivateKeyFile = @"C:\Users\siegerge\.ssh\id_rsa";
 
         #endregion
 
@@ -122,7 +122,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <param name="parser">The monitorParser to use</param>
         /// <param name="connector">The faultConnector to use</param>
         /// <param name="benchTransitionSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
-        public void InitTestConfig(IHadoopParser parser, IHadoopConnector connector, int benchTransitionSeed)
+        public void InitTestConfig(IHadoopParser parser, IHadoopConnector connector, int benchTransitionSeed = 1)
         {
             if(Controller == null)
                 InitController();
@@ -147,8 +147,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         {
             InitController();
 
-            var cmdConnector = new CmdConnector(SshHost, SshUsername, SshPrivateKeyFilePath, false, true, 1);
-            var restConnector = new RestConnector(SshHost, SshUsername, SshPrivateKeyFilePath, Controller.HttpUrl, Controller.TimelineHttpUrl);
+            var cmdConnector = new CmdConnector(SshHost, SshUsername, SshPrivateKeyFile, false, true, 1);
+            var restConnector = new RestConnector(SshHost, SshUsername, SshPrivateKeyFile, Controller.HttpUrl, Controller.TimelineHttpUrl);
             var restParser = new RestParser(this, restConnector);
             Controller.Parser = restParser;
 
@@ -198,7 +198,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         {
             for(int i = 0; i < clientCount; i++)
             {
-                var client = new Client(Controller, monitorParser, submittingConnector, $"client{i}");
+                var client = new Client(Controller, monitorParser, submittingConnector, $"/client{i}");
 
                 Controller.ConnectedClients.Add(client);
                 Clients.Add(client);

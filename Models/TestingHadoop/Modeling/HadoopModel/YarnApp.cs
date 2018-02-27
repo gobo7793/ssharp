@@ -320,7 +320,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <returns>True if app is stopped/killed</returns>
         public bool StopApp()
         {
-            if(!String.IsNullOrWhiteSpace(AppId) && State == EAppState.None && State == EAppState.NotStartedYet || !IsKillable)
+            if(String.IsNullOrWhiteSpace(AppId) && State == EAppState.None && State == EAppState.NotStartedYet || !IsKillable)
                 return true;
             return FaultConnector.KillApplication(AppId);
         }

@@ -22,6 +22,7 @@
 
 using System;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Renci.SshNet;
 
@@ -218,13 +219,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             InUse = true;
 
-            var cmd = Client.CreateCommand(command);
-            Out($"Executing: {cmd.CommandText}", consoleOut);
-            cmd.Execute();
-            Out(cmd.Result, consoleOut);
+            var res = DoRunCommand(command, consoleOut);
 
             InUse = false;
-            return cmd.Result;
+            return res;
         }
 
         /// <summary>
@@ -236,14 +234,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             InUse = true;
 
-            //var cmd = Client.CreateCommand(command);
-            //Out($"Executing: {cmd.CommandText}", consoleOut);
-            //cmd.BeginExecute();
+            Task.Run(() => DoRunCommand(command, true));
 
-            Task.Run(() => RunIm(command, consoleOut));
-            //exec.Wait();
+            //Action runCmd = () => { DoRunCommand(command, consoleOut); };
+            //ThreadPool.QueueUserWorkItem(c => runCmd());
 
             InUse = false;
+        }
+
+        private string DoRunCommand(string command, bool consoleOut = false)
+        {
+            Out($"Executing: {command}", consoleOut);
+            var cmd = Client.RunCommand(command);
+            Out(cmd.Result, consoleOut);
+            return cmd.Result;
         }
 
         /// <summary>

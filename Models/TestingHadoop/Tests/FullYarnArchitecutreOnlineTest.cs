@@ -22,6 +22,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
@@ -33,11 +34,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
     public class FullYarnArchitecutreOnlineTest
     {
         private Model _Model;
-        private YarnApp _App;
-        private YarnAppAttempt _Attempt;
-        private YarnAppContainer _Container;
+        private Client _Client1;
+        private YarnController _Controller;
+        private YarnApp _App1;
+        private YarnAppAttempt _Attempt1;
+        private YarnAppContainer _Container1;
 
-        private string _AppBase = "1517215519416_0001";
+        private string _AppBase1 = "1517215519416_0001";
 
         [TestFixtureSetUp]
         public void Setup()
@@ -46,83 +49,97 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             _Model.InitModel();
             _Model.Clients[0].BenchController = new BenchmarkController(1);
 
-            _App = _Model.Applications[0];
-            _App.AppId = $"application_{_AppBase}";
+            _Controller = _Model.Controller;
+            _Client1 = _Model.Clients[0];
 
-            _Attempt = _App.Attempts[0];
-            _Container = _Attempt.Containers[0];
+            _App1 = _Model.Applications[0];
+            _App1.AppId = $"application_{_AppBase1}";
+
+            _Attempt1 = _App1.Attempts[0];
+            _Container1 = _Attempt1.Containers[0];
+        }
+
+        [Test]
+        public void TestBenchSubmitting()
+        {
+            for(int i = 0; i < 1; i++)
+            {
+                _Client1.UpdateBenchmark();
+                Console.WriteLine($"Bench {i:D2}: {_Client1.BenchController.CurrentBenchmark.Name}");
+                Thread.Sleep(4000);
+            }
         }
 
         [Test]
         public void TestFullMonitoring()
         {
-            var startTime = DateTime.Now;
-            _Model.Controller.MonitorNodes();
-            _Model.Clients[0].MonitorApps();
-            var elapsedTime = DateTime.Now - startTime;
+            //var startTime = DateTime.Now;
+            _Controller.MonitorNodes();
+            _Client1.MonitorApps();
+            //var elapsedTime = DateTime.Now - startTime;
 
-            Console.WriteLine($"Time needed: {elapsedTime}");
+            //Console.WriteLine($"Time needed: {elapsedTime}");
 
-            var app = _Model.Applications.FirstOrDefault(a => a.AppId == $"application_{_AppBase}");
+            var app = _Model.Applications.FirstOrDefault(a => a.AppId == $"application_{_AppBase1}");
 
             Assert.AreEqual(ENodeState.RUNNING, _Model.Nodes["compute-1"].State);
             Assert.NotNull(app);
 
-            var attempt = app.Attempts.FirstOrDefault(a => a.AttemptId == $"appattempt_{_AppBase}_000001");
+            var attempt = app.Attempts.FirstOrDefault(a => a.AttemptId == $"appattempt_{_AppBase1}_000001");
             Assert.NotNull(attempt);
 
-            Assert.AreEqual($"container_{_AppBase}_01_000001", _Attempt.AmContainerId);
+            Assert.AreEqual($"container_{_AppBase1}_01_000001", _Attempt1.AmContainerId);
             Assert.AreNotEqual(DateTime.MinValue, attempt.AmContainer.StartTime);
         }
 
         [Test]
         public void TestAppMonitoring()
         {
-            var startTime = DateTime.Now;
-            _App.MonitorStatus();
-            var elapsedTime = DateTime.Now - startTime;
+            //var startTime = DateTime.Now;
+            _App1.MonitorStatus();
+            //var elapsedTime = DateTime.Now - startTime;
 
-            Console.WriteLine($"Time needed: {elapsedTime}");
-            var fullStatus = _App.StatusAsString();
+            //Console.WriteLine($"Time needed: {elapsedTime}");
+            var fullStatus = _App1.StatusAsString();
             Console.WriteLine(fullStatus);
 
-            Assert.AreEqual($"appattempt_{_AppBase}_000001", _App.Attempts[0].AttemptId);
-            Assert.IsNotNullOrEmpty(_App.Name);
+            Assert.AreEqual($"appattempt_{_AppBase1}_000001", _App1.Attempts[0].AttemptId);
+            Assert.IsNotNullOrEmpty(_App1.Name);
         }
 
         [Test]
         public void TestAttemptMonitoring()
         {
-            if(String.IsNullOrWhiteSpace(_Attempt.AttemptId))
-                _Attempt.AttemptId = $"appattempt_{_AppBase}_000001";
+            if(String.IsNullOrWhiteSpace(_Attempt1.AttemptId))
+                _Attempt1.AttemptId = $"appattempt_{_AppBase1}_000001";
 
-            var startTime = DateTime.Now;
-            _Attempt.MonitorStatus();
-            var elapsedTime = DateTime.Now - startTime;
+            //var startTime = DateTime.Now;
+            _Attempt1.MonitorStatus();
+            //var elapsedTime = DateTime.Now - startTime;
 
-            Console.WriteLine($"Time needed: {elapsedTime}");
-            var fullStatus = _Attempt.StatusAsString();
+            //Console.WriteLine($"Time needed: {elapsedTime}");
+            var fullStatus = _Attempt1.StatusAsString();
             Console.WriteLine(fullStatus);
 
-            Assert.AreEqual($"container_{_AppBase}_01_000001", _Attempt.AmContainerId);
-            Assert.IsNotNullOrEmpty(_Attempt.AmContainerId);
+            Assert.AreEqual($"container_{_AppBase1}_01_000001", _Attempt1.AmContainerId);
+            Assert.IsNotNullOrEmpty(_Attempt1.AmContainerId);
         }
 
         [Test]
         public void TestContainerMonitoring()
         {
-            if(String.IsNullOrWhiteSpace(_Container.ContainerId))
-                _Container.ContainerId = $"container_{_AppBase}_01_000001";
+            if(String.IsNullOrWhiteSpace(_Container1.ContainerId))
+                _Container1.ContainerId = $"container_{_AppBase1}_01_000001";
 
-            var startTime = DateTime.Now;
-            _Container.MonitorStatus();
-            var elapsedTime = DateTime.Now - startTime;
+            //var startTime = DateTime.Now;
+            _Container1.MonitorStatus();
+            //var elapsedTime = DateTime.Now - startTime;
 
-            Console.WriteLine($"Time needed: {elapsedTime}");
-            var fullStatus = _Container.StatusAsString();
+            //Console.WriteLine($"Time needed: {elapsedTime}");
+            var fullStatus = _Container1.StatusAsString();
             Console.WriteLine(fullStatus);
 
-            Assert.AreNotEqual(DateTime.MinValue, _Container.StartTime);
+            Assert.AreNotEqual(DateTime.MinValue, _Container1.StartTime);
         }
     }
 }

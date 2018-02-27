@@ -130,15 +130,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void UpdateBenchmark()
         {
+            bool benchChanged;
             if(!BenchController.IsInit)
+            {
                 BenchController.InitStartBench();
+                benchChanged = true;
+            }
+            else
+            {
+                benchChanged = BenchController.ChangeBenchmark();
+            }
 
-            var benchChanged = BenchController.ChangeBenchmark();
             if(benchChanged)
             {
                 StopBenchmarks();
                 StartBenchmark(BenchController.CurrentBenchmark.GetStartCmd(ClientDir));
             }
+
         }
 
         /// <summary>
