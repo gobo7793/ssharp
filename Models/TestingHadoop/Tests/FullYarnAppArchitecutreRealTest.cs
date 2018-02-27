@@ -52,10 +52,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         }
 
         [Test]
-        public void TestControllerUpdate()
+        public void TestFullMonitoring()
         {
             var startTime = DateTime.Now;
-            _Model.Controller.Update();
+            _Model.Controller.MonitorNodes();
+            _Model.Clients[0].MonitorApps();
             var elapsedTime = DateTime.Now - startTime;
 
             Console.WriteLine($"Time needed: {elapsedTime}");
@@ -73,7 +74,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         }
 
         [Test]
-        public void TestGetAppStatus()
+        public void TestAppMonitoring()
         {
             var startTime = DateTime.Now;
             _App.MonitorStatus();
@@ -88,7 +89,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         }
 
         [Test]
-        public void TestGetAttemptStatus()
+        public void TestAttemptMonitoring()
         {
             if(String.IsNullOrWhiteSpace(_Attempt.AttemptId))
                 _Attempt.AttemptId = $"appattempt_{_AppBase}_000001";
@@ -106,7 +107,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         }
 
         [Test]
-        public void TestGetContainerStatus()
+        public void TestContainerMonitoring()
         {
             if(String.IsNullOrWhiteSpace(_Container.ContainerId))
                 _Container.ContainerId = $"container_{_AppBase}_01_000001";
