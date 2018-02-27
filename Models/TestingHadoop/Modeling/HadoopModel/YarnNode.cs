@@ -40,12 +40,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Fault for connection errors
         /// </summary>
-        public readonly Fault NodeConnectionError = new TransientFault();
+        public readonly Fault NodeConnectionErrorFault = new TransientFault();
 
         /// <summary>
         /// Fault for dead nodes
         /// </summary>
-        public readonly Fault NodeDead = new TransientFault();
+        public readonly Fault NodeDeadFault = new TransientFault();
 
         #endregion
 
@@ -270,10 +270,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region Fault Effects
 
         /// <summary>
-        /// Fault effect for <see cref="YarnNode.NodeConnectionError"/>
+        /// Fault effect for <see cref="YarnNode.NodeConnectionErrorFault"/>
         /// </summary>
-        [FaultEffect(Fault = nameof(NodeConnectionError))]
-        [Priority(0)] // will be ignored if NodeDead is active
+        [FaultEffect(Fault = nameof(NodeConnectionErrorFault))]
+        [Priority(0)] // will be ignored if NodeDeadFault is active
         public class NodeConnectionErrorEffect : YarnNode
         {
             public override void Update()
@@ -284,9 +284,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// Fault effect for <see cref="YarnNode.NodeDead"/>
+        /// Fault effect for <see cref="YarnNode.NodeDeadFault"/>
         /// </summary>
-        [FaultEffect(Fault = nameof(NodeDead))]
+        [FaultEffect(Fault = nameof(NodeDeadFault))]
         [Priority(1)]
         public class NodeDeadEffect : YarnNode
         {
