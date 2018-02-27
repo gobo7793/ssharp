@@ -36,22 +36,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
     {
         #region General settings
 
-        //public const int MaxApplicationCount = 0xFF;
-        //public const int MaxAppAttemptCount = 0xF;
-        //public const int MaxContainerCount = 0xF;
-
         /// <summary>
         /// Prefix for compute nodes
         /// </summary>
         public const string NodeNamePrefix = "compute-";
 
         /// <summary>
-        /// Command (full path) for Hadoop setup script
+        /// Command for Hadoop setup script
         /// </summary>
         /// <remarks>
-        /// Generic options for all commands can be inserted here.
+        /// Generic options for all cluster related commands can be inserted here.
         /// </remarks>
-        public const string HadoopSetupScript = "/home/siegerge/hadoop-benchmark/setup-hadoop.sh -q";
+        public const string HadoopSetupScript = "/home/hadoop/hadoop-benchmark/setup.sh -q";
+
+        /// <summary>
+        /// Command for benchmark startup script
+        /// </summary>
+        public const string BenchmarkStartupScript = "/home/hadoop/hadoop-benchmark/bench.sh";
 
         /// <summary>
         /// Hostname for the Hadoop cluster pc
@@ -195,7 +196,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         {
             for(int i = 0; i < clientCount; i++)
             {
-                var client = new Client($"client{i}", Controller, monitorParser, submittingConnector);
+                var client = new Client(Controller, monitorParser, submittingConnector, $"client{i}");
 
                 Controller.ConnectedClients.Add(client);
                 Clients.Add(client);

@@ -52,11 +52,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         private Random RandomGen { get; }
 
         /// <summary>
-        /// Base directory for the client
-        /// </summary>
-        public string ClientDir { get; set; }
-
-        /// <summary>
         /// Previous executed benchmark
         /// </summary>
         public Benchmark PreviousBenchmark { get; set; }
@@ -119,11 +114,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <summary>
         /// Initializes the benchmarks
         /// </summary>
-        /// <param name="clientDir">The hdfs client directory</param>
         /// <param name="randomSeed">Seed for random generator</param>
-        public BenchmarkController(string clientDir, int randomSeed)
+        public BenchmarkController(int randomSeed)
         {
-            ClientDir = clientDir;
             RandomGen = new Random(randomSeed);
         }
 
@@ -132,7 +125,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// </summary>
         /// <param name="clientDir">The hdfs client directory</param>
         public BenchmarkController(string clientDir)
-            : this(clientDir, Environment.TickCount)
+            : this(Environment.TickCount)
         { }
 
         #endregion

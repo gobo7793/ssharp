@@ -36,9 +36,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [SetUp]
         public void Setup()
         {
-            _Bench1 = new BenchmarkController("", 1);
-            //_Bench2 = new BenchmarkController("", 7);
-            //_Bench3 = new BenchmarkController("", 11);
+            _Bench1 = new BenchmarkController(1);
+            //_Bench2 = new BenchmarkController(7);
+            //_Bench3 = new BenchmarkController(11);
 
             /* Benchmarks for Seed 1:
                 Bench 01:randomtextwriter

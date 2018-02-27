@@ -58,6 +58,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public IHadoopConnector SubmittingConnector { get; set; }
 
         /// <summary>
+        /// HDFS base directory for the client
+        /// </summary>
+        public string ClientDir { get; set; }
+
+        /// <summary>
         /// The benchmark controller
         /// </summary>
         public BenchmarkController BenchController { get; set; }
@@ -77,18 +82,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Initializes a new <see cref="Client"/>
         /// </summary>
-        /// <param name="clientHdfsDir">The hdfs base directory for this client</param>
         /// <param name="controller">Connected <see cref="YarnController"/> for the client</param>
         /// <param name="parser">Parser to monitoring data from cluster</param>
         /// <param name="submittingConnector">The connector to submit a <see cref="YarnApp"/></param>
-        public Client(string clientHdfsDir, YarnController controller, IHadoopParser parser, IHadoopConnector submittingConnector)
+        /// <param name="clientHdfsDir">The hdfs base directory for this client</param>
+        public Client(YarnController controller, IHadoopParser parser, IHadoopConnector submittingConnector, string clientHdfsDir)
             : this()
         {
+            ConnectedYarnController = controller;
+            Parser = parser;
+            SubmittingConnector = submittingConnector;
             BenchController = new BenchmarkController(clientHdfsDir);
             BenchController.InitStartBench();
-            ConnectedYarnController = controller;
-            SubmittingConnector = submittingConnector;
-            Parser = parser;
         }
 
         #endregion
@@ -97,7 +102,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
-            GetAppInfos();
+            MonitorApps();
+
+            var benchChanged = BenchController.ChangeBenchmark();
+            if(benchChanged)
+            {
+                StopBenchmarks();
+                StartBenchmark(BenchController.CurrentBenchmark.GetStartCmd(ClientDir));
+            }
         }
 
         #endregion
@@ -105,30 +117,34 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region App related methods
 
         /// <summary>
-        /// Starts the given <see cref="YarnApp"/>
-        /// if <see cref="YarnApp.StartName"/> is not null
+        /// Stops all currently running <see cref="Apps"/> from this <see cref="Client"/> and returns true on success
         /// </summary>
-        /// <param name="app"><see cref="YarnApp"/> to start</param>
-        public void StartJob(YarnApp app)
+        /// <returns>True if all <see cref="Apps"/> are stopped</returns>
+        public bool StopBenchmarks()
         {
-            if(!String.IsNullOrWhiteSpace(app.StartName))
-                SubmittingConnector.StartApplication(app.StartName, app.StartArgs);
+            var success = true;
+            foreach(var app in Apps)
+            {
+                var appSucc = app.StopApp();
+                if(!appSucc)
+                    success = false;
+            }
+            return success;
         }
 
         /// <summary>
-        /// Starts the given command
+        /// Starts the given benchmark command
         /// </summary>
         /// <param name="cmd">Command to start</param>
-        /// <param name="args">The arguments</param>
-        public void StartJob(string cmd, string args)
+        public void StartBenchmark(string cmd)
         {
-            SubmittingConnector.StartApplication(cmd, args);
+            SubmittingConnector.StartApplication(cmd);
         }
 
         /// <summary>
         /// Gets all apps executed on the cluster and their informations
         /// </summary>
-        public void GetAppInfos()
+        public void MonitorApps()
         {
             var parsedApps = Parser.ParseAppList(EAppState.ALL);
             foreach(var parsed in parsedApps)

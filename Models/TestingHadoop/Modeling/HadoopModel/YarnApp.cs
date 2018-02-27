@@ -66,16 +66,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public Client StartingClient { get; set; }
 
         /// <summary>
-        /// The command name to start the app
-        /// </summary>
-        public string StartName { get; set; }
-
-        /// <summary>
-        /// The command arguments to start the app
-        /// </summary>
-        public string StartArgs { get; set; }
-
-        /// <summary>
         /// Current state
         /// </summary>
         public EAppState State { get; set; }
@@ -330,7 +320,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <returns>True if app is stopped/killed</returns>
         public bool StopApp()
         {
-            if(State == EAppState.None && State == EAppState.NotStartedYet || !IsKillable)
+            if(!String.IsNullOrWhiteSpace(AppId) && State == EAppState.None && State == EAppState.NotStartedYet || !IsKillable)
                 return true;
             return FaultConnector.KillApplication(AppId);
         }
