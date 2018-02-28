@@ -354,6 +354,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <param name="cmd">The command to submit</param>
         public void StartApplication(string cmd)
         {
+            var submitter = GetSubmitter(cmd);
+
+            submitter.Run($"{Model.BenchmarkStartupScript} {cmd}", IsConsoleOut);
+            //submitter.Run($"{Model.BenchmarkStartupScript} {cmd}", true);
+        }
+
+        /// <summary>
+        /// Submits the given application with the given arguments to Hadoop async
+        /// </summary>
+        /// <param name="cmd">The command to submit</param>
+        public void StartApplicationAsync(string cmd)
+        {
+            var submitter = GetSubmitter(cmd);
+
+            submitter.RunAsync($"{Model.BenchmarkStartupScript} {cmd}", IsConsoleOut);
+            //submitter.Run($"{Model.BenchmarkStartupScript} {cmd}", true);
+        }
+
+        private SshConnection GetSubmitter(string cmd)
+        {
             if(Submitting.Count < 1)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for starting applications initialized!");
 
@@ -370,9 +390,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                     Thread.Sleep(100); // waiting for free submitter
                 }
             } while(submitter == null);
-
-            submitter.RunAsync($"{Model.BenchmarkStartupScript} {cmd}", IsConsoleOut);
-            //submitter.Run($"{Model.BenchmarkStartupScript} {cmd}", true);
+            return submitter;
         }
 
         /// <summary>

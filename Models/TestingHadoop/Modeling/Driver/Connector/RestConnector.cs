@@ -316,6 +316,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         }
 
         /// <summary>
+        /// Not supported
+        /// </summary>
+        public void StartApplicationAsync(string cmd)
+        {
+            throw new PlatformNotSupportedException("Hadoop REST API does not support starting application!");
+        }
+
+        /// <summary>
         /// Returns the version information from Hadoop
         /// </summary>
         /// <returns>Hadoop version</returns>

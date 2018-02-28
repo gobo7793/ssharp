@@ -170,6 +170,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         void StartApplication(string cmd);
 
         /// <summary>
+        /// Submits the given application with the given arguments to Hadoop async
+        /// </summary>
+        /// <param name="cmd">The command to submit</param>
+        void StartApplicationAsync(string cmd);
+
+        /// <summary>
         /// Returns the version information from Hadoop
         /// </summary>
         /// <returns>Hadoop version</returns>
