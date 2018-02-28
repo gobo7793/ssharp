@@ -117,7 +117,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
-            MonitorApps();
             UpdateBenchmark();
         }
 
@@ -144,7 +143,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             if(benchChanged)
             {
                 StopBenchmarks();
-                StartBenchmark(BenchController.CurrentBenchmark.GetStartCmd(ClientDir));
+                StartBenchmark(BenchController.CurrentBenchmark);
             }
 
         }
@@ -166,31 +165,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// Starts the given benchmark command
+        /// Starts the given benchmark command and save the application id
+        /// in the first available <see cref="YarnApp"/> in <see cref="Apps"/>
         /// </summary>
-        /// <param name="cmd">Command to start</param>
-        public void StartBenchmark(string cmd)
+        /// <param name="benchmark">Benchmark to start</param>
+        /// <exception cref="OutOfMemoryException">No <see cref="YarnApp"/> available</exception>
+        public void StartBenchmark(Benchmark benchmark)
         {
-            SubmittingConnector.StartApplication(cmd);
-        }
+            if(benchmark.HasOutputDir)
+                SubmittingConnector.RemoveHdfsDir(benchmark.GetOutputDir(ClientDir));
+            var appId = SubmittingConnector.StartApplicationAsync(benchmark.GetStartCmd(ClientDir));
 
-        /// <summary>
-        /// Gets all apps executed on the cluster and their informations
-        /// </summary>
-        public void MonitorApps()
-        {
-            var parsedApps = Parser.ParseAppList(EAppState.ALL);
-            foreach(var parsed in parsedApps)
-            {
-                var app = Apps.FirstOrDefault(a => a.AppId == parsed.AppId) ??
-                          Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));
-                if(app == null)
-                    throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
-
-                app.SetStatus(parsed);
-                app.IsSelfMonitoring = false;
-                app.MonitorStatus();
-            }
+            var app = Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));
+            if(app == null)
+                throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
+            app.AppId = appId;
         }
 
         #endregion
