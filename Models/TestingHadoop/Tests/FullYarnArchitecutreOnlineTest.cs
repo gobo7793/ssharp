@@ -77,7 +77,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         {
             //var startTime = DateTime.Now;
             _Controller.MonitorNodes();
-            _Client1.MonitorApps();
+            _Controller.MonitorApps();
             //var elapsedTime = DateTime.Now - startTime;
 
             //Console.WriteLine($"Time needed: {elapsedTime}");
