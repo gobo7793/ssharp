@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Diagnostics;
 using System.Text;
 
@@ -31,7 +32,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
     [DebuggerDisplay("Benchmark {" + nameof(Name) + "}")]
     public class Benchmark
     {
+        #region Properties
+
         private readonly StringBuilder _StartCmdBuilder;
+        private readonly StringBuilder _OutDirBuilder;
+        private readonly StringBuilder _InDirBuilder;
 
         /// <summary>
         /// Internal benchmark id
@@ -46,14 +51,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// </summary>
         public string Name { get; }
 
+        #endregion
+
+        #region Constructors
+
         /// <summary>
-        /// Gets the full start command for this benchmark (without the use of the benchmark start script)
+        /// Initializes a new Benchmark
         /// </summary>
-        /// <param name="clientDir">The base directory to use on hdfs, empty for root directory</param>
-        /// <returns>The start command without benchmark script</returns>
-        public string GetStartCmd(string clientDir = "")
+        /// <param name="id">Internal benchmark id</param>
+        /// <param name="name">Benchmark name</param>
+        /// <param name="startCmd">Benchmark start command (without benchmark start script)</param>
+        public Benchmark(int id, string name, string startCmd)
         {
-            return _StartCmdBuilder.Replace("$DIR", clientDir).ToString();
+            Id = id;
+            Name = name;
+            _StartCmdBuilder = new StringBuilder(startCmd);
         }
 
         /// <summary>
@@ -61,12 +73,71 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// </summary>
         /// <param name="id">Internal benchmark id</param>
         /// <param name="name">Benchmark name</param>
-        /// <param name="startCmd">Benchmark start command (without benchmark start script), set the hdfs base directory using $DIR</param>
-        public Benchmark(int id, string name, string startCmd)
+        /// <param name="startCmd">Benchmark start command (without benchmark start script), set outputDir via $OUT</param>
+        /// <param name="outputDir">Output directory, set the hdfs base directory using $DIR</param>
+        public Benchmark(int id, string name, string startCmd, string outputDir)
+            : this(id, name, startCmd)
         {
-            Id = id;
-            Name = name;
-            _StartCmdBuilder = new StringBuilder(startCmd);
+            _OutDirBuilder = new StringBuilder(outputDir);
         }
+
+        /// <summary>
+        /// Initializes a new Benchmark
+        /// </summary>
+        /// <param name="id">Internal benchmark id</param>
+        /// <param name="name">Benchmark name</param>
+        /// <param name="startCmd">Benchmark start command (without benchmark start script),
+        ///     set outputDir via $OUT, inputDirectory via $IN</param>
+        /// <param name="outputDir">Output directory, set the hdfs base directory using $DIR</param>
+        /// <param name="inputDir">Input directory, set the hdfs base directory using $DIR</param>
+        public Benchmark(int id, string name, string startCmd, string outputDir, string inputDir)
+            : this(id, name, startCmd, outputDir)
+        {
+            _InDirBuilder = new StringBuilder(inputDir);
+        }
+
+        #endregion
+
+        #region Methods
+
+        private string GetFullDir(StringBuilder dirBuilder, string clientDir)
+        {
+            if(dirBuilder != null)
+                return dirBuilder.Replace("$DIR", clientDir).ToString();
+            return String.Empty;
+        }
+
+        /// <summary>
+        /// Gets the full start command for this benchmark (without the use of the benchmark start script)
+        /// </summary>
+        /// <param name="clientDir">The base directory to use on hdfs, empty for root directory</param>
+        /// <returns>The start command without benchmark script</returns>
+        public string GetStartCmd(string clientDir = "")
+        {
+            return _StartCmdBuilder.Replace("$OUT", GetOutputDir(clientDir))
+                                   .Replace("$IN", GetInputDir(clientDir)).ToString();
+        }
+
+        /// <summary>
+        /// Gets the hdfs output directory for this benchmark
+        /// </summary>
+        /// <param name="clientDir">The base directory to use on hdfs, empty for root directory</param>
+        /// <returns>The output directory</returns>
+        public string GetOutputDir(string clientDir = "")
+        {
+            return GetFullDir(_OutDirBuilder, clientDir);
+        }
+
+        /// <summary>
+        /// Gets the hdfs input directory for this benchmark
+        /// </summary>
+        /// <param name="clientDir">The base directory to use on hdfs, empty for root directory</param>
+        /// <returns>The input directory</returns>
+        public string GetInputDir(string clientDir = "")
+        {
+            return GetFullDir(_InDirBuilder, clientDir);
+        }
+
+        #endregion
     }
 }
