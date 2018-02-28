@@ -62,12 +62,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestBenchSubmitting()
         {
-            for(int i = 0; i < 1; i++)
+            for(int i = 0; i < 6; i++)
             {
                 _Client1.UpdateBenchmark();
                 Console.WriteLine($"Bench {i:D2}: {_Client1.BenchController.CurrentBenchmark.Name}");
-                Thread.Sleep(4000);
+                Thread.Sleep(2000);
             }
+
+            Thread.Sleep(5000);
         }
 
         [Test]
