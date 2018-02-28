@@ -51,6 +51,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// Indicates if the benchmark has a hdfs output directory
+        /// </summary>
+        public bool HasOutputDir { get; }
+
+        /// <summary>
+        /// Indicates if the benchmark has a hdfs input directory
+        /// </summary>
+        public bool HasInputDir { get; }
+
         #endregion
 
         #region Constructors
@@ -66,6 +76,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
             Id = id;
             Name = name;
             _StartCmdBuilder = new StringBuilder(startCmd);
+            HasOutputDir = false;
+            HasInputDir = false;
         }
 
         /// <summary>
@@ -79,6 +91,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
             : this(id, name, startCmd)
         {
             _OutDirBuilder = new StringBuilder(outputDir);
+            HasOutputDir = true;
         }
 
         /// <summary>
@@ -94,6 +107,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
             : this(id, name, startCmd, outputDir)
         {
             _InDirBuilder = new StringBuilder(inputDir);
+            HasInputDir = true;
         }
 
         #endregion
