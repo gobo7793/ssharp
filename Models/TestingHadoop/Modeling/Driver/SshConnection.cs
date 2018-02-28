@@ -22,7 +22,7 @@
 
 using System;
 using System.Text;
-using System.Threading;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Renci.SshNet;
 
@@ -38,17 +38,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// Random generator
         /// </summary>
-        private readonly Random _RandomGen = new Random();
+        private Random RandomGen { get; }
+
+        /// <summary>
+        /// Application id regex
+        /// </summary>
+        private Regex AppIdRegex { get; }
 
         /// <summary>
         /// The SSH client itself
         /// </summary>
-        public SshClient Client { get; private set; }
+        private SshClient Client { get; set; }
 
         /// <summary>
         /// The shell stream of the client
         /// </summary>
-        public ShellStream Stream { get; private set; }
+        private ShellStream Stream { get; set; }
+
+        /// <summary>
+        /// The private key file
+        /// </summary>
+        private PrivateKeyFile PrivateKeyFile { get; }
 
         /// <summary>
         /// The host to connect to
@@ -59,11 +69,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// The username on the host
         /// </summary>
         public string Username { get; }
-
-        /// <summary>
-        /// The private key file
-        /// </summary>
-        private PrivateKeyFile PrivateKeyFile { get; }
 
         /// <summary>
         /// Indicates if the connection is currently executing something
@@ -81,6 +86,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="username">Username to connect</param>
         public SshConnection(string host, string username)
         {
+            RandomGen = new Random();
+            AppIdRegex = new Regex(@"application_\d{13}_\d{4}");
+
             Host = host;
             Username = username;
         }
@@ -162,7 +170,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             Client.Connect();
             Stream = Client.CreateShellStream("ssharpShell", 120, 24, 800, 600, 2048);
-            Read("Last login");
+            ReadForAppId("Last login");
         }
 
         /// <summary>
@@ -189,28 +197,31 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         #region Executing Methods
 
         /// <summary>
-        /// Runs the given command on the host and returns the output immediately
+        /// Runs the given command on the host and keeps attached on the output
+        /// till the application id is parsed and return the id.
+        /// If no application id found all output will be returned.
         /// </summary>
         /// <param name="command">Command to run</param>
         /// <param name="consoleOut">True to show the output directly on the own shell</param>
-        /// <returns>The command output</returns>
-        public string RunIm(string command, bool consoleOut = false)
+        /// <returns>The application id or command output if no id found</returns>
+        public string RunAttachedTillAppId(string command, bool consoleOut = false)
         {
             InUse = true;
 
-            var exitStr = GetExitString();
+            var exitStr = GetWaitingExitString();
             var sendStr = $"{command}; echo '{exitStr}'";
 
             Out($"Executing: {sendStr}", consoleOut);
             Stream.WriteLine(sendStr);
-            var answer = Read(exitStr, consoleOut);
+            var id = ReadForAppId(exitStr, consoleOut);
 
             InUse = false;
-            return answer;
+            return id;
         }
 
         /// <summary>
-        /// Runs the given command and returns the full output when the command finished
+        /// Runs the given command and returns the application id.
+        /// If no application id found all output will be returned.
         /// </summary>
         /// <param name="command">Command to run</param>
         /// <param name="consoleOut">True to show the output directly on the own shell</param>
@@ -222,6 +233,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var res = DoRunCommand(command, consoleOut);
 
             InUse = false;
+
+            var idMatch = AppIdRegex.Match(res);
+            if(idMatch.Success)
+                return idMatch.Value;
             return res;
         }
 
@@ -242,21 +257,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             InUse = false;
         }
 
+        #endregion
+
+        #region Utility Methods
+
         private string DoRunCommand(string command, bool consoleOut = false)
         {
             Out($"Executing: {command}", consoleOut);
             var cmd = Client.RunCommand(command);
-            Out(cmd.Result, consoleOut);
-            return cmd.Result;
+            var output = cmd.ExitStatus != 0 ? cmd.Result : cmd.Error;
+            Out(output, consoleOut);
+            return output;
         }
 
-        /// <summary>
-        /// Reads the output of the shell till the output contains the given exit string
-        /// </summary>
-        /// <param name="exitStr">The output exit string</param>
-        /// <param name="consoleOut">True to show the output directly on the own shell</param>
-        /// <returns>The output</returns>
-        public string Read(string exitStr, bool consoleOut = false)
+        private string ReadForAppId(string exitStr, bool consoleOut = false)
         {
             exitStr = exitStr.ToLower();
             StringBuilder result = new StringBuilder();
@@ -266,22 +280,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             do
             {
                 line = Stream.ReadLine();
+                var idMatch = AppIdRegex.Match(line);
+                if(idMatch.Success)
+                    return idMatch.Value;
 
                 result.AppendLine(line);
                 Out(line, consoleOut);
 
-                if(count <= 1) count++;
-            } while(!line.ToLower().Contains(exitStr) || count <= 1);
+                if(count < 1) count++;
+            } while(!line.ToLower().Contains(exitStr) || count < 1);
 
             return result.ToString();
         }
 
-        /// <summary>
-        /// Writes the given line to log file and shows on console
-        /// </summary>
-        /// <param name="line">The line to write</param>
-        /// <param name="consoleOut">True to show the output directly on the own shell</param>
-        ///// <param name="callingMember">The calling member for log</param>
         private void Out(string line, bool consoleOut = false/*, [CallerMemberName] string callingMember = ""*/)
         {
             if(consoleOut)
@@ -289,13 +300,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             // TODO: Log to file
         }
 
-        /// <summary>
-        /// Gets the exit string for the given command
-        /// </summary>
-        /// <returns>the exit string</returns>
-        private string GetExitString()
+        private string GetWaitingExitString()
         {
-            return $"[cmd-end]id-{_RandomGen.Next(0xffff):x4}";
+            return $"[cmd-end]id-{RandomGen.Next(0xffff):x4}";
         }
 
         #endregion

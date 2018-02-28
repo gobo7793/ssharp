@@ -349,26 +349,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         }
 
         /// <summary>
-        /// Submits the given application with the given arguments to Hadoop
+        /// Submits the given application with the given arguments to Hadoop,
+        /// waits for end of execution and returns it application id.
+        /// If no application id found all output will be returned.
         /// </summary>
         /// <param name="cmd">The command to submit</param>
-        public void StartApplication(string cmd)
+        /// <returns>The application id for the submitted app</returns>
+        public string StartApplication(string cmd)
         {
             var submitter = GetSubmitter(cmd);
 
-            submitter.Run($"{Model.BenchmarkStartupScript} {cmd}", IsConsoleOut);
+            return submitter.Run($"{Model.BenchmarkStartupScript} {cmd}", IsConsoleOut);
             //submitter.Run($"{Model.BenchmarkStartupScript} {cmd}", true);
         }
 
         /// <summary>
-        /// Submits the given application with the given arguments to Hadoop async
+        /// Submits the given application with the given arguments to Hadoop,
+        /// waits for the application id and returns it immediately.
+        /// If no application id found all output will be returned.
         /// </summary>
         /// <param name="cmd">The command to submit</param>
-        public void StartApplicationAsync(string cmd)
+        /// <returns>The application id for the submitted app</returns>
+        public string StartApplicationAsync(string cmd)
         {
             var submitter = GetSubmitter(cmd);
 
-            submitter.RunAsync($"{Model.BenchmarkStartupScript} {cmd}", IsConsoleOut);
+            return submitter.RunAttachedTillAppId($"{Model.BenchmarkStartupScript} {cmd}", IsConsoleOut);
             //submitter.Run($"{Model.BenchmarkStartupScript} {cmd}", true);
         }
 

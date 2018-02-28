@@ -147,12 +147,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             return true;
         }
 
-        public void StartApplication(string cmd)
+        public string StartApplication(string cmd)
         {
             Console.WriteLine($"[]Application {cmd} started...");
         }
 
-        public void StartApplicationAsync(string cmd)
+        public string StartApplicationAsync(string cmd)
         {
             Console.WriteLine($"[]Application {cmd} started async...");
         }

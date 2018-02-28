@@ -164,16 +164,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         bool KillApplication(string appId);
 
         /// <summary>
-        /// Submits the given application with the given arguments to Hadoop
+        /// Submits the given application with the given arguments to Hadoop,
+        /// waits for end of execution and returns it application id.
+        /// If no application id found all output will be returned.
         /// </summary>
         /// <param name="cmd">The command to submit</param>
-        void StartApplication(string cmd);
+        /// <returns>The application id for the submitted app</returns>
+        string StartApplication(string cmd);
 
         /// <summary>
-        /// Submits the given application with the given arguments to Hadoop async
+        /// Submits the given application with the given arguments to Hadoop,
+        /// waits for the application id and returns it immediately.
+        /// If no application id found all output will be returned.
         /// </summary>
         /// <param name="cmd">The command to submit</param>
-        void StartApplicationAsync(string cmd);
+        /// <returns>The application id for the submitted app</returns>
+        string StartApplicationAsync(string cmd);
 
         /// <summary>
         /// Removes the given directory on hdfs

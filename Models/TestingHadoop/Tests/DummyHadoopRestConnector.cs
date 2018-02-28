@@ -135,12 +135,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             throw new NotImplementedException();
         }
 
-        public void StartApplication(string cmd)
+        public string StartApplication(string cmd)
         {
             throw new NotImplementedException();
         }
 
-        public void StartApplicationAsync(string cmd)
+        public string StartApplicationAsync(string cmd)
         {
             throw new NotImplementedException();
         }
