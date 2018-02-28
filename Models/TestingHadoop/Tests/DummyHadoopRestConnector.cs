@@ -140,6 +140,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             throw new NotImplementedException();
         }
 
+        public void StartApplicationAsync(string cmd)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveHdfsDir(string directory)
+        {
+            throw new NotImplementedException();
+        }
+
         public string GetHadoopVersion()
         {
             throw new NotImplementedException();

@@ -152,6 +152,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine($"[]Application {cmd} started...");
         }
 
+        public void StartApplicationAsync(string cmd)
+        {
+            Console.WriteLine($"[]Application {cmd} started async...");
+        }
+
+        public void RemoveHdfsDir(string directory)
+        {
+            Console.WriteLine($"[]Directory {directory} removed...");
+        }
+
         public string GetHadoopVersion()
         {
             throw new NotImplementedException();
