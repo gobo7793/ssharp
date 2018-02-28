@@ -52,7 +52,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public List<YarnNode> ConnectedNodes { get; private set; }
 
         /// <summary>
-        /// The executed <see cref="YarnApp"/>s
+        /// The executed <see cref="YarnApp"/>s on the cluster
         /// </summary>
         public List<YarnApp> Apps { get; private set; }
 
@@ -91,6 +91,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public override void Update()
         {
             MonitorNodes();
+            MonitorApps();
         }
 
         #endregion
@@ -115,5 +116,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         #endregion
+
+        #region App related Methods
+
+        /// <summary>
+        /// Gets all apps executed on the cluster and their informations
+        /// </summary>
+        public void MonitorApps()
+        {
+            var parsedApps = Parser.ParseAppList(EAppState.ALL);
+            foreach(var parsed in parsedApps)
+            {
+                var app = Apps.FirstOrDefault(a => a.AppId == parsed.AppId);// ??
+                //          Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));
+                //if(app == null)
+                //    throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
+
+                if(app == null)
+                    continue;
+
+                app.SetStatus(parsed);
+                app.IsSelfMonitoring = false;
+                app.MonitorStatus();
+            }
+        }
+
+        #endregion
+
     }
 }
