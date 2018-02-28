@@ -394,6 +394,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         }
 
         /// <summary>
+        /// Removes the given directory on hdfs
+        /// </summary>
+        /// <param name="directory">The directory to remove</param>
+        public void RemoveHdfsDir(string directory)
+        {
+            var cmd = $"{Model.HadoopSetupScript} cmd hdfs rm -r {directory}";
+            var submitter = GetSubmitter(cmd);
+
+            submitter.Run(cmd, IsConsoleOut);
+        }
+
+        /// <summary>
         /// Returns the version information from Hadoop
         /// </summary>
         /// <returns>Hadoop version</returns>

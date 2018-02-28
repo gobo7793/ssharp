@@ -176,6 +176,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         void StartApplicationAsync(string cmd);
 
         /// <summary>
+        /// Removes the given directory on hdfs
+        /// </summary>
+        /// <param name="directory">The directory to remove</param>
+        void RemoveHdfsDir(string directory);
+
+        /// <summary>
         /// Returns the version information from Hadoop
         /// </summary>
         /// <returns>Hadoop version</returns>

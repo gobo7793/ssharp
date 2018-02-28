@@ -320,7 +320,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         public void StartApplicationAsync(string cmd)
         {
-            throw new PlatformNotSupportedException("Hadoop REST API does not support starting application!");
+            throw new PlatformNotSupportedException("Hadoop REST API does not support starting application async!");
+        }
+
+        /// <summary>
+        /// Not supported
+        /// </summary>
+        public void RemoveHdfsDir(string directory)
+        {
+            throw new PlatformNotSupportedException("Hadoop REST API does not support remove hdfs directories!");
         }
 
         /// <summary>
