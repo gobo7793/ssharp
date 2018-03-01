@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
@@ -53,7 +54,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Command for benchmark startup script
         /// </summary>
-        public const string BenchmarkStartupScript = "/home/hadoop/hadoop-benchmark/bench.sh";
+        /// <remarks>
+        /// Generic options for all benchmark related commands can be inserted here.
+        /// </remarks>
+        public const string BenchmarkStartupScript = "/home/hadoop/hadoop-benchmark/bench.sh -q -t";
 
         /// <summary>
         /// Hostname for the Hadoop cluster pc
@@ -138,22 +142,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Initizalizes the config with the given component counts
         /// </summary>
-        /// <param name="clientCound">The client count to initialize</param>
+        /// <param name="clientCount">The client count to initialize</param>
         /// <param name="appCount">The application count per client to initialize</param>
         /// <param name="attemptCount">The attempt count per application to initialize</param>
         /// <param name="containerCount">The container count per attempt to initialize</param>
         /// <param name="nodeCount">The node count to initialize</param>
-        public void InitModel(int clientCound = 1, int appCount = 16, int attemptCount = 4, int containerCount = 32, int nodeCount = 4)
+        public void InitModel(int clientCount = 1, int appCount = 16, int attemptCount = 4, int containerCount = 32, int nodeCount = 4)
         {
             InitController();
 
-            var cmdConnector = new CmdConnector(SshHost, SshUsername, SshPrivateKeyFile, false, true, 1);
+            var submitterCount = (int)Math.Ceiling(clientCount * 1.5);
+            var cmdConnector = new CmdConnector(SshHost, SshUsername, SshPrivateKeyFile, false, true, submitterCount);
             var restConnector = new RestConnector(SshHost, SshUsername, SshPrivateKeyFile, Controller.HttpUrl, Controller.TimelineHttpUrl);
             var restParser = new RestParser(this, restConnector);
             Controller.Parser = restParser;
 
             InitYarnNodes(nodeCount, restParser, cmdConnector);
-            InitClients(clientCound, restParser, cmdConnector);
+            InitClients(clientCount, restParser, cmdConnector);
             InitApplications(appCount, restParser, cmdConnector);
             InitAppAttempts(attemptCount, restParser);
             InitContainers(containerCount, restParser);

@@ -38,9 +38,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region Properties
 
         /// <summary>
-        /// Started <see cref="YarnApp"/>s of the client
+        /// Started <see cref="CurrentExecutingApp"/>s of the client
         /// </summary>
         public List<YarnApp> Apps { get; }
+
+        /// <summary>
+        /// The current executing application
+        /// </summary>
+        public YarnApp CurrentExecutingApp { get; private set; }
 
         /// <summary>
         /// Connected <see cref="YarnController"/> for the client
@@ -53,7 +58,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public IHadoopParser Parser { get; set; }
 
         /// <summary>
-        /// The connector to submit a <see cref="YarnApp"/>
+        /// The connector to submit a <see cref="CurrentExecutingApp"/>
         /// </summary>
         public IHadoopConnector SubmittingConnector { get; set; }
 
@@ -84,7 +89,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         /// <param name="controller">Connected <see cref="YarnController"/> for the client</param>
         /// <param name="parser">Parser to monitoring data from cluster</param>
-        /// <param name="submittingConnector">The connector to submit a <see cref="YarnApp"/></param>
+        /// <param name="submittingConnector">The connector to submit a <see cref="CurrentExecutingApp"/></param>
         /// <param name="clientHdfsDir">The hdfs base directory for this client</param>
         public Client(YarnController controller, IHadoopParser parser, IHadoopConnector submittingConnector, string clientHdfsDir)
             : this()
@@ -102,7 +107,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         /// <param name="controller">Connected <see cref="YarnController"/> for the client</param>
         /// <param name="parser">Parser to monitoring data from cluster</param>
-        /// <param name="submittingConnector">The connector to submit a <see cref="YarnApp"/></param>
+        /// <param name="submittingConnector">The connector to submit a <see cref="CurrentExecutingApp"/></param>
         /// <param name="clientHdfsDir">The hdfs base directory for this client</param>
         /// <param name="benchControllerSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
         public Client(YarnController controller, IHadoopParser parser, IHadoopConnector submittingConnector, string clientHdfsDir, int benchControllerSeed)
@@ -149,24 +154,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// Stops all currently running <see cref="Apps"/> from this <see cref="Client"/> and returns true on success
+        /// Stops the <see cref="YarnApp"/> stored in <see cref="CurrentExecutingApp"/> and resets the property to null
         /// </summary>
-        /// <returns>True if all <see cref="Apps"/> are stopped</returns>
+        /// <returns>True if <see cref="CurrentExecutingApp"/> is stopped or null</returns>
         public bool StopBenchmarks()
         {
-            var success = true;
-            foreach(var app in Apps)
-            {
-                var appSucc = app.StopApp();
-                if(!appSucc)
-                    success = false;
-            }
-            return success;
+            var isStopped = CurrentExecutingApp?.StopApp();
+            CurrentExecutingApp = null;
+            return isStopped ?? true;
         }
 
         /// <summary>
-        /// Starts the given benchmark command and save the application id
-        /// in the first available <see cref="YarnApp"/> in <see cref="Apps"/>
+        /// Starts the given benchmark and save the application id in the first available
+        /// <see cref="YarnApp"/> in <see cref="Apps"/> and this in <see cref="CurrentExecutingApp"/>.
+        /// If benchmark cannot be started, <see cref="CurrentExecutingApp"/> will be set to null.
         /// </summary>
         /// <param name="benchmark">Benchmark to start</param>
         /// <exception cref="OutOfMemoryException">No <see cref="YarnApp"/> available</exception>
@@ -176,10 +177,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 SubmittingConnector.RemoveHdfsDir(benchmark.GetOutputDir(ClientDir));
             var appId = SubmittingConnector.StartApplicationAsync(benchmark.GetStartCmd(ClientDir));
 
-            var app = Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));
-            if(app == null)
-                throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
-            app.AppId = appId;
+            if(appId.Length <= 32)
+            {
+                var app = Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));
+                if(app == null)
+                    throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
+                app.AppId = appId;
+                CurrentExecutingApp = app;
+            }
+            else
+                CurrentExecutingApp = null;
         }
 
         #endregion

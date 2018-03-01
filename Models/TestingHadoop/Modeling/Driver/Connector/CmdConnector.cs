@@ -343,7 +343,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
             var cmd = Faulting.Run($"{Model.HadoopSetupScript} cmd yarn application -kill {appId} | grep {appId}", IsConsoleOut);
             return cmd.Contains($"Killed application {appId}") || cmd.Contains($"Killing application {appId}") ||
-                   cmd.Contains($"{appId} has already finished");
+                   cmd.Contains($"{appId} has already finished") || cmd.Contains($"'{appId}' doesn't exist");
         }
 
         /// <summary>

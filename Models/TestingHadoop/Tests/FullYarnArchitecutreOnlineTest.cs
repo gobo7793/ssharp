@@ -66,11 +66,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             for(int i = 0; i < 6; i++)
             {
                 _Client1.UpdateBenchmark();
-                Console.WriteLine($"Bench {i:D2}: {_Client1.BenchController.CurrentBenchmark.Name}");
-                Thread.Sleep(5000);
+                Console.WriteLine($"Bench {i:D2}: {_Client1.BenchController.CurrentBenchmark.Name}, {_Client1.CurrentExecutingApp?.AppId}");
+                Thread.Sleep(300);
             }
 
-            Thread.Sleep(5000);
+            Thread.Sleep(7000);
         }
 
         [Test]
