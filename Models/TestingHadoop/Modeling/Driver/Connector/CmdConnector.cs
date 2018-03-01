@@ -58,7 +58,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <summary>
         /// True on console out the commands and results
         /// </summary>
-        private bool IsConsoleOut { get; }
+        internal bool IsConsoleOut { get; set; }
 
         #endregion
 
@@ -89,9 +89,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(forFaulting)
                 Faulting = new SshConnection(Host, username, privateKeyFilePath);
             for(int i = 0; i < submittingConnections; i++)
-                Submitting.Add(new SshConnection(Host, username, privateKeyFilePath));
-
-            //ThreadPool.SetMaxThreads(submittingConnections, submittingConnections);
+                Submitting.Add(new SshConnection(Host, username, privateKeyFilePath, @"Submitted application (application_\d+_\d+)"));
         }
 
         /// <summary>
@@ -391,9 +389,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 if(submitter == null)
                 {
                     ++sleepCnt;
-                    if(sleepCnt > 100)
+                    if(sleepCnt > 10)
                         throw new TimeoutException($"No free application submitter available for starting application {cmd}.");
-                    Thread.Sleep(100); // waiting for free submitter
+                    Thread.Sleep(1000); // waiting for free submitter
                 }
             } while(submitter == null);
             return submitter;
@@ -405,7 +403,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <param name="directory">The directory to remove</param>
         public void RemoveHdfsDir(string directory)
         {
-            var cmd = $"{Model.HadoopSetupScript} cmd hdfs rm -r {directory}";
+            var cmd = $"{Model.HadoopSetupScript} cmd hdfs dfs -rm -r {directory}";
             var submitter = GetSubmitter(cmd);
 
             submitter.Run(cmd, IsConsoleOut);

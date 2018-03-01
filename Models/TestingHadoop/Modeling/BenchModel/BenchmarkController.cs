@@ -85,7 +85,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
                 new Benchmark(03, "dfsioe", "hibench bin/workloads/micro/dfsioe/hadoop/run.sh"),
                 new Benchmark(04, "wordcount", "example wordcount $IN $OUT", "$DIR/wcout", "$DIR/rantw"),
                 new Benchmark(05, "randomwriter", "example randomwriter -D mapreduce.randomwriter.totalbytes=32000 $OUT", "$DIR/ranwr"),
-                new Benchmark(06, "sort", "example sort $IN $OUT", "$DIR/sort", "$DIR/rantw"),
+                new Benchmark(06, "sort", "example sort -outKey org.apache.hadoop.io.Text -outValue org.apache.hadoop.io.Text $IN $OUT", "$DIR/sort", "$DIR/rantw"),
                 new Benchmark(07, "terasort", "example terasort $IN $OUT", "$DIR/terasort", "$DIR/teragen"),
                 new Benchmark(08, "pi", "pi"),
                 new Benchmark(09, "pentomino", "example pentomino $OUT -depth 2 -heigh 10 -width 6", "$DIR/pent"),

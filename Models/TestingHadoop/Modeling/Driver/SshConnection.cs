@@ -41,11 +41,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         private Random RandomGen { get; }
 
         /// <summary>
-        /// Application id regex
-        /// </summary>
-        private Regex AppIdRegex { get; }
-
-        /// <summary>
         /// The SSH client itself
         /// </summary>
         private SshClient Client { get; set; }
@@ -59,6 +54,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// The private key file
         /// </summary>
         private PrivateKeyFile PrivateKeyFile { get; }
+
+        /// <summary>
+        /// Application id regex
+        /// </summary>
+        public Regex AppIdRegex { get; }
 
         /// <summary>
         /// The host to connect to
@@ -87,7 +87,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public SshConnection(string host, string username)
         {
             RandomGen = new Random();
-            AppIdRegex = new Regex(@"application_\d{13}_\d{4}");
 
             Host = host;
             Username = username;
@@ -110,12 +109,39 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="host">Host to connect</param>
         /// <param name="username">Username to connect</param>
+        /// <param name="privKeyFile">The path to the private key file to connect</param>
+        /// <param name="appIdRegexPattern">Pattern for returning application ids via <see cref="RunAttachedTillAppId(string, bool)"/></param>
+        public SshConnection(string host, string username, string privKeyFile, string appIdRegexPattern)
+            : this(host, username, new PrivateKeyFile(privKeyFile), appIdRegexPattern)
+        {
+
+        }
+
+        /// <summary>
+        /// Connect via SSH to the given host using the given username and private key file
+        /// </summary>
+        /// <param name="host">Host to connect</param>
+        /// <param name="username">Username to connect</param>
         /// <param name="privateKeyFile">Private key file instance to connect</param>
         public SshConnection(string host, string username, PrivateKeyFile privateKeyFile)
             : this(host, username)
         {
             PrivateKeyFile = privateKeyFile;
             Connect();
+        }
+
+        /// <summary>
+        /// Connect via SSH to the given host using the given username and private key file
+        /// </summary>
+        /// <param name="host">Host to connect</param>
+        /// <param name="username">Username to connect</param>
+        /// <param name="privateKeyFile">Private key file instance to connect</param>
+        /// <param name="appIdRegexPattern">Pattern for returning application ids via <see cref="RunAttachedTillAppId(string, bool)"/></param>
+        public SshConnection(string host, string username, PrivateKeyFile privateKeyFile, string appIdRegexPattern)
+            : this(host, username, privateKeyFile)
+        {
+            AppIdRegex = new Regex(appIdRegexPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            //AppIdRegex = new Regex(@"Submitted application (application_\d+_\d+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         }
 
         /// <summary>
@@ -200,6 +226,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Runs the given command on the host and keeps attached on the output
         /// till the application id is parsed and return the id.
         /// If no application id found all output will be returned.
+        /// The application whait is only available, if <see cref="AppIdRegex"/> is set.
         /// </summary>
         /// <param name="command">Command to run</param>
         /// <param name="consoleOut">True to show the output directly on the own shell</param>
@@ -211,17 +238,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var exitStr = GetWaitingExitString();
             var sendStr = $"{command}; echo '{exitStr}'";
 
-            Out($"Executing: {sendStr}", consoleOut);
+            Out($"Executing:\n{sendStr}", consoleOut);
             Stream.WriteLine(sendStr);
+
             var id = ReadForAppId(exitStr, consoleOut);
+
+            Task.Run(() => ReadForAppId(exitStr, consoleOut, true));
 
             InUse = false;
             return id;
         }
 
         /// <summary>
-        /// Runs the given command and returns the application id.
-        /// If no application id found all output will be returned.
+        /// Runs the given command and returns the output.
         /// </summary>
         /// <param name="command">Command to run</param>
         /// <param name="consoleOut">True to show the output directly on the own shell</param>
@@ -234,25 +263,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
             InUse = false;
 
-            var idMatch = AppIdRegex.Match(res);
-            if(idMatch.Success)
-                return idMatch.Value;
             return res;
         }
 
         /// <summary>
-        /// Runs the given command async and waits NOT for the output
+        /// Runs the given command async and ignores all output
         /// </summary>
-        /// <param name="consoleOut">True to show the cmd on the own shell</param>
         /// <param name="command">Command to run</param>
+        /// <param name="consoleOut">True to show the cmd on the own shell</param>
         public void RunAsync(string command, bool consoleOut = false)
         {
             InUse = true;
 
             Task.Run(() => DoRunCommand(command, true));
-
-            //Action runCmd = () => { DoRunCommand(command, consoleOut); };
-            //ThreadPool.QueueUserWorkItem(c => runCmd());
 
             InUse = false;
         }
@@ -270,27 +293,39 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             return output;
         }
 
-        private string ReadForAppId(string exitStr, bool consoleOut = false)
+        private string ReadForAppId(string exitStr, bool consoleOut = false, bool isAsync = false)
         {
-            exitStr = exitStr.ToLower();
             StringBuilder result = new StringBuilder();
-
             string line;
             byte count = 0;
             do
             {
+                if(isAsync)
+                    InUse = true;
+
                 line = Stream.ReadLine();
-                var idMatch = AppIdRegex.Match(line);
-                if(idMatch.Success)
-                    return idMatch.Value;
 
                 result.AppendLine(line);
                 Out(line, consoleOut);
 
-                if(count < 1) count++;
-            } while(!line.ToLower().Contains(exitStr) || count < 1);
+                if(!isAsync && AppIdRegex != null)
+                {
+                    var idMatch = AppIdRegex.Match(line);
+                    if(idMatch.Groups[1].Success)
+                    {
+                        //Task.Run(() => ReadForAppId(exitStr));
+                        return idMatch.Groups[1].Value;
+                    }
+                }
 
-            return result.ToString();
+                if(count <= 1) count++;
+            } while(!line.Contains(exitStr) || count <= 1);
+
+            if(isAsync)
+                InUse = false;
+
+            var resultStr = result.ToString();
+            return resultStr;
         }
 
         private void Out(string line, bool consoleOut = false/*, [CallerMemberName] string callingMember = ""*/)
