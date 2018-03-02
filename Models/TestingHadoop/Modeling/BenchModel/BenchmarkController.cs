@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System;
+using static SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel.Benchmark;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
 {
@@ -78,21 +79,28 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
             Benchmarks = new[]
             {
                 // BenchmarkController IDs have to be in ascending ordner, they will be needed for transitions
-                new Benchmark(00, "dfsioePreparing", "hibench bin/workloads/micro/dfsioe/prepare/prepare.sh"),
-                new Benchmark(01, "randomtextwriter", "example randomtextwriter -D mapreduce.randomtextwriter.totalbytes=48000 $OUT",
-                    "$DIR/rantw"),
-                new Benchmark(02, "teragen", "example teragen 48000 $OUT", "$DIR/teragen"),
-                new Benchmark(03, "dfsioe", "hibench bin/workloads/micro/dfsioe/hadoop/run.sh"),
-                new Benchmark(04, "wordcount", "example wordcount $IN $OUT", "$DIR/wcout", "$DIR/rantw"),
-                new Benchmark(05, "randomwriter", "example randomwriter -D mapreduce.randomwriter.totalbytes=48000 $OUT", "$DIR/ranwr"),
-                new Benchmark(06, "sort", "example sort -outKey org.apache.hadoop.io.Text -outValue org.apache.hadoop.io.Text $IN $OUT", "$DIR/sort", "$DIR/rantw"),
-                new Benchmark(07, "terasort", "example terasort $IN $OUT", "$DIR/terasort", "$DIR/teragen"),
+                new Benchmark(00, "dfsioePreparing", $"hibench --dir {BaseDirHolder} bin/workloads/micro/dfsioe/prepare/prepare.sh"),
+                new Benchmark(01, "randomtextwriter",
+                    $"example randomtextwriter -D mapreduce.randomtextwriter.totalbytes=48000 {OutDirHolder}", $"{BaseDirHolder}/rantw"),
+                new Benchmark(02, "teragen", $"example teragen 48000 {OutDirHolder}", $"{BaseDirHolder}/teragen"),
+                new Benchmark(03, "dfsioe", $"hibench --dir {BaseDirHolder} bin/workloads/micro/dfsioe/hadoop/run.sh"),
+                new Benchmark(04, "wordcount", $"example wordcount {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/wcout",
+                    $"{BaseDirHolder}/rantw"),
+                new Benchmark(05, "randomwriter", $"example randomwriter -D mapreduce.randomwriter.totalbytes=48000 {OutDirHolder}",
+                    $"{BaseDirHolder}/ranwr"),
+                new Benchmark(06, "sort",
+                    $"example sort -outKey org.apache.hadoop.io.Text -outValue org.apache.hadoop.io.Text {InDirHolder} {OutDirHolder}",
+                    $"{BaseDirHolder}/sort", $"{BaseDirHolder}/rantw"),
+                new Benchmark(07, "terasort", $"example terasort {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/terasort",
+                    $"{BaseDirHolder}/teragen"),
                 new Benchmark(08, "pi", "example pi 3 100"),
-                new Benchmark(09, "pentomino", "example pentomino $OUT -depth 2 -heigh 10 -width 6", "$DIR/pent"),
-                new Benchmark(10, "testmapredsort", "jobclient testmapredsort -sortInput $IN -sortOutput $OUT", "$DIR/sort", "$DIR/rantw"),
-                new Benchmark(11, "teravalidate", "example teravalidate $IN $OUT", "$DIR/teravalidate", "$DIR/terasort"),
+                new Benchmark(09, "pentomino", $"example pentomino {OutDirHolder} -depth 2 -heigh 10 -width 6", $"{BaseDirHolder}/pent"),
+                new Benchmark(10, "testmapredsort", $"jobclient testmapredsort -sortInput {InDirHolder} -sortOutput {OutDirHolder}",
+                    $"{BaseDirHolder}/sort", $"{BaseDirHolder}/rantw"),
+                new Benchmark(11, "teravalidate", $"example teravalidate {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/teravalidate",
+                    $"{BaseDirHolder}/terasort"),
                 _FailBench = new Benchmark(12, "fail", "jobclient fail -failMappers 3"),
-                _SleepBench = new Benchmark(13, "sleep", "jobclient sleep -m 1 -r 1 -mt 10 -mr 5"),
+                _SleepBench = new Benchmark(13, "sleep", "jobclient sleep -m 1 -r 1 -mt 10 -mr 5")
             };
 
             // change probabilities for benchmark transition system here!
@@ -100,18 +108,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
             BenchTransitions = new[]
             {
                 /* from / to ->  00  01  02  03  04  05  06  07  08  09  10  11  12  13  */
-                new[] /* 00 */ {  0, 20, 00, 70, 00, 00, 00, 00, 10, 00, 00, 00, 05, 05, },
-                new[] /* 01 */ { 10,  0, 00, 00, 40, 10, 30, 00, 10, 00, 00, 00, 05, 05, },
-                new[] /* 02 */ { 00, 10,  0, 00, 00, 00, 00, 70, 00, 20, 00, 00, 05, 05, },
-                new[] /* 03 */ { 00, 20, 00,  0, 00, 10, 00, 00, 40, 30, 00, 00, 05, 05, },
-                new[] /* 04 */ { 20, 30, 00, 00,  0, 00, 20, 00, 20, 10, 00, 00, 05, 05, },
-                new[] /* 05 */ { 00, 20, 20, 00, 00,  0, 00, 00, 30, 30, 00, 00, 05, 05, },
-                new[] /* 06 */ { 00, 20, 10, 00, 20, 10,  0, 00, 20, 00, 20, 00, 05, 05, },
-                new[] /* 07 */ { 00, 00, 00, 00, 00, 00, 00,  0, 30, 20, 00, 50, 05, 05, },
-                new[] /* 08 */ { 40, 30, 00, 00, 00, 00, 00, 00,  0, 30, 00, 00, 05, 05, },
-                new[] /* 09 */ { 30, 30, 00, 00, 00, 20, 00, 00, 20,  0, 00, 00, 05, 05, },
-                new[] /* 10 */ { 00, 40, 00, 00, 00, 20, 00, 00, 10, 30,  0, 00, 05, 05, },
-                new[] /* 11 */ { 20, 30, 00, 00, 00, 00, 00, 00, 30, 20, 00,  0, 05, 05, },
+                new[] /* 00 */ { 0, 20, 00, 70, 00, 00, 00, 00, 10, 00, 00, 00, 05, 05 },
+                new[] /* 01 */ { 10, 0, 00, 00, 40, 10, 30, 00, 10, 00, 00, 00, 05, 05 },
+                new[] /* 02 */ { 00, 10, 0, 00, 00, 00, 00, 70, 00, 20, 00, 00, 05, 05 },
+                new[] /* 03 */ { 00, 20, 00, 0, 00, 10, 00, 00, 40, 30, 00, 00, 05, 05 },
+                new[] /* 04 */ { 20, 30, 00, 00, 0, 00, 20, 00, 20, 10, 00, 00, 05, 05 },
+                new[] /* 05 */ { 00, 20, 20, 00, 00, 0, 00, 00, 30, 30, 00, 00, 05, 05 },
+                new[] /* 06 */ { 00, 20, 10, 00, 20, 10, 0, 00, 20, 00, 20, 00, 05, 05 },
+                new[] /* 07 */ { 00, 00, 00, 00, 00, 00, 00, 0, 30, 20, 00, 50, 05, 05 },
+                new[] /* 08 */ { 40, 30, 00, 00, 00, 00, 00, 00, 0, 30, 00, 00, 05, 05 },
+                new[] /* 09 */ { 30, 30, 00, 00, 00, 20, 00, 00, 20, 0, 00, 00, 05, 05 },
+                new[] /* 10 */ { 00, 40, 00, 00, 00, 20, 00, 00, 10, 30, 0, 00, 05, 05 },
+                new[] /* 11 */ { 20, 30, 00, 00, 00, 00, 00, 00, 30, 20, 00, 0, 05, 05 }
             };
             _TransitionCumulatedProbability = 110; // cumulated transition probabilities w/o self-references
             _SelfTransitionProbability = 60; // self-transiion probability in percent

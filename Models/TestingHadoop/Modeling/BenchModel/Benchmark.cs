@@ -34,9 +34,24 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
     {
         #region Properties
 
-        private readonly StringBuilder _StartCmdBuilder;
-        private readonly StringBuilder _OutDirBuilder;
-        private readonly StringBuilder _InDirBuilder;
+        /// <summary>
+        /// Base directory placeholder
+        /// </summary>
+        public const string BaseDirHolder = "$DIR";
+
+        /// <summary>
+        /// Output directory placeholder
+        /// </summary>
+        public const string OutDirHolder = "$OUT";
+
+        /// <summary>
+        /// Input directory placeholder
+        /// </summary>
+        public const string InDirHolder = "$IN";
+
+        private readonly string _StartCmd;
+        private readonly string _OutDir;
+        private readonly string _InDir;
 
         /// <summary>
         /// Internal benchmark id
@@ -75,7 +90,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         {
             Id = id;
             Name = name;
-            _StartCmdBuilder = new StringBuilder(startCmd);
+            _StartCmd = startCmd;
             HasOutputDir = false;
             HasInputDir = false;
         }
@@ -85,12 +100,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// </summary>
         /// <param name="id">Internal benchmark id</param>
         /// <param name="name">Benchmark name</param>
-        /// <param name="startCmd">Benchmark start command (without benchmark start script), set outputDir via $OUT</param>
-        /// <param name="outputDir">Output directory, set the hdfs base directory using $DIR</param>
+        /// <param name="startCmd">Benchmark start command (without benchmark start script), set outputDir via <see cref="OutDirHolder"/></param>
+        /// <param name="outputDir">Output directory, set the hdfs base directory using <see cref="BaseDirHolder"/></param>
         public Benchmark(int id, string name, string startCmd, string outputDir)
             : this(id, name, startCmd)
         {
-            _OutDirBuilder = new StringBuilder(outputDir);
+            _OutDir = outputDir;
             HasOutputDir = true;
         }
 
@@ -100,13 +115,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <param name="id">Internal benchmark id</param>
         /// <param name="name">Benchmark name</param>
         /// <param name="startCmd">Benchmark start command (without benchmark start script),
-        ///     set outputDir via $OUT, inputDirectory via $IN</param>
-        /// <param name="outputDir">Output directory, set the hdfs base directory using $DIR</param>
-        /// <param name="inputDir">Input directory, set the hdfs base directory using $DIR</param>
+        ///     set outputDir via <see cref="OutDirHolder"/>, inputDirectory via <see cref="InDirHolder"/></param>
+        /// <param name="outputDir">Output directory, set the hdfs base directory using <see cref="BaseDirHolder"/></param>
+        /// <param name="inputDir">Input directory, set the hdfs base directory using <see cref="BaseDirHolder"/></param>
         public Benchmark(int id, string name, string startCmd, string outputDir, string inputDir)
             : this(id, name, startCmd, outputDir)
         {
-            _InDirBuilder = new StringBuilder(inputDir);
+            _InDir = inputDir;
             HasInputDir = true;
         }
 
@@ -114,11 +129,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
 
         #region Methods
 
-        private string GetFullDir(StringBuilder dirBuilder, string clientDir)
+        private string ReplaceClientDir(string dir, string clientDir)
         {
-            if(dirBuilder != null)
-                return dirBuilder.Replace("$DIR", clientDir).ToString();
-            return String.Empty;
+            if(String.IsNullOrWhiteSpace(dir))
+                return String.Empty;
+            return dir.Replace(BaseDirHolder, clientDir);
         }
 
         /// <summary>
@@ -128,8 +143,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <returns>The start command without benchmark script</returns>
         public string GetStartCmd(string clientDir = "")
         {
-            return _StartCmdBuilder.Replace("$OUT", GetOutputDir(clientDir))
-                                   .Replace("$IN", GetInputDir(clientDir)).ToString();
+            var result = _StartCmd.Replace(OutDirHolder, GetOutputDir(clientDir)).Replace(InDirHolder, GetInputDir(clientDir));
+            if(result.Contains(BaseDirHolder))
+                result = ReplaceClientDir(result, clientDir);
+            return result;
         }
 
         /// <summary>
@@ -139,7 +156,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <returns>The output directory</returns>
         public string GetOutputDir(string clientDir = "")
         {
-            return GetFullDir(_OutDirBuilder, clientDir);
+            return ReplaceClientDir(_OutDir, clientDir);
         }
 
         /// <summary>
@@ -149,7 +166,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <returns>The input directory</returns>
         public string GetInputDir(string clientDir = "")
         {
-            return GetFullDir(_InDirBuilder, clientDir);
+            return ReplaceClientDir(_InDir, clientDir);
         }
 
         #endregion
