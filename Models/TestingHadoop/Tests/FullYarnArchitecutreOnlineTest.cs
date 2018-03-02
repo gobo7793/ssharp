@@ -51,7 +51,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
             _Controller = _Model.Controller;
             _Client1 = _Model.Clients[0];
-            //((Modeling.Driver.Connector.CmdConnector)_Client1.SubmittingConnector).IsConsoleOut = true;
+            ((Modeling.Driver.Connector.CmdConnector)_Client1.SubmittingConnector).IsConsoleOut = true;
 
             _App1 = _Model.Applications[0];
             _App1.AppId = $"application_{_AppBase1}";
@@ -62,6 +62,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
         [Test]
         public void TestBenchSubmitting()
+        {
+            _Client1.StartBenchmark(BenchmarkController.Benchmarks[0]);
+            Thread.Sleep(10000);
+        }
+
+        [Test]
+        public void TestClientSubmitting()
         {
             for(int i = 0; i < 6; i++)
             {
