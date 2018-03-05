@@ -57,7 +57,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <remarks>
         /// Generic options for all benchmark related commands can be inserted here.
         /// </remarks>
-        public const string BenchmarkStartupScript = "/home/hadoop/hadoop-benchmark/bench.sh -q -t";
+        public const string BenchmarkStartupScript = "/home/hadoop/hadoop-benchmark/bench.sh -q";
 
         /// <summary>
         /// Hostname for the Hadoop cluster pc

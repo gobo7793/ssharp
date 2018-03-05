@@ -147,7 +147,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             if(benchChanged)
             {
-                StopBenchmarks();
+                StopCurrentBenchmark();
                 StartBenchmark(BenchController.CurrentBenchmark);
             }
 
@@ -157,7 +157,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Stops the <see cref="YarnApp"/> stored in <see cref="CurrentExecutingApp"/> and resets the property to null
         /// </summary>
         /// <returns>True if <see cref="CurrentExecutingApp"/> is stopped or null</returns>
-        public bool StopBenchmarks()
+        public bool StopCurrentBenchmark()
         {
             var isStopped = CurrentExecutingApp?.StopApp();
             CurrentExecutingApp = null;
@@ -168,10 +168,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Starts the given benchmark and save the application id in the first available
         /// <see cref="YarnApp"/> in <see cref="Apps"/> and this in <see cref="CurrentExecutingApp"/>.
         /// If benchmark cannot be started, <see cref="CurrentExecutingApp"/> will be set to null.
+        /// If an application id was saved it will returned, else <see cref="String.Empty"/>.
         /// </summary>
         /// <param name="benchmark">Benchmark to start</param>
         /// <exception cref="OutOfMemoryException">No <see cref="YarnApp"/> available</exception>
-        public void StartBenchmark(Benchmark benchmark)
+        /// <returns>The submitted application id</returns>
+        public string StartBenchmark(Benchmark benchmark)
         {
             if(benchmark.HasOutputDir)
                 SubmittingConnector.RemoveHdfsDir(benchmark.GetOutputDir(ClientDir));
@@ -184,9 +186,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                     throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
                 app.AppId = appId;
                 CurrentExecutingApp = app;
+                return CurrentExecutingApp.AppId;
             }
-            else
-                CurrentExecutingApp = null;
+
+            CurrentExecutingApp = null;
+            return String.Empty;
         }
 
         #endregion

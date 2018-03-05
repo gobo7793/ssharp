@@ -79,11 +79,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
             Benchmarks = new[]
             {
                 // BenchmarkController IDs have to be in ascending ordner, they will be needed for transitions
-                new Benchmark(00, "dfsioePreparing", $"hibench --dir {BaseDirHolder} bin/workloads/micro/dfsioe/prepare/prepare.sh"),
+                //new Benchmark(00, "dfsioePreparing", $"hibench --dir {BaseDirHolder} bin/workloads/micro/dfsioe/prepare/prepare.sh"),
+                new Benchmark(00, "dfsiowrite", $"jobclient TestDFSIO -Dtest.build.data={OutDirHolder} -read -nrFiles 12 -size 100MB",
+                    $"{BaseDirHolder}/dfsio"),
                 new Benchmark(01, "randomtextwriter",
                     $"example randomtextwriter -D mapreduce.randomtextwriter.totalbytes=48000 {OutDirHolder}", $"{BaseDirHolder}/rantw"),
                 new Benchmark(02, "teragen", $"example teragen 48000 {OutDirHolder}", $"{BaseDirHolder}/teragen"),
-                new Benchmark(03, "dfsioe", $"hibench --dir {BaseDirHolder} bin/workloads/micro/dfsioe/hadoop/run.sh"),
+                //new Benchmark(03, "dfsioe", $"hibench --dir {BaseDirHolder} bin/workloads/micro/dfsioe/hadoop/run.sh"),
+                new Benchmark(03, "dfsioread", $"jobclient TestDFSIO -Dtest.build.data={OutDirHolder} -read -nrFiles 12 -size 100MB",
+                    $"{BaseDirHolder}/dfsio"),
                 new Benchmark(04, "wordcount", $"example wordcount {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/wcout",
                     $"{BaseDirHolder}/rantw"),
                 new Benchmark(05, "randomwriter", $"example randomwriter -D mapreduce.randomwriter.totalbytes=48000 {OutDirHolder}",
@@ -108,7 +112,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
             BenchTransitions = new[]
             {
                 /* from / to ->  00  01  02  03  04  05  06  07  08  09  10  11  12  13  */
-                new[] /* 00 */ { 0, 20, 00, 70, 00, 00, 00, 00, 10, 00, 00, 00, 05, 05 },
+                //new[] /* 00 */ { 0, 20, 00, 70, 00, 00, 00, 00, 10, 00, 00, 00, 05, 05 }, // dfsioePre
+                new[] /* 00 */ { 0, 20, 00, 40, 00, 00, 00, 00, 20, 20, 00, 00, 05, 05 }, // dfsiowrite+dfsioread
                 new[] /* 01 */ { 10, 0, 00, 00, 40, 10, 30, 00, 10, 00, 00, 00, 05, 05 },
                 new[] /* 02 */ { 00, 10, 0, 00, 00, 00, 00, 70, 00, 20, 00, 00, 05, 05 },
                 new[] /* 03 */ { 00, 20, 00, 0, 00, 10, 00, 00, 40, 30, 00, 00, 05, 05 },
