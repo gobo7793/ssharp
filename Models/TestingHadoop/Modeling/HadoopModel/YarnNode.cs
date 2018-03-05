@@ -259,10 +259,72 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             if(!String.IsNullOrWhiteSpace(NodeId))
             {
-                IsActive = FaultConnector.StartNode(Name);
-                IsConnected = FaultConnector.StartNodeNetConnection(Name);
+                StartNode();
+                StartConnection();
                 MonitorStatus();
             }
+        }
+
+        /// <summary>
+        /// Starts the node connection if the node is active and returns
+        /// if the node is active and the node connection is active
+        /// </summary>
+        /// <returns>True if node is active and node connection is active</returns>
+        public bool StartConnection()
+        {
+            if(IsActive && !IsConnected)
+            {
+                var isStarted = FaultConnector.StartNodeNetConnection(Name);
+                if(isStarted)
+                    IsConnected = true;
+            }
+            return IsActive && IsConnected;
+        }
+
+        /// <summary>
+        /// Stops the node connection if the node is active and returns
+        /// if the node is active and the node connection is inactive
+        /// </summary>
+        /// <returns>True if node is active and node connection is inactive</returns>
+        public bool StopConnection()
+        {
+            if(IsActive && IsConnected)
+            {
+                var isStopped = FaultConnector.StopNodeNetConnection(Name);
+                if(isStopped)
+                    IsConnected = false;
+            }
+            return IsActive && !IsConnected;
+        }
+
+        /// <summary>
+        /// Starts the node and returns if the node is active
+        /// </summary>
+        /// <returns>True if node is active</returns>
+        public bool StartNode()
+        {
+            if(!IsActive)
+            {
+                var isStarted = FaultConnector.StartNode(Name);
+                if(isStarted)
+                    IsActive = true;
+            }
+            return IsActive;
+        }
+
+        /// <summary>
+        /// Stops the node and returns if the node is inactive
+        /// </summary>
+        /// <returns>True if node is inactive</returns>
+        public bool StopNode()
+        {
+            if(IsActive)
+            {
+                var isStopped = FaultConnector.StopNode(Name);
+                if(isStopped)
+                    IsActive = false;
+            }
+            return !IsActive;
         }
 
         #endregion
@@ -278,8 +340,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             public override void Update()
             {
-                if(IsActive)
-                    IsConnected = !FaultConnector.StopNodeNetConnection(Name);
+                StopConnection();
             }
         }
 
@@ -292,7 +353,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             public override void Update()
             {
-                IsActive = !FaultConnector.StopNode(Name);
+                StopNode();
             }
         }
 

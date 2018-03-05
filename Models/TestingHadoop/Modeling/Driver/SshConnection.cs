@@ -288,7 +288,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             Out($"Executing: {command}", consoleOut);
             var cmd = Client.RunCommand(command);
-            var output = cmd.ExitStatus != 0 ? cmd.Result : cmd.Error;
+            var output = cmd.ExitStatus == 0 ? cmd.Result : cmd.Error;
             Out(output, consoleOut);
             return output;
         }

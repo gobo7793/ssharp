@@ -36,6 +36,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private Model _Model;
         private Client _Client1;
         private YarnController _Controller;
+        private YarnNode _Node1;
         private YarnApp _App1;
         private YarnAppAttempt _Attempt1;
         private YarnAppContainer _Container1;
@@ -50,6 +51,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             _Model.Clients[0].BenchController = new BenchmarkController(1);
 
             _Controller = _Model.Controller;
+            _Node1 = _Model.Nodes[$"{Model.NodeNamePrefix}1"];
             _Client1 = _Model.Clients[0];
             ((Modeling.Driver.Connector.CmdConnector)_Client1.SubmittingConnector).IsConsoleOut = true;
 
@@ -151,6 +153,30 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine(fullStatus);
 
             Assert.AreNotEqual(DateTime.MinValue, _Container1.StartTime);
+        }
+
+        [Test]
+        public void TestStopNode()
+        {
+            Console.WriteLine("Stop node...");
+            var isStopped = _Node1.StopNode();
+            Assert.IsTrue(isStopped);
+            Thread.Sleep(15000);
+            Console.WriteLine("Start node...");
+            var isStarted = _Node1.StartNode();
+            Assert.IsTrue(isStarted);
+        }
+
+        [Test]
+        public void TestStopNodeConnection()
+        {
+            Console.WriteLine("Stop node connection...");
+            var isStopped = _Node1.StopConnection();
+            Assert.IsTrue(isStopped);
+            Thread.Sleep(15000);
+            Console.WriteLine("Start node connection...");
+            var isStarted = _Node1.StartConnection();
+            Assert.IsTrue(isStarted);
         }
     }
 }
