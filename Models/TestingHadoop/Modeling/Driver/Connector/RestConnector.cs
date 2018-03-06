@@ -94,9 +94,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>The YARN application list</returns>
         public string GetYarnApplicationList(string states)
         {
-            if(Monitoring == null)
-                throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
-
             var cmd = $"{Curl} {RmUrl}/ws/v1/cluster/apps";
             if(!String.IsNullOrWhiteSpace(states))
             {
@@ -114,9 +111,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>The YARN application attempt list</returns>
         public string GetYarnAppAttemptList(string appId)
         {
-            if(Monitoring == null)
-                throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
-
             return Monitoring.Run($"{Curl} {RmUrl}/ws/v1/cluster/apps/{appId}/appattempts");
         }
 
@@ -127,9 +121,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>The YARN application attempt list</returns>
         public string GetYarnAppAttemptListTl(string appId)
         {
-            if(Monitoring == null)
-                throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
-
             return Monitoring.Run($"{Curl} {TlUrl}/ws/v1/applicationhistory/apps/{appId}/appattempts");
         }
 
@@ -140,9 +131,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>The YARN application container list</returns>
         public string GetYarnAppContainerList(string nodeUrl)
         {
-            if(Monitoring == null)
-                throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
-
             return Monitoring.Run($"{Curl} {nodeUrl}/ws/v1/node/containers");
         }
 
@@ -153,9 +141,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>The YARN application container list</returns>
         public string GetYarnAppContainerListTl(string attemptId)
         {
-            if(Monitoring == null)
-                throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
-
             var appId = DriverUtilities.ConvertId(attemptId, EConvertType.App);
 
             return Monitoring.Run($"{Curl} {TlUrl}/ws/v1/applicationhistory/apps/{appId}/appattempts/{attemptId}/containers");
@@ -238,15 +223,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         #endregion
 
         #region YARN Nodes
+
         /// <summary>
         /// Gets the YARN node list itself
         /// </summary>
         /// <returns>The YARN node list</returns>
         public string GetYarnNodeList()
         {
-            if(Monitoring == null)
-                throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
-
             return Monitoring.Run($"{Curl} {RmUrl}/ws/v1/cluster/nodes");
         }
 
@@ -257,9 +240,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>The YARN node details</returns>
         public string GetYarnNodeDetails(string nodeId)
         {
-            if(Monitoring == null)
-                throw new InvalidOperationException($"{nameof(RestConnector)} not for monitoring initialized!");
-
             return Monitoring.Run($"{Curl} {RmUrl}/ws/v1/cluster/nodes/{nodeId}");
         }
 

@@ -113,6 +113,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="states">The states</param>
         /// <returns>The YARN application list</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
         public string GetYarnApplicationList(string states)
         {
             if(Monitoring == null)
@@ -130,6 +131,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="appId">The app id</param>
         /// <returns>The YARN application attempt list</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
         public string GetYarnAppAttemptList(string appId)
         {
             if(Monitoring == null)
@@ -143,6 +145,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="appId">The app id</param>
         /// <returns>The YARN application attempt list</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
         public string GetYarnAppAttemptListTl(string appId)
         {
             return GetYarnAppAttemptList(appId);
@@ -153,6 +156,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="id">The attempt id</param>
         /// <returns>The YARN application container list</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
         public string GetYarnAppContainerList(string id)
         {
             if(Monitoring == null)
@@ -166,6 +170,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="attemptId">The attempt id</param>
         /// <returns>The YARN application container list</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
         public string GetYarnAppContainerListTl(string attemptId)
         {
             return GetYarnAppContainerList(attemptId);
@@ -180,6 +185,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="appId">The app id</param>
         /// <returns>The YARN application details</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
         public string GetYarnApplicationDetails(string appId)
         {
             if(Monitoring == null)
@@ -193,6 +199,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="attemptId">The attempt id</param>
         /// <returns>The YARN application attempt details</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
         public string GetYarnAppAttemptDetails(string attemptId)
         {
             if(Monitoring == null)
@@ -206,6 +213,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="attemptId">The attempt id</param>
         /// <returns>The YARN application attempt details</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
         public string GetYarnAppAttemptDetailsTl(string attemptId)
         {
             return GetYarnAppAttemptDetails(attemptId);
@@ -217,6 +225,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <param name="containerId">The container id</param>
         /// <param name="nodeUrl">Not needed</param>
         /// <returns>The YARN application container details</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
         public string GetYarnAppContainerDetails(string containerId, string nodeUrl = null)
         {
             if(Monitoring == null)
@@ -230,6 +239,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="containerId">The container id</param>
         /// <returns>The YARN application container details</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
         public string GetYarnAppContainerDetailsTl(string containerId)
         {
             return GetYarnAppContainerDetails(containerId);
@@ -242,6 +252,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// Gets the YARN node list itself
         /// </summary>
         /// <returns>The YARN node list</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
         public string GetYarnNodeList()
         {
             if(Monitoring == null)
@@ -255,6 +266,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="nodeId">The node id</param>
         /// <returns>The YARN node details</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
         public string GetYarnNodeDetails(string nodeId)
         {
             if(Monitoring == null)
@@ -268,6 +280,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="nodeName">Node name</param>
         /// <returns>True if YARN Node started successfully</returns>
+        /// <exception cref="InvalidOperationException">Faulting not initialized</exception>
         public bool StartNode(string nodeName)
         {
             if(Faulting == null)
@@ -275,8 +288,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
             var id = DriverUtilities.ParseInt(nodeName);
             Faulting.Run($"{Model.HadoopSetupScript} hadoop start {id}", IsConsoleOut);
-            var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {id} | grep Running", IsConsoleOut);
-            return runCheckRes.Contains("true");
+            return CheckNodeRunning(id);
         }
 
         /// <summary>
@@ -284,6 +296,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="nodeName">Node name</param>
         /// <returns>True if YARN Node stopped successfully</returns>
+        /// <exception cref="InvalidOperationException">Faulting not initialized</exception>
         public bool StopNode(string nodeName)
         {
             if(Faulting == null)
@@ -291,8 +304,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
             var id = DriverUtilities.ParseInt(nodeName);
             Faulting.Run($"{Model.HadoopSetupScript} hadoop stop {id}", IsConsoleOut);
-            var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {id} | grep Running", IsConsoleOut);
-            return runCheckRes.Contains("false");
+            return !CheckNodeRunning(id);
+        }
+
+        /// <summary>
+        /// Check node running and returns true if node docker container is running
+        /// </summary>
+        /// <param name="nodeId">Node id</param>
+        /// <returns>True on node running</returns>
+        private bool CheckNodeRunning(int nodeId)
+        {
+            var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {nodeId} '{{{{.State.Running}}}}'", IsConsoleOut);
+            return runCheckRes.Contains("true");
         }
 
         /// <summary>
@@ -300,6 +323,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="nodeName">Node name</param>
         /// <returns>True if network connection started successfully</returns>
+        /// <exception cref="InvalidOperationException">Faulting not initialized</exception>
         public bool StartNodeNetConnection(string nodeName)
         {
             if(Faulting == null)
@@ -307,8 +331,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
             var id = DriverUtilities.ParseInt(nodeName);
             Faulting.Run($"{Model.HadoopSetupScript} net start {id}", IsConsoleOut);
-            var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {id} | grep NetworkID", IsConsoleOut);
-            return !String.IsNullOrWhiteSpace(runCheckRes);
+            return CheckNodeNetwork(id);
         }
 
         /// <summary>
@@ -316,6 +339,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="nodeName">Node name</param>
         /// <returns>True if network connection stopped successfully</returns>
+        /// <exception cref="InvalidOperationException">Faulting not initialized</exception>
         public bool StopNodeNetConnection(string nodeName)
         {
             if(Faulting == null)
@@ -323,8 +347,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
             var id = DriverUtilities.ParseInt(nodeName);
             Faulting.Run($"{Model.HadoopSetupScript} net stop {id}", IsConsoleOut);
-            var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {id} | grep NetworkID", IsConsoleOut);
-            return String.IsNullOrWhiteSpace(runCheckRes);
+            return !CheckNodeNetwork(id);
+        }
+
+        /// <summary>
+        /// Check network connectivity and returns true if network is set for node docker container
+        /// </summary>
+        /// <param name="nodeId">Node id</param>
+        /// <returns>True on network connectivity</returns>
+        private bool CheckNodeNetwork(int nodeId)
+        {
+            var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {nodeId} '{{{{.NetworkSettings.Networks}}}}'",
+                IsConsoleOut);
+            return runCheckRes.Contains("hadoop-net");
         }
 
         #endregion
@@ -336,6 +371,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="appId">The app id for the application</param>
         /// <returns>True if application killed</returns>
+        /// <exception cref="InvalidOperationException">Faulting not initialized</exception>
         public bool KillApplication(string appId)
         {
             if(Faulting == null)
@@ -353,6 +389,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="cmd">The command to submit</param>
         /// <returns>The application id for the submitted app</returns>
+        /// <exception cref="InvalidOperationException">Application submitting not initialized</exception>
         public string StartApplication(string cmd)
         {
             var submitter = GetSubmitter(cmd);
@@ -368,6 +405,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="cmd">The command to submit</param>
         /// <returns>The application id for the submitted app</returns>
+        /// <exception cref="InvalidOperationException">Application submitting not initialized</exception>
         public string StartApplicationAsync(string cmd)
         {
             var submitter = GetSubmitter(cmd);
@@ -401,6 +439,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// Removes the given directory on hdfs
         /// </summary>
         /// <param name="directory">The directory to remove</param>
+        /// <exception cref="InvalidOperationException">Application submitting not initialized</exception>
         public void RemoveHdfsDir(string directory)
         {
             var cmd = $"{Model.HadoopSetupScript} cmd hdfs dfs -rm -r {directory}";
@@ -413,6 +452,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// Returns the version information from Hadoop
         /// </summary>
         /// <returns>Hadoop version</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
         public string GetHadoopVersion()
         {
             if(Monitoring == null)
