@@ -269,14 +269,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Starts the node connection if the node is active and returns
         /// if the node is active and the node connection is active
         /// </summary>
+        /// <param name="retry">True for a retry on failing start node connection</param>
         /// <returns>True if node is active and node connection is active</returns>
-        public bool StartConnection()
+        public bool StartConnection(bool retry = true)
         {
             if(IsActive && !IsConnected)
             {
                 var isStarted = FaultConnector.StartNodeNetConnection(Name);
                 if(isStarted)
                     IsConnected = true;
+                else
+                    StartConnection(false);
             }
             return IsActive && IsConnected;
         }
@@ -285,14 +288,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Stops the node connection if the node is active and returns
         /// if the node is active and the node connection is inactive
         /// </summary>
+        /// <param name="retry">True for a retry on failing stop node connection</param>
         /// <returns>True if node is active and node connection is inactive</returns>
-        public bool StopConnection()
+        public bool StopConnection(bool retry = true)
         {
             if(IsActive && IsConnected)
             {
                 var isStopped = FaultConnector.StopNodeNetConnection(Name);
                 if(isStopped)
                     IsConnected = false;
+                else
+                    StopConnection(false);
             }
             return IsActive && !IsConnected;
         }
@@ -300,14 +306,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Starts the node and returns if the node is active
         /// </summary>
+        /// <param name="retry">True for a retry on failing start node</param>
         /// <returns>True if node is active</returns>
-        public bool StartNode()
+        public bool StartNode(bool retry = true)
         {
             if(!IsActive)
             {
                 var isStarted = FaultConnector.StartNode(Name);
                 if(isStarted)
                     IsActive = true;
+                else
+                    StartNode(false);
             }
             return IsActive;
         }
@@ -315,14 +324,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Stops the node and returns if the node is inactive
         /// </summary>
+        /// <param name="retry">True for a retry on failing stop node</param>
         /// <returns>True if node is inactive</returns>
-        public bool StopNode()
+        public bool StopNode(bool retry = true)
         {
             if(IsActive)
             {
                 var isStopped = FaultConnector.StopNode(Name);
                 if(isStopped)
                     IsActive = false;
+                else
+                    StopNode(false);
             }
             return !IsActive;
         }
