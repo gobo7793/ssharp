@@ -147,7 +147,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <param name="attemptCount">The attempt count per application to initialize</param>
         /// <param name="containerCount">The container count per attempt to initialize</param>
         /// <param name="nodeCount">The node count to initialize</param>
-        public void InitModel(int clientCount = 1, int appCount = 16, int attemptCount = 4, int containerCount = 32, int nodeCount = 4)
+        /// <param name="benchTransitionSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
+        public void InitModel(int clientCount = 1, int appCount = 16, int attemptCount = 4, int containerCount = 32, int nodeCount = 4, int benchTransitionSeed = 1)
         {
             InitController();
 
@@ -158,7 +159,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             Controller.Parser = restParser;
 
             InitYarnNodes(nodeCount, restParser, cmdConnector);
-            InitClients(clientCount, restParser, cmdConnector);
+            InitClients(clientCount, restParser, cmdConnector, benchTransitionSeed);
             InitApplications(appCount, restParser, cmdConnector);
             InitAppAttempts(attemptCount, restParser);
             InitContainers(containerCount, restParser);
@@ -193,22 +194,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             }
         }
 
-        /// <summary>
-        /// Init submitting clients
-        /// </summary>
-        /// <param name="clientCount">Instances count</param>
-        /// <param name="monitorParser">Parser to use for monitoring</param>
-        /// <param name="submittingConnector">Connector to submitting <see cref="YarnApp"/></param>
-        private void InitClients(int clientCount, IHadoopParser monitorParser, IHadoopConnector submittingConnector)
-        {
-            for(int i = 0; i < clientCount; i++)
-            {
-                var client = new Client(Controller, monitorParser, submittingConnector, $"/client{i}");
+        ///// <summary>
+        ///// Init submitting clients
+        ///// </summary>
+        ///// <param name="clientCount">Instances count</param>
+        ///// <param name="monitorParser">Parser to use for monitoring</param>
+        ///// <param name="submittingConnector">Connector to submitting <see cref="YarnApp"/></param>
+        //private void InitClients(int clientCount, IHadoopParser monitorParser, IHadoopConnector submittingConnector)
+        //{
+        //    for(int i = 0; i < clientCount; i++)
+        //    {
+        //        var client = new Client(Controller, monitorParser, submittingConnector, $"/client{i}");
 
-                Controller.ConnectedClients.Add(client);
-                Clients.Add(client);
-            }
-        }
+        //        Controller.ConnectedClients.Add(client);
+        //        Clients.Add(client);
+        //    }
+        //}
 
         /// <summary>
         /// Init submitting clients
