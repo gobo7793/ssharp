@@ -72,7 +72,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Full file path to the private key file to login
         /// </summary>
-        public const string SshPrivateKeyFile = @"C:\Users\siegerge\.ssh\id_rsa";
+        public const string SshPrivateKeyFile = @"%USERPROFILE%\.ssh\id_rsa";
 
         #endregion
 

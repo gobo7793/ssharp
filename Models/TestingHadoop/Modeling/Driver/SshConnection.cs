@@ -99,7 +99,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="username">Username to connect</param>
         /// <param name="privKeyFile">The path to the private key file to connect</param>
         public SshConnection(string host, string username, string privKeyFile)
-            : this(host, username, new PrivateKeyFile(privKeyFile))
+            : this(host, username, new PrivateKeyFile(Environment.ExpandEnvironmentVariables(privKeyFile)))
         {
 
         }
@@ -112,7 +112,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="privKeyFile">The path to the private key file to connect</param>
         /// <param name="appIdRegexPattern">Pattern for returning application ids via <see cref="RunAttachedTillAppId(string, bool)"/></param>
         public SshConnection(string host, string username, string privKeyFile, string appIdRegexPattern)
-            : this(host, username, new PrivateKeyFile(privKeyFile), appIdRegexPattern)
+            : this(host, username, new PrivateKeyFile(Environment.ExpandEnvironmentVariables(privKeyFile)), appIdRegexPattern)
         {
 
         }
