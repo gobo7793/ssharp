@@ -32,10 +32,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
     {
         #region Properties
 
-        private static readonly Benchmark _FailBench;
         private static readonly Benchmark _SleepBench;
-        private static readonly int _TransitionCumulatedProbability;
-        private static readonly int _SelfTransitionProbability;
 
         /// <summary>
         /// The available benchmark list
@@ -45,7 +42,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <summary>
         /// Transition probabilities from one benchmark (first dimension) to another (second dimension)
         /// </summary>
-        public static int[][] BenchTransitions { get; }
+        public static double[][] BenchTransitions { get; }
 
         /// <summary>
         /// Random number generator
@@ -79,13 +76,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
             Benchmarks = new[]
             {
                 // BenchmarkController IDs have to be in ascending ordner, they will be needed for transitions
-                //new Benchmark(00, "dfsioePreparing", $"hibench --dir {BaseDirHolder} bin/workloads/micro/dfsioe/prepare/prepare.sh"),
                 new Benchmark(00, "dfsiowrite", $"jobclient TestDFSIO -Dtest.build.data={OutDirHolder} -read -nrFiles 12 -size 100MB",
                     $"{BaseDirHolder}/dfsio"),
                 new Benchmark(01, "randomtextwriter",
                     $"example randomtextwriter -D mapreduce.randomtextwriter.totalbytes=48000 {OutDirHolder}", $"{BaseDirHolder}/rantw"),
                 new Benchmark(02, "teragen", $"example teragen 48000 {OutDirHolder}", $"{BaseDirHolder}/teragen"),
-                //new Benchmark(03, "dfsioe", $"hibench --dir {BaseDirHolder} bin/workloads/micro/dfsioe/hadoop/run.sh"),
                 new Benchmark(03, "dfsioread", $"jobclient TestDFSIO -Dtest.build.data={OutDirHolder} -read -nrFiles 12 -size 100MB",
                     $"{BaseDirHolder}/dfsio"),
                 new Benchmark(04, "wordcount", $"example wordcount {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/wcout",
@@ -103,31 +98,30 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
                     $"{BaseDirHolder}/sort", $"{BaseDirHolder}/rantw"),
                 new Benchmark(11, "teravalidate", $"example teravalidate {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/teravalidate",
                     $"{BaseDirHolder}/terasort"),
-                _FailBench = new Benchmark(12, "fail", "jobclient fail -failMappers 3"),
-                _SleepBench = new Benchmark(13, "sleep", "jobclient sleep -m 1 -r 1 -mt 10 -mr 5")
+                _SleepBench = new Benchmark(12, "sleep", "jobclient sleep -m 1 -r 1 -mt 10 -mr 5"),
+                new Benchmark(13, "fail", "jobclient fail -failMappers 3"),
             };
 
             // change probabilities for benchmark transition system here!
-            // note: from fail and sleep always 50/50 back to previous benchmark
             BenchTransitions = new[]
             {
-                /* from / to ->  00  01  02  03  04  05  06  07  08  09  10  11  12  13  */
-                //new[] /* 00 */ { 0, 20, 00, 70, 00, 00, 00, 00, 10, 00, 00, 00, 05, 05 }, // dfsioePre
-                new[] /* 00 */ { 0, 20, 00, 40, 00, 00, 00, 00, 20, 20, 00, 00, 05, 05 }, // dfsiowrite+dfsioread
-                new[] /* 01 */ { 10, 0, 00, 00, 40, 10, 30, 00, 10, 00, 00, 00, 05, 05 },
-                new[] /* 02 */ { 00, 10, 0, 00, 00, 00, 00, 70, 00, 20, 00, 00, 05, 05 },
-                new[] /* 03 */ { 00, 20, 00, 0, 00, 10, 00, 00, 40, 30, 00, 00, 05, 05 },
-                new[] /* 04 */ { 20, 30, 00, 00, 0, 00, 20, 00, 20, 10, 00, 00, 05, 05 },
-                new[] /* 05 */ { 00, 20, 20, 00, 00, 0, 00, 00, 30, 30, 00, 00, 05, 05 },
-                new[] /* 06 */ { 00, 20, 10, 00, 20, 10, 0, 00, 20, 00, 20, 00, 05, 05 },
-                new[] /* 07 */ { 00, 00, 00, 00, 00, 00, 00, 0, 30, 20, 00, 50, 05, 05 },
-                new[] /* 08 */ { 40, 30, 00, 00, 00, 00, 00, 00, 0, 30, 00, 00, 05, 05 },
-                new[] /* 09 */ { 30, 30, 00, 00, 00, 20, 00, 00, 20, 0, 00, 00, 05, 05 },
-                new[] /* 10 */ { 00, 40, 00, 00, 00, 20, 00, 00, 10, 30, 0, 00, 05, 05 },
-                new[] /* 11 */ { 20, 30, 00, 00, 00, 00, 00, 00, 30, 20, 00, 0, 05, 05 }
+                /* from / to ->    00    01   02    03    04    05    06    07    08    09    10    11    12    13  */
+                /* from / to ->   dfw   rtw   tg   dfr    wc    rw    so   tsr    pi    pt   tms   tvl    sl    fl  */
+                new[] /* 00 */ { .600, .073,  000, .145,  000,  000,  000,  000, .073, .073,  000,  000, .018, .018 },
+                new[] /* 01 */ { .036, .600,  000,  000, .145, .036, .109,  000, .036,  000,  000,  000, .019, .019 },
+                new[] /* 02 */ {  000, .036, .600,  000,  000,  000,  000, .255,  000, .073,  000,  000, .018, .018 },
+                new[] /* 03 */ {  000, .073,  000, .600,  000, .036,  000,  000, .145, .109,  000,  000, .018, .019 },
+                new[] /* 04 */ { .073, .109,  000,  000, .600,  000, .073,  000, .073, .036,  000,  000, .018, .018 },
+                new[] /* 05 */ {  000, .073, .073,  000,  000, .600,  000,  000, .109, .109,  000,  000, .018, .018 },
+                new[] /* 06 */ {  000, .073, .036,  000, .073, .036, .600,  000, .073,  000, .073,  000, .018, .018 },
+                new[] /* 07 */ {  000,  000,  000,  000,  000,  000,  000, .600, .109, .073,  000, .182, .018, .018 },
+                new[] /* 08 */ { .145, .109,  000,  000,  000,  000,  000,  000, .600, .109,  000,  000, .018, .019 },
+                new[] /* 09 */ { .109, .109,  000,  000,  000, .073,  000,  000, .073, .600,  000,  000, .018, .018 },
+                new[] /* 10 */ {  000, .145,  000,  000,  000, .073,  000,  000, .036, .109, .600,  000, .018, .019 },
+                new[] /* 11 */ { .073, .109,  000,  000,  000,  000,  000,  000, .109, .073,  000, .600, .018, .018 },
+                new[] /* 12 */ { 1/6D, 1/6D, 1/6D,  000,  000, 1/6D,  000,  000, 1/6D, 1/6D,  000,  000,  000,  000 },
+                new[] /* 13 */ { 1/6D, 1/6D, 1/6D,  000,  000, 1/6D,  000,  000, 1/6D, 1/6D,  000,  000,  000,  000 },
             };
-            _TransitionCumulatedProbability = 110; // cumulated transition probabilities w/o self-references
-            _SelfTransitionProbability = 60; // self-transiion probability in percent
         }
 
         /// <summary>
@@ -155,35 +149,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// Initializes the start benchmark
         /// </summary>
         /// <remarks>
-        /// All possible start benchmarks will be selected with same probability.
-        /// Possible start benchmarks are all that need no preparing or input data:
-        /// dfsioe Preparing, randomtextgenerator, teragen, randomwriter, pi, pentomino
+        /// To select the initial benchmark the transitions based on
+        /// sleep benchmark saved in <see cref="_SleepBench"/> will be used.
         /// </remarks>
         public void InitStartBench()
         {
-            var startNo = RandomGen.Next(0, 6);
-            switch(startNo)
-            {
-                case 0:
-                    CurrentBenchmark = Benchmarks[0]; // dfsioe preparing
-                    break;
-                case 1:
-                    CurrentBenchmark = Benchmarks[1]; // randomtextgenerator
-                    break;
-                case 2:
-                    CurrentBenchmark = Benchmarks[2]; // teragen
-                    break;
-                case 3:
-                    CurrentBenchmark = Benchmarks[5]; // randomwriter
-                    break;
-                case 4:
-                    CurrentBenchmark = Benchmarks[8]; // pi
-                    break;
-                case 5:
-                    CurrentBenchmark = Benchmarks[9]; // pentomino
-                    break;
-                default: throw new Exception("invalid random number on selecting start benchmark");
-            }
+            CurrentBenchmark = _SleepBench;
+            ChangeBenchmark();
         }
 
         /// <summary>
@@ -191,30 +163,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// and returns true on benchmark change
         /// </summary>
         /// <returns>True if the benchmark was changed</returns>
-        /// <exception cref="InvalidOperationException">If <see cref="BenchTransitions"/> is not in needed format</exception>
+        /// <exception cref="InvalidOperationException">If <see cref="BenchTransitions"/> length is not same with <see cref="Benchmarks"/></exception>
         /// <exception cref="Exception">If no followin benchmark found</exception>
         public bool ChangeBenchmark()
         {
-            if(BenchTransitions.Length != Benchmarks.Length - 2)
-                throw new InvalidOperationException("Complete benchmark transition array must have same length like benchmark array without fail and sleep on end");
-
-            var selfProbability = RandomGen.Next(100);
-
-            // back from fail and sleep
-            if(CurrentBenchmark == _FailBench || CurrentBenchmark == _SleepBench)
-            {
-                if(selfProbability < 50)
-                    return false;
-
-                var curr = CurrentBenchmark;
-                CurrentBenchmark = PreviousBenchmark;
-                PreviousBenchmark = curr;
-                return true;
-            }
-
-            // self-transition
-            if(selfProbability < _SelfTransitionProbability)
-                return false;
+            if(BenchTransitions.Length != Benchmarks.Length)
+                throw new InvalidOperationException("Complete benchmark transition array must have same length like benchmark array");
 
             // use transition system
             var transitions = BenchTransitions[CurrentBenchmark.Id];
@@ -222,13 +176,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
                 throw new InvalidOperationException(
                     $"BenchmarkController transition array for benchmark {CurrentBenchmark.Name} must have same length like benchmark array");
 
-            var ranNumber = RandomGen.Next(_TransitionCumulatedProbability);
-            var cumulative = 0;
+            var ranNumber = RandomGen.NextDouble();
+            var cumulative = 0D;
             for(int i = 0; i < transitions.Length; i++)
             {
                 cumulative += transitions[i];
                 if(ranNumber >= cumulative)
                     continue;
+
+                // prevent saving current benchmark as previous
                 if(CurrentBenchmark == Benchmarks[i])
                     break;
 
