@@ -44,23 +44,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                 Bench 01:randomtextwriter
                 Bench 02:randomtextwriter
                 Bench 03:randomtextwriter
-                Bench 04:sort            
-                Bench 05:sort            
-                Bench 06:sort            
-                Bench 07:randomtextwriter
-                Bench 08:dfsiowrite      
+                Bench 04:wordcount       
+                Bench 05:wordcount       
+                Bench 06:wordcount       
+                Bench 07:wordcount       
+                Bench 08:pentomino       
                 Bench 09:dfsiowrite      
-                Bench 10:dfsiowrite      
-                Bench 11:pi              
+                Bench 10:randomtextwriter
+                Bench 11:dfsiowrite      
                 Bench 12:dfsiowrite      
-                Bench 13:pi              
+                Bench 13:dfsiowrite      
                 Bench 14:fail            
-                Bench 15:fail            
-                Bench 16:fail            
-                Bench 17:fail            
+                Bench 15:pi              
+                Bench 16:pi              
+                Bench 17:pi              
                 Bench 18:pi              
                 Bench 19:pi              
-                Bench 20:dfsiowrite      
+                Bench 20:pi              
             */
         }
 
