@@ -278,7 +278,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 var isStarted = FaultConnector.StartNodeNetConnection(Name);
                 if(isStarted)
                     IsConnected = true;
-                else
+                else if(retry)
                     StartConnection(false);
             }
             return IsActive && IsConnected;
@@ -297,7 +297,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 var isStopped = FaultConnector.StopNodeNetConnection(Name);
                 if(isStopped)
                     IsConnected = false;
-                else
+                else if(retry)
                     StopConnection(false);
             }
             return IsActive && !IsConnected;
@@ -315,7 +315,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 var isStarted = FaultConnector.StartNode(Name);
                 if(isStarted)
                     IsActive = true;
-                else
+                else if(retry)
                     StartNode(false);
             }
             return IsActive;
@@ -333,7 +333,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 var isStopped = FaultConnector.StopNode(Name);
                 if(isStopped)
                     IsActive = false;
-                else
+                else if(retry)
                     StopNode(false);
             }
             return !IsActive;
