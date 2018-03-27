@@ -71,6 +71,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
         /// </summary>
         public IHadoopConnector Connection { get; }
 
+        /// <summary>
+        /// Maximum container count to parse on container list
+        /// </summary>
+        public int MaxContainerCount { get; }
+
         #endregion
 
         #region Methods
@@ -80,10 +85,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
         /// </summary>
         /// <param name="model">The model</param>
         /// <param name="connection">The connector to Hadoop</param>
-        public CmdParser(Model model, IHadoopConnector connection)
+        /// <param name="maxContainerCount">Maximum container count to parse on container list</param>
+        public CmdParser(Model model, IHadoopConnector connection, int maxContainerCount = 32)
         {
             Model = model;
             Connection = connection;
+            MaxContainerCount = maxContainerCount;
         }
 
         #endregion
@@ -188,6 +195,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
                 };
 
                 containerList.Add(container);
+
+                if(containerList.Count >= MaxContainerCount)
+                    break;
             }
 
             return containerList.ToArray();

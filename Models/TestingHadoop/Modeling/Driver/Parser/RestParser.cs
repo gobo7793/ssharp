@@ -156,12 +156,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
             {
                 var tlContainers = JsonConvert.DeserializeObject<JsonContainerResultCollection>(tlContainerResult);
 
-                if(containerList.Count == 0 && tlContainers?.List?.Length > 0)
-                    return tlContainers.List; // if only TL
+                //if(containerList.Count == 0 && tlContainers?.List?.Length > 0)
+                //    return tlContainers.List; // if only TL
                 if(tlContainers?.List == null || tlContainers.List.Length == 0)
                     return containerList.ToArray(); // if nothing in TL
 
-                // if booth
+                // if booth lists
                 var originalContainers = containerList.ToDictionary(c => c.ContainerId);
                 foreach(var tlContainer in tlContainers.List)
                 {
@@ -172,11 +172,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
                         originalContainers[tlContainer.ContainerId].StartTime = tlContainer.StartTime;
                         originalContainers[tlContainer.ContainerId].FinishTime = tlContainer.FinishTime;
                     }
-                    else // copy else
-                    {
-                        tlContainer.Host = DriverUtilities.ParseNode(tlContainer.HostId, Model);
-                        originalContainers[tlContainer.ContainerId] = tlContainer;
-                    }
+                    //else // copy tl containers
+                    //{
+                    //    tlContainer.Host = DriverUtilities.ParseNode(tlContainer.HostId, Model);
+                    //    originalContainers[tlContainer.ContainerId] = tlContainer;
+                    //}
                 }
                 return originalContainers.Values.ToArray();
             }
