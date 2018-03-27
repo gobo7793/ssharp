@@ -51,7 +51,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             _Model.Clients[0].BenchController = new BenchmarkController(1);
 
             _Controller = _Model.Controller;
-            _Node1 = _Model.Nodes[$"{Model.NodeNamePrefix}1"];
+            _Node1 = _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}1");
             _Client1 = _Model.Clients[0];
             ((Modeling.Driver.Connector.CmdConnector)_Client1.SubmittingConnector).IsConsoleOut = true;
 
@@ -95,7 +95,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
             var app = _Model.Applications.FirstOrDefault(a => a.AppId == $"application_{_AppBase1}");
 
-            Assert.AreEqual(ENodeState.RUNNING, _Model.Nodes["compute-1"].State);
+            Assert.AreEqual(ENodeState.RUNNING, _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}1").State);
             Assert.NotNull(app);
 
             var attempt = app.Attempts.FirstOrDefault(a => a.AttemptId == $"appattempt_{_AppBase1}_000001");

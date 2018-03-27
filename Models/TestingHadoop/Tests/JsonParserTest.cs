@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses;
@@ -46,9 +47,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             _Parser = new RestParser(_Model, new DummyHadoopRestConnector());
 
             _Model.InitTestConfig(_Parser, _Parser.Connection);
-            _Node1 = _Model.Nodes[$"{Model.NodeNamePrefix}1"];
-            _Node2 = _Model.Nodes[$"{Model.NodeNamePrefix}2"];
-            _Node4 = _Model.Nodes[$"{Model.NodeNamePrefix}4"];
+            _Node1 = _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}1");
+            _Node2 = _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}2");
+            _Node4 = _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}4");
         }
 
         [Test]

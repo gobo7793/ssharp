@@ -22,6 +22,7 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -51,9 +52,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public static YarnNode ParseNode(string node, Model model)
         {
             var nodeName = _ParseNodeRegex.Match(node).Groups[2].Value;
-            if(!model.Nodes.ContainsKey(nodeName))
-                return null;
-            return model.Nodes[nodeName];
+            var nodeObj = model.Nodes.FirstOrDefault(n => n.NodeId == node);
+            return nodeObj;
         }
 
         /// <summary>

@@ -86,7 +86,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public YarnController Controller { get; set; }
 
         [Root(RootKind.Plant)]
-        public Dictionary<string, YarnNode> Nodes { get; }
+        public List<YarnNode> Nodes { get; }
 
         [Root(RootKind.Plant)]
         public List<YarnApp> Applications { get; }
@@ -110,7 +110,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             Name = name;
 
             Clients = new List<Client>();
-            Nodes = new Dictionary<string, YarnNode>();
+            Nodes = new List<YarnNode>();
             Applications = new List<YarnApp>();
             AppAttempts = new List<YarnAppAttempt>();
             AppContainers = new List<YarnAppContainer>();
@@ -190,7 +190,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
                 var node = new YarnNode(NodeNamePrefix + i, monitorParser, faultConnector, Controller);
 
                 Controller.ConnectedNodes.Add(node);
-                Nodes[node.Name] = node;
+                Nodes.Add(node);
             }
         }
 

@@ -138,14 +138,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
             // Get from RM
             foreach(var node in Model.Nodes)
             {
-                var containerResult = Connection.GetYarnAppContainerList(node.Value.HttpUrl);
+                var containerResult = Connection.GetYarnAppContainerList(node.HttpUrl);
                 var containers = JsonConvert.DeserializeObject<JsonContainerListResult>(containerResult);
                 if(containers?.Collection?.List?.Length > 0)
                     foreach(var con in containers.Collection.List)
                     {
                         if(con.ContainerId.StartsWith(baseContainerId))
                         {
-                            con.Host = node.Value;
+                            con.Host = node;
                             containerList.Add(con);
                         }
                     }

@@ -71,7 +71,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
             Assert.AreEqual("application_1515488762656_0002", _App.AppId);
             Assert.AreEqual(new DateTime(2018, 1, 9, 10, 10, 34, 402), _App.StartTime);
-            Assert.AreEqual(_Model.Nodes["compute-1"], _App.AmHost);
+            Assert.AreEqual(_Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}1"), _App.AmHost);
             Assert.AreEqual(1, _App.Attempts.Count(a => !String.IsNullOrWhiteSpace(a.AttemptId)));
             Assert.AreEqual("appattempt_1515488762656_0002_000001", _App.Attempts[0].AttemptId);
         }
@@ -85,7 +85,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
             Assert.AreEqual("appattempt_1515577485762_0006_000001", _Attempt.AttemptId);
             Assert.AreEqual("container_1515577485762_0006_01_000001", _Attempt.AmContainerId);
-            Assert.AreEqual(_Model.Nodes[$"{Model.NodeNamePrefix}1"], _Attempt.AmHost);
+            Assert.AreEqual(_Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}1"), _Attempt.AmHost);
             Assert.AreEqual(3, _Attempt.Containers.Count(c => !String.IsNullOrWhiteSpace(c.ContainerId)));
             Assert.AreEqual("container_1515488762656_0011_01_000002", _Attempt.Containers[1].ContainerId);
         }
@@ -99,7 +99,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
             Assert.AreEqual("container_1515577485762_0008_01_000001", _Container.ContainerId);
             Assert.AreEqual(new DateTime(2018, 1, 10, 11, 22, 2, 594), _Container.StartTime);
-            Assert.AreEqual(_Model.Nodes[$"{Model.NodeNamePrefix}1"], _Container.Host);
+            Assert.AreEqual(_Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}1"), _Container.Host);
         }
     }
 }
