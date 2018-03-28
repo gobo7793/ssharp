@@ -20,13 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Collections.Generic;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
-using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
@@ -37,6 +36,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
     public class Model : ModelBase
     {
         #region General settings
+
+        private static Model _Instance;
+
+        /// <summary>
+        /// <see cref="Model"/> instance
+        /// </summary>
+        public static Model Instance => _Instance ?? CreateNewInstance();
 
         /// <summary>
         /// Prefix for compute nodes
@@ -70,6 +76,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public const string SshUsername = "hadoop";
 
         /// <summary>
+        /// Default hadoop controller resource manager url for REST API on <see cref="SshHost"/>
+        /// </summary>
+        public const string DefaultControllerRestRmUrl = "http://controller:8088";
+
+        /// <summary>
+        /// Default hadoop controller timeline server url for REST API on <see cref="SshHost"/>
+        /// </summary>
+        public const string DefaultControllerRestTlsUrl = "http://controller:8188";
+
+        /// <summary>
         /// Full file path to the private key file to login
         /// </summary>
         public const string SshPrivateKeyFile = @"%USERPROFILE%\.ssh\id_rsa";
@@ -78,42 +94,86 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 
         #region Model components
 
-        public string Name { get; }
-
+        /// <summary>
+        /// List of Clients
+        /// </summary>
         public List<Client> Clients { get; set; }
 
+        /// <summary>
+        /// Hadoop Controller
+        /// </summary>
         [Root(RootKind.Controller)]
         public YarnController Controller { get; set; }
 
+        /// <summary>
+        /// Hadoop Nodes
+        /// </summary>
         [Root(RootKind.Plant)]
         public List<YarnNode> Nodes { get; }
 
+        /// <summary>
+        /// All executed applications
+        /// </summary>
         [Root(RootKind.Plant)]
         public List<YarnApp> Applications { get; }
 
+        /// <summary>
+        /// All application attempts
+        /// </summary>
         [Root(RootKind.Plant)]
         public List<YarnAppAttempt> AppAttempts { get; }
 
+        /// <summary>
+        /// All current application containers
+        /// </summary>
         [Root(RootKind.Plant)]
         public List<YarnAppContainer> AppContainers { get; }
+
+        /// <summary>
+        /// The <see cref="IHadoopConnector"/> in use
+        /// </summary>
+        [NonSerializable]
+        public static IHadoopConnector UsingFaultingConnector { get; private set; }
+
+        /// <summary>
+        /// The <see cref="IHadoopParser"/> in use
+        /// </summary>
+        [NonSerializable]
+        public static IHadoopParser UsingMonitoringParser { get; private set; }
 
         #endregion
 
         #region Base methods
 
         /// <summary>
+        /// Initializes the instance
+        /// </summary>
+        static Model()
+        {
+            CreateNewInstance();
+        }
+
+        /// <summary>
         /// Initializes a new model
         /// </summary>
-        /// <param name="name">Model name</param>
-        public Model(string name = "")
+        private Model()
         {
-            Name = name;
-
             Clients = new List<Client>();
             Nodes = new List<YarnNode>();
             Applications = new List<YarnApp>();
             AppAttempts = new List<YarnAppAttempt>();
             AppContainers = new List<YarnAppContainer>();
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="Model"/> instance, saves and returns it
+        /// </summary>
+        /// <returns>The instance</returns>
+        internal static Model CreateNewInstance()
+        {
+            _Instance = new Model();
+
+            return _Instance;
         }
 
         #endregion
@@ -123,19 +183,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Initialize configuration for model testing
         /// </summary>
-        /// <param name="parser">The monitorParser to use</param>
-        /// <param name="connector">The faultConnector to use</param>
+        /// <param name="usingParser">The <see cref="IHadoopParser"/> to use</param>
+        /// <param name="usingConnector">The <see cref="IHadoopConnector"/> to use</param>
         /// <param name="benchTransitionSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
-        public void InitTestConfig(IHadoopParser parser, IHadoopConnector connector, int benchTransitionSeed = 1)
+        public void InitTestConfig(IHadoopParser usingParser, IHadoopConnector usingConnector, int benchTransitionSeed = 1)
         {
             if(Controller == null)
                 InitController();
 
-            InitYarnNodes(4, parser, connector);
-            InitClients(1, parser, connector, benchTransitionSeed);
-            InitApplications(8, parser, connector);
-            InitAppAttempts(4, parser);
-            InitContainers(32, parser);
+            UsingFaultingConnector = usingConnector;
+            UsingMonitoringParser = usingParser;
+
+            InitYarnNodes(4);
+            InitClients(1, benchTransitionSeed);
+            InitApplications(8);
+            InitAppAttempts(4);
+            InitContainers(32);
         }
 
 
@@ -152,17 +215,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         {
             InitController();
 
-            var submitterCount = (int)Math.Ceiling(clientCount * 1.5);
-            var cmdConnector = new CmdConnector(SshHost, SshUsername, SshPrivateKeyFile, false, true, submitterCount);
-            var restConnector = new RestConnector(SshHost, SshUsername, SshPrivateKeyFile, Controller.HttpUrl, Controller.TimelineHttpUrl);
-            var restParser = new RestParser(this, restConnector);
-            Controller.Parser = restParser;
+            UsingMonitoringParser = RestParser.Instance;
+            UsingFaultingConnector = CmdConnector.Instance;
 
-            InitYarnNodes(nodeCount, restParser, cmdConnector);
-            InitClients(clientCount, restParser, cmdConnector, benchTransitionSeed);
-            InitApplications(appCount, restParser, cmdConnector);
-            InitAppAttempts(attemptCount, restParser);
-            InitContainers(containerCount, restParser);
+            //var submitterCount = (int)Math.Ceiling(clientCount * 1.5);
+            //var cmdConnector = new CmdConnector(SshHost, SshUsername, SshPrivateKeyFile, false, true, submitterCount);
+            //var restConnector = new RestConnector(SshHost, SshUsername, SshPrivateKeyFile, Controller.HttpUrl, Controller.TimelineHttpUrl);
+            //var restParser = new RestParser(this, restConnector);
+            //Controller.Parser = restParser;
+
+            InitYarnNodes(nodeCount);
+            InitClients(clientCount, benchTransitionSeed);
+            InitApplications(appCount);
+            InitAppAttempts(attemptCount);
+            InitContainers(containerCount);
         }
 
         #endregion
@@ -181,48 +247,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Init yarn compute nodes
         /// </summary>
         /// <param name="nodeCount">Instances count</param>
-        /// <param name="monitorParser">Parser to use for monitoring</param>
-        /// <param name="faultConnector">Connector to use for faults</param>
-        private void InitYarnNodes(int nodeCount, IHadoopParser monitorParser, IHadoopConnector faultConnector)
+        private void InitYarnNodes(int nodeCount)
         {
             for(int i = 1; i <= nodeCount; i++)
             {
-                var node = new YarnNode(NodeNamePrefix + i, monitorParser, faultConnector, Controller);
+                var node = new YarnNode(NodeNamePrefix + i, Controller);
 
                 Controller.ConnectedNodes.Add(node);
                 Nodes.Add(node);
             }
         }
 
-        ///// <summary>
-        ///// Init submitting clients
-        ///// </summary>
-        ///// <param name="clientCount">Instances count</param>
-        ///// <param name="monitorParser">Parser to use for monitoring</param>
-        ///// <param name="submittingConnector">Connector to submitting <see cref="YarnApp"/></param>
-        //private void InitClients(int clientCount, IHadoopParser monitorParser, IHadoopConnector submittingConnector)
-        //{
-        //    for(int i = 0; i < clientCount; i++)
-        //    {
-        //        var client = new Client(Controller, monitorParser, submittingConnector, $"/client{i}");
-
-        //        Controller.ConnectedClients.Add(client);
-        //        Clients.Add(client);
-        //    }
-        //}
-
         /// <summary>
         /// Init submitting clients
         /// </summary>
         /// <param name="clientCount">Instances count</param>
-        /// <param name="monitorParser">Parser to use for monitoring</param>
-        /// <param name="submittingConnector">Connector to submitting <see cref="YarnApp"/></param>
         /// <param name="benchTransitionSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
-        private void InitClients(int clientCount, IHadoopParser monitorParser, IHadoopConnector submittingConnector, int benchTransitionSeed)
+        private void InitClients(int clientCount, int benchTransitionSeed)
         {
             for(int i = 0; i < clientCount; i++)
             {
-                var client = new Client(Controller, monitorParser, submittingConnector, $"client{i}", benchTransitionSeed);
+                var client = new Client(Controller, $"client{i}", benchTransitionSeed);
 
                 Controller.ConnectedClients.Add(client);
                 Clients.Add(client);
@@ -233,15 +278,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Init application instances
         /// </summary>
         /// <param name="appCount">Instances count</param>
-        /// <param name="monitorParser">Parser to use for monitoring</param>
-        /// <param name="faultConnector">Connector to use for faults</param>
-        private void InitApplications(int appCount, IHadoopParser monitorParser, IHadoopConnector faultConnector)
+        private void InitApplications(int appCount)
         {
             foreach(var client in Clients)
             {
                 for(int i = 0; i < appCount; i++)
                 {
-                    var app = new YarnApp(faultConnector, client, monitorParser);
+                    var app = new YarnApp(client);
 
                     client.Apps.Add(app);
                     Controller.Apps.Add(app);
@@ -254,14 +297,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Init application attempt instances
         /// </summary>
         /// <param name="attemptCount">Attempt instances count per app</param>
-        /// <param name="monitorParser">Parser to use for monitoring</param>
-        private void InitAppAttempts(int attemptCount, IHadoopParser monitorParser)
+        private void InitAppAttempts(int attemptCount)
         {
             foreach(var app in Applications)
             {
                 for(int i = 0; i < attemptCount; i++)
                 {
-                    var attempt = new YarnAppAttempt(app, monitorParser);
+                    var attempt = new YarnAppAttempt(app);
 
                     app.Attempts.Add(attempt);
                     AppAttempts.Add(attempt);
@@ -273,14 +315,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Init application container instances
         /// </summary>
         /// <param name="containerCount">Container instances count per attempt</param>
-        /// <param name="monitorParser">Parser to use for monitoring</param>
-        private void InitContainers(int containerCount, IHadoopParser monitorParser)
+        private void InitContainers(int containerCount)
         {
             foreach(var attempt in AppAttempts)
             {
                 for(int i = 0; i < containerCount; i++)
                 {
-                    var container = new YarnAppContainer(attempt, monitorParser);
+                    var container = new YarnAppContainer(attempt);
 
                     attempt.Containers.Add(container);
                     AppContainers.Add(container);

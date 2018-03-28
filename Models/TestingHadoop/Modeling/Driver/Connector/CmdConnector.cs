@@ -35,6 +35,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
         #region Properties
 
+        private static CmdConnector _Instance;
+
+        /// <summary>
+        /// <see cref="CmdConnector"/> instance
+        /// </summary>
+        public static CmdConnector Instance => _Instance ?? CreateInstance();
+
         /// <summary>
         /// The monitoring connection
         /// </summary>
@@ -76,7 +83,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <param name="forFaulting">True to use this connection for fault handling</param>
         /// <param name="submittingConnections">The count for submitting application connections</param>
         /// <param name="isConsoleOut">True on console outputting the commands and returns</param>
-        public CmdConnector(string host, string username, string privateKeyFilePath, bool forMonitoring = true,
+        private CmdConnector(string host, string username, string privateKeyFilePath, bool forMonitoring = false,
                             bool forFaulting = true, int submittingConnections = 4, bool isConsoleOut = false)
         {
             Submitting = new List<SshConnection>();
@@ -90,6 +97,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 Faulting = new SshConnection(Host, username, privateKeyFilePath);
             for(int i = 0; i < submittingConnections; i++)
                 Submitting.Add(new SshConnection(Host, username, privateKeyFilePath, @"Submitted application (application_\d+_\d+)"));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="CmdConnector"/> instance without monitoring features,
+        /// saves and returns it if <see cref="Model.SshHost"/> is set
+        /// </summary>
+        /// <returns>Null if <see cref="Model.SshHost"/> is not set, otherwise the instance</returns>
+        internal static CmdConnector CreateInstance()
+        {
+            if(String.IsNullOrWhiteSpace(Model.SshHost))
+                return null;
+            _Instance = new CmdConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile);
+            return _Instance;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="CmdConnector"/> instance with monitoring features,
+        /// saves and returns it if <see cref="Model.SshHost"/> is set
+        /// </summary>
+        /// <returns>Null if <see cref="Model.SshHost"/> is not set, otherwise the instance</returns>
+        internal static CmdConnector CreateFullInstance()
+        {
+            if(String.IsNullOrWhiteSpace(Model.SshHost))
+                return null;
+            _Instance = new CmdConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, true);
+            return _Instance;
         }
 
         /// <summary>

@@ -46,7 +46,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [TestFixtureSetUp]
         public void Setup()
         {
-            _Model = new Model("Full architecture test");
+            _Model = Model.Instance;
             _Model.InitModel();
             _Model.Clients[0].BenchController = new BenchmarkController(1);
 

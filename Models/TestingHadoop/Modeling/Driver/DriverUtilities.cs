@@ -52,7 +52,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         public static YarnNode ParseNode(string node, Model model)
         {
             var nodeName = _ParseNodeRegex.Match(node).Groups[2].Value;
-            var nodeObj = model.Nodes.FirstOrDefault(n => n.NodeId == node);
+            var nodeObj = model.Nodes.FirstOrDefault(n => n.Name == nodeName);
             return nodeObj;
         }
 

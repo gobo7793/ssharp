@@ -41,12 +41,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [SetUp]
         public void Setup()
         {
-            _Model = new Model();
-            _Parser = new CmdParser(_Model, new DummyHadoopCmdConnector());
+            _Model = Model.Instance;
+            _Parser = CmdParser.CreateInstance(new DummyHadoopCmdConnector());
 
             _Model.InitTestConfig(_Parser, _Parser.Connection);
-            _Node1 = _Model.Nodes.First(n => n.NodeId == $"{Model.NodeNamePrefix}1");
-            _Node2 = _Model.Nodes.First(n => n.NodeId == $"{Model.NodeNamePrefix}2");
+            _Node1 = _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}1");
+            _Node2 = _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}2");
         }
 
         [Test]

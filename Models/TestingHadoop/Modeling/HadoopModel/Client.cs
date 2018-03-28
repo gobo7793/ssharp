@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
@@ -55,12 +56,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Parser to monitoring data from cluster
         /// </summary>
-        public IHadoopParser Parser { get; set; }
+        [NonSerializable]
+        public IHadoopParser Parser => RestParser.Instance;
 
         /// <summary>
         /// The connector to submit a <see cref="CurrentExecutingApp"/>
         /// </summary>
-        public IHadoopConnector SubmittingConnector { get; set; }
+        [NonSerializable]
+        public IHadoopConnector SubmittingConnector => Model.UsingFaultingConnector;
 
         /// <summary>
         /// HDFS base directory for the client
@@ -88,15 +91,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Initializes a new <see cref="Client"/>
         /// </summary>
         /// <param name="controller">Connected <see cref="YarnController"/> for the client</param>
-        /// <param name="parser">Parser to monitoring data from cluster</param>
-        /// <param name="submittingConnector">The connector to submit a <see cref="CurrentExecutingApp"/></param>
         /// <param name="clientHdfsDir">The hdfs base directory for this client</param>
-        public Client(YarnController controller, IHadoopParser parser, IHadoopConnector submittingConnector, string clientHdfsDir)
+        public Client(YarnController controller, string clientHdfsDir)
             : this()
         {
             ConnectedYarnController = controller;
-            Parser = parser;
-            SubmittingConnector = submittingConnector;
             ClientDir = clientHdfsDir;
 
             BenchController = new BenchmarkController();
@@ -106,12 +105,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Initializes a new <see cref="Client"/>
         /// </summary>
         /// <param name="controller">Connected <see cref="YarnController"/> for the client</param>
-        /// <param name="parser">Parser to monitoring data from cluster</param>
-        /// <param name="submittingConnector">The connector to submit a <see cref="CurrentExecutingApp"/></param>
         /// <param name="clientHdfsDir">The hdfs base directory for this client</param>
         /// <param name="benchControllerSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
-        public Client(YarnController controller, IHadoopParser parser, IHadoopConnector submittingConnector, string clientHdfsDir, int benchControllerSeed)
-            : this(controller, parser, submittingConnector, clientHdfsDir)
+        public Client(YarnController controller, string clientHdfsDir, int benchControllerSeed)
+            : this(controller, clientHdfsDir)
         {
             BenchController = new BenchmarkController(benchControllerSeed);
         }

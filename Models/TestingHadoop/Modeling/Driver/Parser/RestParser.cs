@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
@@ -32,6 +33,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
     public class RestParser : IHadoopParser
     {
         #region Properties and Constants
+
+        private static RestParser _Instance;
+
+        /// <summary>
+        /// <see cref="RestParser"/> instance
+        /// </summary>
+        public static RestParser Instance => _Instance ?? CreateInstance();
 
         /// <summary>
         /// Model with its components
@@ -52,10 +60,36 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
         /// </summary>
         /// <param name="model">The model</param>
         /// <param name="connection">The connector to Hadoop</param>
-        public RestParser(Model model, IHadoopConnector connection)
+        private RestParser(Model model, IHadoopConnector connection)
         {
             Model = model;
             Connection = connection;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="RestParser"/> instance, saves and returns it if a <see cref="RestConnector"/> can be set
+        /// </summary>
+        /// <returns>Null if <see cref="RestConnector"/> is not set, otherwise the instance</returns>
+        internal static RestParser CreateInstance()
+        {
+            return CreateInstance(RestConnector.Instance);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="RestParser"/> instance using the given <see cref="IHadoopConnector"/>,
+        /// saves and returns it
+        /// </summary>
+        /// <param name="connector">The <see cref="IHadoopConnector"/> to use</param>
+        /// <returns>Null if <see cref="RestParser"/> is not set, otherwise the instance</returns>
+        internal static RestParser CreateInstance(IHadoopConnector connector)
+        {
+            if(connector == null)
+                return null;
+
+            var model = Model.Instance;
+            _Instance = new RestParser(model, connector);
+
+            return _Instance;
         }
 
         #endregion

@@ -38,28 +38,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private RestConnector _Rest;
 
         // After restart cluster and executing applications change these values for the app!
-        private string _AppId = "application_1517215519416_0001";
-        private string _AttemptId = "appattempt_1517215519416_0001_000001";
-        private string _ContainerId = "container_1517215519416_0001_01_000001";
-        private string _NodeId = "compute-1:45454";
+        private string _AppId = "application_1522152662556_0001";
+        private string _AttemptId = "appattempt_1522152662556_0001_000001";
+        private string _ContainerId = "container_1522152662556_0001_01_000001";
+        private string _AmNodeId = "compute-2:45454";
         // For Fault Handling
         private string _FaultNodeName = "compute-4";
-        private string _FaultAppId = "application_1517215519416_0011";
+        private string _FaultAppId = "application_1522152662556_002";
 
         [TestFixtureSetUp]
         public void Setup()
         {
 
-            var model = new Model();
+            var model = Model.Instance;
             model.InitTestConfig(null, null);
 
             Console.WriteLine("Login to shell");
 
             var startTime = DateTime.Now;
-            _Cmd = new CmdConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, true, true, 1);
+            _Cmd = CmdConnector.CreateFullInstance();
             var cmdTime = DateTime.Now;
-            _Rest = new RestConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile,
-                model.Controller.HttpUrl, model.Controller.TimelineHttpUrl);
+            _Rest = RestConnector.Instance;
             var restTime = DateTime.Now;
 
             Console.WriteLine($"CMD needed:  {cmdTime - startTime}");
@@ -69,7 +68,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine($"Application id: {_AppId}");
             Console.WriteLine($"Attempt id: {_AttemptId}");
             Console.WriteLine($"Container id: {_ContainerId}");
-            Console.WriteLine($"Node id: {_NodeId}");
+            Console.WriteLine($"Node id: {_AmNodeId}");
             Console.WriteLine();
             Console.WriteLine($"Fault Node name: {_FaultNodeName}");
             Console.WriteLine($"Fault Application id: {_FaultAppId}");
@@ -274,7 +273,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             var startTime = DateTime.Now;
             var cmdOut = _Cmd.GetYarnAppContainerDetails(_ContainerId);
             var cmdTime = DateTime.Now;
-            var restOut = _Rest.GetYarnAppContainerDetails(_ContainerId, _NodeId);
+            var restOut = _Rest.GetYarnAppContainerDetails(_ContainerId, _AmNodeId);
             var restTime = DateTime.Now;
 
             Console.WriteLine($"CMD needed:  {cmdTime - startTime}");
@@ -338,9 +337,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine("Get node details");
 
             var startTime = DateTime.Now;
-            var cmdOut = _Cmd.GetYarnNodeDetails(_NodeId);
+            var cmdOut = _Cmd.GetYarnNodeDetails(_AmNodeId);
             var cmdTime = DateTime.Now;
-            var restOut = _Rest.GetYarnNodeDetails(_NodeId);
+            var restOut = _Rest.GetYarnNodeDetails(_AmNodeId);
             var restTime = DateTime.Now;
 
             Console.WriteLine($"CMD needed:  {cmdTime - startTime}");

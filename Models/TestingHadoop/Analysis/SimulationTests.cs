@@ -24,6 +24,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using NUnit.Framework;
 using SafetySharp.Analysis;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
@@ -33,15 +34,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 {
     public class SimulationTests
     {
+        private static readonly TimeSpan _StepMinTime = new TimeSpan(0, 0, 0, 30);
+
         [Test]
         public void Simulate()
         {
-            var model = new Model();
+            var model = Model.Instance;
             model.InitModel();
             model.Faults.SuppressActivations();
 
             var simulator = new SafetySharpSimulator(model);
-            PrintTrace(simulator, steps: 120);
+            PrintTrace(simulator, steps: 1);
         }
 
         public static void PrintTrace(SafetySharpSimulator simulator, int steps)
@@ -50,12 +53,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
             for(var i = 0; i < steps; i++)
             {
-                WriteLine($"=================  Step: {i}  =====================================");
-
-                PrintTrace(model);
+                var stepStartTime = DateTime.Now;
 
                 simulator.SimulateStep();
+
+                var stepTime = DateTime.Now - stepStartTime;
+                if(stepTime < _StepMinTime)
+                    Thread.Sleep(_StepMinTime - stepTime);
+
+                WriteLine($"=================  Step: {i}  =====================================");
+                WriteLine($"Duration: {stepTime.ToString()}");
+
+                PrintTrace(model);
             }
+
+            WriteLine("=================   Finish    =====================================");
         }
 
         public static void PrintTrace(Model model)
@@ -103,10 +115,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
             foreach(var node in model.Nodes)
             {
-                WriteLine($"=== Node {node.Value.NodeId} ===");
-                WriteLine($"State:       {node.Value.State}");
-                WriteLine($"IsActive:    {node.Value.IsActive}");
-                WriteLine($"IsConnected: {node.Value.IsConnected}");
+                WriteLine($"=== Node {node.NodeId} ===");
+                WriteLine($"State:       {node.State}");
+                WriteLine($"IsActive:    {node.IsActive}");
+                WriteLine($"IsConnected: {node.IsConnected}");
             }
         }
 

@@ -41,10 +41,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [TestFixtureSetUp]
         public void Setup()
         {
-            _Model = new Model();
-            var parser = new CmdParser(_Model, new DummyHadoopCmdConnector());
+            _Model = Model.Instance;
+            var parser = CmdParser.CreateInstance(new DummyHadoopCmdConnector());
 
-            _Model.InitTestConfig(parser, parser.Connection, 1);
+            _Model.InitTestConfig(parser, parser.Connection);
 
             _Client1 = _Model.Clients[0];
             _App = _Model.Applications[0];

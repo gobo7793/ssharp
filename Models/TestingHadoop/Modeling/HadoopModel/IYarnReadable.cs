@@ -10,7 +10,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Parser to monitoring data from cluster
         /// </summary>
-        IHadoopParser Parser { get; set; }
+        IHadoopParser Parser { get; }
 
         /// <summary>
         /// Indicates if the data is collected and parsed by the component itself

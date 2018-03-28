@@ -109,11 +109,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Initializes a new <see cref="YarnAppAttempt"/>
         /// </summary>
         /// <param name="app"><see cref="YarnApp"/> from this attempt</param>
-        /// <param name="parser">Parser to monitoring data from cluster</param>
-        public YarnAppAttempt(YarnApp app, IHadoopParser parser) : this()
+        public YarnAppAttempt(YarnApp app) : this()
         {
             App = app;
-            Parser = parser;
         }
 
         #endregion
@@ -123,7 +121,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Parser to monitoring data from cluster
         /// </summary>
-        public IHadoopParser Parser { get; set; }
+        [NonSerializable]
+        public IHadoopParser Parser => Model.UsingMonitoringParser;
 
         /// <summary>
         /// Indicates if the data is collected and parsed by the component itself

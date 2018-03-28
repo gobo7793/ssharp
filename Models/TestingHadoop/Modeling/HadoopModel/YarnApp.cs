@@ -53,7 +53,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// The connector to use for fault handling
         /// </summary>
-        public IHadoopConnector FaultConnector { get; set; }
+        [NonSerializable]
+        public IHadoopConnector FaultConnector => Model.UsingFaultingConnector;
 
         /// <summary>
         /// <see cref="YarnAppAttempt"/> for this <see cref="YarnApp"/>
@@ -187,14 +188,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Initializes a new <see cref="YarnApp"/>
         /// </summary>
-        /// <param name="faultConnector">The connector to use for fault handling</param>
         /// <param name="startingClient">Starting <see cref="Client"/> of this app</param>
-        /// <param name="parser">Parser to monitoring data from cluster</param>
-        public YarnApp(IHadoopConnector faultConnector, Client startingClient, IHadoopParser parser) : this()
+        public YarnApp(Client startingClient) : this()
         {
-            FaultConnector = faultConnector;
             StartingClient = startingClient;
-            Parser = parser;
         }
 
         #endregion
@@ -204,7 +201,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Parser to monitoring data from cluster
         /// </summary>
-        public IHadoopParser Parser { get; set; }
+        [NonSerializable]
+        public IHadoopParser Parser => Model.UsingMonitoringParser;
 
         /// <summary>
         /// Indicates if the data is collected and parsed by the component itself

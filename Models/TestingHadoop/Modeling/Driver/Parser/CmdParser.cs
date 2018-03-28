@@ -22,6 +22,7 @@
 
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
@@ -33,6 +34,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
     public class CmdParser : IHadoopParser
     {
         #region Constants and Properties
+
+        private static CmdParser _Instance;
+
+        /// <summary>
+        /// <see cref="CmdParser"/> instance
+        /// </summary>
+        public static CmdParser Instance => _Instance ?? CreateInstance();
 
         /// <summary>
         /// Hadoop converted timestamp format
@@ -86,11 +94,37 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
         /// <param name="model">The model</param>
         /// <param name="connection">The connector to Hadoop</param>
         /// <param name="maxContainerCount">Maximum container count to parse on container list</param>
-        public CmdParser(Model model, IHadoopConnector connection, int maxContainerCount = 32)
+        private CmdParser(Model model, IHadoopConnector connection, int maxContainerCount = 32)
         {
             Model = model;
             Connection = connection;
             MaxContainerCount = maxContainerCount;
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="CmdParser"/> instance, saves and returns it if a <see cref="CmdConnector"/> can be set
+        /// </summary>
+        /// <returns>Null if <see cref="CmdConnector"/> is not set, otherwise the instance</returns>
+        internal static CmdParser CreateInstance()
+        {
+            return CreateInstance(CmdConnector.Instance);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="CmdParser"/> instance using the given <see cref="IHadoopConnector"/>,
+        /// saves and returns it
+        /// </summary>
+        /// <param name="connector">The <see cref="IHadoopConnector"/> to use</param>
+        /// <returns>Null if <see cref="CmdConnector"/> is not set, otherwise the instance</returns>
+        internal static CmdParser CreateInstance(IHadoopConnector connector)
+        {
+            if(connector == null)
+                return null;
+
+            var model = Model.Instance;
+            _Instance = new CmdParser(model, connector);
+
+            return _Instance;
         }
 
         #endregion

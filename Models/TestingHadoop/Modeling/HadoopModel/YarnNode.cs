@@ -58,7 +58,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// The connector to use for fault handling
         /// </summary>
-        public IHadoopConnector FaultConnector { get; set; }
+        [NonSerializable]
+        public IHadoopConnector FaultConnector => Model.UsingFaultingConnector;
 
         /// <summary>
         /// <see cref="YarnApp" />s executing by this node
@@ -159,15 +160,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Initializes a new <see cref="YarnNode"/>
         /// </summary>
         /// <param name="name">Name of the Host</param>
-        /// <param name="parser">Parser to monitoring data from cluster</param>
-        /// <param name="faultConnector">The connector to use for fault handling</param>
         /// <param name="controller">Connected <see cref="YarnController"/></param>
-        public YarnNode(string name, IHadoopParser parser, IHadoopConnector faultConnector, YarnController controller)
-            : base(name, parser)
+        public YarnNode(string name, YarnController controller)
+            : base(name)
         {
             InitYarnNode();
 
-            FaultConnector = faultConnector;
             Controller = controller;
         }
 

@@ -22,7 +22,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Text;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
 {

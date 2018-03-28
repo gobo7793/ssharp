@@ -32,6 +32,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
         #region Properties
 
+        private static RestConnector _Instance;
+
+        /// <summary>
+        /// <see cref="RestConnector"/> instance
+        /// </summary>
+        public static RestConnector Instance => _Instance ?? CreateInstance();
+
         /// <summary>
         /// The monitoring connection
         /// </summary>
@@ -66,12 +73,25 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <param name="privateKeyFilePath">The private key file path</param>
         /// <param name="rmUrl">HTTP URL of ResourceManager</param>
         /// <param name="tlUrl">HTTP URL of Timeline server</param>
-        public RestConnector(string host, string username, string privateKeyFilePath, string rmUrl, string tlUrl)
+        private RestConnector(string host, string username, string privateKeyFilePath, string rmUrl, string tlUrl)
         {
             RmUrl = rmUrl;
             TlUrl = tlUrl;
 
             Monitoring = new SshConnection(host, username, privateKeyFilePath);
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="RestConnector"/> instance, saves and returns it if <see cref="Model.SshHost"/> is set
+        /// </summary>
+        /// <returns>Null if <see cref="Model.SshHost"/> is not set, otherwise the instance</returns>
+        private static RestConnector CreateInstance()
+        {
+            if(String.IsNullOrWhiteSpace(Model.SshHost))
+                return null;
+            _Instance = new RestConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, Model.DefaultControllerRestRmUrl,
+                Model.DefaultControllerRestTlsUrl);
+            return _Instance;
         }
 
         /// <summary>

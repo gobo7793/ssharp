@@ -66,7 +66,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Parser to monitoring data from cluster
         /// </summary>
-        public IHadoopParser Parser { get; set; }
+        [NonSerializable]
+        public IHadoopParser Parser => Model.UsingMonitoringParser;
 
         #endregion
 
@@ -84,16 +85,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         protected YarnHost(string name) : this()
         {
             Name = name;
-        }
-
-        /// <summary>
-        /// Initializes a new <see cref="YarnHost"/>
-        /// </summary>
-        /// <param name="name">Name of the Host</param>
-        /// <param name="parser">Parser to monitoring data from cluster</param>
-        protected YarnHost(string name, IHadoopParser parser) : this(name)
-        {
-            Parser = parser;
         }
 
         #endregion
