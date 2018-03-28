@@ -51,6 +51,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The parsed <see cref="YarnNode"/></returns>
         public static YarnNode ParseNode(string node, Model model)
         {
+            Console.WriteLine($"search node {node}");
             var nodeName = _ParseNodeRegex.Match(node).Groups[2].Value;
             var nodeObj = model.Nodes.FirstOrDefault(n => n.Name == nodeName);
             return nodeObj;

@@ -57,15 +57,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         [NonSerializable]
         public IHadoopConnector FaultConnector => Model.UsingFaultingConnector;
 
-        /// <summary>
-        /// <see cref="YarnApp" />s executing by this node
-        /// </summary>
-        public List<YarnApp> ExecutingApps { get; private set; }
+        ///// <summary>
+        ///// <see cref="YarnApp" />s executing by this node
+        ///// </summary>
+        //public List<YarnApp> ExecutingApps { get; private set; }
 
-        /// <summary>
-        /// Running Containers on this Node
-        /// </summary>
-        public List<YarnAppContainer> Containers { get; private set; }
+        ///// <summary>
+        ///// Running Containers on this Node
+        ///// </summary>
+        //public List<YarnAppContainer> Containers { get; private set; }
 
         /// <summary>
         /// Node ID, based on its Name
@@ -159,8 +159,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         private void InitYarnNode()
         {
-            ExecutingApps = new List<YarnApp>();
-            Containers = new List<YarnAppContainer>();
+            //ExecutingApps = new List<YarnApp>();
+            //Containers = new List<YarnAppContainer>();
             IsActive = true;
             IsConnected = true;
             State = ENodeState.None;
