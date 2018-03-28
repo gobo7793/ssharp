@@ -97,6 +97,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// List of Clients
         /// </summary>
+        [Root(RootKind.Controller)]
         public List<Client> Clients { get; set; }
 
         /// <summary>

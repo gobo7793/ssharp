@@ -51,10 +51,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #region Properties
 
-        private string _NodeId;
-
-        protected override string HttpPort => "8042";
-
         /// <summary>
         /// The connector to use for fault handling
         /// </summary>
@@ -74,15 +70,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Node ID, based on its Name
         /// </summary>
-        public string NodeId
-        {
-            get
-            {
-                if(String.IsNullOrWhiteSpace(_NodeId))
-                    _NodeId = Name + ":45454";
-                return _NodeId;
-            }
-        }
+        public string NodeId { get; set; }
 
         /// <summary>
         /// Connected <see cref="YarnController"/>
@@ -162,7 +150,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <param name="name">Name of the Host</param>
         /// <param name="controller">Connected <see cref="YarnController"/></param>
         public YarnNode(string name, YarnController controller)
-            : base(name)
+            : base(name, 8042)
         {
             InitYarnNode();
 
@@ -177,6 +165,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             IsConnected = true;
             State = ENodeState.None;
             IsSelfMonitoring = true;
+            NodeId = $"{Name}:45454";
         }
 
         #endregion

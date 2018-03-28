@@ -77,8 +77,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 var client = model.Clients[c];
 
                 WriteLine($"=== Client {c} ===");
-                WriteLine($"Current executing bench: {client.BenchController.CurrentBenchmark.Name}");
-                WriteLine($"Current executing app:   {client.CurrentExecutingApp.AppId}");
+                WriteLine($"Current executing bench: {client.BenchController?.CurrentBenchmark?.Name}");
+                WriteLine($"Current executing app:   {client.CurrentExecutingApp?.AppId}");
 
                 foreach(var app in model.Clients[c].Apps)
                 {
@@ -88,7 +88,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                     WriteLine($"    === App {app.AppId} ===");
                     WriteLine($"    State:       {app.State}");
                     WriteLine($"    FinalStatus: {app.FinalStatus}");
-                    WriteLine($"    AM Host:     {app.AmHost.Name}");
+                    WriteLine($"    AM Host:     {app.AmHost?.Name}");
 
                     foreach(var attempt in app.Attempts)
                     {
@@ -98,7 +98,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                         WriteLine($"        === Attempt {attempt.AttemptId} ===");
                         WriteLine($"        State:        {attempt.State}");
                         WriteLine($"        AM Container: {attempt.AmContainerId}");
-                        WriteLine($"        AM Host:      {attempt.AmHost.Name}");
+                        WriteLine($"        AM Host:      {attempt.AmHost?.Name}");
 
                         foreach(var container in attempt.Containers)
                         {
@@ -107,7 +107,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
                             WriteLine($"            === Container {container.ContainerId} ===");
                             WriteLine($"            State: {container.State}");
-                            WriteLine($"            Host:  {container.Host.Name}");
+                            WriteLine($"            Host:  {container.Host?.Name}");
                         }
                     }
                 }

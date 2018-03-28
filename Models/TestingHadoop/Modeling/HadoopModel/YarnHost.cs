@@ -36,32 +36,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #region Properties
 
-        private string _HttpUrl;
-        private string _Name;
-
-        protected abstract string HttpPort { get; }
-
         /// <summary>
         /// Name of the Host
         /// </summary>
-        public string Name
-        {
-            get { return _Name; }
-            set { _HttpUrl = null; _Name = value; }
-        }
+        public string Name { get; set; }
 
         /// <summary>
         /// HTTP URL of the Host with port, requires a <see cref="Name"/>
         /// </summary>
-        public string HttpUrl
-        {
-            get
-            {
-                if(String.IsNullOrWhiteSpace(_HttpUrl))
-                    _HttpUrl = $"http://{Name}:{HttpPort}";
-                return _HttpUrl;
-            }
-        }
+        public string HttpUrl { get; set; }
 
         /// <summary>
         /// Parser to monitoring data from cluster
@@ -82,9 +65,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Initializes a new <see cref="YarnHost"/>
         /// </summary>
         /// <param name="name">Name of the Host</param>
-        protected YarnHost(string name) : this()
+        /// <param name="httpPort">HTTP port number</param>
+        protected YarnHost(string name, ushort httpPort) : this()
         {
             Name = name;
+            HttpUrl = $"http://{Name}:{httpPort}";
         }
 
         #endregion

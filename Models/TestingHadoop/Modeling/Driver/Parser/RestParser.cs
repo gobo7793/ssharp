@@ -140,13 +140,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
                 string attemptId;
                 var parsedId = DriverUtilities.ParseInt(attempt.AttemptId);
                 if(parsedId != 0)
+                {
                     attemptId = DriverUtilities.ConvertId(appId, parsedId, EConvertType.Attempt);
-                else attemptId = attempt.AttemptId;
+                    attempt.AttemptId = attemptId;
+                }
+                else
+                    attemptId = attempt.AttemptId;
 
                 var tlAttempt = tlAttempts?.List?.FirstOrDefault(a => a.AttemptId == attemptId);
                 if(tlAttempt != null)
                 {
-                    attempt.AttemptId = tlAttempt.AttemptId;
+                    //attempt.AttemptId = tlAttempt.AttemptId;
                     attempt.State = tlAttempt.State;
                     attempt.TrackingUrl = tlAttempt.TrackingUrl;
                     attempt.Diagnostics = tlAttempt.Diagnostics;

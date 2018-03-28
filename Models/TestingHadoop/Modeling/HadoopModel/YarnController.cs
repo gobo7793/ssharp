@@ -33,12 +33,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #region Properties
 
-        protected override string HttpPort => "8088";
-
         /// <summary>
         /// HTTP URL of the timeline server
         /// </summary>
-        public string TimelineHttpUrl => $"http://{Name}:8188";
+        public string TimelineHttpUrl { get; private set; }
 
         /// <summary>
         /// Connected <see cref="Client" />
@@ -71,9 +69,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Initialize a new <see cref="YarnController"/>
         /// </summary>
         /// <param name="name">Name of the Host</param>
-        public YarnController(string name) : base(name)
+        public YarnController(string name) : base(name, 8088)
         {
             InitYarnController();
+            TimelineHttpUrl = $"http://{Name}:8188";
         }
 
         private void InitYarnController()

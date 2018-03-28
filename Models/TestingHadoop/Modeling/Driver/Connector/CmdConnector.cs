@@ -108,7 +108,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         {
             if(String.IsNullOrWhiteSpace(Model.SshHost))
                 return null;
+//#if DEBUG
+//            _Instance = new CmdConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, isConsoleOut: true);
+//#else
             _Instance = new CmdConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile);
+//#endif
             return _Instance;
         }
 
