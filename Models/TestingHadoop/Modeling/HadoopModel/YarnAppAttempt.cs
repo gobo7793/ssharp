@@ -134,31 +134,31 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void MonitorStatus()
         {
-            if(IsSelfMonitoring)
-            {
-                var parsed = Parser.ParseAppAttemptDetails(AttemptId);
-                if(parsed != null)
-                    SetStatus(parsed);
-            }
+            //if(IsSelfMonitoring)
+            //{
+            //    var parsed = Parser.ParseAppAttemptDetails(AttemptId);
+            //    if(parsed != null)
+            //        SetStatus(parsed);
+            //}
 
-            var parsedContainers = Parser.ParseContainerList(AttemptId);
-            foreach(var parsed in parsedContainers)
-            {
-                var container = Containers.FirstOrDefault(c => c.ContainerId == parsed.ContainerId) ??
-                              Containers.FirstOrDefault(c => String.IsNullOrWhiteSpace(c.ContainerId));
-                if(container == null)
-                    throw new OutOfMemoryException("No more containers available! Try to initialize more containers.");
+            //var parsedContainers = Parser.ParseContainerList(AttemptId);
+            //foreach(var parsed in parsedContainers)
+            //{
+            //    var container = Containers.FirstOrDefault(c => c.ContainerId == parsed.ContainerId) ??
+            //                  Containers.FirstOrDefault(c => String.IsNullOrWhiteSpace(c.ContainerId));
+            //    if(container == null)
+            //        throw new OutOfMemoryException("No more containers available! Try to initialize more containers.");
 
-                if(IsSelfMonitoring)
-                {
-                    container.ContainerId = parsed.ContainerId;
-                }
-                else
-                {
-                    container.SetStatus(parsed);
-                    container.IsSelfMonitoring = IsSelfMonitoring;
-                }
-            }
+            //    if(IsSelfMonitoring)
+            //    {
+            //        container.ContainerId = parsed.ContainerId;
+            //    }
+            //    else
+            //    {
+            //        container.SetStatus(parsed);
+            //        container.IsSelfMonitoring = IsSelfMonitoring;
+            //    }
+            //}
         }
 
         /// <summary>

@@ -85,6 +85,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public Client()
         {
             Apps = new List<YarnApp>();
+
+            CurrentExecutingApp = new YarnApp();
+            ConnectedYarnController = new YarnController();
+            ClientDir = String.Empty;
+
+            BenchController = new BenchmarkController();
         }
 
         /// <summary>
@@ -97,8 +103,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             ConnectedYarnController = controller;
             ClientDir = clientHdfsDir;
-
-            BenchController = new BenchmarkController();
         }
 
         /// <summary>
@@ -131,16 +135,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void UpdateBenchmark()
         {
-            bool benchChanged;
             if(!BenchController.IsInit)
-            {
                 BenchController.InitStartBench();
-                benchChanged = true;
-            }
-            else
-            {
-                benchChanged = BenchController.ChangeBenchmark();
-            }
+
+            var benchChanged = BenchController.ChangeBenchmark();
 
             if(benchChanged)
             {
@@ -181,7 +179,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 var app = Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));
                 if(app == null)
                     throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
-                app.AppId = appId;
+                //app.AppId = appId;
                 CurrentExecutingApp = app;
                 return CurrentExecutingApp.AppId;
             }
@@ -193,4 +191,5 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #endregion
 
     }
+
 }

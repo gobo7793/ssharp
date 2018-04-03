@@ -58,8 +58,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 simulator.SimulateStep();
 
                 var stepTime = DateTime.Now - stepStartTime;
-                if(stepTime < _StepMinTime)
-                    Thread.Sleep(_StepMinTime - stepTime);
+                //if(stepTime < _StepMinTime)
+                //    Thread.Sleep(_StepMinTime - stepTime);
 
                 WriteLine($"=================  Step: {i}  =====================================");
                 WriteLine($"Duration: {stepTime.ToString()}");
@@ -67,7 +67,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 PrintTrace(model);
             }
 
-            WriteLine("=================   Finish    =====================================");
+            WriteLine("=================  Finish  =====================================");
         }
 
         public static void PrintTrace(Model model)

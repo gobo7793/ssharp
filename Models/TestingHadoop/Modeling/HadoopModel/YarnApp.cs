@@ -183,6 +183,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             FinalStatus = EFinalStatus.None;
 
             IsSelfMonitoring = true;
+
+            Name = String.Empty;
+            AppId = String.Empty;
+            StartTime = DateTime.MinValue;
+            EndTime = DateTime.MinValue;
+            AmHost = new YarnNode();
+            TrackingUrl = String.Empty;
+            Diagnostics = String.Empty;
         }
 
         /// <summary>
@@ -214,32 +222,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void MonitorStatus()
         {
-            if(IsSelfMonitoring)
-            {
-                var parsed = Parser.ParseAppDetails(AppId);
-                if(parsed != null)
-                    SetStatus(parsed);
-            }
+            //if(IsSelfMonitoring)
+            //{
+            //    var parsed = Parser.ParseAppDetails(AppId);
+            //    if(parsed != null)
+            //        SetStatus(parsed);
+            //}
 
-            var parsedAttempts = Parser.ParseAppAttemptList(AppId);
-            foreach(var parsed in parsedAttempts)
-            {
-                var attempt = Attempts.FirstOrDefault(a => a.AttemptId == parsed.AttemptId) ??
-                              Attempts.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AttemptId));
-                if(attempt == null)
-                    throw new OutOfMemoryException("No more application attempts available! Try to initialize more attempts.");
+            //var parsedAttempts = Parser.ParseAppAttemptList(AppId);
+            //foreach(var parsed in parsedAttempts)
+            //{
+            //    var attempt = Attempts.FirstOrDefault(a => a.AttemptId == parsed.AttemptId) ??
+            //                  Attempts.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AttemptId));
+            //    if(attempt == null)
+            //        throw new OutOfMemoryException("No more application attempts available! Try to initialize more attempts.");
 
-                if(IsSelfMonitoring)
-                {
-                    attempt.AttemptId = parsed.AttemptId;
-                }
-                else
-                {
-                    attempt.SetStatus(parsed);
-                    attempt.IsSelfMonitoring = IsSelfMonitoring;
-                    attempt.MonitorStatus();
-                }
-            }
+            //    if(IsSelfMonitoring)
+            //    {
+            //        attempt.AttemptId = parsed.AttemptId;
+            //    }
+            //    else
+            //    {
+            //        attempt.SetStatus(parsed);
+            //        attempt.IsSelfMonitoring = IsSelfMonitoring;
+            //        attempt.MonitorStatus();
+            //    }
+            //}
         }
 
         /// <summary>

@@ -136,12 +136,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void MonitorStatus()
         {
-            if(!IsSelfMonitoring)
-                return;
+            //if(!IsSelfMonitoring)
+            //    return;
 
-            var parsed = Parser.ParseContainerDetails(ContainerId);
-            if(parsed != null)
-                SetStatus(parsed);
+            //var parsed = Parser.ParseContainerDetails(ContainerId);
+            //if(parsed != null)
+            //    SetStatus(parsed);
         }
 
         /// <summary>
