@@ -147,14 +147,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         #region Base methods
 
         /// <summary>
-        /// Initializes the instance
-        /// </summary>
-        static Model()
-        {
-            CreateNewInstance();
-        }
-
-        /// <summary>
         /// Initializes a new model
         /// </summary>
         private Model()
@@ -170,7 +162,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Creates a new <see cref="Model"/> instance, saves and returns it
         /// </summary>
         /// <returns>The instance</returns>
-        internal static Model CreateNewInstance()
+        private static Model CreateNewInstance()
         {
             _Instance = new Model();
 
