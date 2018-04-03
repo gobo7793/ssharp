@@ -86,12 +86,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <param name="name">Benchmark name</param>
         /// <param name="startCmd">Benchmark start command (without benchmark start script)</param>
         public Benchmark(int id, string name, string startCmd)
+        : this(id, name, startCmd, String.Empty, String.Empty)
         {
-            Id = id;
-            Name = name;
-            _StartCmd = startCmd;
-            HasOutputDir = false;
-            HasInputDir = false;
         }
 
         /// <summary>
@@ -102,10 +98,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <param name="startCmd">Benchmark start command (without benchmark start script), set outputDir via <see cref="OutDirHolder"/></param>
         /// <param name="outputDir">Output directory, set the hdfs base directory using <see cref="BaseDirHolder"/></param>
         public Benchmark(int id, string name, string startCmd, string outputDir)
-            : this(id, name, startCmd)
+            : this(id, name, startCmd, outputDir, String.Empty)
         {
-            _OutDir = outputDir;
-            HasOutputDir = true;
         }
 
         /// <summary>
@@ -118,10 +112,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <param name="outputDir">Output directory, set the hdfs base directory using <see cref="BaseDirHolder"/></param>
         /// <param name="inputDir">Input directory, set the hdfs base directory using <see cref="BaseDirHolder"/></param>
         public Benchmark(int id, string name, string startCmd, string outputDir, string inputDir)
-            : this(id, name, startCmd, outputDir)
         {
+            Id = id;
+            Name = name;
+            _StartCmd = startCmd;
+            HasOutputDir = !String.IsNullOrWhiteSpace(outputDir);
+            _OutDir = outputDir;
+            HasInputDir = !String.IsNullOrWhiteSpace(inputDir);
             _InDir = inputDir;
-            HasInputDir = true;
         }
 
         #endregion
