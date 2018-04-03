@@ -33,6 +33,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         #region Properties
 
         private static readonly Benchmark _SleepBench;
+        private Benchmark[] _BenchmarksInstance; // dummy instance to use to prevent S# errors
 
         /// <summary>
         /// The available benchmark list
@@ -131,6 +132,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         public BenchmarkController(int randomSeed)
         {
             RandomGen = new Random(randomSeed);
+            InitStartBench();
         }
 
         /// <summary>
@@ -139,6 +141,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         public BenchmarkController()
         {
             RandomGen = new Random();
+            InitStartBench();
         }
 
         #endregion
@@ -154,8 +157,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// </remarks>
         public void InitStartBench()
         {
+            _BenchmarksInstance = Benchmarks;
+            PreviousBenchmark = _SleepBench;
             CurrentBenchmark = _SleepBench;
-            ChangeBenchmark();
+            //ChangeBenchmark();
         }
 
         /// <summary>
@@ -167,12 +172,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <exception cref="Exception">If no followin benchmark found</exception>
         public bool ChangeBenchmark()
         {
-            if(BenchTransitions.Length != Benchmarks.Length)
+            if(BenchTransitions.Length != _BenchmarksInstance.Length)
                 throw new InvalidOperationException("Complete benchmark transition array must have same length like benchmark array");
 
             // use transition system
             var transitions = BenchTransitions[CurrentBenchmark.Id];
-            if(transitions.Length != Benchmarks.Length)
+            if(transitions.Length != _BenchmarksInstance.Length)
                 throw new InvalidOperationException(
                     $"BenchmarkController transition array for benchmark {CurrentBenchmark.Name} must have same length like benchmark array");
 
@@ -185,11 +190,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
                     continue;
 
                 // prevent saving current benchmark as previous
-                if(CurrentBenchmark == Benchmarks[i])
+                if(CurrentBenchmark == _BenchmarksInstance[i])
                     break;
 
                 PreviousBenchmark = CurrentBenchmark;
-                CurrentBenchmark = Benchmarks[i];
+                CurrentBenchmark = _BenchmarksInstance[i];
                 return true;
             }
 
