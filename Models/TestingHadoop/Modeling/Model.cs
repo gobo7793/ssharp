@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System.Collections.Generic;
+using System.Linq;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector;
@@ -242,7 +243,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <param name="nodeCount">Instances count</param>
         private void InitYarnNodes(int nodeCount)
         {
-            for(int i = 1; i <= nodeCount; i++)
+            for(int i = 0; i <= nodeCount; i++)
             {
                 var node = new YarnNode(NodeNamePrefix + i, Controller);
 
@@ -258,7 +259,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <param name="benchTransitionSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
         private void InitClients(int clientCount, int benchTransitionSeed)
         {
-            for(int i = 0; i < clientCount; i++)
+            for(int i = 1; i <= clientCount; i++)
             {
                 var client = new Client(Controller, $"client{i}", benchTransitionSeed);
 
@@ -296,7 +297,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             {
                 for(int i = 0; i < attemptCount; i++)
                 {
-                    var attempt = new YarnAppAttempt(app);
+                    var attempt = new YarnAppAttempt();
 
                     app.Attempts.Add(attempt);
                     AppAttempts.Add(attempt);
@@ -314,7 +315,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             {
                 for(int i = 0; i < containerCount; i++)
                 {
-                    var container = new YarnAppContainer(attempt);
+                    var container = new YarnAppContainer();
 
                     attempt.Containers.Add(container);
                     AppContainers.Add(container);

@@ -122,21 +122,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void MonitorApps()
         {
-            //var parsedApps = Parser.ParseAppList(EAppState.ALL);
-            //foreach(var parsed in parsedApps)
-            //{
-            //    var app = Apps.FirstOrDefault(a => a.AppId == parsed.AppId);// ??
-            //    //          Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));
-            //    //if(app == null)
-            //    //    throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
+            var parsedApps = Parser.ParseAppList(EAppState.ALL);
+            foreach(var parsed in parsedApps)
+            {
+                var app = Apps.FirstOrDefault(a => a.AppId == parsed.AppId);// ??
+                //          Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));
+                //if(app == null)
+                //    throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
 
-            //    if(app == null)
-            //        continue;
+                if(app == null)
+                    continue;
 
-            //    app.SetStatus(parsed);
-            //    app.IsSelfMonitoring = false;
-            //    app.MonitorStatus();
-            //}
+                app.SetStatus(parsed);
+                app.IsSelfMonitoring = false;
+                app.MonitorStatus();
+            }
         }
 
         #endregion

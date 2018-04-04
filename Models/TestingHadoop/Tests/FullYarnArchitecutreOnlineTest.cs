@@ -65,9 +65,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestBenchSubmitting()
         {
-            string appid = _Client1.StartBenchmark(BenchmarkController.Benchmarks[1]);
-            Console.WriteLine($"Started: {appid}");
-            Thread.Sleep(10000);
+            _Client1.StartBenchmark(BenchmarkController.Benchmarks[1]);
+            Console.WriteLine($"Started: {_Client1.CurrentExecutingApp.AppId}");
+            //Thread.Sleep(10000);
         }
 
         [Test]

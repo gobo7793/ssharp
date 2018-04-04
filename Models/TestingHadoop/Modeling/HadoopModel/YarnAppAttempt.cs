@@ -46,14 +46,42 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public List<YarnAppContainer> Containers { get; }
 
         /// <summary>
+        /// <see cref="YarnApp"/> ID from this attempt
+        /// </summary>
+        // public string AppId { get; set; }
+        public char[] AppIdActual { get; private set; }
+
+        /// <summary>
+        /// <see cref="YarnApp"/> ID from this attempt as string, based on <see cref="AppIdActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string AppId
+        {
+            get { return ModelUtilities.GetCharArrayAsString(AppIdActual); }
+            set { ModelUtilities.SetCharArrayOnString(AppIdActual, value); }
+        }
+
+        /// <summary>
         /// <see cref="YarnApp"/> from this attempt
         /// </summary>
-        public YarnApp App { get; set; }
+        [NonSerializable]
+        public YarnApp App => Model.Instance.Applications.FirstOrDefault(s => s.AppId == AppId);
 
         /// <summary>
         /// Attempt ID
         /// </summary>
-        public string AttemptId { get; set; }
+        // public string AttemptId { get; set; }
+        public char[] AttemptIdActual { get; private set; }
+
+        /// <summary>
+        /// Attempt ID as string, based on <see cref="AttemptIdActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string AttemptId
+        {
+            get { return ModelUtilities.GetCharArrayAsString(AttemptIdActual); }
+            set { ModelUtilities.SetCharArrayOnString(AttemptIdActual, value); }
+        }
 
         /// <summary>
         /// Current State
@@ -63,22 +91,62 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// ContainerId for ApplicationMaster
         /// </summary>
-        public string AmContainerId { get; set; }
+        // public string AmContainerId { get; set; }
+        public char[] AmContainerIdActual { get; private set; }
+
+        /// <summary>
+        /// ContainerId for ApplicationMaster as string, based on <see cref="AmContainerIdActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string AmContainerId
+        {
+            get { return ModelUtilities.GetCharArrayAsString(AmContainerIdActual); }
+            set { ModelUtilities.SetCharArrayOnString(AmContainerIdActual, value); }
+        }
 
         /// <summary>
         /// ApplicationMaster Container, null if not available
         /// </summary>
+        [NonSerializable]
         public YarnAppContainer AmContainer => Containers.FirstOrDefault(c => c.ContainerId == AmContainerId);
+
+        /// <summary>
+        /// <see cref="YarnNode"/> ID the ApplicationMaster is running
+        /// </summary>
+        // public string AmHostId { get; set; }
+        public char[] AmHostIdActual { get; private set; }
+
+        /// <summary>
+        /// <see cref="YarnNode"/> ID the ApplicationMaster is running as string, based on <see cref="AmHostIdActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string AmHostId
+        {
+            get { return ModelUtilities.GetCharArrayAsString(AmHostIdActual); }
+            set { ModelUtilities.SetCharArrayOnString(AmHostIdActual, value); }
+        }
 
         /// <summary>
         /// <see cref="YarnNode"/> the ApplicationMaster is running
         /// </summary>
-        public YarnNode AmHost { get; set; }
+        [NonSerializable]
+        public YarnNode AmHost => Model.Instance.Nodes.FirstOrDefault(h => h.NodeId == AmHostId);
 
         /// <summary>
         /// The tracking url for web UI
         /// </summary>
-        public string TrackingUrl { get; set; }
+        // public string TrackingUrl { get; set; }
+        public char[] TrackingUrlActual { get; private set; }
+
+        /// <summary>
+        /// The tracking url for web UI as string, based on <see cref="TrackingUrlActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string TrackingUrl
+        {
+            get { return ModelUtilities.GetCharArrayAsString(TrackingUrlActual); }
+            set { ModelUtilities.SetCharArrayOnString(TrackingUrlActual, value); }
+        }
 
         /// <summary>
         /// Starting Time
@@ -88,7 +156,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Diagnostics message for failed containers
         /// </summary>
-        public string Diagnostics { get; set; }
+        // public string Diagnostics { get; set; }
+        public char[] DiagnosticsActual { get; private set; }
+
+        /// <summary>
+        /// Diagnostics message for failed containers as string, based on <see cref="DiagnosticsActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string Diagnostics
+        {
+            get { return ModelUtilities.GetCharArrayAsString(DiagnosticsActual); }
+            set { ModelUtilities.SetCharArrayOnString(DiagnosticsActual, value); }
+        }
 
         #endregion
 
@@ -102,16 +181,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             Containers = new List<YarnAppContainer>();
             State = EAppState.NotStartedYet;
 
-            IsSelfMonitoring = true;
-        }
+            AttemptIdActual = new char[36];
+            AmContainerIdActual = new char[38];
+            AmHostIdActual = new char[0xF];
+            TrackingUrlActual = new char[0x7F];
+            DiagnosticsActual = new char[0xFF];
 
-        /// <summary>
-        /// Initializes a new <see cref="YarnAppAttempt"/>
-        /// </summary>
-        /// <param name="app"><see cref="YarnApp"/> from this attempt</param>
-        public YarnAppAttempt(YarnApp app) : this()
-        {
-            App = app;
+            IsSelfMonitoring = false;
         }
 
         #endregion
@@ -171,7 +247,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             AttemptId = attempt.AttemptId;
             State = attempt.State;
             AmContainerId = attempt.AmContainerId;
-            AmHost = attempt.AmHost;
+            //AmHost = attempt.AmHost;
+            AmHostId = attempt.AmHost.NodeId;
             TrackingUrl = attempt.TrackingUrl;
             StartTime = attempt.StartTime;
             Diagnostics = attempt.Diagnostics;

@@ -41,10 +41,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #region Faults
 
-        /// <summary>
-        /// App will be killed
-        /// </summary>
-        public readonly Fault KillApp = new PermanentFault();
+        ///// <summary>
+        ///// App will be killed
+        ///// </summary>
+        //public readonly Fault KillApp = new PermanentFault();
 
         #endregion
 
@@ -79,12 +79,34 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Name of the app
         /// </summary>
-        public string Name { get; set; }
+        // public string Name { get; set; }
+        public char[] NameActual { get; private set; }
+
+        /// <summary>
+        /// Name of the app as string, based on <see cref="NameActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string Name
+        {
+            get { return ModelUtilities.GetCharArrayAsString(NameActual); }
+            set { ModelUtilities.SetCharArrayOnString(NameActual, value); }
+        }
 
         /// <summary>
         /// ID of the app
         /// </summary>
-        public string AppId { get; set; }
+        // public string AppId { get; set; }
+        public char[] AppIdActual { get; private set; }
+
+        /// <summary>
+        /// ID of the app as string, based on <see cref="AppId"/>
+        /// </summary>
+        [NonSerializable]
+        public string AppId
+        {
+            get { return ModelUtilities.GetCharArrayAsString(AppIdActual); }
+            set { ModelUtilities.SetCharArrayOnString(AppIdActual, value); }
+        }
 
         /// <summary>
         /// Starting Time
@@ -97,9 +119,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public DateTime EndTime { get; set; }
 
         /// <summary>
-        /// Main ApplicationMaster Host
+        /// <see cref="YarnNode"/> ID the ApplicationMaster is running
         /// </summary>
-        public YarnNode AmHost { get; set; }
+        // public string AmHostId { get; set; }
+        public char[] AmHostIdActual { get; private set; }
+
+        /// <summary>
+        /// <see cref="YarnNode"/> ID the ApplicationMaster is running as string, based on <see cref="AmHostIdActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string AmHostId
+        {
+            get { return ModelUtilities.GetCharArrayAsString(AmHostIdActual); }
+            set { ModelUtilities.SetCharArrayOnString(AmHostIdActual, value); }
+        }
+
+        /// <summary>
+        /// <see cref="YarnNode"/> the ApplicationMaster is running
+        /// </summary>
+        [NonSerializable]
+        public YarnNode AmHost => Model.Instance.Nodes.FirstOrDefault(h => h.NodeId == AmHostId);
 
         /// <summary>
         /// Allocated Memory in MB
@@ -149,7 +188,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// The tracking url for web UI
         /// </summary>
-        public string TrackingUrl { get; set; }
+        // public string TrackingUrl { get; set; }
+        public char[] TrackingUrlActual { get; private set; }
+
+        /// <summary>
+        /// The tracking url for web UI as string, based on <see cref="TrackingUrlActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string TrackingUrl
+        {
+            get { return ModelUtilities.GetCharArrayAsString(TrackingUrlActual); }
+            set { ModelUtilities.SetCharArrayOnString(TrackingUrlActual, value); }
+        }
 
         /// <summary>
         /// The current running container count on the cluster
@@ -159,7 +209,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Diagnostics message for failed containers
         /// </summary>
-        public string Diagnostics { get; set; }
+        // public string Diagnostics { get; set; }
+        public char[] DiagnosticsActual { get; private set; }
+
+        /// <summary>
+        /// Diagnostics message for failed containers as string, based on <see cref="DiagnosticsActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string Diagnostics
+        {
+            get { return ModelUtilities.GetCharArrayAsString(DiagnosticsActual); }
+            set { ModelUtilities.SetCharArrayOnString(DiagnosticsActual, value); }
+        }
 
         /// <summary>
         /// Indicates that the app can be killed
@@ -182,15 +243,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             State = EAppState.NotStartedYet;
             FinalStatus = EFinalStatus.None;
 
-            IsSelfMonitoring = true;
+            IsSelfMonitoring = false;
 
-            Name = String.Empty;
-            AppId = String.Empty;
+            NameActual = new char[0xFF];
+            AppIdActual = new char[30];
             StartTime = DateTime.MinValue;
             EndTime = DateTime.MinValue;
-            AmHost = new YarnNode();
-            TrackingUrl = String.Empty;
-            Diagnostics = String.Empty;
+            AmHostIdActual = new char[0xF];
+            TrackingUrlActual = new char[0x7F];
+            DiagnosticsActual = new char[0xFF];
         }
 
         /// <summary>
@@ -222,32 +283,33 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void MonitorStatus()
         {
-            //if(IsSelfMonitoring)
-            //{
-            //    var parsed = Parser.ParseAppDetails(AppId);
-            //    if(parsed != null)
-            //        SetStatus(parsed);
-            //}
+            if(IsSelfMonitoring)
+            {
+                var parsed = Parser.ParseAppDetails(AppId);
+                if(parsed != null)
+                    SetStatus(parsed);
+            }
 
-            //var parsedAttempts = Parser.ParseAppAttemptList(AppId);
-            //foreach(var parsed in parsedAttempts)
-            //{
-            //    var attempt = Attempts.FirstOrDefault(a => a.AttemptId == parsed.AttemptId) ??
-            //                  Attempts.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AttemptId));
-            //    if(attempt == null)
-            //        throw new OutOfMemoryException("No more application attempts available! Try to initialize more attempts.");
+            var parsedAttempts = Parser.ParseAppAttemptList(AppId);
+            foreach(var parsed in parsedAttempts)
+            {
+                var attempt = Attempts.FirstOrDefault(a => a.AttemptId == parsed.AttemptId) ??
+                              Attempts.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AttemptId));
+                if(attempt == null)
+                    throw new OutOfMemoryException("No more application attempts available! Try to initialize more attempts.");
 
-            //    if(IsSelfMonitoring)
-            //    {
-            //        attempt.AttemptId = parsed.AttemptId;
-            //    }
-            //    else
-            //    {
-            //        attempt.SetStatus(parsed);
-            //        attempt.IsSelfMonitoring = IsSelfMonitoring;
-            //        attempt.MonitorStatus();
-            //    }
-            //}
+                attempt.AppId = AppId;
+                if(IsSelfMonitoring)
+                {
+                    attempt.AttemptId = parsed.AttemptId;
+                }
+                else
+                {
+                    attempt.SetStatus(parsed);
+                    attempt.IsSelfMonitoring = false;
+                    attempt.MonitorStatus();
+                }
+            }
         }
 
         /// <summary>
@@ -264,7 +326,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             Progress = app.Progess;
             State = app.State;
             FinalStatus = app.FinalStatus;
-            AmHost = app.AmHost;
+            //AmHost = app.AmHost;
+            AmHostId = app.AmHost.NodeId;
             AllocatedMb = app.AllocatedMb;
             AllocatedVcores = app.AllocatedVcores;
             MbSeconds = app.MbSeconds;
@@ -337,18 +400,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #region Fault Effects
 
-        /// <summary>
-        /// Fault effect for <see cref="YarnApp.KillApp"/>
-        /// </summary>
-        [FaultEffect(Fault = nameof(KillApp))]
-        public class KillAppEffect : YarnApp
-        {
-            public override void Update()
-            {
-                base.Update();
-                StopApp();
-            }
-        }
+        ///// <summary>
+        ///// Fault effect for <see cref="YarnApp.KillApp"/>
+        ///// </summary>
+        //[FaultEffect(Fault = nameof(KillApp))]
+        //public class KillAppEffect : YarnApp
+        //{
+        //    public override void Update()
+        //    {
+        //        base.Update();
+        //        StopApp();
+        //    }
+        //}
 
         #endregion
     }

@@ -24,6 +24,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
@@ -46,7 +47,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Container ID
         /// </summary>
-        public string ContainerId { get; set; }
+        // public string ContainerId { get; set; }
+        public char[] ContainerIdActual { get; private set; }
+
+        /// <summary>
+        /// Container ID as string, based on <see cref="ContainerIdActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string ContainerId
+        {
+            get { return ModelUtilities.GetCharArrayAsString(ContainerIdActual); }
+            set { ModelUtilities.SetCharArrayOnString(ContainerIdActual, value); }
+        }
 
         /// <summary>
         /// Starting Time
@@ -59,14 +71,48 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public DateTime EndTime { get; set; }
 
         /// <summary>
+        /// <see cref="YarnNode"/> ID running this container
+        /// </summary>
+        // public string HostId { get; set; }
+        public char[] HostIdActual { get; private set; }
+
+        /// <summary>
+        /// <see cref="YarnNode"/> ID running this container as string, based on <see cref="HostIdActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string HostId
+        {
+            get { return ModelUtilities.GetCharArrayAsString(HostIdActual); }
+            set { ModelUtilities.SetCharArrayOnString(HostIdActual, value); }
+        }
+
+        /// <summary>
         /// <see cref="YarnNode"/> running this container
         /// </summary>
-        public YarnNode Host { get; set; }
+        [NonSerializable]
+        public YarnNode Host => Model.Instance.Nodes.FirstOrDefault(h => h.NodeId == HostId);
+
+        /// <summary>
+        /// <see cref="YarnAppAttempt"/> ID running in this container
+        /// </summary>
+        // public string AppAttemptId { get; set; }
+        public char[] AppAttemptIdActual { get; private set; }
+
+        /// <summary>
+        /// <see cref="YarnAppAttempt"/> ID running in this container as string, based on <see cref="AppAttemptIdActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string AppAttemptId
+        {
+            get { return ModelUtilities.GetCharArrayAsString(AppAttemptIdActual); }
+            set { ModelUtilities.SetCharArrayOnString(AppAttemptIdActual, value); }
+        }
 
         /// <summary>
         /// <see cref="YarnAppAttempt"/> running in this container
         /// </summary>
-        public YarnAppAttempt AppAttempt { get; set; }
+        [NonSerializable]
+        public YarnAppAttempt AppAttempt => Model.Instance.AppAttempts.FirstOrDefault(a => a.AttemptId == AppAttemptId);
 
         /// <summary>
         /// Priority of the container
@@ -81,7 +127,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Diagnostics message for failed containers
         /// </summary>
-        public string Diagnostics { get; set; }
+        // public string Diagnostics { get; set; }
+        public char[] DiagnosticsActual { get; private set; }
+
+        /// <summary>
+        /// Diagnostics message for failed containers as string, based on <see cref="DiagnosticsActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string Diagnostics
+        {
+            get { return ModelUtilities.GetCharArrayAsString(DiagnosticsActual); }
+            set { ModelUtilities.SetCharArrayOnString(DiagnosticsActual, value); }
+        }
 
         /// <summary>
         /// Amount of needed/allocated Memory in MB
@@ -104,16 +161,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             State = EContainerState.None;
 
-            IsSelfMonitoring = true;
-        }
+            ContainerIdActual = new char[38];
+            HostIdActual = new char[0xF];
+            AppAttemptIdActual = new char[36];
+            DiagnosticsActual = new char[0xFF];
 
-        /// <summary>
-        /// Initializes a new <see cref="YarnAppContainer"/>
-        /// </summary>
-        /// <param name="appAttempt"><see cref="YarnAppAttempt"/> running in this container</param>
-        public YarnAppContainer(YarnAppAttempt appAttempt) : this()
-        {
-            AppAttempt = appAttempt;
+            IsSelfMonitoring = false;
         }
 
         #endregion
@@ -155,7 +208,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             StartTime = container.StartTime;
             EndTime = container.FinishTime;
             State = container.State;
-            Host = container.Host;
+            //Host = container.Host;
+            HostId = container.Host.NodeId;
             Priority = container.Priority;
             ExitCode = container.ExitCode;
             Diagnostics = container.Diagnostics;

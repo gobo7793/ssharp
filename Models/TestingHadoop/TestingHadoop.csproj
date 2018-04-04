@@ -83,6 +83,7 @@
     <Compile Include="Modeling\HadoopModel\IYarnReadable.cs" />
     <Compile Include="Modeling\HadoopModel\EAppState.cs" />
     <Compile Include="Modeling\HadoopModel\Client.cs" />
+    <Compile Include="Modeling\HadoopModel\ModelUtilities.cs" />
     <Compile Include="Modeling\Model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modeling\HadoopModel\YarnController.cs" />

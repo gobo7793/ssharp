@@ -164,7 +164,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             IsActive = true;
             IsConnected = true;
             State = ENodeState.None;
-            IsSelfMonitoring = true;
+            IsSelfMonitoring = false;
             NodeId = $"{Name}:45454";
         }
 
@@ -260,6 +260,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <returns>True if node is active and node connection is active</returns>
         public bool StartConnection(bool retry = true)
         {
+            if(Name.EndsWith("-0"))
+                return true;
+
             if(IsActive && !IsConnected)
             {
                 var isStarted = FaultConnector.StartNodeNetConnection(Name);
@@ -279,6 +282,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <returns>True if node is active and node connection is inactive</returns>
         public bool StopConnection(bool retry = true)
         {
+            if(Name.EndsWith("-0"))
+                return true;
+
             if(IsActive && IsConnected)
             {
                 var isStopped = FaultConnector.StopNodeNetConnection(Name);
@@ -297,6 +303,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <returns>True if node is active</returns>
         public bool StartNode(bool retry = true)
         {
+            if(Name.EndsWith("-0"))
+                return true;
+
             if(!IsActive)
             {
                 var isStarted = FaultConnector.StartNode(Name);
@@ -315,6 +324,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <returns>True if node is inactive</returns>
         public bool StopNode(bool retry = true)
         {
+            if(Name.EndsWith("-0"))
+                return true;
+
             if(IsActive)
             {
                 var isStopped = FaultConnector.StopNode(Name);

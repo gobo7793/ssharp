@@ -162,13 +162,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Starts the given benchmark and save the application id in the first available
         /// <see cref="YarnApp"/> in <see cref="Apps"/> and this in <see cref="CurrentExecutingApp"/>.
-        /// If benchmark cannot be started, <see cref="CurrentExecutingApp"/> will be set to null.
-        /// If an application id was saved it will returned, else <see cref="String.Empty"/>.
+        /// If benchmark cannot be started, <see cref="CurrentExecutingApp"/> will not be set.
         /// </summary>
         /// <param name="benchmark">Benchmark to start</param>
         /// <exception cref="OutOfMemoryException">No <see cref="YarnApp"/> available</exception>
-        /// <returns>The submitted application id</returns>
-        public string StartBenchmark(Benchmark benchmark)
+        public void StartBenchmark(Benchmark benchmark)
         {
             if(benchmark.HasOutputDir)
                 SubmittingConnector.RemoveHdfsDir(benchmark.GetOutputDir(ClientDir));
@@ -176,16 +174,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             if(appId.Length <= 32)
             {
-                var app = Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));
+                var app = Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));// ??
+                          //Apps.FirstOrDefault(a => a.AppId == appId);
                 if(app == null)
                     throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
-                //app.AppId = appId;
+                app.AppId = appId;
                 CurrentExecutingApp = app;
-                return CurrentExecutingApp.AppId;
             }
-
-            CurrentExecutingApp = null;
-            return String.Empty;
         }
 
         #endregion

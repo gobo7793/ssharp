@@ -35,16 +35,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
     public class SimulationTests
     {
         private static readonly TimeSpan _StepMinTime = new TimeSpan(0, 0, 0, 30);
+        private static readonly int _StepCount = 1;
 
         [Test]
         public void Simulate()
         {
             var model = Model.Instance;
-            model.InitModel();
+            model.InitModel(appCount: _StepCount);
             model.Faults.SuppressActivations();
 
             var simulator = new SafetySharpSimulator(model);
-            PrintTrace(simulator, steps: 1);
+            PrintTrace(simulator, _StepCount);
         }
 
         public static void PrintTrace(SafetySharpSimulator simulator, int steps)
@@ -85,29 +86,30 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                     if(String.IsNullOrWhiteSpace(app.AppId))
                         continue;
 
-                    WriteLine($"    === App {app.AppId} ===");
-                    WriteLine($"    State:       {app.State}");
-                    WriteLine($"    FinalStatus: {app.FinalStatus}");
-                    WriteLine($"    AM Host:     {app.AmHost?.Name}");
+                    WriteLine($"=== App {app.AppId} ===");
+                    WriteLine($"Name:        {app.Name}");
+                    WriteLine($"State:       {app.State}");
+                    WriteLine($"FinalStatus: {app.FinalStatus}");
+                    WriteLine($"AM Host:     {app.AmHostId}");
 
                     foreach(var attempt in app.Attempts)
                     {
                         if(String.IsNullOrWhiteSpace(attempt.AttemptId))
                             continue;
 
-                        WriteLine($"        === Attempt {attempt.AttemptId} ===");
-                        WriteLine($"        State:        {attempt.State}");
-                        WriteLine($"        AM Container: {attempt.AmContainerId}");
-                        WriteLine($"        AM Host:      {attempt.AmHost?.Name}");
+                        WriteLine($"=== Attempt {attempt.AttemptId} ===");
+                        WriteLine($"State:        {attempt.State}");
+                        WriteLine($"AM Container: {attempt.AmContainerId}");
+                        WriteLine($"AM Host:      {attempt.AmHostId}");
 
                         foreach(var container in attempt.Containers)
                         {
                             if(String.IsNullOrWhiteSpace(container.ContainerId))
                                 continue;
 
-                            WriteLine($"            === Container {container.ContainerId} ===");
-                            WriteLine($"            State: {container.State}");
-                            WriteLine($"            Host:  {container.Host?.Name}");
+                            WriteLine($"=== Container {container.ContainerId} ===");
+                            WriteLine($"State: {container.State}");
+                            WriteLine($"Host:  {container.HostId}");
                         }
                     }
                 }
