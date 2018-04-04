@@ -181,11 +181,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             Containers = new List<YarnAppContainer>();
             State = EAppState.NotStartedYet;
 
-            AttemptIdActual = new char[36];
-            AmContainerIdActual = new char[38];
-            AmHostIdActual = new char[0xF];
-            TrackingUrlActual = new char[0x7F];
-            DiagnosticsActual = new char[0xFF];
+            AppIdActual = new char[Model.AppIdLength];
+            AttemptIdActual = new char[Model.AppAttemptIdLength];
+            AmContainerIdActual = new char[Model.ContainerIdLength];
+            AmHostIdActual = new char[Model.NodeIdLength];
+            TrackingUrlActual = new char[Model.TrackingUrlLength];
+            DiagnosticsActual = new char[Model.DiagnosticsLength];
 
             IsSelfMonitoring = false;
         }
@@ -210,31 +211,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void MonitorStatus()
         {
-            //if(IsSelfMonitoring)
-            //{
-            //    var parsed = Parser.ParseAppAttemptDetails(AttemptId);
-            //    if(parsed != null)
-            //        SetStatus(parsed);
-            //}
+            if(IsSelfMonitoring)
+            {
+                var parsed = Parser.ParseAppAttemptDetails(AttemptId);
+                if(parsed != null)
+                    SetStatus(parsed);
+            }
 
-            //var parsedContainers = Parser.ParseContainerList(AttemptId);
-            //foreach(var parsed in parsedContainers)
-            //{
-            //    var container = Containers.FirstOrDefault(c => c.ContainerId == parsed.ContainerId) ??
-            //                  Containers.FirstOrDefault(c => String.IsNullOrWhiteSpace(c.ContainerId));
-            //    if(container == null)
-            //        throw new OutOfMemoryException("No more containers available! Try to initialize more containers.");
+            var parsedContainers = Parser.ParseContainerList(AttemptId);
+            foreach(var parsed in parsedContainers)
+            {
+                var container = Containers.FirstOrDefault(c => c.ContainerId == parsed.ContainerId) ??
+                              Containers.FirstOrDefault(c => String.IsNullOrWhiteSpace(c.ContainerId));
+                if(container == null)
+                    throw new OutOfMemoryException("No more containers available! Try to initialize more containers.");
 
-            //    if(IsSelfMonitoring)
-            //    {
-            //        container.ContainerId = parsed.ContainerId;
-            //    }
-            //    else
-            //    {
-            //        container.SetStatus(parsed);
-            //        container.IsSelfMonitoring = IsSelfMonitoring;
-            //    }
-            //}
+                container.AppAttemptId = AttemptId;
+                if(IsSelfMonitoring)
+                {
+                    container.ContainerId = parsed.ContainerId;
+                }
+                else
+                {
+                    container.SetStatus(parsed);
+                    container.IsSelfMonitoring = IsSelfMonitoring;
+                }
+            }
         }
 
         /// <summary>

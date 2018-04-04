@@ -161,10 +161,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             State = EContainerState.None;
 
-            ContainerIdActual = new char[38];
-            HostIdActual = new char[0xF];
-            AppAttemptIdActual = new char[36];
-            DiagnosticsActual = new char[0xFF];
+            ContainerIdActual = new char[Model.ContainerIdLength];
+            HostIdActual = new char[Model.NodeIdLength];
+            AppAttemptIdActual = new char[Model.AppAttemptIdLength];
+            DiagnosticsActual = new char[Model.DiagnosticsLength];
 
             IsSelfMonitoring = false;
         }
@@ -189,12 +189,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void MonitorStatus()
         {
-            //if(!IsSelfMonitoring)
-            //    return;
+            if(!IsSelfMonitoring)
+                return;
 
-            //var parsed = Parser.ParseContainerDetails(ContainerId);
-            //if(parsed != null)
-            //    SetStatus(parsed);
+            var parsed = Parser.ParseContainerDetails(ContainerId);
+            if(parsed != null)
+                SetStatus(parsed);
         }
 
         /// <summary>
