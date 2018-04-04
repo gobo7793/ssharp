@@ -36,7 +36,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
     /// </summary>
     public class Model : ModelBase
     {
-        #region General settings
+        #region General settings and constants
 
         private static Model _Instance;
 
@@ -49,6 +49,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Prefix for compute nodes
         /// </summary>
         public const string NodeNamePrefix = "compute-";
+
+        #region Cluster PC related
 
         /// <summary>
         /// Command for Hadoop setup script
@@ -90,6 +92,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Full file path to the private key file to login
         /// </summary>
         public const string SshPrivateKeyFile = @"%USERPROFILE%\.ssh\id_rsa";
+
+        #endregion
+
+        #region Char array lengths
+
+        public const int AppIdLength = 30;
+        public const int AppNameLength = 0x7F;
+        public const int AppAttemptIdLength = 36;
+        public const int ContainerIdLength = 38;
+
+        public const int HostNameLength = 10;
+        public const int NodeIdLength = 16;
+        public const int HttpUrlLength = 24;
+
+        public const int ClientIdLength = 8;
+
+        public const int TrackingUrlLength = 0x7F;
+        public const int DiagnosticsLength = 0xFF;
+
+        #endregion
 
         #endregion
 
@@ -243,7 +265,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <param name="nodeCount">Instances count</param>
         private void InitYarnNodes(int nodeCount)
         {
-            for(int i = 0; i <= nodeCount; i++)
+            for(int i = 1; i <= nodeCount; i++)
             {
                 var node = new YarnNode(NodeNamePrefix + i, Controller);
 
