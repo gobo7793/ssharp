@@ -92,9 +92,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
             return _Instance;
         }
 
-        private void WriteLine(string line)
+        private static void WriteLine(string line)
         {
-            Console.WriteLine($"[RestParser] {line}");
+            //Console.WriteLine($"[RestParser] {line}");
         }
 
         #endregion

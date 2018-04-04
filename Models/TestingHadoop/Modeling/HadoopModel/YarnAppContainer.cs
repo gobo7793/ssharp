@@ -209,7 +209,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             EndTime = container.FinishTime;
             State = container.State;
             //Host = container.Host;
-            HostId = container.Host.NodeId;
+            if(container.Host != null)
+                HostId = container.Host.NodeId;
             Priority = container.Priority;
             ExitCode = container.ExitCode;
             Diagnostics = container.Diagnostics;

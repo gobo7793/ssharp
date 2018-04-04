@@ -250,7 +250,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             State = attempt.State;
             AmContainerId = attempt.AmContainerId;
             //AmHost = attempt.AmHost;
-            AmHostId = attempt.AmHost.NodeId;
+            if(attempt.AmHost != null)
+                AmHostId = attempt.AmHost.NodeId;
             TrackingUrl = attempt.TrackingUrl;
             StartTime = attempt.StartTime;
             Diagnostics = attempt.Diagnostics;

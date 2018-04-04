@@ -327,7 +327,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             State = app.State;
             FinalStatus = app.FinalStatus;
             //AmHost = app.AmHost;
-            AmHostId = app.AmHost.NodeId;
+            if(app.AmHost != null)
+                AmHostId = app.AmHost.NodeId;
             AllocatedMb = app.AllocatedMb;
             AllocatedVcores = app.AllocatedVcores;
             MbSeconds = app.MbSeconds;

@@ -35,7 +35,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
     public class SimulationTests
     {
         private static readonly TimeSpan _StepMinTime = new TimeSpan(0, 0, 0, 30);
-        private static readonly int _StepCount = 1;
+        private static readonly int _StepCount = 10;
 
         [Test]
         public void Simulate()
@@ -124,12 +124,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             }
         }
 
-        private static void WriteLine(object line)
+        private static void WriteLine(string line)
         {
-            Debug.WriteLine(line.ToString());
-#if !DEBUG
-            Console.WriteLine(line.ToString());
-#endif
+            Console.WriteLine(line);
         }
     }
 }
