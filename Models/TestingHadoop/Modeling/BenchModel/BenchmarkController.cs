@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System;
+using SafetySharp.Modeling;
 using static SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel.Benchmark;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
@@ -53,6 +54,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <summary>
         /// Indicates if the controller is initialized with starting benchmark
         /// </summary>
+        [NonSerializable]
         public bool IsInit => CurrentBenchmark != null;
 
         /// <summary>
