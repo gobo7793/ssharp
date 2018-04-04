@@ -25,10 +25,19 @@ using System;
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
     /// <summary>
-    /// General utility methods for the YARN model
+    /// General utility methods for the hadoop model
     /// </summary>
     public static class ModelUtilities
     {
+        /// <summary>
+        /// Clears the given char array
+        /// </summary>
+        /// <param name="array">The char array to clear</param>
+        public static void ClearArray(char[] array)
+        {
+            Array.Clear(array, 0, array.Length);
+        }
+
         /// <summary>
         /// Sets the given char array based on the given string
         /// </summary>
@@ -36,7 +45,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <param name="sourceString">The source string to save</param>
         public static void SetCharArrayOnString(char[] targetArray, string sourceString)
         {
-            Array.Clear(targetArray, 0, targetArray.Length);
+            ClearArray(targetArray);
             sourceString?.ToCharArray().CopyTo(targetArray, 0);
         }
 
