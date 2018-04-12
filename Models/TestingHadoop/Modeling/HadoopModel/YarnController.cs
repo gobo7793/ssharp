@@ -88,13 +88,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
+            // Say to client update bench
             MonitorNodes();
             MonitorApps();
+            // check constraints
         }
-
+        
         #endregion
 
-        #region Node related methods
+        #region Monitoring methods
 
         /// <summary>
         /// Gets all node informations
@@ -112,10 +114,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 node.IsSelfMonitoring = false;
             }
         }
-
-        #endregion
-
-        #region App related Methods
 
         /// <summary>
         /// Gets all apps executed on the cluster and their informations
@@ -137,6 +135,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 app.IsSelfMonitoring = false;
                 app.MonitorStatus();
             }
+        }
+
+        #endregion
+
+        #region Constraints
+
+        private void GenerateConstraints(IYarnReadable yarnComponent)
+        {
+
         }
 
         #endregion

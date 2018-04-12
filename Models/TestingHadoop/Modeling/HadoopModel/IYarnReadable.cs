@@ -1,4 +1,6 @@
-﻿using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
+﻿using System;
+using System.Collections.Generic;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
@@ -33,5 +35,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         /// <returns>The status as string</returns>
         string StatusAsString();
+
+        /// <summary>
+        /// S# analysis/DCCA constraints
+        /// </summary>
+        Func<bool>[] Constraints { get; set; }
     }
 }

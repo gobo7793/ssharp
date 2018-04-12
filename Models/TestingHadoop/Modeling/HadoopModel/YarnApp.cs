@@ -373,6 +373,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             return status;
         }
 
+        /// <summary>
+        /// S# analysis/DCCA constraints
+        /// </summary>
+        [Hidden(HideElements = true)]
+        public Func<bool>[] Constraints { get; set; }
+
         #endregion
 
         #region Methods

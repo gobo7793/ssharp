@@ -123,6 +123,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
+            // to controller?
             UpdateBenchmark();
         }
 
