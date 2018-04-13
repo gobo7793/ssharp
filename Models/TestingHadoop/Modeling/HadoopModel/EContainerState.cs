@@ -37,7 +37,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// via http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/NodeManagerRest.html#Container_API
     /// and http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/TimelineServer.html#GENERIC_DATA_REST_APIS
     /// </remarks>
-    [Flags]
     public enum EContainerState
     {
         None,
