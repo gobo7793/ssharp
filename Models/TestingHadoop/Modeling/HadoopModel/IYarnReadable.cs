@@ -37,8 +37,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         string StatusAsString();
 
         /// <summary>
-        /// S# analysis/DCCA constraints
+        /// S# analysis/DCCA constraints for the oracle
         /// </summary>
-        Func<bool>[] Constraints { get; set; }
+        Func<bool>[] Constraints { get; }
     }
 }
