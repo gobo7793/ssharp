@@ -230,6 +230,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         //                          EAppState.None;
         public bool IsKillable => FinalStatus == EFinalStatus.UNDEFINED;
 
+        /// <summary>
+        /// Indicates if the application execution was cancelled
+        /// </summary>
+        public bool IsCancelled { get; set; }
+
         #endregion
 
         #region Constructors
@@ -252,6 +257,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             AmHostIdActual = new char[Model.NodeIdLength];
             TrackingUrlActual = new char[Model.TrackingUrlLength];
             DiagnosticsActual = new char[Model.DiagnosticsLength];
+            IsCancelled = false;
         }
 
         /// <summary>
@@ -374,10 +380,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// S# analysis/DCCA constraints
+        /// S# analysis/DCCA constraints for the oracle
         /// </summary>
         [Hidden(HideElements = true)]
-        public Func<bool>[] Constraints { get; set; }
+        public Func<bool>[] Constraints => new Func<bool>[]
+        {
+            // 1) task will be completed if not canceled
+            () =>
+            {
+                if(FinalStatus != EFinalStatus.FAILED) return true;
+                if(!String.IsNullOrWhiteSpace(Name) && Name.ToLower().Contains("fail job")) return true;
+                return false;
+            }
+        };
 
         #endregion
 
@@ -394,13 +409,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// true if app was stopped already or was succesfully killed
         /// </summary>
         /// <returns>True if app is stopped/killed</returns>
+        /// <remarks>
+        /// To return if app was successfully killed
+        /// <see cref="IsCancelled"/> will be used to save and return
+        /// </remarks>
         public bool StopApp()
         {
             if(!String.IsNullOrWhiteSpace(AppId)/* && State != EAppState.None && State != EAppState.NotStartedYet && IsKillable*/)
             {
-                return FaultConnector.KillApplication(AppId);
+                IsCancelled = FaultConnector.KillApplication(AppId);
             }
-            return true;
+            return IsCancelled;
         }
 
         #endregion
