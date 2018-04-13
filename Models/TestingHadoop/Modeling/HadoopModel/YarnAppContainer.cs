@@ -159,14 +159,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public YarnAppContainer()
         {
-            State = EContainerState.None;
-
             ContainerIdActual = new char[Model.ContainerIdLength];
             HostIdActual = new char[Model.NodeIdLength];
             AppAttemptIdActual = new char[Model.AppAttemptIdLength];
             DiagnosticsActual = new char[Model.DiagnosticsLength];
 
             IsSelfMonitoring = false;
+
+            CleanContainer();
         }
 
         #endregion
@@ -251,10 +251,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// S# analysis/DCCA constraints
+        /// S# analysis/DCCA constraints for the oracle
         /// </summary>
         [Hidden(HideElements = true)]
-        public Func<bool>[] Constraints { get; set; }
+        public Func<bool>[] Constraints => new Func<bool>[]
+        {
+            // 2) no workload is allocated to an inactive/defect/disconnected node
+            () => Host.State == ENodeState.RUNNING,
+        };
 
         #endregion
 
@@ -264,6 +268,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             if(IsSelfMonitoring && !String.IsNullOrWhiteSpace(ContainerId))
                 MonitorStatus();
+        }
+
+        /// <summary>
+        /// Cleans all container data
+        /// </summary>
+        public void CleanContainer()
+        {
+            ContainerId = String.Empty;
+            StartTime = DateTime.MinValue;
+            EndTime = DateTime.MinValue;
+            State = EContainerState.None;
+            HostId = String.Empty;
+            Priority = 0;
+            ExitCode = 0;
+            Diagnostics = String.Empty;
+            AllocatedMemory = 0;
+            AllocatedVcores = 0;
         }
 
         #endregion
