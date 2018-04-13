@@ -291,7 +291,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         [Hidden(HideElements = true)]
         public Func<bool>[] Constraints => new Func<bool>[]
         {
-
+            // 3) configuration will be updated
+            () =>
+            {
+                if(State == EAppState.RUNNING)
+                    return AmHost?.State == ENodeState.RUNNING;
+                return true;
+            },
         };
 
         #endregion

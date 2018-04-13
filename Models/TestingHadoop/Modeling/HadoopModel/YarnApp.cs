@@ -391,7 +391,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 if(FinalStatus != EFinalStatus.FAILED) return true;
                 if(!String.IsNullOrWhiteSpace(Name) && Name.ToLower().Contains("fail job")) return true;
                 return false;
-            }
+            },
+            // 3) configuration will be updated
+            () =>
+            {
+                if(State == EAppState.RUNNING)
+                    return AmHost?.State == ENodeState.RUNNING;
+                return true;
+            },
         };
 
         #endregion

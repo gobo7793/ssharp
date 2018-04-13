@@ -257,7 +257,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public Func<bool>[] Constraints => new Func<bool>[]
         {
             // 2) no workload is allocated to an inactive/defect/disconnected node
-            () => Host.State == ENodeState.RUNNING,
+            // 3) configuration will be updated
+            () =>
+            {
+                if(State == EContainerState.RUNNING)
+                    return Host?.State == ENodeState.RUNNING;
+                return true;
+            },
         };
 
         #endregion
