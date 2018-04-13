@@ -88,10 +88,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
-            // Say to client update bench
+            // only in this model in this place to be sure that constraint
+            // checking will be done after updating benchmarks
+            foreach(var client in ConnectedClients)
+                client.UpdateBenchmark();
+
             MonitorNodes();
             MonitorApps();
-            // check constraints
+
+            CheckConstraints();
         }
         
         #endregion
@@ -141,7 +146,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #region Constraints
 
-        private void GenerateConstraints(IYarnReadable yarnComponent)
+        private void CheckConstraints()
         {
 
         }
