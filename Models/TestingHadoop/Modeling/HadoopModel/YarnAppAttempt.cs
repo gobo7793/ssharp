@@ -219,23 +219,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             }
 
             var parsedContainers = Parser.ParseContainerList(AttemptId);
+            foreach(var container in Containers) container.CleanContainer();
             foreach(var parsed in parsedContainers)
             {
-                var container = Containers.FirstOrDefault(c => c.ContainerId == parsed.ContainerId) ??
-                              Containers.FirstOrDefault(c => String.IsNullOrWhiteSpace(c.ContainerId));
+                var container = Containers.FirstOrDefault(c => String.IsNullOrWhiteSpace(c.ContainerId));
                 if(container == null)
                     throw new OutOfMemoryException("No more containers available! Try to initialize more containers.");
 
                 container.AppAttemptId = AttemptId;
                 if(IsSelfMonitoring)
-                {
                     container.ContainerId = parsed.ContainerId;
-                }
                 else
-                {
                     container.SetStatus(parsed);
-                    container.IsSelfMonitoring = IsSelfMonitoring;
-                }
+                container.IsSelfMonitoring = IsSelfMonitoring;
             }
         }
 
@@ -290,10 +286,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// S# analysis/DCCA constraints
+        /// S# analysis/DCCA constraints for the oracle
         /// </summary>
         [Hidden(HideElements = true)]
-        public Func<bool>[] Constraints { get; set; }
+        public Func<bool>[] Constraints => new Func<bool>[]
+        {
+
+        };
 
         #endregion
 
