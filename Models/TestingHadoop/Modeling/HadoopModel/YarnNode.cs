@@ -239,10 +239,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// S# analysis/DCCA constraints
+        /// S# analysis/DCCA constraints for the oracle
         /// </summary>
         [Hidden(HideElements = true)]
-        public Func<bool>[] Constraints { get; set; }
+        public Func<bool>[] Constraints => new Func<bool>[]
+        {
+            // 4 defects are recognized
+            () =>
+            {
+                if(IsActive && IsConnected && State == ENodeState.RUNNING) return true;
+                if(!IsActive && State == ENodeState.RUNNING) return false;
+                if(!IsConnected && State == ENodeState.RUNNING) return false;
+                return false;
+            }
+        };
 
         #endregion
 
