@@ -34,7 +34,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     /// 
     /// via http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html#Cluster_Application_API
     /// </remarks>
-    [Flags]
     public enum EFinalStatus
     {
         /// <summary>
