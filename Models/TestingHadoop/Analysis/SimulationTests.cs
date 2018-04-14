@@ -127,6 +127,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static void WriteLine(string line)
         {
             Console.WriteLine(line);
+            Logger.Log(line);
         }
     }
 }

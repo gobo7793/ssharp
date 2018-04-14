@@ -61,6 +61,7 @@
     <Compile Include="..\..\Source\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Analysis\Logger.cs" />
     <Compile Include="Analysis\SimulationTests.cs" />
     <Compile Include="Modeling\BenchModel\BenchmarkController.cs" />
     <Compile Include="Modeling\BenchModel\Benchmark.cs" />

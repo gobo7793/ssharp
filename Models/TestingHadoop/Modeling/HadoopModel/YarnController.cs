@@ -89,7 +89,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public override void Update()
         {
             // only in this model in this place to be sure that constraint
-            // checking will be done after updating benchmarks
+            // checking will be done after updating and monitoring benchmarks
             foreach(var client in ConnectedClients)
                 client.UpdateBenchmark();
 
