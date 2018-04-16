@@ -23,7 +23,6 @@
 #endregion
 
 using System;
-using System.Diagnostics;
 using System.Threading;
 using NUnit.Framework;
 using SafetySharp.Analysis;
@@ -36,6 +35,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
     {
         private static readonly TimeSpan _StepMinTime = new TimeSpan(0, 0, 0, 30);
         private static readonly int _StepCount = 10;
+        private static readonly Logger.Level _LogLevel = Logger.Level.Log;
+
+        [TestFixtureSetUp]
+        public void FixtureSetup()
+        {
+            Logger.LogLevel = _LogLevel;
+        }
 
         [Test]
         public void Simulate()
@@ -44,19 +50,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             model.InitModel(appCount: _StepCount);
             model.Faults.SuppressActivations();
 
-            var simulator = new SafetySharpSimulator(model);
-            PrintTrace(simulator, _StepCount);
+            try
+            {
+                var simulator = new SafetySharpSimulator(model);
+                ExecuteSimulation(simulator, _StepCount);
+            }
+            catch(Exception e)
+            {
+                Logger.Exception(e.ToString());
+            }
         }
 
-        public static void PrintTrace(SafetySharpSimulator simulator, int steps)
+        public static void ExecuteSimulation(SafetySharpSimulator simulator, int steps)
         {
             var model = (Model)simulator.Model;
 
-            WriteLine("=================  START  =====================================");
+            Logger.Log("=================  START  =====================================");
 
             for(var i = 0; i < steps; i++)
             {
-                WriteLine($"=================  Step: {i}  =====================================");
+                Logger.Log($"=================  Step: {i}  =====================================");
                 var stepStartTime = DateTime.Now;
 
                 simulator.SimulateStep();
@@ -65,13 +78,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 //if(stepTime < _StepMinTime)
                 //    Thread.Sleep(_StepMinTime - stepTime);
 
-                WriteLine($"Duration: {stepTime.ToString()}");
+                Logger.Log($"Duration: {stepTime.ToString()}");
 
                 PrintTrace(model);
             }
 
-            WriteLine("=================  Finish  =====================================");
-            WriteLine();
+            Logger.Log("=================  Finish  =====================================");
+            Logger.Log();
         }
 
         public static void PrintTrace(Model model)
@@ -80,39 +93,39 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             {
                 var client = model.Clients[c];
 
-                WriteLine($"=== Client {c} ===");
-                WriteLine($"    Current executing bench: {client.BenchController?.CurrentBenchmark?.Name}");
-                WriteLine($"    Current executing app:   {client.CurrentExecutingApp?.AppId}");
+                Logger.Log($"=== Client {c} ===");
+                Logger.Log($"    Current executing bench: {client.BenchController?.CurrentBenchmark?.Name}");
+                Logger.Log($"    Current executing app:   {client.CurrentExecutingApp?.AppId}");
 
                 foreach(var app in model.Clients[c].Apps)
                 {
                     if(String.IsNullOrWhiteSpace(app.AppId))
                         continue;
 
-                    WriteLine($"  === App {app.AppId} ===");
-                    WriteLine($"      Name:        {app.Name}");
-                    WriteLine($"      State:       {app.State}");
-                    WriteLine($"      FinalStatus: {app.FinalStatus}");
-                    WriteLine($"      AM Host:     {app.AmHostId}");
+                    Logger.Log($"  === App {app.AppId} ===");
+                    Logger.Log($"      Name:        {app.Name}");
+                    Logger.Log($"      State:       {app.State}");
+                    Logger.Log($"      FinalStatus: {app.FinalStatus}");
+                    Logger.Log($"      AM Host:     {app.AmHostId} ({app.AmHost?.State})");
 
                     foreach(var attempt in app.Attempts)
                     {
                         if(String.IsNullOrWhiteSpace(attempt.AttemptId))
                             continue;
 
-                        WriteLine($"    === Attempt {attempt.AttemptId} ===");
-                        WriteLine($"        State:        {attempt.State}");
-                        WriteLine($"        AM Container: {attempt.AmContainerId}");
-                        WriteLine($"        AM Host:      {attempt.AmHostId}");
+                        Logger.Log($"    === Attempt {attempt.AttemptId} ===");
+                        Logger.Log($"        State:        {attempt.State}");
+                        Logger.Log($"        AM Container: {attempt.AmContainerId}");
+                        Logger.Log($"        AM Host:      {attempt.AmHostId} ({attempt.AmHost?.State})");
 
                         foreach(var container in attempt.Containers)
                         {
                             if(String.IsNullOrWhiteSpace(container.ContainerId))
                                 continue;
 
-                            WriteLine($"      === Container {container.ContainerId} ===");
-                            WriteLine($"          State: {container.State}");
-                            WriteLine($"          Host:  {container.HostId}");
+                            Logger.Log($"      === Container {container.ContainerId} ===");
+                            Logger.Log($"          State: {container.State}");
+                            Logger.Log($"          Host:  {container.HostId} ({container.Host?.State})");
                         }
                     }
                 }
@@ -120,16 +133,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
             foreach(var node in model.Nodes)
             {
-                WriteLine($"=== Node {node.NodeId} ===");
-                WriteLine($"    State:       {node.State}");
-                WriteLine($"    IsActive:    {node.IsActive}");
-                WriteLine($"    IsConnected: {node.IsConnected}");
+                Logger.Log($"=== Node {node.NodeId} ===");
+                Logger.Log($"    State:       {node.State}");
+                Logger.Log($"    IsActive:    {node.IsActive}");
+                Logger.Log($"    IsConnected: {node.IsConnected}");
             }
-        }
-
-        private static void WriteLine(string line = "")
-        {
-            Logger.Log(line);
         }
     }
 }

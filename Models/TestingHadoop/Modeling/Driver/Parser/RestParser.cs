@@ -105,7 +105,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
         {
             var appStates = DriverUtilities.ConcatStates(states);
 
-            Logger.Log($"Parse app list '{appStates}'");
+            Logger.Info($"Parse app list '{appStates}'");
 
             var fullResult = Connection.GetYarnApplicationList(appStates);
             var appRes = JsonConvert.DeserializeObject<ApplicationListJsonResult>(fullResult);
@@ -114,7 +114,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
             var apps = appRes.Collection.List;
             foreach(var app in apps)
             {
-                Logger.Log($"Parsing app '{app.AppId}'");
+                Logger.Info($"Parsing app '{app.AppId}'");
                 if(!String.IsNullOrWhiteSpace(app.AmHostHttpAddress)) // if app is in preparing states
                     app.AmHost = DriverUtilities.ParseNode(app.AmHostHttpAddress, Model);
             }
@@ -129,7 +129,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
         /// <returns>The attempts</returns>
         public IAppAttemptResult[] ParseAppAttemptList(string appId)
         {
-            Logger.Log($"Parse attempt list for app '{appId}'");
+            Logger.Info($"Parse attempt list for app '{appId}'");
 
             var fullResult = Connection.GetYarnAppAttemptList(appId);
             var tlResult = Connection.GetYarnAppAttemptListTl(appId);
@@ -142,7 +142,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
             var attempts = attemptRes.Collection.List;
             foreach(var attempt in attempts)
             {
-                Logger.Log($"Processing attempt '{attempt.AttemptId}'");
+                Logger.Info($"Processing attempt '{attempt.AttemptId}'");
                 attempt.AmHost = DriverUtilities.ParseNode(attempt.AmHostId, Model);
 
                 // get more info from timeline server
@@ -177,7 +177,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
         /// <returns>The running containers</returns>
         public IContainerResult[] ParseContainerList(string attemptId)
         {
-            Logger.Log($"Parse container list for attempt '{attemptId}'");
+            Logger.Info($"Parse container list for attempt '{attemptId}'");
 
             var containerList = new List<ContainerResult>();
 
@@ -214,7 +214,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
                 var originalContainers = containerList.ToDictionary(c => c.ContainerId);
                 foreach(var tlContainer in tlContainers.List)
                 {
-                    Logger.Log($"Processing tl container '{tlContainer.ContainerId}'");
+                    Logger.Info($"Processing tl container '{tlContainer.ContainerId}'");
 
                     // merge tl data to rm data
                     if(originalContainers.ContainsKey(tlContainer.ContainerId))
@@ -331,7 +331,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
         /// <returns>All nodes in the cluster</returns>
         public INodeResult[] ParseNodeList()
         {
-            Logger.Log("Parsing node list");
+            Logger.Info("Parsing node list");
 
             var fullResult = Connection.GetYarnNodeList();
             var nodeRes = JsonConvert.DeserializeObject<NodeListJsonResult>(fullResult);
@@ -346,7 +346,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
         /// <returns>The node details</returns>
         public INodeResult ParseNodeDetails(string nodeId)
         {
-            Logger.Log($"Parsing node '{nodeId}'");
+            Logger.Info($"Parsing node '{nodeId}'");
 
             var fullResult = Connection.GetYarnNodeDetails(nodeId);
             var node = JsonConvert.DeserializeObject<NodeDetailsJsonResult>(fullResult).Node;

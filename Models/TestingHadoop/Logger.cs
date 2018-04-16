@@ -29,41 +29,116 @@ using System.Runtime.CompilerServices;
 namespace SafetySharp.CaseStudies.TestingHadoop
 {
     /// <summary>
-    /// Logging class
+    /// Logging helper
     /// </summary>
     public static class Logger
     {
+        #region Log level enum
+
+        /// <summary>
+        /// Possible logging levels
+        /// </summary>
+        public enum Level
+        {
+            Info = 0,
+            Log = 1,
+            Warning = 2,
+            Exception = 3,
+        }
+
+        #endregion
+
         #region Properties
 
         /// <summary>
-        /// Logging directory, default &lt;workingDic&gt;/logs/
+        /// Logging directory, default &lt;<see cref="Environment.CurrentDirectory"/>&gt;/logs/
         /// </summary>
         public static string TargetDirectory => $"{Environment.CurrentDirectory}/logs";
 
         /// <summary>
-        /// Logging target file name, default &lt;today&gt;.log
+        /// Logging target file name, default &lt;<see cref="DateTime.Today"/>&gt;.log
         /// </summary>
-        public static string TargetFileName => $"{TargetDirectory}/{DateTime.Today:yyyy-MM-dd}.log";
+        public static string TargetFileName => $"{DateTime.Today:yyyy-MM-dd}.log";
+
+        /// <summary>
+        /// The full logging file path, based on <see cref="TargetDirectory"/>/<see cref="TargetFileName"/>
+        /// </summary>
+        public static string TargetFullPath => $"{TargetDirectory}/{TargetFileName}";
+
+        /// <summary>
+        /// The logging level
+        /// </summary>
+        public static Level LogLevel = Level.Log;
 
         #endregion
 
         #region Methods
 
         /// <summary>
-        /// Logs the given line with timestamp into <see cref="TargetFileName"/>
+        /// Logs the given line with timestamp, class name and line number into <see cref="TargetFileName"/> on level <see cref="Level.Info"/>
         /// </summary>
         /// <param name="line">The line to write</param>
-        /// <param name="memberName">The calling mamber name, default filled by compiler</param>
+        /// <param name="filePath">The calling class file path, default filled by compiler</param>
         /// <param name="lineNumber">The calling line number, default filled by compiler</param>
-        public static void Log(string line, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
+        public static void Info(string line = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
         {
-            var logged = $"[{DateTime.Now:T}|{memberName}|L{lineNumber}] {line}{Environment.NewLine}";
+            WriteLog(Level.Info, line, Path.GetFileName(filePath), lineNumber);
+        }
+
+        /// <summary>
+        /// Logs the given line with timestamp, class name and line number into <see cref="TargetFileName"/> on level <see cref="Level.Log"/>
+        /// </summary>
+        /// <param name="line">The line to write</param>
+        /// <param name="filePath">The calling class file path, default filled by compiler</param>
+        /// <param name="lineNumber">The calling line number, default filled by compiler</param>
+        public static void Log(string line = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+        {
+            WriteLog(Level.Log, line, Path.GetFileName(filePath), lineNumber);
+        }
+
+        /// <summary>
+        /// Logs the given line with timestamp, class name and line number into <see cref="TargetFileName"/> on level <see cref="Level.Warning"/>
+        /// </summary>
+        /// <param name="line">The line to write</param>
+        /// <param name="filePath">The calling class file path, default filled by compiler</param>
+        /// <param name="lineNumber">The calling line number, default filled by compiler</param>
+        public static void Warning(string line = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+        {
+            WriteLog(Level.Warning, line, Path.GetFileName(filePath), lineNumber);
+        }
+
+        /// <summary>
+        /// Logs the given line with timestamp, class name and line number into <see cref="TargetFileName"/> on level <see cref="Level.Exception"/>
+        /// </summary>
+        /// <param name="line">The line to write</param>
+        /// <param name="filePath">The calling class file path, default filled by compiler</param>
+        /// <param name="lineNumber">The calling line number, default filled by compiler</param>
+        public static void Exception(string line = "", [CallerFilePath] string filePath = "", [CallerLineNumber] int lineNumber = 0)
+        {
+            WriteLog(Level.Exception, line, Path.GetFileName(filePath), lineNumber);
+        }
+
+        /// <summary>
+        /// Logs the given line
+        /// </summary>
+        /// <param name="neededLevel">Needed <see cref="LogLevel"/> to log</param>
+        /// <param name="line">The line to log</param>
+        /// <param name="className">The calling class name</param>
+        /// <param name="lineNumber">The calling line number</param>
+        private static void WriteLog(Level neededLevel, string line, string className, int lineNumber)
+        {
+            if(LogLevel > neededLevel)
+                return;
+
+            var logged = String.IsNullOrWhiteSpace(line)
+                ? String.Empty
+                : $"[{DateTime.Now:T}|{className}|L{lineNumber}] {line}{Environment.NewLine}";
 
             Console.WriteLine(logged);
 
             if(!Directory.Exists(TargetDirectory))
                 Directory.CreateDirectory(TargetDirectory);
-            File.AppendAllText(TargetFileName, logged);
+            File.AppendAllText(TargetFullPath, logged);
         }
 
         #endregion
