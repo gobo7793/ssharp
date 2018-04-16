@@ -22,6 +22,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
@@ -36,23 +37,28 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// HTTP URL of the timeline server
         /// </summary>
-        public string TimelineHttpUrl { get; private set; }
+        public string TimelineHttpUrl { get; }
 
         /// <summary>
         /// Connected <see cref="Client" />
         /// </summary>
-        public List<Client> ConnectedClients { get; private set; }
+        //public List<Client> ConnectedClients { get; private set; }
+        [NonSerializable]
+        public List<Client> ConnectedClients => Model.Instance.Clients;
 
         /// <summary>
         /// Connected <see cref="YarnNode" />s
         /// </summary>
         //public List<YarnNode> ConnectedNodes { get; private set; }
+        [NonSerializable]
         public List<YarnNode> ConnectedNodes => Model.Instance.Nodes;
 
         /// <summary>
         /// The executed <see cref="YarnApp"/>s on the cluster
         /// </summary>
-        public List<YarnApp> Apps { get; private set; }
+        //public List<YarnApp> Apps { get; private set; }
+        [NonSerializable]
+        public List<YarnApp> Apps => Model.Instance.Applications;
 
         #endregion
 
@@ -78,9 +84,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         private void InitYarnController()
         {
-            ConnectedClients = new List<Client>();
+            //ConnectedClients = new List<Client>();
             //ConnectedNodes = new List<YarnNode>();
-            Apps = new List<YarnApp>();
+            //Apps = new List<YarnApp>();
         }
 
         #endregion

@@ -62,9 +62,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public List<YarnAppAttempt> Attempts { get; }
 
         /// <summary>
+        /// Starting <see cref="Client"/> id of this app
+        /// </summary>
+        // public string StartingClientId { get; set; }
+        public char[] StartingClientIdActual { get; }
+
+        /// <summary>
+        /// Starting <see cref="Client"/> id of this app, based on <see cref="StartingClientIdActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string StartingClientId
+        {
+            get { return ModelUtilities.GetCharArrayAsString(StartingClientIdActual); }
+            set { ModelUtilities.SetCharArrayOnString(StartingClientIdActual, value); }
+        }
+
+        /// <summary>
         /// Starting <see cref="Client"/> of this app
         /// </summary>
-        public Client StartingClient { get; set; }
+        //public Client StartingClient { get; set; }
+        [NonSerializable]
+        public Client StartingClient => Model.Instance.Clients.FirstOrDefault(c => c.ClientId == StartingClientId);
 
         /// <summary>
         /// Current state
@@ -80,7 +98,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Name of the app
         /// </summary>
         // public string Name { get; set; }
-        public char[] NameActual { get; private set; }
+        public char[] NameActual { get; }
 
         /// <summary>
         /// Name of the app as string, based on <see cref="NameActual"/>
@@ -96,7 +114,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// ID of the app
         /// </summary>
         // public string AppId { get; set; }
-        public char[] AppIdActual { get; private set; }
+        public char[] AppIdActual { get; }
 
         /// <summary>
         /// ID of the app as string, based on <see cref="AppId"/>
@@ -122,7 +140,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <see cref="YarnNode"/> ID the ApplicationMaster is running
         /// </summary>
         // public string AmHostId { get; set; }
-        public char[] AmHostIdActual { get; private set; }
+        public char[] AmHostIdActual { get; }
 
         /// <summary>
         /// <see cref="YarnNode"/> ID the ApplicationMaster is running as string, based on <see cref="AmHostIdActual"/>
@@ -189,7 +207,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// The tracking url for web UI
         /// </summary>
         // public string TrackingUrl { get; set; }
-        public char[] TrackingUrlActual { get; private set; }
+        public char[] TrackingUrlActual { get; }
 
         /// <summary>
         /// The tracking url for web UI as string, based on <see cref="TrackingUrlActual"/>
@@ -210,7 +228,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Diagnostics message for failed containers
         /// </summary>
         // public string Diagnostics { get; set; }
-        public char[] DiagnosticsActual { get; private set; }
+        public char[] DiagnosticsActual { get; }
 
         /// <summary>
         /// Diagnostics message for failed containers as string, based on <see cref="DiagnosticsActual"/>
@@ -252,6 +270,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             NameActual = new char[Model.AppNameLength];
             AppIdActual = new char[Model.AppIdLength];
+            StartingClientIdActual = new char[Model.ClientIdLength];
             StartTime = DateTime.MinValue;
             EndTime = DateTime.MinValue;
             AmHostIdActual = new char[Model.NodeIdLength];
@@ -266,7 +285,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <param name="startingClient">Starting <see cref="Client"/> of this app</param>
         public YarnApp(Client startingClient) : this()
         {
-            StartingClient = startingClient;
+            //StartingClient = startingClient;
+            StartingClientId = startingClient.ClientId;
         }
 
         #endregion

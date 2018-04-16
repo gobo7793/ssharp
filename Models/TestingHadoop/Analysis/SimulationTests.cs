@@ -34,7 +34,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
     public class SimulationTests
     {
         private static readonly TimeSpan _StepMinTime = new TimeSpan(0, 0, 0, 30);
-        private static readonly int _StepCount = 1;
+        private static readonly int _StepCount = 10;
         private static readonly Logger.Level _LogLevel = Logger.Level.Log;
 
         [TestFixtureSetUp]
@@ -97,11 +97,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 Logger.Log($"    IsConnected: {node.IsConnected}");
             }
 
-            for(int c = 0; c < model.Controller.ConnectedClients.Count; c++)
+            foreach(var client in model.Controller.ConnectedClients)
             {
-                var client = model.Clients[c];
-
-                Logger.Log($"=== Client {c} ===");
+                Logger.Log($"=== Client {client.ClientDir} ===");
                 Logger.Log($"    Current executing bench: {client.BenchController?.CurrentBenchmark?.Name}");
                 Logger.Log($"    Current executing app:   {client.CurrentExecutingApp?.AppId}");
 

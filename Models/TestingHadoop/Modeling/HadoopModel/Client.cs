@@ -39,13 +39,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region Properties
 
         /// <summary>
+        /// ID of the client
+        /// </summary>
+        // public string ClientId { get; set; }
+        public char[] ClientIdActual { get; }
+
+        /// <summary>
+        /// ID of the client, based on <see cref="ClientIdActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string ClientId
+        {
+            get { return ModelUtilities.GetCharArrayAsString(ClientIdActual); }
+            set { ModelUtilities.SetCharArrayOnString(ClientIdActual, value); }
+        }
+
+        /// <summary>
         /// Started <see cref="CurrentExecutingApp"/>s of the client
         /// </summary>
-        public List<YarnApp> Apps { get; }
+        //public List<YarnApp> Apps { get; }
+        [NonSerializable]
+        public List<YarnApp> Apps => Model.Instance.Applications.Where(a => a.StartingClientId == ClientId).ToList();
 
         /// <summary>
         /// The current executing application
         /// </summary>
+        //public YarnApp CurrentExecutingApp { get; private set; }
         public YarnApp CurrentExecutingApp { get; private set; }
 
         /// <summary>
@@ -68,7 +87,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// HDFS base directory for the client
         /// </summary>
-        public string ClientDir { get; set; }
+        [NonSerializable]
+        public string ClientDir => ClientId;
 
         /// <summary>
         /// The benchmark controller
@@ -84,11 +104,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public Client()
         {
-            Apps = new List<YarnApp>();
+            //Apps = new List<YarnApp>();
 
             CurrentExecutingApp = new YarnApp();
             ConnectedYarnController = new YarnController();
-            ClientDir = String.Empty;
+            ClientIdActual = new char[Model.ClientIdLength];
 
             BenchController = new BenchmarkController();
         }
@@ -102,7 +122,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             : this()
         {
             ConnectedYarnController = controller;
-            ClientDir = clientHdfsDir;
+            ClientId = clientHdfsDir;
         }
 
         /// <summary>

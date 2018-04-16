@@ -285,7 +285,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             {
                 var client = new Client(Controller, $"client{i}", benchTransitionSeed);
 
-                Controller.ConnectedClients.Add(client);
+                //Controller.ConnectedClients.Add(client);
                 Clients.Add(client);
             }
         }
@@ -302,8 +302,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
                 {
                     var app = new YarnApp(client);
 
-                    client.Apps.Add(app);
-                    Controller.Apps.Add(app);
+                    //client.Apps.Add(app);
+                    //Controller.Apps.Add(app);
                     Applications.Add(app);
                 }
             }
