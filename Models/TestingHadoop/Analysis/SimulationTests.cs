@@ -34,7 +34,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
     public class SimulationTests
     {
         private static readonly TimeSpan _StepMinTime = new TimeSpan(0, 0, 0, 30);
-        private static readonly int _StepCount = 10;
+        private static readonly int _StepCount = 1;
         private static readonly Logger.Level _LogLevel = Logger.Level.Log;
 
         [TestFixtureSetUp]
@@ -89,7 +89,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
         public static void PrintTrace(Model model)
         {
-            for(int c = 0; c < model.Clients.Count; c++)
+            foreach(var node in model.Controller.ConnectedNodes)
+            {
+                Logger.Log($"=== Node {node.NodeId} ===");
+                Logger.Log($"    State:       {node.State}");
+                Logger.Log($"    IsActive:    {node.IsActive}");
+                Logger.Log($"    IsConnected: {node.IsConnected}");
+            }
+
+            for(int c = 0; c < model.Controller.ConnectedClients.Count; c++)
             {
                 var client = model.Clients[c];
 
@@ -97,7 +105,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 Logger.Log($"    Current executing bench: {client.BenchController?.CurrentBenchmark?.Name}");
                 Logger.Log($"    Current executing app:   {client.CurrentExecutingApp?.AppId}");
 
-                foreach(var app in model.Clients[c].Apps)
+                foreach(var app in client.Apps)
                 {
                     if(String.IsNullOrWhiteSpace(app.AppId))
                         continue;
@@ -129,14 +137,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                         }
                     }
                 }
-            }
-
-            foreach(var node in model.Nodes)
-            {
-                Logger.Log($"=== Node {node.NodeId} ===");
-                Logger.Log($"    State:       {node.State}");
-                Logger.Log($"    IsActive:    {node.IsActive}");
-                Logger.Log($"    IsConnected: {node.IsConnected}");
             }
         }
     }
