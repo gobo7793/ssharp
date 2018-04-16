@@ -194,7 +194,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             var isComponentValid = yarnComponent.Constraints.All(constraint => constraint());
 
             if(!isComponentValid)
-                Console.WriteLine($"YARN component not valid: {yarnComponent.GetId()}");
+                Logger.Log($"YARN component not valid: {yarnComponent.GetId()}");
 
             return isComponentValid;
         }

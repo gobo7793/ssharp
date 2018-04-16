@@ -52,8 +52,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         {
             var model = (Model)simulator.Model;
 
+            WriteLine("=================  START  =====================================");
+
             for(var i = 0; i < steps; i++)
             {
+                WriteLine($"=================  Step: {i}  =====================================");
                 var stepStartTime = DateTime.Now;
 
                 simulator.SimulateStep();
@@ -62,13 +65,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 //if(stepTime < _StepMinTime)
                 //    Thread.Sleep(_StepMinTime - stepTime);
 
-                WriteLine($"=================  Step: {i}  =====================================");
                 WriteLine($"Duration: {stepTime.ToString()}");
 
                 PrintTrace(model);
             }
 
             WriteLine("=================  Finish  =====================================");
+            WriteLine();
         }
 
         public static void PrintTrace(Model model)
@@ -78,38 +81,38 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 var client = model.Clients[c];
 
                 WriteLine($"=== Client {c} ===");
-                WriteLine($"Current executing bench: {client.BenchController?.CurrentBenchmark?.Name}");
-                WriteLine($"Current executing app:   {client.CurrentExecutingApp?.AppId}");
+                WriteLine($"    Current executing bench: {client.BenchController?.CurrentBenchmark?.Name}");
+                WriteLine($"    Current executing app:   {client.CurrentExecutingApp?.AppId}");
 
                 foreach(var app in model.Clients[c].Apps)
                 {
                     if(String.IsNullOrWhiteSpace(app.AppId))
                         continue;
 
-                    WriteLine($"=== App {app.AppId} ===");
-                    WriteLine($"Name:        {app.Name}");
-                    WriteLine($"State:       {app.State}");
-                    WriteLine($"FinalStatus: {app.FinalStatus}");
-                    WriteLine($"AM Host:     {app.AmHostId}");
+                    WriteLine($"  === App {app.AppId} ===");
+                    WriteLine($"      Name:        {app.Name}");
+                    WriteLine($"      State:       {app.State}");
+                    WriteLine($"      FinalStatus: {app.FinalStatus}");
+                    WriteLine($"      AM Host:     {app.AmHostId}");
 
                     foreach(var attempt in app.Attempts)
                     {
                         if(String.IsNullOrWhiteSpace(attempt.AttemptId))
                             continue;
 
-                        WriteLine($"=== Attempt {attempt.AttemptId} ===");
-                        WriteLine($"State:        {attempt.State}");
-                        WriteLine($"AM Container: {attempt.AmContainerId}");
-                        WriteLine($"AM Host:      {attempt.AmHostId}");
+                        WriteLine($"    === Attempt {attempt.AttemptId} ===");
+                        WriteLine($"        State:        {attempt.State}");
+                        WriteLine($"        AM Container: {attempt.AmContainerId}");
+                        WriteLine($"        AM Host:      {attempt.AmHostId}");
 
                         foreach(var container in attempt.Containers)
                         {
                             if(String.IsNullOrWhiteSpace(container.ContainerId))
                                 continue;
 
-                            WriteLine($"=== Container {container.ContainerId} ===");
-                            WriteLine($"State: {container.State}");
-                            WriteLine($"Host:  {container.HostId}");
+                            WriteLine($"      === Container {container.ContainerId} ===");
+                            WriteLine($"          State: {container.State}");
+                            WriteLine($"          Host:  {container.HostId}");
                         }
                     }
                 }
@@ -118,15 +121,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             foreach(var node in model.Nodes)
             {
                 WriteLine($"=== Node {node.NodeId} ===");
-                WriteLine($"State:       {node.State}");
-                WriteLine($"IsActive:    {node.IsActive}");
-                WriteLine($"IsConnected: {node.IsConnected}");
+                WriteLine($"    State:       {node.State}");
+                WriteLine($"    IsActive:    {node.IsActive}");
+                WriteLine($"    IsConnected: {node.IsConnected}");
             }
         }
 
-        private static void WriteLine(string line)
+        private static void WriteLine(string line = "")
         {
-            Console.WriteLine(line);
             Logger.Log(line);
         }
     }

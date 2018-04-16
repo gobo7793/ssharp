@@ -24,8 +24,9 @@
 
 using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 
-namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
+namespace SafetySharp.CaseStudies.TestingHadoop
 {
     /// <summary>
     /// Logging class
@@ -52,11 +53,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// Logs the given line with timestamp into <see cref="TargetFileName"/>
         /// </summary>
         /// <param name="line">The line to write</param>
-        public static void Log(string line)
+        /// <param name="memberName">The calling mamber name, default filled by compiler</param>
+        /// <param name="lineNumber">The calling line number, default filled by compiler</param>
+        public static void Log(string line, [CallerMemberName] string memberName = "", [CallerLineNumber] int lineNumber = 0)
         {
+            var logged = $"[{DateTime.Now:T}|{memberName}|L{lineNumber}] {line}{Environment.NewLine}";
+
+            Console.WriteLine(logged);
+
             if(!Directory.Exists(TargetDirectory))
                 Directory.CreateDirectory(TargetDirectory);
-            File.AppendAllText(TargetFileName, line);
+            File.AppendAllText(TargetFileName, logged);
         }
 
         #endregion
