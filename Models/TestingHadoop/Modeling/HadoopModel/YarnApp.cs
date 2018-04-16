@@ -285,6 +285,36 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public bool IsSelfMonitoring { get; set; }
 
         /// <summary>
+        /// S# analysis/DCCA constraints for the oracle
+        /// </summary>
+        [Hidden(HideElements = true)]
+        public Func<bool>[] Constraints => new Func<bool>[]
+        {
+            // 1) task will be completed if not canceled
+            () =>
+            {
+                if(FinalStatus != EFinalStatus.FAILED) return true;
+                if(!String.IsNullOrWhiteSpace(Name) && Name.ToLower().Contains("fail job")) return true;
+                return false;
+            },
+            // 3) configuration will be updated
+            () =>
+            {
+                if(State == EAppState.RUNNING)
+                    return AmHost?.State == ENodeState.RUNNING;
+                return true;
+            },
+        };
+
+        /// <summary>
+        /// Returns the ID of the component
+        /// </summary>
+        public string GetId()
+        {
+            return AppId;
+        }
+
+        /// <summary>
         /// Monitors the current state from Hadoop
         /// </summary>
         public void MonitorStatus()
@@ -378,28 +408,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             return status;
         }
-
-        /// <summary>
-        /// S# analysis/DCCA constraints for the oracle
-        /// </summary>
-        [Hidden(HideElements = true)]
-        public Func<bool>[] Constraints => new Func<bool>[]
-        {
-            // 1) task will be completed if not canceled
-            () =>
-            {
-                if(FinalStatus != EFinalStatus.FAILED) return true;
-                if(!String.IsNullOrWhiteSpace(Name) && Name.ToLower().Contains("fail job")) return true;
-                return false;
-            },
-            // 3) configuration will be updated
-            () =>
-            {
-                if(State == EAppState.RUNNING)
-                    return AmHost?.State == ENodeState.RUNNING;
-                return true;
-            },
-        };
 
         #endregion
 

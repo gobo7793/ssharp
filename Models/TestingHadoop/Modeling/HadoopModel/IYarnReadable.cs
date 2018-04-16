@@ -20,6 +20,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         bool IsSelfMonitoring { get; set; }
 
         /// <summary>
+        /// S# analysis/DCCA constraints for the oracle
+        /// </summary>
+        Func<bool>[] Constraints { get; }
+
+        /// <summary>
+        /// Returns the ID of the component
+        /// </summary>
+        string GetId();
+
+        /// <summary>
         /// Monitors the current status from Hadoop
         /// </summary>
         void MonitorStatus();
@@ -35,10 +45,5 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         /// <returns>The status as string</returns>
         string StatusAsString();
-
-        /// <summary>
-        /// S# analysis/DCCA constraints for the oracle
-        /// </summary>
-        Func<bool>[] Constraints { get; }
     }
 }

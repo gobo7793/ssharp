@@ -185,6 +185,30 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public bool IsSelfMonitoring { get; set; }
 
         /// <summary>
+        /// S# analysis/DCCA constraints for the oracle
+        /// </summary>
+        [Hidden(HideElements = true)]
+        public Func<bool>[] Constraints => new Func<bool>[]
+        {
+            // 2) no workload is allocated to an inactive/defect/disconnected node
+            // 3) configuration will be updated
+            () =>
+            {
+                if(State == EContainerState.RUNNING)
+                    return Host?.State == ENodeState.RUNNING;
+                return true;
+            },
+        };
+
+        /// <summary>
+        /// Returns the ID of the component
+        /// </summary>
+        public string GetId()
+        {
+            return ContainerId;
+        }
+
+        /// <summary>
         /// Monitors the current state from Hadoop
         /// </summary>
         public void MonitorStatus()
@@ -249,22 +273,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             return status;
         }
-
-        /// <summary>
-        /// S# analysis/DCCA constraints for the oracle
-        /// </summary>
-        [Hidden(HideElements = true)]
-        public Func<bool>[] Constraints => new Func<bool>[]
-        {
-            // 2) no workload is allocated to an inactive/defect/disconnected node
-            // 3) configuration will be updated
-            () =>
-            {
-                if(State == EContainerState.RUNNING)
-                    return Host?.State == ENodeState.RUNNING;
-                return true;
-            },
-        };
 
         #endregion
 

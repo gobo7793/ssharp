@@ -178,6 +178,30 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public bool IsSelfMonitoring { get; set; }
 
         /// <summary>
+        /// S# analysis/DCCA constraints for the oracle
+        /// </summary>
+        [Hidden(HideElements = true)]
+        public Func<bool>[] Constraints => new Func<bool>[]
+        {
+            // 4 defects are recognized
+            () =>
+            {
+                if(IsActive && IsConnected && State == ENodeState.RUNNING) return true;
+                if(!IsActive && State == ENodeState.RUNNING) return false;
+                if(!IsConnected && State == ENodeState.RUNNING) return false;
+                return false;
+            }
+        };
+
+        /// <summary>
+        /// Returns the ID of the component
+        /// </summary>
+        public string GetId()
+        {
+            return NodeId;
+        }
+
+        /// <summary>
         /// Monitors the current state from Hadoop
         /// </summary>
         public void MonitorStatus()
@@ -237,22 +261,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             return status;
         }
-
-        /// <summary>
-        /// S# analysis/DCCA constraints for the oracle
-        /// </summary>
-        [Hidden(HideElements = true)]
-        public Func<bool>[] Constraints => new Func<bool>[]
-        {
-            // 4 defects are recognized
-            () =>
-            {
-                if(IsActive && IsConnected && State == ENodeState.RUNNING) return true;
-                if(!IsActive && State == ENodeState.RUNNING) return false;
-                if(!IsConnected && State == ENodeState.RUNNING) return false;
-                return false;
-            }
-        };
 
         #endregion
 
