@@ -120,14 +120,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// List of Clients
         /// </summary>
-        [Root(RootKind.Controller)]
-        public List<Client> Clients { get; set; }
+        [Root(RootKind.Plant)]
+        public List<Client> Clients { get; }
 
         /// <summary>
         /// Hadoop Controller
         /// </summary>
         [Root(RootKind.Controller)]
-        public YarnController Controller { get; set; }
+        public YarnController Controller { get; private set; }
 
         /// <summary>
         /// Hadoop Nodes
@@ -269,7 +269,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             {
                 var node = new YarnNode(NodeNamePrefix + i, Controller);
 
-                Controller.ConnectedNodes.Add(node);
+                //Controller.ConnectedNodes.Add(node);
                 Nodes.Add(node);
             }
         }

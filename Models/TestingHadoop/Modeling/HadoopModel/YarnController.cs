@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -47,7 +46,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Connected <see cref="YarnNode" />s
         /// </summary>
-        public List<YarnNode> ConnectedNodes { get; private set; }
+        //public List<YarnNode> ConnectedNodes { get; private set; }
+        public List<YarnNode> ConnectedNodes => Model.Instance.Nodes;
 
         /// <summary>
         /// The executed <see cref="YarnApp"/>s on the cluster
@@ -79,7 +79,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         private void InitYarnController()
         {
             ConnectedClients = new List<Client>();
-            ConnectedNodes = new List<YarnNode>();
+            //ConnectedNodes = new List<YarnNode>();
             Apps = new List<YarnApp>();
         }
 
