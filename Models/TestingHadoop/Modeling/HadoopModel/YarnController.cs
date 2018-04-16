@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -146,9 +147,56 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #region Constraints
 
-        private void CheckConstraints()
+        /// <summary>
+        /// Checks the constraints for all YARN components
+        /// </summary>
+        public void CheckConstraints()
         {
+            bool isComponentValid;
+            foreach(var node in ConnectedNodes)
+            {
+                isComponentValid = ValidateConstraints(node);
+                if(!isComponentValid)
+                    return;
+            }
 
+            foreach(var app in Apps)
+            {
+                isComponentValid = ValidateConstraints(app);
+                if(!isComponentValid)
+                    return;
+
+                foreach(var attempt in app.Attempts)
+                {
+
+                    isComponentValid = ValidateConstraints(attempt);
+                    if(!isComponentValid)
+                        return;
+
+                    foreach(var container in attempt.Containers)
+                    {
+
+                        isComponentValid = ValidateConstraints(container);
+                        if(!isComponentValid)
+                            return;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Validate the constraints for the given yarn component
+        /// </summary>
+        /// <param name="yarnComponent">The yarn component to validate</param>
+        /// <returns>True if constraints are valid</returns>
+        internal bool ValidateConstraints(IYarnReadable yarnComponent)
+        {
+            var isComponentValid = yarnComponent.Constraints.All(constraint => constraint());
+
+            if(!isComponentValid)
+                Console.WriteLine($"YARN component not valid: {yarnComponent.GetId()}");
+
+            return isComponentValid;
         }
 
         #endregion
