@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Threading;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
@@ -46,7 +47,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public static void SetCharArrayOnString(char[] targetArray, string sourceString)
         {
             ClearArray(targetArray);
-            sourceString?.ToCharArray().CopyTo(targetArray, 0);
+            if(!String.IsNullOrWhiteSpace(sourceString))
+                sourceString.ToCharArray().CopyTo(targetArray, 0);
         }
 
         /// <summary>
@@ -56,6 +58,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public static string GetCharArrayAsString(char[] sourceArray)
         {
             return new String(sourceArray).Replace("\0", String.Empty);
+        }
+
+        /// <summary>
+        /// Let sleeping the current thread for the given time in seconds
+        /// </summary>
+        /// <param name="seconds">The sleep time in seconds</param>
+        public static void Sleep(int seconds = 1)
+        {
+            if(seconds > 0)
+                Thread.Sleep(seconds * 1000);
         }
     }
 }
