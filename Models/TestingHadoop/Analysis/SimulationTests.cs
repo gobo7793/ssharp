@@ -33,7 +33,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 {
     public class SimulationTests
     {
-        private static readonly TimeSpan _StepMinTime = new TimeSpan(0, 0, 0, 30);
+        private static readonly TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 10);
         private static readonly int _StepCount = 10;
         private static readonly Logger.Level _LogLevel = Logger.Level.Log;
 
@@ -75,8 +75,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 simulator.SimulateStep();
 
                 var stepTime = DateTime.Now - stepStartTime;
-                //if(stepTime < _StepMinTime)
-                //    Thread.Sleep(_StepMinTime - stepTime);
+                if(stepTime < _MinStepTime)
+                    Thread.Sleep(_MinStepTime - stepTime);
 
                 Logger.Log($"Duration: {stepTime.ToString()}");
 
