@@ -131,7 +131,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
                 return;
 
             var logged = String.IsNullOrWhiteSpace(line)
-                ? String.Empty
+                ? $"{String.Empty}{Environment.NewLine}"
                 : $"[{DateTime.Now:T}|{className}|L{lineNumber:##000}] {line}{Environment.NewLine}";
 
             Console.WriteLine(logged);
