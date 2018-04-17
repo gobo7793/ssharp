@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SafetySharp.Modeling;
@@ -100,12 +101,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             foreach(var client in ConnectedClients)
                 client.UpdateBenchmark();
 
+            ModelUtilities.Sleep(); // optional, to allocate at least the AM container
+
             MonitorNodes();
             MonitorApps();
 
             CheckConstraints();
+            IsReconfPossible();
         }
-        
+
         #endregion
 
         #region Monitoring methods
@@ -198,11 +202,25 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         internal bool ValidateConstraints(IYarnReadable yarnComponent)
         {
             var isComponentValid = yarnComponent.Constraints.All(constraint => constraint());
-
             if(!isComponentValid)
                 Logger.Warning($"YARN component not valid: {yarnComponent.GetId()}");
-
             return isComponentValid;
+        }
+
+        #endregion
+
+        #region Reconfiguration
+
+        /// <summary>
+        /// Validates if reconfiguration for the cluster would be possible
+        /// </summary>
+        /// <returns>True if reconfiguration is possible</returns>
+        public bool IsReconfPossible()
+        {
+            var isReconfPossible = ConnectedNodes.Any(n => n.State == ENodeState.RUNNING);
+            if(!isReconfPossible)
+                Logger.Exception("No reconfiguration possible!");
+            return isReconfPossible;
         }
 
         #endregion
