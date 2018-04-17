@@ -42,7 +42,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// ID of the client
         /// </summary>
         // public string ClientId { get; set; }
-        public char[] ClientIdActual { get; }
+        public char[] ClientIdActual { get; } = new char[Model.ClientIdLength];
 
         /// <summary>
         /// ID of the client, based on <see cref="ClientIdActual"/>
@@ -62,15 +62,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public List<YarnApp> Apps => Model.Instance.Applications.Where(a => a.StartingClientId == ClientId).ToList();
 
         /// <summary>
-        /// The current executing application
+        /// The current executing application id
+        /// </summary>
+        public char[] CurrentExecutingAppIdActual { get; } = new char[Model.AppIdLength];
+
+        /// <summary>
+        /// The current executing application id, based on <see cref="CurrentExecutingAppIdActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string CurrentExecutingAppId
+        {
+            get { return ModelUtilities.GetCharArrayAsString(CurrentExecutingAppIdActual); }
+            set { ModelUtilities.SetCharArrayOnString(CurrentExecutingAppIdActual, value); }
+        }
+
+        /// <summary>
+        /// Started <see cref="CurrentExecutingApp"/>s of the client
         /// </summary>
         //public YarnApp CurrentExecutingApp { get; private set; }
-        public YarnApp CurrentExecutingApp { get; private set; }
+        [NonSerializable]
+        public YarnApp CurrentExecutingApp => Model.Instance.Applications.FirstOrDefault(a => a.AppId == CurrentExecutingAppId);
 
         /// <summary>
         /// Connected <see cref="YarnController"/> for the client
         /// </summary>
-        public YarnController ConnectedYarnController { get; set; }
+        [NonSerializable]
+        public YarnController ConnectedYarnController => Model.Instance.Controller;
 
         /// <summary>
         /// Parser to monitoring data from cluster
@@ -93,7 +110,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// The benchmark controller
         /// </summary>
-        public BenchmarkController BenchController { get; set; }
+        public BenchmarkController BenchController { get; set; } = new BenchmarkController();
 
         #endregion
 
@@ -106,33 +123,31 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             //Apps = new List<YarnApp>();
 
-            CurrentExecutingApp = new YarnApp();
-            ConnectedYarnController = new YarnController();
-            ClientIdActual = new char[Model.ClientIdLength];
+            //CurrentExecutingApp = new YarnApp();
+            //ConnectedYarnController = new YarnController();
+            //ClientIdActual = new char[Model.ClientIdLength];
 
-            BenchController = new BenchmarkController();
+            //BenchController = new BenchmarkController();
         }
 
         /// <summary>
         /// Initializes a new <see cref="Client"/>
         /// </summary>
-        /// <param name="controller">Connected <see cref="YarnController"/> for the client</param>
         /// <param name="clientHdfsDir">The hdfs base directory for this client</param>
-        public Client(YarnController controller, string clientHdfsDir)
+        public Client(string clientHdfsDir)
             : this()
         {
-            ConnectedYarnController = controller;
+            //ConnectedYarnController = controller;
             ClientId = clientHdfsDir;
         }
 
         /// <summary>
         /// Initializes a new <see cref="Client"/>
         /// </summary>
-        /// <param name="controller">Connected <see cref="YarnController"/> for the client</param>
         /// <param name="clientHdfsDir">The hdfs base directory for this client</param>
         /// <param name="benchControllerSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
-        public Client(YarnController controller, string clientHdfsDir, int benchControllerSeed)
-            : this(controller, clientHdfsDir)
+        public Client(string clientHdfsDir, int benchControllerSeed)
+            : this(clientHdfsDir)
         {
             BenchController = new BenchmarkController(benchControllerSeed);
         }
@@ -143,7 +158,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
-            //UpdateBenchmark();
+            //UpdateBenchmark(); // to prevent conflicts moved to YarnController
         }
 
         #endregion
@@ -165,7 +180,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 StopCurrentBenchmark();
                 StartBenchmark(BenchController.CurrentBenchmark);
             }
-
         }
 
         /// <summary>
@@ -175,7 +189,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public bool StopCurrentBenchmark()
         {
             var isStopped = CurrentExecutingApp?.StopApp();
-            CurrentExecutingApp = null;
+            CurrentExecutingAppId = String.Empty;
             return isStopped ?? true;
         }
 
@@ -199,7 +213,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 if(app == null)
                     throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
                 app.AppId = appId;
-                CurrentExecutingApp = app;
+                CurrentExecutingAppId = app.AppId;
             }
         }
 
