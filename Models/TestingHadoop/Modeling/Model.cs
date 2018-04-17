@@ -283,7 +283,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         {
             for(int i = 1; i <= clientCount; i++)
             {
-                var client = new Client(Controller, $"client{i}", benchTransitionSeed);
+                var client = new Client($"client{i}", benchTransitionSeed);
 
                 //Controller.ConnectedClients.Add(client);
                 Clients.Add(client);
