@@ -23,3 +23,5 @@
 using System.Reflection;
 
 [assembly: AssemblyTitle("S# Hadoop System Case Study")]
+
+[assembly: log4net.Config.XmlConfigurator(ConfigFile = "thdplog4net.config")]
