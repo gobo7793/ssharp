@@ -1,4 +1,5 @@
-﻿// The MIT License (MIT)
+﻿#region License
+// The MIT License (MIT)
 // 
 // Copyright (c) 2014-2018, Institute for Software & Systems Engineering
 // 
@@ -19,8 +20,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+#endregion
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using SafetySharp.Modeling;
@@ -34,6 +35,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     {
 
         #region Properties
+
+        private static log4net.ILog Logger { get; } = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// HTTP URL of the timeline server
@@ -203,7 +206,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             var isComponentValid = yarnComponent.Constraints.All(constraint => constraint());
             if(!isComponentValid)
-                Logger.Warning($"YARN component not valid: {yarnComponent.GetId()}");
+                Logger.Error($"YARN component not valid: {yarnComponent.GetId()}");
             return isComponentValid;
         }
 
@@ -219,7 +222,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             var isReconfPossible = ConnectedNodes.Any(n => n.State == ENodeState.RUNNING);
             if(!isReconfPossible)
-                Logger.Exception("No reconfiguration possible!");
+                Logger.Warn("No reconfiguration possible!");
             return isReconfPossible;
         }
 

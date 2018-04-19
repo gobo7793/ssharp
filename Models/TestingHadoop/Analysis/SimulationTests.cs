@@ -33,16 +33,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 {
     public class SimulationTests
     {
+        private static log4net.ILog Logger { get; } = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         private static readonly TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 10);
         private static readonly int _StepCount = 10;
-        private static readonly Logger.Level _LogLevel = Logger.Level.Log;
-
-        [TestFixtureSetUp]
-        public void FixtureSetup()
-        {
-            Logger.LogLevel = _LogLevel;
-        }
-
+        
         [Test]
         public void Simulate()
         {
@@ -57,7 +52,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             }
             catch(Exception e)
             {
-                Logger.Exception(e.ToString());
+                Logger.Fatal("Fatal exception during simulation.", e);
             }
         }
 
@@ -65,11 +60,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         {
             var model = (Model)simulator.Model;
 
-            Logger.Log("=================  START  =====================================");
+            Logger.Info("=================  START  =====================================");
 
             for(var i = 0; i < steps; i++)
             {
-                Logger.Log($"=================  Step: {i}  =====================================");
+                Logger.Info($"=================  Step: {i}  =====================================");
                 var stepStartTime = DateTime.Now;
 
                 simulator.SimulateStep();
@@ -78,60 +73,59 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 if(stepTime < _MinStepTime)
                     Thread.Sleep(_MinStepTime - stepTime);
 
-                Logger.Log($"Duration: {stepTime.ToString()}");
+                Logger.Info($"Duration: {stepTime.ToString()}");
 
                 PrintTrace(model);
             }
 
-            Logger.Log("=================  Finish  =====================================");
-            Logger.Log();
+            Logger.Info("=================  Finish  =====================================");
         }
 
         public static void PrintTrace(Model model)
         {
             foreach(var node in model.Controller.ConnectedNodes)
             {
-                Logger.Log($"=== Node {node.NodeId} ===");
-                Logger.Log($"    State:       {node.State}");
-                Logger.Log($"    IsActive:    {node.IsActive}");
-                Logger.Log($"    IsConnected: {node.IsConnected}");
+                Logger.Info($"=== Node {node.NodeId} ===");
+                Logger.Info($"    State:       {node.State}");
+                Logger.Info($"    IsActive:    {node.IsActive}");
+                Logger.Info($"    IsConnected: {node.IsConnected}");
             }
 
             foreach(var client in model.Controller.ConnectedClients)
             {
-                Logger.Log($"=== Client {client.ClientDir} ===");
-                Logger.Log($"    Current executing bench: {client.BenchController?.CurrentBenchmark?.Name}");
-                Logger.Log($"    Current executing app:   {client.CurrentExecutingApp?.AppId}");
+                Logger.Info($"=== Client {client.ClientDir} ===");
+                Logger.Info($"    Current executing bench: {client.BenchController?.CurrentBenchmark?.Name}");
+                Logger.Info($"    Current executing app:   {client.CurrentExecutingApp?.AppId}");
 
                 foreach(var app in client.Apps)
                 {
                     if(String.IsNullOrWhiteSpace(app.AppId))
                         continue;
 
-                    Logger.Log($"  === App {app.AppId} ===");
-                    Logger.Log($"      Name:        {app.Name}");
-                    Logger.Log($"      State:       {app.State}");
-                    Logger.Log($"      FinalStatus: {app.FinalStatus}");
-                    Logger.Log($"      AM Host:     {app.AmHostId} ({app.AmHost?.State})");
+                    Logger.Info($"  === App {app.AppId} ===");
+                    Logger.Info($"      Name:        {app.Name}");
+                    Logger.Info($"      State:       {app.State}");
+                    Logger.Info($"      FinalStatus: {app.FinalStatus}");
+                    Logger.Info($"      AM Host:     {app.AmHostId} ({app.AmHost?.State})");
 
                     foreach(var attempt in app.Attempts)
                     {
                         if(String.IsNullOrWhiteSpace(attempt.AttemptId))
                             continue;
 
-                        Logger.Log($"    === Attempt {attempt.AttemptId} ===");
-                        Logger.Log($"        State:        {attempt.State}");
-                        Logger.Log($"        AM Container: {attempt.AmContainerId}");
-                        Logger.Log($"        AM Host:      {attempt.AmHostId} ({attempt.AmHost?.State})");
+                        Logger.Info($"    === Attempt {attempt.AttemptId} ===");
+                        Logger.Info($"        State:        {attempt.State}");
+                        Logger.Info($"        AM Container: {attempt.AmContainerId}");
+                        Logger.Info($"        AM Host:      {attempt.AmHostId} ({attempt.AmHost?.State})");
 
                         foreach(var container in attempt.Containers)
                         {
                             if(String.IsNullOrWhiteSpace(container.ContainerId))
                                 continue;
 
-                            Logger.Log($"      === Container {container.ContainerId} ===");
-                            Logger.Log($"          State: {container.State}");
-                            Logger.Log($"          Host:  {container.HostId} ({container.Host?.State})");
+                            Logger.Info($"      === Container {container.ContainerId} ===");
+                            Logger.Info($"          State: {container.State}");
+                            Logger.Info($"          Host:  {container.HostId} ({container.Host?.State})");
                         }
                     }
                 }
