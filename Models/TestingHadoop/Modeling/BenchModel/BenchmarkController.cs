@@ -46,7 +46,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         public static Benchmark[] Benchmarks => new[]
         {
             // BenchmarkController IDs have to be in ascending ordner, they will be needed for transitions
-            new Benchmark(00, "dfsiowrite", $"jobclient TestDFSIO -Dtest.build.data={OutDirHolder} -read -nrFiles 12 -size 100MB",
+            new Benchmark(00, "dfsiowrite", $"jobclient TestDFSIO -Dtest.build.data={OutDirHolder} -write -nrFiles 12 -size 100MB",
                 $"{BaseDirHolder}/dfsio"),
             new Benchmark(01, "randomtextwriter",
                 $"example randomtextwriter -D mapreduce.randomtextwriter.totalbytes=48000 {OutDirHolder}", $"{BaseDirHolder}/rantw"),
