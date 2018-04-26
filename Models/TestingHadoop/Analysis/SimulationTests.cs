@@ -64,6 +64,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             var model = (Model)simulator.Model;
 
             Logger.Info("=================  START  =====================================");
+            Logger.Info($"Benchmark seed: {_BenchmarkSeed}");
+            Logger.Info($"Min Step time:  {_MinStepTime}");
+            Logger.Info($"Step count:     {_StepCount}");
+            Logger.Info($"Setup script:   {Model.HadoopSetupScript}");
 
             for(var i = 0; i < steps; i++)
             {
