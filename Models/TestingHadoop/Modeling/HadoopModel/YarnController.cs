@@ -41,26 +41,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// HTTP URL of the timeline server
         /// </summary>
-        public string TimelineHttpUrl { get; }
+        public string TimelineHttpUrl => $"http://{Name}:8188";
 
         /// <summary>
         /// Connected <see cref="Client" />
         /// </summary>
-        //public List<Client> ConnectedClients { get; private set; }
+        //public List<Client> ConnectedClients { get; private set; } = new List<Client>();
         [NonSerializable]
         public List<Client> ConnectedClients => Model.Instance.Clients;
 
         /// <summary>
         /// Connected <see cref="YarnNode" />s
         /// </summary>
-        //public List<YarnNode> ConnectedNodes { get; private set; }
+        //public List<YarnNode> ConnectedNodes { get; private set; } = new List<YarnNode>();
         [NonSerializable]
         public List<YarnNode> ConnectedNodes => Model.Instance.Nodes;
 
         /// <summary>
         /// The executed <see cref="YarnApp"/>s on the cluster
         /// </summary>
-        //public List<YarnApp> Apps { get; private set; }
+        //public List<YarnApp> Apps { get; private set; } = new List<YarnApp>();
         [NonSerializable]
         public List<YarnApp> Apps => Model.Instance.Applications;
 
@@ -73,7 +73,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public YarnController()
         {
-            InitYarnController();
         }
 
         /// <summary>
@@ -82,15 +81,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <param name="name">Name of the Host</param>
         public YarnController(string name) : base(name, 8088)
         {
-            InitYarnController();
-            TimelineHttpUrl = $"http://{Name}:8188";
-        }
-
-        private void InitYarnController()
-        {
-            //ConnectedClients = new List<Client>();
-            //ConnectedNodes = new List<YarnNode>();
-            //Apps = new List<YarnApp>();
         }
 
         #endregion

@@ -33,23 +33,72 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
     {
         #region Properties
 
-        private static readonly Benchmark _SleepBench;
-        private Benchmark[] _BenchmarksInstance; // dummy instance to use to prevent S# errors
+        private Benchmark[] _BenchmarksInstance = Benchmarks; // dummy instance to use to prevent S# errors
+
+        /// <summary>
+        /// The sleep benchmark, will also be used to initializing
+        /// </summary>
+        private static Benchmark SleepBench => new Benchmark(12, "sleep", "jobclient sleep -m 1 -r 1 -mt 10 -mr 5");
 
         /// <summary>
         /// The available benchmark list
         /// </summary>
-        public static Benchmark[] Benchmarks { get; }
+        public static Benchmark[] Benchmarks => new[]
+        {
+            // BenchmarkController IDs have to be in ascending ordner, they will be needed for transitions
+            new Benchmark(00, "dfsiowrite", $"jobclient TestDFSIO -Dtest.build.data={OutDirHolder} -read -nrFiles 12 -size 100MB",
+                $"{BaseDirHolder}/dfsio"),
+            new Benchmark(01, "randomtextwriter",
+                $"example randomtextwriter -D mapreduce.randomtextwriter.totalbytes=48000 {OutDirHolder}", $"{BaseDirHolder}/rantw"),
+            new Benchmark(02, "teragen", $"example teragen 48000 {OutDirHolder}", $"{BaseDirHolder}/teragen"),
+            new Benchmark(03, "dfsioread", $"jobclient TestDFSIO -Dtest.build.data={OutDirHolder} -read -nrFiles 12 -size 100MB",
+                $"{BaseDirHolder}/dfsio"),
+            new Benchmark(04, "wordcount", $"example wordcount {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/wcout",
+                $"{BaseDirHolder}/rantw"),
+            new Benchmark(05, "randomwriter", $"example randomwriter -D mapreduce.randomwriter.totalbytes=48000 {OutDirHolder}",
+                $"{BaseDirHolder}/ranwr"),
+            new Benchmark(06, "sort",
+                $"example sort -outKey org.apache.hadoop.io.Text -outValue org.apache.hadoop.io.Text {InDirHolder} {OutDirHolder}",
+                $"{BaseDirHolder}/sort", $"{BaseDirHolder}/rantw"),
+            new Benchmark(07, "terasort", $"example terasort {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/terasort",
+                $"{BaseDirHolder}/teragen"),
+            new Benchmark(08, "pi", "example pi 3 100"),
+            new Benchmark(09, "pentomino", $"example pentomino {OutDirHolder} -depth 2 -heigh 10 -width 6", $"{BaseDirHolder}/pent"),
+            new Benchmark(10, "testmapredsort", $"jobclient testmapredsort -sortInput {InDirHolder} -sortOutput {OutDirHolder}",
+                $"{BaseDirHolder}/sort", $"{BaseDirHolder}/rantw"),
+            new Benchmark(11, "teravalidate", $"example teravalidate {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/teravalidate",
+                $"{BaseDirHolder}/terasort"),
+            SleepBench,
+            new Benchmark(13, "fail", "jobclient fail -failMappers 3"),
+        };
 
         /// <summary>
         /// Transition probabilities from one benchmark (first dimension) to another (second dimension)
         /// </summary>
-        public static double[][] BenchTransitions { get; }
+        public static double[][] BenchTransitions => new[]
+        {
+            /* from / to ->    00    01   02    03    04    05    06    07    08    09    10    11    12    13  */
+            /* from / to ->   dfw   rtw   tg   dfr    wc    rw    so   tsr    pi    pt   tms   tvl    sl    fl  */
+            new[] /* 00 */ { .600, .073,  000, .145,  000,  000,  000,  000, .073, .073,  000,  000, .018, .018 },
+            new[] /* 01 */ { .036, .600,  000,  000, .145, .036, .109,  000, .036,  000,  000,  000, .019, .019 },
+            new[] /* 02 */ {  000, .036, .600,  000,  000,  000,  000, .255,  000, .073,  000,  000, .018, .018 },
+            new[] /* 03 */ {  000, .073,  000, .600,  000, .036,  000,  000, .145, .109,  000,  000, .018, .019 },
+            new[] /* 04 */ { .073, .109,  000,  000, .600,  000, .073,  000, .073, .036,  000,  000, .018, .018 },
+            new[] /* 05 */ {  000, .073, .073,  000,  000, .600,  000,  000, .109, .109,  000,  000, .018, .018 },
+            new[] /* 06 */ {  000, .073, .036,  000, .073, .036, .600,  000, .073,  000, .073,  000, .018, .018 },
+            new[] /* 07 */ {  000,  000,  000,  000,  000,  000,  000, .600, .109, .073,  000, .182, .018, .018 },
+            new[] /* 08 */ { .145, .109,  000,  000,  000,  000,  000,  000, .600, .109,  000,  000, .018, .019 },
+            new[] /* 09 */ { .109, .109,  000,  000,  000, .073,  000,  000, .073, .600,  000,  000, .018, .018 },
+            new[] /* 10 */ {  000, .145,  000,  000,  000, .073,  000,  000, .036, .109, .600,  000, .018, .019 },
+            new[] /* 11 */ { .073, .109,  000,  000,  000,  000,  000,  000, .109, .073,  000, .600, .018, .018 },
+            new[] /* 12 */ { 1/6D, 1/6D, 1/6D,  000,  000, 1/6D,  000,  000, 1/6D, 1/6D,  000,  000,  000,  000 },
+            new[] /* 13 */ { 1/6D, 1/6D, 1/6D,  000,  000, 1/6D,  000,  000, 1/6D, 1/6D,  000,  000,  000,  000 },
+        };
 
         /// <summary>
         /// Random number generator
         /// </summary>
-        private Random RandomGen { get; }
+        private Random RandomGen { get; } = new Random();
 
         /// <summary>
         /// Indicates if the controller is initialized with starting benchmark
@@ -60,72 +109,72 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <summary>
         /// Previous executed benchmark
         /// </summary>
-        public Benchmark PreviousBenchmark { get; set; }
+        public Benchmark PreviousBenchmark { get; set; } = SleepBench;
 
         /// <summary>
         /// Current executing benchmark
         /// </summary>
-        public Benchmark CurrentBenchmark { get; set; }
+        public Benchmark CurrentBenchmark { get; set; } = SleepBench;
 
         #endregion
 
         #region Constructors
 
-        /// <summary>
-        /// Initializes the base benchmark settings
-        /// </summary>
-        static BenchmarkController()
-        {
-            Benchmarks = new[]
-            {
-                // BenchmarkController IDs have to be in ascending ordner, they will be needed for transitions
-                new Benchmark(00, "dfsiowrite", $"jobclient TestDFSIO -Dtest.build.data={OutDirHolder} -read -nrFiles 12 -size 100MB",
-                    $"{BaseDirHolder}/dfsio"),
-                new Benchmark(01, "randomtextwriter",
-                    $"example randomtextwriter -D mapreduce.randomtextwriter.totalbytes=48000 {OutDirHolder}", $"{BaseDirHolder}/rantw"),
-                new Benchmark(02, "teragen", $"example teragen 48000 {OutDirHolder}", $"{BaseDirHolder}/teragen"),
-                new Benchmark(03, "dfsioread", $"jobclient TestDFSIO -Dtest.build.data={OutDirHolder} -read -nrFiles 12 -size 100MB",
-                    $"{BaseDirHolder}/dfsio"),
-                new Benchmark(04, "wordcount", $"example wordcount {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/wcout",
-                    $"{BaseDirHolder}/rantw"),
-                new Benchmark(05, "randomwriter", $"example randomwriter -D mapreduce.randomwriter.totalbytes=48000 {OutDirHolder}",
-                    $"{BaseDirHolder}/ranwr"),
-                new Benchmark(06, "sort",
-                    $"example sort -outKey org.apache.hadoop.io.Text -outValue org.apache.hadoop.io.Text {InDirHolder} {OutDirHolder}",
-                    $"{BaseDirHolder}/sort", $"{BaseDirHolder}/rantw"),
-                new Benchmark(07, "terasort", $"example terasort {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/terasort",
-                    $"{BaseDirHolder}/teragen"),
-                new Benchmark(08, "pi", "example pi 3 100"),
-                new Benchmark(09, "pentomino", $"example pentomino {OutDirHolder} -depth 2 -heigh 10 -width 6", $"{BaseDirHolder}/pent"),
-                new Benchmark(10, "testmapredsort", $"jobclient testmapredsort -sortInput {InDirHolder} -sortOutput {OutDirHolder}",
-                    $"{BaseDirHolder}/sort", $"{BaseDirHolder}/rantw"),
-                new Benchmark(11, "teravalidate", $"example teravalidate {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/teravalidate",
-                    $"{BaseDirHolder}/terasort"),
-                _SleepBench = new Benchmark(12, "sleep", "jobclient sleep -m 1 -r 1 -mt 10 -mr 5"),
-                new Benchmark(13, "fail", "jobclient fail -failMappers 3"),
-            };
+        ///// <summary>
+        ///// Initializes the base benchmark settings
+        ///// </summary>
+        //static BenchmarkController()
+        //{
+        //    Benchmarks = new[]
+        //    {
+        //        // BenchmarkController IDs have to be in ascending ordner, they will be needed for transitions
+        //        new Benchmark(00, "dfsiowrite", $"jobclient TestDFSIO -Dtest.build.data={OutDirHolder} -read -nrFiles 12 -size 100MB",
+        //            $"{BaseDirHolder}/dfsio"),
+        //        new Benchmark(01, "randomtextwriter",
+        //            $"example randomtextwriter -D mapreduce.randomtextwriter.totalbytes=48000 {OutDirHolder}", $"{BaseDirHolder}/rantw"),
+        //        new Benchmark(02, "teragen", $"example teragen 48000 {OutDirHolder}", $"{BaseDirHolder}/teragen"),
+        //        new Benchmark(03, "dfsioread", $"jobclient TestDFSIO -Dtest.build.data={OutDirHolder} -read -nrFiles 12 -size 100MB",
+        //            $"{BaseDirHolder}/dfsio"),
+        //        new Benchmark(04, "wordcount", $"example wordcount {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/wcout",
+        //            $"{BaseDirHolder}/rantw"),
+        //        new Benchmark(05, "randomwriter", $"example randomwriter -D mapreduce.randomwriter.totalbytes=48000 {OutDirHolder}",
+        //            $"{BaseDirHolder}/ranwr"),
+        //        new Benchmark(06, "sort",
+        //            $"example sort -outKey org.apache.hadoop.io.Text -outValue org.apache.hadoop.io.Text {InDirHolder} {OutDirHolder}",
+        //            $"{BaseDirHolder}/sort", $"{BaseDirHolder}/rantw"),
+        //        new Benchmark(07, "terasort", $"example terasort {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/terasort",
+        //            $"{BaseDirHolder}/teragen"),
+        //        new Benchmark(08, "pi", "example pi 3 100"),
+        //        new Benchmark(09, "pentomino", $"example pentomino {OutDirHolder} -depth 2 -heigh 10 -width 6", $"{BaseDirHolder}/pent"),
+        //        new Benchmark(10, "testmapredsort", $"jobclient testmapredsort -sortInput {InDirHolder} -sortOutput {OutDirHolder}",
+        //            $"{BaseDirHolder}/sort", $"{BaseDirHolder}/rantw"),
+        //        new Benchmark(11, "teravalidate", $"example teravalidate {InDirHolder} {OutDirHolder}", $"{BaseDirHolder}/teravalidate",
+        //            $"{BaseDirHolder}/terasort"),
+        //        SleepBench = new Benchmark(12, "sleep", "jobclient sleep -m 1 -r 1 -mt 10 -mr 5"),
+        //        new Benchmark(13, "fail", "jobclient fail -failMappers 3"),
+        //    };
 
-            // change probabilities for benchmark transition system here!
-            BenchTransitions = new[]
-            {
-                /* from / to ->    00    01   02    03    04    05    06    07    08    09    10    11    12    13  */
-                /* from / to ->   dfw   rtw   tg   dfr    wc    rw    so   tsr    pi    pt   tms   tvl    sl    fl  */
-                new[] /* 00 */ { .600, .073,  000, .145,  000,  000,  000,  000, .073, .073,  000,  000, .018, .018 },
-                new[] /* 01 */ { .036, .600,  000,  000, .145, .036, .109,  000, .036,  000,  000,  000, .019, .019 },
-                new[] /* 02 */ {  000, .036, .600,  000,  000,  000,  000, .255,  000, .073,  000,  000, .018, .018 },
-                new[] /* 03 */ {  000, .073,  000, .600,  000, .036,  000,  000, .145, .109,  000,  000, .018, .019 },
-                new[] /* 04 */ { .073, .109,  000,  000, .600,  000, .073,  000, .073, .036,  000,  000, .018, .018 },
-                new[] /* 05 */ {  000, .073, .073,  000,  000, .600,  000,  000, .109, .109,  000,  000, .018, .018 },
-                new[] /* 06 */ {  000, .073, .036,  000, .073, .036, .600,  000, .073,  000, .073,  000, .018, .018 },
-                new[] /* 07 */ {  000,  000,  000,  000,  000,  000,  000, .600, .109, .073,  000, .182, .018, .018 },
-                new[] /* 08 */ { .145, .109,  000,  000,  000,  000,  000,  000, .600, .109,  000,  000, .018, .019 },
-                new[] /* 09 */ { .109, .109,  000,  000,  000, .073,  000,  000, .073, .600,  000,  000, .018, .018 },
-                new[] /* 10 */ {  000, .145,  000,  000,  000, .073,  000,  000, .036, .109, .600,  000, .018, .019 },
-                new[] /* 11 */ { .073, .109,  000,  000,  000,  000,  000,  000, .109, .073,  000, .600, .018, .018 },
-                new[] /* 12 */ { 1/6D, 1/6D, 1/6D,  000,  000, 1/6D,  000,  000, 1/6D, 1/6D,  000,  000,  000,  000 },
-                new[] /* 13 */ { 1/6D, 1/6D, 1/6D,  000,  000, 1/6D,  000,  000, 1/6D, 1/6D,  000,  000,  000,  000 },
-            };
-        }
+        //    // change probabilities for benchmark transition system here!
+        //    BenchTransitions = new[]
+        //    {
+        //        /* from / to ->    00    01   02    03    04    05    06    07    08    09    10    11    12    13  */
+        //        /* from / to ->   dfw   rtw   tg   dfr    wc    rw    so   tsr    pi    pt   tms   tvl    sl    fl  */
+        //        new[] /* 00 */ { .600, .073,  000, .145,  000,  000,  000,  000, .073, .073,  000,  000, .018, .018 },
+        //        new[] /* 01 */ { .036, .600,  000,  000, .145, .036, .109,  000, .036,  000,  000,  000, .019, .019 },
+        //        new[] /* 02 */ {  000, .036, .600,  000,  000,  000,  000, .255,  000, .073,  000,  000, .018, .018 },
+        //        new[] /* 03 */ {  000, .073,  000, .600,  000, .036,  000,  000, .145, .109,  000,  000, .018, .019 },
+        //        new[] /* 04 */ { .073, .109,  000,  000, .600,  000, .073,  000, .073, .036,  000,  000, .018, .018 },
+        //        new[] /* 05 */ {  000, .073, .073,  000,  000, .600,  000,  000, .109, .109,  000,  000, .018, .018 },
+        //        new[] /* 06 */ {  000, .073, .036,  000, .073, .036, .600,  000, .073,  000, .073,  000, .018, .018 },
+        //        new[] /* 07 */ {  000,  000,  000,  000,  000,  000,  000, .600, .109, .073,  000, .182, .018, .018 },
+        //        new[] /* 08 */ { .145, .109,  000,  000,  000,  000,  000,  000, .600, .109,  000,  000, .018, .019 },
+        //        new[] /* 09 */ { .109, .109,  000,  000,  000, .073,  000,  000, .073, .600,  000,  000, .018, .018 },
+        //        new[] /* 10 */ {  000, .145,  000,  000,  000, .073,  000,  000, .036, .109, .600,  000, .018, .019 },
+        //        new[] /* 11 */ { .073, .109,  000,  000,  000,  000,  000,  000, .109, .073,  000, .600, .018, .018 },
+        //        new[] /* 12 */ { 1/6D, 1/6D, 1/6D,  000,  000, 1/6D,  000,  000, 1/6D, 1/6D,  000,  000,  000,  000 },
+        //        new[] /* 13 */ { 1/6D, 1/6D, 1/6D,  000,  000, 1/6D,  000,  000, 1/6D, 1/6D,  000,  000,  000,  000 },
+        //    };
+        //}
 
         /// <summary>
         /// Initializes the benchmarks
@@ -134,7 +183,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         public BenchmarkController(int randomSeed)
         {
             RandomGen = new Random(randomSeed);
-            InitStartBench();
+            //InitStartBench();
         }
 
         /// <summary>
@@ -142,28 +191,28 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// </summary>
         public BenchmarkController()
         {
-            RandomGen = new Random();
-            InitStartBench();
+            //RandomGen = new Random();
+            //InitStartBench();
         }
 
         #endregion
 
         #region Control Methods
 
-        /// <summary>
-        /// Initializes the start benchmark
-        /// </summary>
-        /// <remarks>
-        /// To select the initial benchmark the transitions based on
-        /// sleep benchmark saved in <see cref="_SleepBench"/> will be used.
-        /// </remarks>
-        public void InitStartBench()
-        {
-            _BenchmarksInstance = Benchmarks;
-            PreviousBenchmark = _SleepBench;
-            CurrentBenchmark = _SleepBench;
-            //ChangeBenchmark();
-        }
+        ///// <summary>
+        ///// Initializes the start benchmark
+        ///// </summary>
+        ///// <remarks>
+        ///// To select the initial benchmark the transitions based on
+        ///// sleep benchmark saved in <see cref="SleepBench"/> will be used.
+        ///// </remarks>
+        //public void InitStartBench()
+        //{
+        //    _BenchmarksInstance = Benchmarks;
+        //    PreviousBenchmark = SleepBench;
+        //    CurrentBenchmark = SleepBench;
+        //    //ChangeBenchmark();
+        //}
 
         /// <summary>
         /// Changes the current executed benchmark based on <see cref="BenchTransitions"/> definied probabilities
