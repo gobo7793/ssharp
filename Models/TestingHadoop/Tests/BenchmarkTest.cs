@@ -67,7 +67,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestTransitions()
         {
-            _Bench1.InitStartBench();
+            //_Bench1.InitStartBench();
             //_Bench2.InitStartBench();
             //_Bench3.InitStartBench();
             for(int i = 1; i < 100; i++)

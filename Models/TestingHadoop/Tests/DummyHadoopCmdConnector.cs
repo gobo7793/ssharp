@@ -153,10 +153,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             return "application_1515488762656_0002";
         }
 
-        public string StartApplicationAsync(string cmd)
+        public string StartApplicationAsyncTillId(string cmd)
         {
             Console.WriteLine($"[]Application {cmd} started async...");
             return "application_1515488762656_0002";
+        }
+        
+        public void StartApplicationAsyncFull(string cmd)
+        {
+            Console.WriteLine($"[]Application {cmd} started async...");
         }
 
         public void RemoveHdfsDir(string directory)

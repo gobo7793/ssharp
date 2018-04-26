@@ -443,12 +443,24 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <param name="cmd">The command to submit</param>
         /// <returns>The application id for the submitted app</returns>
         /// <exception cref="InvalidOperationException">Application submitting not initialized</exception>
-        public string StartApplicationAsync(string cmd)
+        public string StartApplicationAsyncTillId(string cmd)
         {
             var submitter = GetSubmitter(cmd);
 
             return submitter.RunAttachedTillAppId($"{Model.BenchmarkStartupScript} {cmd}", IsConsoleOut);
             //submitter.Run($"{Model.BenchmarkStartupScript} {cmd}", true);
+        }
+
+        /// <summary>
+        /// Submits the given application with the given arguments to Hadoop.
+        /// The application will be fully executed async with no return values.
+        /// </summary>
+        /// <param name="cmd">The command to submit</param>
+        public void StartApplicationAsyncFull(string cmd)
+        {
+            var submitter = GetSubmitter(cmd);
+
+            submitter.RunAsync($"{Model.BenchmarkStartupScript} {cmd}", IsConsoleOut);
         }
 
         private SshConnection GetSubmitter(string cmd)

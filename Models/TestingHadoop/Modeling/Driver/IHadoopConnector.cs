@@ -179,7 +179,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="cmd">The command to submit</param>
         /// <returns>The application id for the submitted app</returns>
-        string StartApplicationAsync(string cmd);
+        string StartApplicationAsyncTillId(string cmd);
+
+        /// <summary>
+        /// Submits the given application with the given arguments to Hadoop.
+        /// The application will be fully executed async with no return values.
+        /// </summary>
+        /// <param name="cmd">The command to submit</param>
+        void StartApplicationAsyncFull(string cmd);
 
         /// <summary>
         /// Removes the given directory on hdfs

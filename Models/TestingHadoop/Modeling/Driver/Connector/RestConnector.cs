@@ -318,7 +318,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <summary>
         /// Not supported
         /// </summary>
-        public string StartApplicationAsync(string cmd)
+        public string StartApplicationAsyncTillId(string cmd)
+        {
+            throw new PlatformNotSupportedException("Hadoop REST API does not support starting application async!");
+        }
+
+        /// <summary>
+        /// Not supported
+        /// </summary>
+        public void StartApplicationAsyncFull(string cmd)
         {
             throw new PlatformNotSupportedException("Hadoop REST API does not support starting application async!");
         }
