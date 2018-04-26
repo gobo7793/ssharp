@@ -200,7 +200,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             Client.Connect();
             Stream = Client.CreateShellStream("ssharpShell", 120, 24, 800, 600, 2048);
             ReadForAppId("Last login");
-            Logger.Info($"Connected to {Username}@{Host}");
+            Logger.Debug($"Connected to {Username}@{Host}");
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             Stream.Close();
             Client.Disconnect();
-            Logger.Info($"Disconnected from {Username}@{Host}");
+            Logger.Debug($"Disconnected from {Username}@{Host}");
         }
 
         /// <summary>
@@ -242,7 +242,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var exitStr = GetWaitingExitString();
             var sendStr = $"{command}; echo '{exitStr}'";
 
-            Logger.Info($"Executing:\n{sendStr}");
+            Logger.Debug($"Executing:\n{sendStr}");
             Stream.WriteLine(sendStr);
 
             var id = ReadForAppId(exitStr);
@@ -293,10 +293,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The output of the command</returns>
         private string DoRunCommand(string command)
         {
-            Logger.Info($"Executing: {command}");
+            Logger.Debug($"Executing: {command}");
             var cmd = Client.RunCommand(command);
             var output = cmd.ExitStatus == 0 ? cmd.Result : cmd.Error;
-            Logger.Info(output);
+            Logger.Debug(output);
             return output;
         }
 
@@ -319,7 +319,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 line = Stream.ReadLine();
 
                 result.AppendLine(line);
-                Logger.Info(line);
+                Logger.Debug(line);
 
                 if(!isAsync && AppIdRegex != null)
                 {
