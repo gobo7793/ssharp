@@ -170,8 +170,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void UpdateBenchmark()
         {
-            if(!BenchController.IsInit)
-                BenchController.InitStartBench();
+            //if(!BenchController.IsInit)
+            //    BenchController.InitStartBench();
 
             var benchChanged = BenchController.ChangeBenchmark();
 
@@ -204,7 +204,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             if(benchmark.HasOutputDir)
                 SubmittingConnector.RemoveHdfsDir(benchmark.GetOutputDir(ClientDir));
-            var appId = SubmittingConnector.StartApplicationAsync(benchmark.GetStartCmd(ClientDir));
+            var appId = SubmittingConnector.StartApplicationAsyncTillId(benchmark.GetStartCmd(ClientDir));
 
             if(appId.Length <= 32)
             {

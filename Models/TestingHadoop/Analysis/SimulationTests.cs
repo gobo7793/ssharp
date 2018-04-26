@@ -36,13 +36,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static log4net.ILog Logger { get; } = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private static readonly TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 10);
-        private static readonly int _StepCount = 10;
-        
+        //private static readonly int _BenchmarkSeed = 1;
+        private static readonly int _BenchmarkSeed = Environment.TickCount;
+        private static readonly int _StepCount = 1;
+
         [Test]
         public void Simulate()
         {
             var model = Model.Instance;
-            model.InitModel(appCount: _StepCount);
+            model.InitModel(appCount: _StepCount, benchTransitionSeed: _BenchmarkSeed);
             model.Faults.SuppressActivations();
 
             try
