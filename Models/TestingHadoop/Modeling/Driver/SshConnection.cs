@@ -35,6 +35,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     {
         #region Properties
 
+        private static log4net.ILog Logger { get; } = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+
         /// <summary>
         /// Random generator
         /// </summary>
@@ -110,7 +113,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="host">Host to connect</param>
         /// <param name="username">Username to connect</param>
         /// <param name="privKeyFile">The path to the private key file to connect</param>
-        /// <param name="appIdRegexPattern">Pattern for returning application ids via <see cref="RunAttachedTillAppId(string, bool)"/></param>
+        /// <param name="appIdRegexPattern">Pattern for returning application ids via <see cref="RunAttachedTillAppId(string)"/></param>
         public SshConnection(string host, string username, string privKeyFile, string appIdRegexPattern)
             : this(host, username, new PrivateKeyFile(Environment.ExpandEnvironmentVariables(privKeyFile)), appIdRegexPattern)
         {
@@ -136,7 +139,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="host">Host to connect</param>
         /// <param name="username">Username to connect</param>
         /// <param name="privateKeyFile">Private key file instance to connect</param>
-        /// <param name="appIdRegexPattern">Pattern for returning application ids via <see cref="RunAttachedTillAppId(string, bool)"/></param>
+        /// <param name="appIdRegexPattern">Pattern for returning application ids via <see cref="RunAttachedTillAppId(string)"/></param>
         public SshConnection(string host, string username, PrivateKeyFile privateKeyFile, string appIdRegexPattern)
             : this(host, username, privateKeyFile)
         {
@@ -197,6 +200,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             Client.Connect();
             Stream = Client.CreateShellStream("ssharpShell", 120, 24, 800, 600, 2048);
             ReadForAppId("Last login");
+            Logger.Info($"Connected to {Username}@{Host}");
         }
 
         /// <summary>
@@ -206,6 +210,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             Stream.Close();
             Client.Disconnect();
+            Logger.Info($"Disconnected from {Username}@{Host}");
         }
 
         /// <summary>
@@ -229,21 +234,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// The application whait is only available, if <see cref="AppIdRegex"/> is set.
         /// </summary>
         /// <param name="command">Command to run</param>
-        /// <param name="consoleOut">True to show the output directly on the own shell</param>
         /// <returns>The application id or command output if no id found</returns>
-        public string RunAttachedTillAppId(string command, bool consoleOut = false)
+        public string RunAttachedTillAppId(string command)
         {
             InUse = true;
 
             var exitStr = GetWaitingExitString();
             var sendStr = $"{command}; echo '{exitStr}'";
 
-            Out($"Executing:\n{sendStr}", consoleOut);
+            Logger.Info($"Executing:\n{sendStr}");
             Stream.WriteLine(sendStr);
 
-            var id = ReadForAppId(exitStr, consoleOut);
+            var id = ReadForAppId(exitStr);
 
-            Task.Run(() => ReadForAppId(exitStr, consoleOut, true));
+            Task.Run(() => ReadForAppId(exitStr, true));
 
             InUse = false;
             return id;
@@ -253,13 +257,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Runs the given command and returns the output.
         /// </summary>
         /// <param name="command">Command to run</param>
-        /// <param name="consoleOut">True to show the output directly on the own shell</param>
         /// <returns>The command output</returns>
-        public string Run(string command, bool consoleOut = false)
+        public string Run(string command)
         {
             InUse = true;
 
-            var res = DoRunCommand(command, consoleOut);
+            var res = DoRunCommand(command);
 
             InUse = false;
 
@@ -270,12 +273,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// Runs the given command async and ignores all output
         /// </summary>
         /// <param name="command">Command to run</param>
-        /// <param name="consoleOut">True to show the cmd on the own shell</param>
-        public void RunAsync(string command, bool consoleOut = false)
+        public void RunAsync(string command)
         {
             InUse = true;
 
-            Task.Run(() => DoRunCommand(command, true));
+            Task.Run(() => DoRunCommand(command));
 
             InUse = false;
         }
@@ -284,16 +286,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
 
         #region Utility Methods
 
-        private string DoRunCommand(string command, bool consoleOut = false)
+        /// <summary>
+        /// Executes the given command on connected host
+        /// </summary>
+        /// <param name="command">Command to execute</param>
+        /// <returns>The output of the command</returns>
+        private string DoRunCommand(string command)
         {
-            Out($"Executing: {command}", consoleOut);
+            Logger.Info($"Executing: {command}");
             var cmd = Client.RunCommand(command);
             var output = cmd.ExitStatus == 0 ? cmd.Result : cmd.Error;
-            Out(output, consoleOut);
+            Logger.Info(output);
             return output;
         }
 
-        private string ReadForAppId(string exitStr, bool consoleOut = false, bool isAsync = false)
+        /// <summary>
+        /// Reads the output till the exit string or any application id
+        /// </summary>
+        /// <param name="exitStr">The exit string that indicates the end of the output</param>
+        /// <param name="isAsync">True if the output should read async</param>
+        /// <returns>The application id or the full output</returns>
+        private string ReadForAppId(string exitStr, bool isAsync = false)
         {
             StringBuilder result = new StringBuilder();
             string line;
@@ -306,7 +319,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 line = Stream.ReadLine();
 
                 result.AppendLine(line);
-                Out(line, consoleOut);
+                Logger.Info(line);
 
                 if(!isAsync && AppIdRegex != null)
                 {
@@ -328,13 +341,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             return resultStr;
         }
 
-        private void Out(string line, bool consoleOut = false/*, [CallerMemberName] string callingMember = ""*/)
-        {
-            if(consoleOut)
-                Console.WriteLine(line);
-            // TODO: Log to file
-        }
-
+        /// <summary>
+        /// Generates an exit string
+        /// </summary>
+        /// <returns>The exit string</returns>
         private string GetWaitingExitString()
         {
             return $"[cmd-end]id-{RandomGen.Next(0xffff):x4}";

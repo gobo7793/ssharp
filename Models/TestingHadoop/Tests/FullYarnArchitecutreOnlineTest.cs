@@ -53,7 +53,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             _Controller = _Model.Controller;
             _Node1 = _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}1");
             _Client1 = _Model.Clients[0];
-            ((Modeling.Driver.Connector.CmdConnector)_Client1.SubmittingConnector).IsConsoleOut = true;
 
             _App1 = _Model.Applications[0];
             _App1.AppId = $"application_{_AppBase1}";
