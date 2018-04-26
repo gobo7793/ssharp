@@ -36,6 +36,31 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
     /// </summary>
     public class Model : ModelBase
     {
+        #region EHostMode
+
+        /// <summary>
+        /// Enum for possible host modes for this model
+        /// </summary>
+        public enum EHostMode
+        {
+            /// <summary>
+            /// Classical mode that the cluster is started inside a docker-machine envoiroment,
+            /// provided by hadoop-benchmark. The docker-machines are realized by virtualbox as VMs.
+            /// One machine is for the consul, one for the controller and benchmark containers and
+            /// each compute has its own VM.
+            /// </summary>
+            DockerMachine,
+
+            /// <summary>
+            /// Alternative mode that the cluster containers are directly started on the cluster pc
+            /// without using docker-machine. The hadoop containers (one for controller and for each
+            /// compute) are inside a docker swarm so it's possible to run the cluster on multiple hosts.
+            /// </summary>
+            Multihost
+        }
+
+        #endregion
+
         #region General settings and constants
 
         private static Model _Instance;
@@ -50,7 +75,39 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// </summary>
         public const string NodeNamePrefix = "compute-";
 
-        #region Cluster PC related
+        #region SSH
+
+        /// <summary>
+        /// Hostname for the Hadoop cluster pc
+        /// </summary>
+        public const string SshHost = "swtse143.informatik.uni-augsburg.de";
+
+        /// <summary>
+        /// Username for the Hadoop cluster pc
+        /// </summary>
+        public const string SshUsername = "hadoop";
+
+        /// <summary>
+        /// Full file path to the private key file to login
+        /// </summary>
+        public const string SshPrivateKeyFile = @"%USERPROFILE%\.ssh\id_rsa";
+
+        #endregion
+
+        #region Host mode
+
+        /// <summary>
+        /// The host mode of the Hadoop cluster on the cluster pc
+        /// </summary>
+        public static EHostMode HostMode { get; set; } = EHostMode.DockerMachine;
+
+        /// <summary>
+        /// Command for benchmark startup script
+        /// </summary>
+        /// <remarks>
+        /// Generic options for all benchmark related commands can be inserted here.
+        /// </remarks>
+        public const string BenchmarkStartupScript = "/home/hadoop/hadoop-benchmark/bench.sh -q -t";
 
         /// <summary>
         /// The Hadoop setup script for use on classic singlehost
@@ -73,25 +130,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Command for Hadoop setup script that will be used in the model
         /// </summary>
-        public static string HadoopSetupScript { get; set; } = HadoopSetupScriptDockerMachine;
-
-        /// <summary>
-        /// Command for benchmark startup script
-        /// </summary>
-        /// <remarks>
-        /// Generic options for all benchmark related commands can be inserted here.
-        /// </remarks>
-        public const string BenchmarkStartupScript = "/home/hadoop/hadoop-benchmark/bench.sh -q -t";
-
-        /// <summary>
-        /// Hostname for the Hadoop cluster pc
-        /// </summary>
-        public const string SshHost = "swtse143.informatik.uni-augsburg.de";
-
-        /// <summary>
-        /// Username for the Hadoop cluster pc
-        /// </summary>
-        public const string SshUsername = "hadoop";
+        public static string HadoopSetupScript =>
+            HostMode == EHostMode.DockerMachine ? HadoopSetupScriptDockerMachine : HadoopSetupScriptMultihost;
 
         /// <summary>
         /// Hadoop controller resource manager url for REST API on <see cref="SshHost"/>
@@ -109,7 +149,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Hadoop controller resource manager url for REST API on <see cref="SshHost"/>
         /// that will be used in the model
         /// </summary>
-        public static string ControllerRestRmUrl { get; set; } = ControllerRestRmUrlDockerMachine;
+        public static string ControllerRestRmUrl =>
+            HostMode == EHostMode.DockerMachine ? ControllerRestRmUrlDockerMachine : ControllerRestRmUrlMultihost;
 
         /// <summary>
         /// Hadoop controller timeline server url for REST API on <see cref="SshHost"/>
@@ -127,12 +168,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Hadoop controller timeline server url for REST API on <see cref="SshHost"/>
         /// that will be used in the model
         /// </summary>
-        public static string ControllerRestTlsUrl { get; set; } = ControllerRestTlsUrlDockerMachine;
+        public static string ControllerRestTlsUrl =>
+            HostMode == EHostMode.DockerMachine ? ControllerRestTlsUrlDockerMachine : ControllerRestTlsUrlMultihost;
 
         /// <summary>
-        /// Full file path to the private key file to login
+        /// Hadoop compute node base http url (url without port number)
         /// </summary>
-        public const string SshPrivateKeyFile = @"%USERPROFILE%\.ssh\id_rsa";
+        public const string NodeHttpUrlBase = "http://localhost";
 
         #endregion
 
@@ -238,28 +280,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         #region Configurations
 
         /// <summary>
-        /// Sets the cluster config to use with single host cluster based on docker-machine.
-        /// This is the default configuration.
-        /// </summary>
-        public static void SetDockerMachineConfig()
-        {
-            HadoopSetupScript = HadoopSetupScriptDockerMachine;
-            ControllerRestRmUrl = ControllerRestRmUrlDockerMachine;
-            ControllerRestTlsUrl = ControllerRestTlsUrlDockerMachine;
-        }
-
-        /// <summary>
-        /// Sets the cluster config to use with multihost cluster with docker executed directly
-        /// on the cluster pc without docker-machine and docker swarm
-        /// </summary>
-        public static void SetMultihostConfig()
-        {
-            HadoopSetupScript = HadoopSetupScriptMultihost;
-            ControllerRestRmUrl = ControllerRestRmUrlMultihost;
-            ControllerRestTlsUrl = ControllerRestTlsUrlMultihost;
-        }
-
-        /// <summary>
         /// Initialize configuration for model testing
         /// </summary>
         /// <param name="usingParser">The <see cref="IHadoopParser"/> to use</param>
@@ -330,7 +350,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         {
             for(int i = 1; i <= nodeCount; i++)
             {
-                var node = new YarnNode(NodeNamePrefix + i, Controller);
+                var node = HostMode == EHostMode.DockerMachine
+                    ? new YarnNode(NodeNamePrefix + i, Controller)
+                    : new YarnNode(NodeNamePrefix + i, Controller, $"{NodeHttpUrlBase}:{8041 + i}");
 
                 //Controller.ConnectedNodes.Add(node);
                 Nodes.Add(node);

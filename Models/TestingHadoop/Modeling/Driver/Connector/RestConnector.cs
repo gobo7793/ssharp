@@ -47,12 +47,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <summary>
         /// ResourceManager URL
         /// </summary>
-        private string RmUrl { get; }
+        private string RmUrl => Model.ControllerRestRmUrl;
 
         /// <summary>
         /// Timeline server URL
         /// </summary>
-        private string TlUrl { get; }
+        private string TlUrl => Model.ControllerRestTlsUrl;
 
         /// <summary>
         /// The curl base command
@@ -68,17 +68,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// Note that one connection is needed for Monitoring, so maybe set <c>/etc/ssh/sshd_config</c>
         /// MaxSessions to the needed value (default 10)!
         /// </summary>
-        /// <param name="host">The host name or ip of the cluster</param>
-        /// <param name="username">The username for the ssh connections</param>
-        /// <param name="privateKeyFilePath">The private key file path</param>
-        /// <param name="rmUrl">HTTP URL of ResourceManager</param>
-        /// <param name="tlUrl">HTTP URL of Timeline server</param>
-        private RestConnector(string host, string username, string privateKeyFilePath, string rmUrl, string tlUrl)
+        private RestConnector()
         {
-            RmUrl = rmUrl;
-            TlUrl = tlUrl;
-
-            Monitoring = new SshConnection(host, username, privateKeyFilePath);
+            Monitoring = new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile);
         }
 
         /// <summary>
@@ -89,8 +81,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         {
             if(String.IsNullOrWhiteSpace(Model.SshHost))
                 return null;
-            _Instance = new RestConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, Model.ControllerRestRmUrl,
-                Model.ControllerRestTlsUrl);
+            _Instance = new RestConnector();
             return _Instance;
         }
 

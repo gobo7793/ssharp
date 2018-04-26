@@ -57,11 +57,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         private List<SshConnection> Submitting { get; }
 
-        /// <summary>
-        /// The controller/timeline host to connect
-        /// </summary>
-        private string Host { get; }
-
         #endregion
 
         #region Methods
@@ -71,25 +66,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// Note that one connection is needed for Monitoring, so maybe set <c>/etc/ssh/sshd_config</c>
         /// MaxSessions to the needed value (default 10)!
         /// </summary>
-        /// <param name="host">The host name or ip of the cluster</param>
-        /// <param name="username">The username for the ssh connections</param>
-        /// <param name="privateKeyFilePath">The private key file path</param>
         /// <param name="forMonitoring">True to use this connection for monitoring</param>
         /// <param name="forFaulting">True to use this connection for fault handling</param>
         /// <param name="submittingConnections">The count for submitting application connections</param>
-        private CmdConnector(string host, string username, string privateKeyFilePath, bool forMonitoring = false,
-                            bool forFaulting = true, int submittingConnections = 4)
+        private CmdConnector(bool forMonitoring = false, bool forFaulting = true, int submittingConnections = 4)
         {
             Submitting = new List<SshConnection>();
 
-            Host = host;
-
             if(forMonitoring)
-                Monitoring = new SshConnection(Host, username, privateKeyFilePath);
+                Monitoring = new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile);
             if(forFaulting)
-                Faulting = new SshConnection(Host, username, privateKeyFilePath);
+                Faulting = new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile);
             for(int i = 0; i < submittingConnections; i++)
-                Submitting.Add(new SshConnection(Host, username, privateKeyFilePath, @"Submitted application (application_\d+_\d+)"));
+                Submitting.Add(new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile,
+                    @"Submitted application (application_\d+_\d+)"));
         }
 
         /// <summary>
@@ -101,7 +91,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         {
             if(String.IsNullOrWhiteSpace(Model.SshHost))
                 return null;
-            _Instance = new CmdConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile);
+            _Instance = new CmdConnector();
             return _Instance;
         }
 
@@ -114,7 +104,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         {
             if(String.IsNullOrWhiteSpace(Model.SshHost))
                 return null;
-            _Instance = new CmdConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, true);
+            _Instance = new CmdConnector(true);
             return _Instance;
         }
 

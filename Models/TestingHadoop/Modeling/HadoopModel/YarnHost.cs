@@ -66,10 +66,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         /// <param name="name">Name of the Host</param>
         /// <param name="httpPort">HTTP port number</param>
-        protected YarnHost(string name, ushort httpPort) : this()
+        protected YarnHost(string name, ushort httpPort)
+            : this(name, $"http://{name}:{httpPort}")
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new <see cref="YarnHost"/>
+        /// </summary>
+        /// <param name="name">Name of the Host</param>
+        /// <param name="httpUlr">HTTP url</param>
+        protected YarnHost(string name, string httpUlr) : this()
         {
             Name = name;
-            HttpUrl = $"http://{Name}:{httpPort}";
+            HttpUrl = httpUlr;
         }
 
         #endregion

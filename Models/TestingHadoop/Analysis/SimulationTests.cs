@@ -43,7 +43,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         [Test]
         public void Simulate()
         {
-            Model.SetMultihostConfig();
+            Model.HostMode = Model.EHostMode.Multihost;
             var model = Model.Instance;
             model.InitModel(appCount: _StepCount, benchTransitionSeed: _BenchmarkSeed);
             model.Faults.SuppressActivations();
@@ -67,7 +67,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             Logger.Info($"Benchmark seed: {_BenchmarkSeed}");
             Logger.Info($"Min Step time:  {_MinStepTime}");
             Logger.Info($"Step count:     {_StepCount}");
+            Logger.Info($"Host mode:      {Model.HostMode}");
             Logger.Info($"Setup script:   {Model.HadoopSetupScript}");
+            Logger.Info($"Controller url: {Model.ControllerRestRmUrl}");
 
             for(var i = 0; i < steps; i++)
             {
@@ -109,30 +111,30 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                     if(String.IsNullOrWhiteSpace(app.AppId))
                         continue;
 
-                    Logger.Info($"  === App {app.AppId} ===");
-                    Logger.Info($"      Name:        {app.Name}");
-                    Logger.Info($"      State:       {app.State}");
-                    Logger.Info($"      FinalStatus: {app.FinalStatus}");
-                    Logger.Info($"      AM Host:     {app.AmHostId} ({app.AmHost?.State})");
+                    Logger.Info($"    === App {app.AppId} ===");
+                    Logger.Info($"        Name:        {app.Name}");
+                    Logger.Info($"        State:       {app.State}");
+                    Logger.Info($"        FinalStatus: {app.FinalStatus}");
+                    Logger.Info($"        AM Host:     {app.AmHostId} ({app.AmHost?.State})");
 
                     foreach(var attempt in app.Attempts)
                     {
                         if(String.IsNullOrWhiteSpace(attempt.AttemptId))
                             continue;
 
-                        Logger.Info($"    === Attempt {attempt.AttemptId} ===");
-                        Logger.Info($"        State:        {attempt.State}");
-                        Logger.Info($"        AM Container: {attempt.AmContainerId}");
-                        Logger.Info($"        AM Host:      {attempt.AmHostId} ({attempt.AmHost?.State})");
+                        Logger.Info($"        === Attempt {attempt.AttemptId} ===");
+                        Logger.Info($"            State:        {attempt.State}");
+                        Logger.Info($"            AM Container: {attempt.AmContainerId}");
+                        Logger.Info($"            AM Host:      {attempt.AmHostId} ({attempt.AmHost?.State})");
 
                         foreach(var container in attempt.Containers)
                         {
                             if(String.IsNullOrWhiteSpace(container.ContainerId))
                                 continue;
 
-                            Logger.Info($"      === Container {container.ContainerId} ===");
-                            Logger.Info($"          State: {container.State}");
-                            Logger.Info($"          Host:  {container.HostId} ({container.Host?.State})");
+                            Logger.Info($"          === Container {container.ContainerId} ===");
+                            Logger.Info($"              State: {container.State}");
+                            Logger.Info($"              Host:  {container.HostId} ({container.Host?.State})");
                         }
                     }
                 }

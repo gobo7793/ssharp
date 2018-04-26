@@ -157,6 +157,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             Controller = controller;
         }
 
+        /// <summary>
+        /// Initializes a new <see cref="YarnNode"/>
+        /// </summary>
+        /// <param name="name">Name of the Host</param>
+        /// <param name="controller">Connected <see cref="YarnController"/></param>
+        /// <param name="httpUrl">Http url of the node</param>
+        public YarnNode(string name, YarnController controller, string httpUrl)
+            : base(name, httpUrl)
+        {
+            InitYarnNode();
+
+            Controller = controller;
+        }
+
         private void InitYarnNode()
         {
             //ExecutingApps = new List<YarnApp>();
