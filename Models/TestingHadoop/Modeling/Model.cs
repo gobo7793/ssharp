@@ -53,12 +53,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         #region Cluster PC related
 
         /// <summary>
-        /// Command for Hadoop setup script
+        /// The Hadoop setup script for use on classic singlehost
+        /// mode with docker-machine VMs for the cluster
         /// </summary>
         /// <remarks>
         /// Generic options for all cluster related commands can be inserted here.
         /// </remarks>
-        public const string HadoopSetupScript = "/home/hadoop/hadoop-benchmark/setup.sh -q";
+        public const string HadoopSetupScriptDockerMachine = "/home/hadoop/hadoop-benchmark/setup.sh -q";
+
+        /// <summary>
+        /// The Hadoop setup script for use on multihost mode execution docker container
+        /// directly on pc without docker-machine and in swarm mode
+        /// </summary>
+        /// <remarks>
+        /// Generic options for all cluster related commands can be inserted here.
+        /// </remarks>
+        public const string HadoopSetupScriptMultihost = "/home/hadoop/hadoop-benchmark/multihost.sh -q";
+
+        /// <summary>
+        /// Command for Hadoop setup script that will be used in the model
+        /// </summary>
+        public static string HadoopSetupScript { get; set; } = HadoopSetupScriptDockerMachine;
 
         /// <summary>
         /// Command for benchmark startup script
@@ -66,7 +81,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <remarks>
         /// Generic options for all benchmark related commands can be inserted here.
         /// </remarks>
-        public const string BenchmarkStartupScript = "/home/hadoop/hadoop-benchmark/bench.sh -q";
+        public const string BenchmarkStartupScript = "/home/hadoop/hadoop-benchmark/bench.sh -q -t";
 
         /// <summary>
         /// Hostname for the Hadoop cluster pc
@@ -79,14 +94,40 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public const string SshUsername = "hadoop";
 
         /// <summary>
-        /// Default hadoop controller resource manager url for REST API on <see cref="SshHost"/>
+        /// Hadoop controller resource manager url for REST API on <see cref="SshHost"/>
+        /// on use with docker-machine cluster
         /// </summary>
-        public const string DefaultControllerRestRmUrl = "http://controller:8088";
+        public const string ControllerRestRmUrlDockerMachine = "http://controller:8088";
 
         /// <summary>
-        /// Default hadoop controller timeline server url for REST API on <see cref="SshHost"/>
+        /// Hadoop controller resource manager url for REST API on <see cref="SshHost"/>
+        /// on use with multihost docker cluster
         /// </summary>
-        public const string DefaultControllerRestTlsUrl = "http://controller:8188";
+        public const string ControllerRestRmUrlMultihost = "http://localhost:8088";
+
+        /// <summary>
+        /// Hadoop controller resource manager url for REST API on <see cref="SshHost"/>
+        /// that will be used in the model
+        /// </summary>
+        public static string ControllerRestRmUrl { get; set; } = ControllerRestRmUrlDockerMachine;
+
+        /// <summary>
+        /// Hadoop controller timeline server url for REST API on <see cref="SshHost"/>
+        /// on use with docker-machine cluster
+        /// </summary>
+        public const string ControllerRestTlsUrlDockerMachine = "http://controller:8188";
+
+        /// <summary>
+        /// Hadoop controller timeline server url for REST API on <see cref="SshHost"/>
+        /// on use with multihost docker cluster
+        /// </summary>
+        public const string ControllerRestTlsUrlMultihost = "http://localhost:8188";
+
+        /// <summary>
+        /// Hadoop controller timeline server url for REST API on <see cref="SshHost"/>
+        /// that will be used in the model
+        /// </summary>
+        public static string ControllerRestTlsUrl { get; set; } = ControllerRestTlsUrlDockerMachine;
 
         /// <summary>
         /// Full file path to the private key file to login
@@ -195,6 +236,28 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         #endregion
 
         #region Configurations
+
+        /// <summary>
+        /// Sets the cluster config to use with single host cluster based on docker-machine.
+        /// This is the default configuration.
+        /// </summary>
+        public static void SetDockerMachineConfig()
+        {
+            HadoopSetupScript = HadoopSetupScriptDockerMachine;
+            ControllerRestRmUrl = ControllerRestRmUrlDockerMachine;
+            ControllerRestTlsUrl = ControllerRestTlsUrlDockerMachine;
+        }
+
+        /// <summary>
+        /// Sets the cluster config to use with multihost cluster with docker executed directly
+        /// on the cluster pc without docker-machine and docker swarm
+        /// </summary>
+        public static void SetMultihostConfig()
+        {
+            HadoopSetupScript = HadoopSetupScriptMultihost;
+            ControllerRestRmUrl = ControllerRestRmUrlMultihost;
+            ControllerRestTlsUrl = ControllerRestTlsUrlMultihost;
+        }
 
         /// <summary>
         /// Initialize configuration for model testing

@@ -89,8 +89,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         {
             if(String.IsNullOrWhiteSpace(Model.SshHost))
                 return null;
-            _Instance = new RestConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, Model.DefaultControllerRestRmUrl,
-                Model.DefaultControllerRestTlsUrl);
+            _Instance = new RestConnector(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, Model.ControllerRestRmUrl,
+                Model.ControllerRestTlsUrl);
             return _Instance;
         }
 
