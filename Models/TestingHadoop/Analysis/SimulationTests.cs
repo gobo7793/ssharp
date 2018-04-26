@@ -43,6 +43,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         [Test]
         public void Simulate()
         {
+            Model.SetMultihostConfig();
             var model = Model.Instance;
             model.InitModel(appCount: _StepCount, benchTransitionSeed: _BenchmarkSeed);
             model.Faults.SuppressActivations();
