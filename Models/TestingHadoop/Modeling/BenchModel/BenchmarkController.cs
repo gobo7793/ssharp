@@ -21,6 +21,9 @@
 // THE SOFTWARE.
 
 using System;
+using System.Threading.Tasks;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector;
 using SafetySharp.Modeling;
 using static SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel.Benchmark;
 
@@ -32,6 +35,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
     public class BenchmarkController
     {
         #region Properties
+        private static log4net.ILog Logger { get; } = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 
         private Benchmark[] _BenchmarksInstance = Benchmarks; // dummy instance to use to prevent S# errors
 
@@ -215,6 +220,43 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         //}
 
         /// <summary>
+        /// Creates input data for benchmarks and saves it into <see cref="Model.PrecreateBenchInputsBaseDir"/>
+        /// </summary>
+        public static void PrecreateInputData()
+        {
+            Logger.Info($"Precreate Benchmark input data into {Model.PrecreateBenchInputsBaseDir}");
+
+            var dfsior = Task.Run(() =>
+            {
+                if(!CmdConnector.Instance.ExistsHdfsDir(Benchmarks[0].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
+                    StartBenchmark(CmdConnector.Instance, Benchmarks[0], Model.PrecreateBenchInputsBaseDir);
+            });
+            var rtw = Task.Run(() =>
+            {
+                if(!CmdConnector.Instance.ExistsHdfsDir(Benchmarks[1].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
+                    StartBenchmark(CmdConnector.Instance, Benchmarks[1], Model.PrecreateBenchInputsBaseDir);
+            });
+            var tgen = Task.Run(() =>
+            {
+                if(!CmdConnector.Instance.ExistsHdfsDir(Benchmarks[2].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
+                    StartBenchmark(CmdConnector.Instance, Benchmarks[2], Model.PrecreateBenchInputsBaseDir);
+            });
+
+            var sort = rtw.ContinueWith(s =>
+            {
+                if(!CmdConnector.Instance.ExistsHdfsDir(Benchmarks[6].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
+                    StartBenchmark(CmdConnector.Instance, Benchmarks[6], Model.PrecreateBenchInputsBaseDir);
+            });
+            var tval = tgen.ContinueWith(t =>
+            {
+                if(!CmdConnector.Instance.ExistsHdfsDir(Benchmarks[7].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
+                    StartBenchmark(CmdConnector.Instance, Benchmarks[7], Model.PrecreateBenchInputsBaseDir);
+            });
+
+            Task.WaitAll(dfsior, rtw, tgen, sort, tval);
+        }
+
+        /// <summary>
         /// Changes the current executed benchmark based on <see cref="BenchTransitions"/> definied probabilities
         /// and returns true on benchmark change
         /// </summary>
@@ -250,6 +292,59 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Starts the given benchmark waits to the end of the execution and returns the application id
+        /// </summary>
+        /// <param name="submitter">The submitting connector</param>
+        /// <param name="benchmark">The benchmark</param>
+        /// <param name="baseDirectory">The base directory (eg. the client directory)</param>
+        /// <returns>The application id</returns>
+        public static string StartBenchmark(IHadoopConnector submitter, Benchmark benchmark, string baseDirectory = "")
+        {
+            Logger.Info($"Start Benchmark {benchmark.Name} (base dir: {baseDirectory})");
+            RemoveHdfsDir(submitter, benchmark, baseDirectory);
+            return submitter.StartApplication(benchmark.GetStartCmd(baseDirectory));
+        }
+
+        /// <summary>
+        /// Starts the given benchmark, waits for and returns the application id
+        /// </summary>
+        /// <param name="submitter">The submitting connector</param>
+        /// <param name="benchmark">The benchmark</param>
+        /// <param name="baseDirectory">The base directory (eg. the client directory)</param>
+        /// <returns>The application id</returns>
+        public static string StartBenchmarkAsyncTillId(IHadoopConnector submitter, Benchmark benchmark, string baseDirectory = "")
+        {
+            Logger.Info($"Start Benchmark {benchmark.Name} (base dir: {baseDirectory})");
+            RemoveHdfsDir(submitter, benchmark, baseDirectory);
+            return submitter.StartApplicationAsyncTillId(benchmark.GetStartCmd(baseDirectory));
+        }
+
+        /// <summary>
+        /// Starts the given benchmark, waits for and returns the application id
+        /// </summary>
+        /// <param name="submitter">The submitting connector</param>
+        /// <param name="benchmark">The benchmark</param>
+        /// <param name="baseDirectory">The base directory (eg. the client directory)</param>
+        public static void StartBenchmarkAsyncFull(IHadoopConnector submitter, Benchmark benchmark, string baseDirectory = "")
+        {
+            Logger.Info($"Start Benchmark {benchmark.Name} (base dir: {baseDirectory})");
+            RemoveHdfsDir(submitter, benchmark, baseDirectory);
+            submitter.StartApplicationAsyncFull(benchmark.GetStartCmd(baseDirectory));
+        }
+
+        /// <summary>
+        /// Removes the needed output hdfs directory for the given benchmark if exists
+        /// </summary>
+        /// <param name="submitter">The connector to hadoop</param>
+        /// <param name="benchmark">The benchmark to delete the output directory</param>
+        /// <param name="baseDirectory">The base directory (eg. the client directory)</param>
+        private static void RemoveHdfsDir(IHadoopConnector submitter, Benchmark benchmark, string baseDirectory)
+        {
+            if(benchmark.HasOutputDir)
+                submitter.RemoveHdfsDir(benchmark.GetOutputDir(baseDirectory));
         }
 
         #endregion

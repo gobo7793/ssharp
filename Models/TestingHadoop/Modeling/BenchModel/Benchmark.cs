@@ -163,6 +163,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <returns>The input directory</returns>
         public string GetInputDir(string clientDir = "")
         {
+            if(Model.IsPrecreateBenchInputs)
+                clientDir = Model.PrecreateBenchInputsBaseDir;
             return ReplaceClientDir(_InDir, clientDir);
         }
 

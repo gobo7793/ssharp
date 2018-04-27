@@ -64,6 +64,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         #region General settings and constants
 
         private static Model _Instance;
+        private static bool _IsPrecreateBenchInputs;
 
         /// <summary>
         /// <see cref="Model"/> instance
@@ -175,6 +176,31 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Hadoop compute node base http url (url without port number)
         /// </summary>
         public const string NodeHttpUrlBase = "http://localhost";
+
+        #endregion
+
+        #region Benchmarks
+
+        /// <summary>
+        /// Base directory for precreated input data for benchmarks
+        /// </summary>
+        public const string PrecreateBenchInputsBaseDir = "InputData";
+
+        /// <summary>
+        /// Indicates if the benchmark input data is precreated before model execution, default false.
+        /// Precreated data will be saved into <see cref="PrecreateBenchInputsBaseDir"/> and
+        /// used as input data for benchmarks.
+        /// </summary>
+        public static bool IsPrecreateBenchInputs
+        {
+            get { return _IsPrecreateBenchInputs; }
+            set
+            {
+                if(value)
+                    BenchmarkController.PrecreateInputData();
+                _IsPrecreateBenchInputs = value;
+            }
+        }
 
         #endregion
 

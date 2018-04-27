@@ -189,6 +189,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         void StartApplicationAsyncFull(string cmd);
 
         /// <summary>
+        /// Checks if the given directory exists on hdfs
+        /// </summary>
+        /// <param name="directory">The directory to check</param>
+        /// <returns>True if the directory exists</returns>
+        bool ExistsHdfsDir(string directory);
+
+        /// <summary>
         /// Removes the given directory on hdfs
         /// </summary>
         /// <param name="directory">The directory to remove</param>

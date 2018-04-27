@@ -150,6 +150,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             throw new NotImplementedException();
         }
 
+        public bool ExistsHdfsDir(string directory)
+        {
+            throw new NotImplementedException();
+        }
+
         public void RemoveHdfsDir(string directory)
         {
             throw new NotImplementedException();

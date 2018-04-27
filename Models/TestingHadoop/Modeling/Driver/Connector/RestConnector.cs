@@ -325,6 +325,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <summary>
         /// Not supported
         /// </summary>
+        public bool ExistsHdfsDir(string directory)
+        {
+            throw new PlatformNotSupportedException("Hadoop REST API does not support check if hdfs directories exists!");
+        }
+
+        /// <summary>
+        /// Not supported
+        /// </summary>
         public void RemoveHdfsDir(string directory)
         {
             throw new PlatformNotSupportedException("Hadoop REST API does not support remove hdfs directories!");

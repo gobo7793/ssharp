@@ -454,12 +454,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 if(submitter == null)
                 {
                     ++sleepCnt;
-                    if(sleepCnt > 10)
+                    if(sleepCnt > 30)
                         throw new TimeoutException($"No free application submitter available for starting application {cmd}.");
                     Thread.Sleep(1000); // waiting for free submitter
                 }
             } while(submitter == null);
             return submitter;
+        }
+
+        /// <summary>
+        /// Checks if the given directory exists on hdfs
+        /// </summary>
+        /// <param name="directory">The directory to check</param>
+        /// <returns>True if the directory exists</returns>
+        public bool ExistsHdfsDir(string directory)
+        {
+            var cmd = $"{Model.HadoopSetupScript} hdfs dfs -test -e {directory}";
+            var submitter = GetSubmitter(cmd);
+
+            var exitCode = submitter.Run(cmd);
+            return exitCode.Trim() == "0";
         }
 
         /// <summary>
