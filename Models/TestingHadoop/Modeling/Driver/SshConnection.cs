@@ -296,7 +296,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             Logger.Debug($"Executing: {command}");
             var cmd = Client.RunCommand(command);
             var output = cmd.ExitStatus == 0 ? cmd.Result : cmd.Error;
-            Logger.Debug(output);
+            Logger.Debug(output.Trim());
             return output;
         }
 
@@ -319,7 +319,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 line = Stream.ReadLine();
 
                 result.AppendLine(line);
-                Logger.Debug(line);
+                Logger.Debug(line.Trim());
 
                 if(!isAsync && AppIdRegex != null)
                 {
