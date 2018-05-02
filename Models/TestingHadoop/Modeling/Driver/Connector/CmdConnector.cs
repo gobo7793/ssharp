@@ -74,12 +74,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             Submitting = new List<SshConnection>();
 
             if(forMonitoring)
-                Monitoring = new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile);
+                Monitoring = new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, "cmdConnector_monitoring");
             if(forFaulting)
-                Faulting = new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile);
+                Faulting = new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, "cmdConnector_faulting");
             for(int i = 0; i < submittingConnections; i++)
                 Submitting.Add(new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile,
-                    @"Submitted application (application_\d+_\d+)"));
+                    @"Submitted application (application_\d+_\d+)", $"cmdConnector_submitting{i}"));
         }
 
         /// <summary>

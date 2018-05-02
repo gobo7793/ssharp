@@ -226,30 +226,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         {
             Logger.Info($"Precreate Benchmark input data into {Model.PrecreateBenchInputsBaseDir}");
 
+            var cmdConnector = CmdConnector.Instance;
+
             var dfsiow = Task.Run(() =>
             {
-                if(!CmdConnector.Instance.ExistsHdfsDir(Benchmarks[0].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
+                if(!cmdConnector.ExistsHdfsDir(Benchmarks[0].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
                     StartBenchmark(CmdConnector.Instance, Benchmarks[0], Model.PrecreateBenchInputsBaseDir);
             });
             var rtw = Task.Run(() =>
             {
-                if(!CmdConnector.Instance.ExistsHdfsDir(Benchmarks[1].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
+                if(!cmdConnector.ExistsHdfsDir(Benchmarks[1].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
                     StartBenchmark(CmdConnector.Instance, Benchmarks[1], Model.PrecreateBenchInputsBaseDir);
             });
             var tgen = Task.Run(() =>
             {
-                if(!CmdConnector.Instance.ExistsHdfsDir(Benchmarks[2].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
+                if(!cmdConnector.ExistsHdfsDir(Benchmarks[2].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
                     StartBenchmark(CmdConnector.Instance, Benchmarks[2], Model.PrecreateBenchInputsBaseDir);
             });
 
             var sort = rtw.ContinueWith(s =>
             {
-                if(!CmdConnector.Instance.ExistsHdfsDir(Benchmarks[6].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
+                if(!cmdConnector.ExistsHdfsDir(Benchmarks[6].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
                     StartBenchmark(CmdConnector.Instance, Benchmarks[6], Model.PrecreateBenchInputsBaseDir);
             });
             var tval = tgen.ContinueWith(t =>
             {
-                if(!CmdConnector.Instance.ExistsHdfsDir(Benchmarks[7].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
+                if(!cmdConnector.ExistsHdfsDir(Benchmarks[7].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
                     StartBenchmark(CmdConnector.Instance, Benchmarks[7], Model.PrecreateBenchInputsBaseDir);
             });
 

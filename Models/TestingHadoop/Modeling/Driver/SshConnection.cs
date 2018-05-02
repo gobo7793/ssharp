@@ -78,6 +78,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         public bool InUse { get; private set; }
 
+        /// <summary>
+        /// Name of the connection
+        /// </summary>
+        public string ConnectionName { get; }
+
+        /// <summary>
+        /// Connection id to identify during runtime
+        /// </summary>
+        private string ConnId { get; }
+
         #endregion
 
         #region Main Methods
@@ -87,9 +97,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="host">Host to connect</param>
         /// <param name="username">Username to connect</param>
-        public SshConnection(string host, string username)
+        /// <param name="connectionName">Name of the connection</param>
+        public SshConnection(string host, string username, string connectionName = "")
         {
             RandomGen = new Random();
+            ConnectionName = connectionName;
+            ConnId = Convert.ToBase64String(Guid.NewGuid().ToByteArray()).Substring(0, 10);
 
             Host = host;
             Username = username;
@@ -101,8 +114,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="host">Host to connect</param>
         /// <param name="username">Username to connect</param>
         /// <param name="privKeyFile">The path to the private key file to connect</param>
-        public SshConnection(string host, string username, string privKeyFile)
-            : this(host, username, new PrivateKeyFile(Environment.ExpandEnvironmentVariables(privKeyFile)))
+        /// <param name="connectionName">Name of the connection</param>
+        public SshConnection(string host, string username, string privKeyFile, string connectionName = "")
+            : this(host, username, new PrivateKeyFile(Environment.ExpandEnvironmentVariables(privKeyFile)), connectionName)
         {
 
         }
@@ -114,8 +128,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="username">Username to connect</param>
         /// <param name="privKeyFile">The path to the private key file to connect</param>
         /// <param name="appIdRegexPattern">Pattern for returning application ids via <see cref="RunAttachedTillAppId(string)"/></param>
-        public SshConnection(string host, string username, string privKeyFile, string appIdRegexPattern)
-            : this(host, username, new PrivateKeyFile(Environment.ExpandEnvironmentVariables(privKeyFile)), appIdRegexPattern)
+        /// <param name="connectionName">Name of the connection</param>
+        public SshConnection(string host, string username, string privKeyFile, string appIdRegexPattern, string connectionName = "")
+            : this(host, username, new PrivateKeyFile(Environment.ExpandEnvironmentVariables(privKeyFile)), appIdRegexPattern,
+                connectionName)
         {
 
         }
@@ -126,8 +142,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="host">Host to connect</param>
         /// <param name="username">Username to connect</param>
         /// <param name="privateKeyFile">Private key file instance to connect</param>
-        public SshConnection(string host, string username, PrivateKeyFile privateKeyFile)
-            : this(host, username)
+        /// <param name="connectionName">Name of the connection</param>
+        public SshConnection(string host, string username, PrivateKeyFile privateKeyFile, string connectionName = "")
+            : this(host, username, connectionName)
         {
             PrivateKeyFile = privateKeyFile;
             Connect();
@@ -140,8 +157,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="username">Username to connect</param>
         /// <param name="privateKeyFile">Private key file instance to connect</param>
         /// <param name="appIdRegexPattern">Pattern for returning application ids via <see cref="RunAttachedTillAppId(string)"/></param>
-        public SshConnection(string host, string username, PrivateKeyFile privateKeyFile, string appIdRegexPattern)
-            : this(host, username, privateKeyFile)
+        /// <param name="connectionName">Name of the connection</param>
+        public SshConnection(string host, string username, PrivateKeyFile privateKeyFile, string appIdRegexPattern, string connectionName = "")
+            : this(host, username, privateKeyFile, connectionName)
         {
             AppIdRegex = new Regex(appIdRegexPattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
             //AppIdRegex = new Regex(@"Submitted application (application_\d+_\d+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -200,7 +218,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             Client.Connect();
             Stream = Client.CreateShellStream("ssharpShell", 120, 24, 800, 600, 2048);
             ReadForAppId("Last login");
-            Logger.Debug($"Connected to {Username}@{Host}");
+            Logger.Info($"SSH connected to {Username}@{Host} ({ConnectionName}/{ConnId})");
         }
 
         /// <summary>
@@ -210,7 +228,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             Stream.Close();
             Client.Disconnect();
-            Logger.Debug($"Disconnected from {Username}@{Host}");
+            Logger.Info($"SSH disconnected from {Username}@{Host} ({ConnectionName}/{ConnId})");
         }
 
         /// <summary>
@@ -242,14 +260,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var exitStr = GetWaitingExitString();
             var sendStr = $"{command}; echo '{exitStr}'";
 
-            Logger.Debug($"Executing:\n{sendStr}");
+            Logger.Debug($"[{ConnId}] Executing:\n{sendStr}");
             Stream.WriteLine(sendStr);
 
             var id = ReadForAppId(exitStr);
 
-            Task.Run(() => ReadForAppId(exitStr, true));
-
             InUse = false;
+            Task.Run(() => ReadForAppId(exitStr, true)); // get unneeded stuff to make clear for next use
+
             return id;
         }
 
@@ -293,10 +311,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The output of the command</returns>
         private string DoRunCommand(string command)
         {
-            Logger.Debug($"Executing: {command}");
+            Logger.Debug($"[{ConnId}] Executing: {command}");
             var cmd = Client.RunCommand(command);
             var output = cmd.ExitStatus == 0 ? cmd.Result : cmd.Error;
-            Logger.Debug(output.Trim());
+            Logger.Debug($"[{ConnId}] {output.Trim()}");
             return output;
         }
 
@@ -319,7 +337,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 line = Stream.ReadLine();
 
                 result.AppendLine(line);
-                Logger.Debug(line.Trim());
+                Logger.Debug($"[{ConnId}] {line.Trim()}");
 
                 if(!isAsync && AppIdRegex != null)
                 {

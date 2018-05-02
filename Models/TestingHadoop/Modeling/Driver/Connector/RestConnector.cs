@@ -70,7 +70,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         private RestConnector()
         {
-            Monitoring = new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile);
+            Monitoring = new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, "restConnector_monitoring");
         }
 
         /// <summary>
