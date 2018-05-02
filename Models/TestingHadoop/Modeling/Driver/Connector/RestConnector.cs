@@ -86,6 +86,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         }
 
         /// <summary>
+        /// Executes the given monitoring command for monitoring a compute node
+        /// </summary>
+        /// <param name="cmd">The monitoring command</param>
+        /// <returns>The result or on connection refused <see cref="String.Empty"/></returns>
+        private string MonitorCompute(string cmd)
+        {
+            var result = Monitoring.Run(cmd);
+            if(result.Trim().EndsWith("Connection refused"))
+                return String.Empty;
+            return result;
+        }
+
+        /// <summary>
         /// Disposing
         /// </summary>
         public void Dispose()
@@ -142,7 +155,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>The YARN application container list</returns>
         public string GetYarnAppContainerList(string nodeUrl)
         {
-            return Monitoring.Run($"{Curl} {nodeUrl}/ws/v1/node/containers");
+            return MonitorCompute($"{Curl} {nodeUrl}/ws/v1/node/containers");
         }
 
         /// <summary>
@@ -212,7 +225,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(nodeUrl == null)
                 throw new ArgumentNullException($"No node url given to get details for container {containerId}!");
 
-            return Monitoring.Run($"{Curl} {nodeUrl}/ws/v1/node/containers/{containerId}");
+            return MonitorCompute($"{Curl} {nodeUrl}/ws/v1/node/containers/{containerId}");
         }
 
         /// <summary>
