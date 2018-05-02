@@ -226,7 +226,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         {
             Logger.Info($"Precreate Benchmark input data into {Model.PrecreateBenchInputsBaseDir}");
 
-            var dfsior = Task.Run(() =>
+            var dfsiow = Task.Run(() =>
             {
                 if(!CmdConnector.Instance.ExistsHdfsDir(Benchmarks[0].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
                     StartBenchmark(CmdConnector.Instance, Benchmarks[0], Model.PrecreateBenchInputsBaseDir);
@@ -253,7 +253,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
                     StartBenchmark(CmdConnector.Instance, Benchmarks[7], Model.PrecreateBenchInputsBaseDir);
             });
 
-            Task.WaitAll(dfsior, rtw, tgen, sort, tval);
+            Task.WaitAll(dfsiow, rtw, tgen, sort, tval);
         }
 
         /// <summary>

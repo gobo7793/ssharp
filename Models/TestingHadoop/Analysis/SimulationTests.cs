@@ -36,10 +36,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static log4net.ILog Logger { get; } = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // Simulation settings
-        private static readonly TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 10);
+        private static readonly TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 20);
         //private static readonly int _BenchmarkSeed = 1;
         private static readonly int _BenchmarkSeed = Environment.TickCount;
-        private static readonly int _StepCount = 3;
+        private static readonly int _StepCount = 10;
         private static readonly bool _PrecreatedInputs = true;
 
         [Test]
