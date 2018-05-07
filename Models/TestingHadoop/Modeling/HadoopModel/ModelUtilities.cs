@@ -40,7 +40,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// Sets the given char array based on the given string
+        /// Sets the given char array based on the given string. Content that is to long
+        /// for the given array will be cutted.
         /// </summary>
         /// <param name="targetArray">The char array to save in</param>
         /// <param name="sourceString">The source string to save</param>
@@ -48,7 +49,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             ClearArray(targetArray);
             if(!String.IsNullOrWhiteSpace(sourceString))
+            {
+                if(sourceString.Length > targetArray.Length)
+                    sourceString = $"{sourceString.Substring(0, targetArray.Length - 3)}...";
                 sourceString.ToCharArray().CopyTo(targetArray, 0);
+            }
         }
 
         /// <summary>
