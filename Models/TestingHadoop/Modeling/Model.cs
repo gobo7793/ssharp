@@ -108,7 +108,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <remarks>
         /// Generic options for all benchmark related commands can be inserted here.
         /// </remarks>
-        public const string BenchmarkStartupScript = "/home/hadoop/hadoop-benchmark/bench.sh -q -t";
+        public const string BenchmarkStartupScript = "~/hadoop-benchmark/bench.sh -q -t";
 
         /// <summary>
         /// The Hadoop setup script for use on classic singlehost
@@ -117,7 +117,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <remarks>
         /// Generic options for all cluster related commands can be inserted here.
         /// </remarks>
-        public const string HadoopSetupScriptDockerMachine = "/home/hadoop/hadoop-benchmark/setup.sh -q";
+        public const string HadoopSetupScriptDockerMachine = "~/hadoop-benchmark/setup.sh -q";
 
         /// <summary>
         /// The Hadoop setup script for use on multihost mode execution docker container
@@ -126,7 +126,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <remarks>
         /// Generic options for all cluster related commands can be inserted here.
         /// </remarks>
-        public const string HadoopSetupScriptMultihost = "/home/hadoop/hadoop-benchmark/multihost.sh -q";
+        public const string HadoopSetupScriptMultihost = "~/hadoop-benchmark/multihost.sh -q";
 
         /// <summary>
         /// Command for Hadoop setup script that will be used in the model
