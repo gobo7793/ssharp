@@ -180,7 +180,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             var benchChanged = BenchController.ChangeBenchmark();
 
-            Logger.Info($"Selected Benchmark: {BenchController.CurrentBenchmark.Name}");
+            Logger.Info($"Selected Benchmark {ClientId}: {BenchController.CurrentBenchmark.Name}");
 
             if(benchChanged)
             {
