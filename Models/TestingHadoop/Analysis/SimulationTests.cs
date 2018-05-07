@@ -68,7 +68,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             var model = (Model)simulator.Model;
 
             Logger.Info("=================  START  =====================================");
-            TestUtilities.PrintTestSettings(_BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
+            TestUtilities.PrintTestSettings("Simulation", _BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
 
             for(var i = 0; i < steps; i++)
             {
