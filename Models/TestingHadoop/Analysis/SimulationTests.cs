@@ -68,12 +68,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             var model = (Model)simulator.Model;
 
             Logger.Info("=================  START  =====================================");
-            Logger.Info($"Benchmark seed: {_BenchmarkSeed}");
-            Logger.Info($"Min Step time:  {_MinStepTime}");
-            Logger.Info($"Step count:     {_StepCount}");
-            Logger.Info($"Host mode:      {Model.HostMode}");
-            Logger.Info($"Setup script:   {Model.HadoopSetupScript}");
-            Logger.Info($"Controller url: {Model.ControllerRestRmUrl}");
+            TestUtilities.PrintTestSettings(_BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
 
             for(var i = 0; i < steps; i++)
             {
@@ -88,61 +83,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
                 Logger.Info($"Duration: {stepTime.ToString()}");
 
-                PrintTrace(model);
+                TestUtilities.PrintTrace(model);
             }
 
             Logger.Info("=================  Finish  =====================================");
         }
 
-        public static void PrintTrace(Model model)
-        {
-            foreach(var node in model.Controller.ConnectedNodes)
-            {
-                Logger.Info($"=== Node {node.NodeId} ===");
-                Logger.Info($"    State:       {node.State}");
-                Logger.Info($"    IsActive:    {node.IsActive}");
-                Logger.Info($"    IsConnected: {node.IsConnected}");
-            }
-
-            foreach(var client in model.Controller.ConnectedClients)
-            {
-                Logger.Info($"=== Client {client.ClientDir} ===");
-                Logger.Info($"    Current executing bench: {client.BenchController?.CurrentBenchmark?.Name}");
-                Logger.Info($"    Current executing app:   {client.CurrentExecutingApp?.AppId}");
-
-                foreach(var app in client.Apps)
-                {
-                    if(String.IsNullOrWhiteSpace(app.AppId))
-                        continue;
-
-                    Logger.Info($"    === App {app.AppId} ===");
-                    Logger.Info($"        Name:        {app.Name}");
-                    Logger.Info($"        State:       {app.State}");
-                    Logger.Info($"        FinalStatus: {app.FinalStatus}");
-                    Logger.Info($"        AM Host:     {app.AmHostId} ({app.AmHost?.State})");
-
-                    foreach(var attempt in app.Attempts)
-                    {
-                        if(String.IsNullOrWhiteSpace(attempt.AttemptId))
-                            continue;
-
-                        Logger.Info($"        === Attempt {attempt.AttemptId} ===");
-                        Logger.Info($"            State:        {attempt.State}");
-                        Logger.Info($"            AM Container: {attempt.AmContainerId}");
-                        Logger.Info($"            AM Host:      {attempt.AmHostId} ({attempt.AmHost?.State})");
-
-                        foreach(var container in attempt.Containers)
-                        {
-                            if(String.IsNullOrWhiteSpace(container.ContainerId))
-                                continue;
-
-                            Logger.Info($"          === Container {container.ContainerId} ===");
-                            Logger.Info($"              State: {container.State}");
-                            Logger.Info($"              Host:  {container.HostId} ({container.Host?.State})");
-                        }
-                    }
-                }
-            }
-        }
     }
 }

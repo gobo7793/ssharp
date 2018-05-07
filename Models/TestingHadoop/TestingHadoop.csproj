@@ -65,6 +65,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Analysis\SimulationTests.cs" />
+    <Compile Include="Analysis\TestUtilities.cs" />
     <Compile Include="Modeling\BenchModel\BenchmarkController.cs" />
     <Compile Include="Modeling\BenchModel\Benchmark.cs" />
     <Compile Include="Modeling\Driver\Connector\CmdConnector.cs" />
