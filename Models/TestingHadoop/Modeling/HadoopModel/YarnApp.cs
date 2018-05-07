@@ -352,7 +352,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 var attempt = Attempts.FirstOrDefault(a => a.AttemptId == parsed.AttemptId) ??
                               Attempts.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AttemptId));
                 if(attempt == null)
-                    throw new OutOfMemoryException("No more application attempts available! Try to initialize more attempts.");
+                    throw new OutOfMemoryException(
+                        $"Failed to allocate application attempt {parsed.AttemptId}: No more application attempts available.");
 
                 attempt.AppId = AppId;
                 if(IsSelfMonitoring)

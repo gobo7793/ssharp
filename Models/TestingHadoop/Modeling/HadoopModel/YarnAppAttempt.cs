@@ -247,7 +247,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             {
                 var container = Containers.FirstOrDefault(c => String.IsNullOrWhiteSpace(c.ContainerId));
                 if(container == null)
-                    throw new OutOfMemoryException("No more containers available! Try to initialize more containers.");
+                    throw new OutOfMemoryException($"Failed to allocate container {parsed.ContainerId}: No more containers available.");
 
                 container.AppAttemptId = AttemptId;
                 if(IsSelfMonitoring)

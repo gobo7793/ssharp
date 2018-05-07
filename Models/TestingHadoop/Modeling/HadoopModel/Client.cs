@@ -217,12 +217,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 SubmittingConnector.RemoveHdfsDir(benchmark.GetOutputDir(ClientDir));
             var appId = SubmittingConnector.StartApplicationAsyncTillId(benchmark.GetStartCmd(ClientDir));
 
-            if(appId.Length <= 32)
+            if(appId.Length == Model.AppIdLength)
             {
                 var app = Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));// ??
                                                                                        //Apps.FirstOrDefault(a => a.AppId == appId);
                 if(app == null)
-                    throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
+                    throw new OutOfMemoryException(
+                        $"Failed to allocate application {appId} by {ClientId}: No more applications available.");
                 app.AppId = appId;
                 CurrentExecutingAppId = app.AppId;
             }
