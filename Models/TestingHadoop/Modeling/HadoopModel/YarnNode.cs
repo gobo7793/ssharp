@@ -52,6 +52,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region Properties
 
         /// <summary>
+        /// Logger
+        /// </summary>
+        private static log4net.ILog Logger { get; } = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+        /// <summary>
         /// The connector to use for fault handling
         /// </summary>
         [NonSerializable]
@@ -302,6 +307,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             if(IsActive && !IsConnected)
             {
+                Logger.Info($"Start connection on node {Name}");
                 var isStarted = FaultConnector.StartNodeNetConnection(Name);
                 if(isStarted)
                     IsConnected = true;
@@ -324,6 +330,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             if(IsActive && IsConnected)
             {
+                Logger.Info($"Stop connection on node {Name}");
                 var isStopped = FaultConnector.StopNodeNetConnection(Name);
                 if(isStopped)
                     IsConnected = false;
@@ -345,6 +352,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             if(!IsActive)
             {
+                Logger.Info($"Start node {Name}");
                 var isStarted = FaultConnector.StartNode(Name);
                 if(isStarted)
                     IsActive = true;
@@ -366,6 +374,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             if(IsActive)
             {
+                Logger.Info($"Stop node {Name}");
                 var isStopped = FaultConnector.StopNode(Name);
                 if(isStopped)
                     IsActive = false;
