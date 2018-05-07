@@ -41,7 +41,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static readonly int _BenchmarkSeed = Environment.TickCount;
         private static readonly int _StepCount = 10;
         private static readonly bool _PrecreatedInputs = true;
-        private static readonly bool _IsFaultActivationActive = true;
 
         [Test]
         public void Simulate()
@@ -50,10 +49,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             Model.IsPrecreateBenchInputs = _PrecreatedInputs;
             var model = Model.Instance;
             model.InitModel(appCount: _StepCount, benchTransitionSeed: _BenchmarkSeed);
-            if(!_IsFaultActivationActive)
-                model.Faults.SuppressActivations();
-            else
-                model.Faults.MakeNondeterministic();
+            model.Faults.SuppressActivations();
 
             try
             {
