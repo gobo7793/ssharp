@@ -71,7 +71,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             Logger.Info($"Benchmark seed: {_BenchmarkSeed}");
             Logger.Info($"Min Step time:  {_MinStepTime}");
             Logger.Info($"Step count:     {_StepCount}");
-            Logger.Info($"Faults active:  {_IsFaultActivationActive}");
             Logger.Info($"Host mode:      {Model.HostMode}");
             Logger.Info($"Setup script:   {Model.HadoopSetupScript}");
             Logger.Info($"Controller url: {Model.ControllerRestRmUrl}");
