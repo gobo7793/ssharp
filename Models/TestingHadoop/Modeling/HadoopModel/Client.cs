@@ -39,6 +39,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region Properties
 
         /// <summary>
+        /// Logger
+        /// </summary>
+        private static log4net.ILog Logger { get; } = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        /// <summary>
         /// ID of the client
         /// </summary>
         // public string ClientId { get; set; }
@@ -175,6 +180,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             var benchChanged = BenchController.ChangeBenchmark();
 
+            Logger.Info($"Selected Benchmark: {BenchController.CurrentBenchmark.Name}");
+
             if(benchChanged)
             {
                 StopCurrentBenchmark();
@@ -188,6 +195,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <returns>True if <see cref="CurrentExecutingApp"/> is stopped or null</returns>
         public bool StopCurrentBenchmark()
         {
+            Logger.Debug($"Stopping old Benchmark in {CurrentExecutingApp?.AppId}");
+
             var isStopped = CurrentExecutingApp?.StopApp();
             CurrentExecutingAppId = String.Empty;
             return isStopped ?? true;
@@ -202,6 +211,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <exception cref="OutOfMemoryException">No <see cref="YarnApp"/> available</exception>
         public void StartBenchmark(Benchmark benchmark)
         {
+            Logger.Debug($"Starting Benchmark {benchmark.GetStartCmd(ClientDir)}");
+
             if(benchmark.HasOutputDir)
                 SubmittingConnector.RemoveHdfsDir(benchmark.GetOutputDir(ClientDir));
             var appId = SubmittingConnector.StartApplicationAsyncTillId(benchmark.GetStartCmd(ClientDir));
@@ -209,7 +220,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             if(appId.Length <= 32)
             {
                 var app = Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));// ??
-                          //Apps.FirstOrDefault(a => a.AppId == appId);
+                                                                                       //Apps.FirstOrDefault(a => a.AppId == appId);
                 if(app == null)
                     throw new OutOfMemoryException("No more applications available! Try to initialize more applications.");
                 app.AppId = appId;

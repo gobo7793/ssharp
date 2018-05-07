@@ -112,6 +112,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void MonitorNodes()
         {
+            Logger.Debug("Monitoring nodes");
+
             var parsedNodes = Parser.ParseNodeList();
             foreach(var parsed in parsedNodes)
             {
@@ -129,6 +131,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void MonitorApps()
         {
+            Logger.Debug("Monitoring applications");
+
             var parsedApps = Parser.ParseAppList(EAppState.ALL);
             foreach(var parsed in parsedApps)
             {
@@ -155,6 +159,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public void CheckConstraints()
         {
+            Logger.Debug("Checking constraints");
+
             bool isComponentValid;
             foreach(var node in ConnectedNodes)
             {
@@ -210,6 +216,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <returns>True if reconfiguration is possible</returns>
         public bool IsReconfPossible()
         {
+            Logger.Debug("Checking if reconfiguration is possible");
+
             var isReconfPossible = ConnectedNodes.Any(n => n.State == ENodeState.RUNNING);
             if(!isReconfPossible)
                 Logger.Warn("No reconfiguration possible!");
