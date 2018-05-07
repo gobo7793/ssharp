@@ -63,6 +63,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             catch(Exception e)
             {
                 Logger.Fatal("Fatal exception during simulation.", e);
+                Assert.Fail("See logging output");
             }
         }
 
