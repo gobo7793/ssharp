@@ -336,8 +336,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <param name="containerCount">The container count per attempt to initialize</param>
         /// <param name="nodeCount">The node count to initialize</param>
         /// <param name="benchTransitionSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
-        public void InitModel(int clientCount = 1, int appCount = 16, int attemptCount = 3, int containerCount = 32, int nodeCount = 4, int benchTransitionSeed = 1)
+        public void InitModel(int clientCount = 1, int appCount = 16, int attemptCount = 3, int containerCount = -1, int nodeCount = 4, int benchTransitionSeed = 1)
         {
+            if(containerCount < 0)
+                containerCount = nodeCount * 8;
+
             InitController();
 
             UsingMonitoringParser = RestParser.Instance;
