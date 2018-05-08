@@ -44,7 +44,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static readonly int _BenchmarkSeed = Environment.TickCount;
         private static readonly int _StepCount = 3;
         private static readonly bool _PrecreatedInputs = false;
-        private static readonly double _FaultActivationProbability = 0.3;
+        private static readonly double _FaultActivationProbability = 0.000001;
 
         /// <summary>
         /// Only create input data for other benchmarks without simulation
@@ -118,6 +118,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             catch(Exception e)
             {
                 Logger.Fatal("Fatal exception during Faulting Simulation.", e);
+
+                foreach(var node in origModel.Nodes)
+                {
+                    Model.UsingFaultingConnector.StartNode(node.Name);
+                    Model.UsingFaultingConnector.StartNodeNetConnection(node.Name);
+                }
+
                 Assert.Fail("See logging output");
             }
         }
