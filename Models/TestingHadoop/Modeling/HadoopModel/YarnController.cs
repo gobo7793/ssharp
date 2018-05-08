@@ -176,34 +176,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             Logger.Debug("Checking constraints");
 
-            bool isComponentValid;
             foreach(var node in ConnectedNodes)
-            {
-                isComponentValid = ValidateConstraints(node);
-                if(!isComponentValid)
-                    return;
-            }
+                ValidateConstraints(node);
 
             foreach(var app in Apps)
             {
-                isComponentValid = ValidateConstraints(app);
-                if(!isComponentValid)
-                    return;
+                ValidateConstraints(app);
 
                 foreach(var attempt in app.Attempts)
                 {
 
-                    isComponentValid = ValidateConstraints(attempt);
-                    if(!isComponentValid)
-                        return;
+                    ValidateConstraints(attempt);
 
                     foreach(var container in attempt.Containers)
-                    {
-
-                        isComponentValid = ValidateConstraints(container);
-                        if(!isComponentValid)
-                            return;
-                    }
+                        ValidateConstraints(container);
                 }
             }
         }
