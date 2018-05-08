@@ -215,14 +215,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Validates if reconfiguration for the cluster would be possible
         /// </summary>
         /// <returns>True if reconfiguration is possible</returns>
+        /// <exception cref="Exception">Throws an exception if reconfiguration is not possible</exception>
         public bool IsReconfPossible()
         {
             Logger.Debug("Checking if reconfiguration is possible");
 
             var isReconfPossible = ConnectedNodes.Any(n => n.State == ENodeState.RUNNING);
             if(!isReconfPossible)
-                Logger.Warn("No reconfiguration possible!");
-            return isReconfPossible;
+            {
+                Logger.Error("No reconfiguration possible!");
+                throw new Exception("No reconfiguration possible!");
+            }
+
+            return true;
         }
 
         #endregion
