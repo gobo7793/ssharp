@@ -20,6 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
@@ -75,6 +76,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Prefix for compute nodes
         /// </summary>
         public const string NodeNamePrefix = "compute-";
+
+        /// <summary>
+        /// Minimum step time for execution
+        /// </summary>
+        public static TimeSpan MinStepTime { get; set; } = new TimeSpan(0, 0, 20);
 
         #region SSH
 

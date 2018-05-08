@@ -34,15 +34,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 {
     public class SimulationTests
     {
-        private static log4net.ILog Logger { get; } = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static log4net.ILog Logger { get; } =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // Simulation settings
         private static readonly TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 20);
+
         //private static readonly int _BenchmarkSeed = 1;
         private static readonly int _BenchmarkSeed = Environment.TickCount;
         private static readonly int _StepCount = 3;
         private static readonly bool _PrecreatedInputs = false;
-        //private static readonly double _FaultActivationProbability = 0.3;
+        private static readonly double _FaultActivationProbability = 0.3;
 
         /// <summary>
         /// Only create input data for other benchmarks without simulation
@@ -70,26 +72,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 var simulator = new SafetySharpSimulator(origModel);
                 var model = (Model)simulator.Model;
 
-                Logger.Info("=================  START  =====================================");
+                OutputUtilities.PrintExecutionStart();
                 OutputUtilities.PrintTestSettings("Simulation", _BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
 
                 for(var i = 0; i < _StepCount; i++)
                 {
-                    Logger.Info($"=================  Step: {i}  =====================================");
-                    var stepStartTime = DateTime.Now;
-
                     simulator.SimulateStep();
-
-                    var stepTime = DateTime.Now - stepStartTime;
-                    if(stepTime < _MinStepTime)
-                        Thread.Sleep(_MinStepTime - stepTime);
-
-                    Logger.Info($"Duration: {stepTime.ToString()}");
-
-                    OutputUtilities.PrintTrace(model);
                 }
 
-                Logger.Info("=================  Finish  =====================================");
+                OutputUtilities.PrintExecutionFinish();
             }
             catch(Exception e)
             {
@@ -108,8 +99,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             Model.IsPrecreateBenchInputs = _PrecreatedInputs;
             var origModel = Model.Instance;
             origModel.InitModel(appCount: _StepCount, benchTransitionSeed: _BenchmarkSeed);
-            //foreach(var f in origModel.Faults)
-            //    f.ProbabilityOfOccurrence = new ISSE.SafetyChecking.Modeling.Probability(_FaultActivationProbability);
+            foreach(var f in origModel.Faults)
+                f.ProbabilityOfOccurrence = new ISSE.SafetyChecking.Modeling.Probability(_FaultActivationProbability);
             origModel.Faults.MakeNondeterministic();
 
             try
@@ -117,26 +108,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 var simulator = new SafetySharpProbabilisticSimulator(origModel);
                 var model = (Model)simulator.Model;
 
-                Logger.Info("=================  START  =====================================");
+                OutputUtilities.PrintExecutionStart();
                 OutputUtilities.PrintTestSettings("Probabilistic Simulation", _BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
 
-                //for(var i = 0; i < _StepCount; i++)
-                //{
-                    //Logger.Info($"=================  Step: {i}  =====================================");
-                    //var stepStartTime = DateTime.Now;
+                simulator.SimulateSteps(_StepCount);
 
-                    simulator.SimulateSteps(_StepCount);
-
-                    //var stepTime = DateTime.Now - stepStartTime;
-                    //if(stepTime < _MinStepTime)
-                    //    Thread.Sleep(_MinStepTime - stepTime);
-
-                    //Logger.Info($"Duration: {stepTime.ToString()}");
-
-                    OutputUtilities.PrintTrace(model);
-                //}
-
-                Logger.Info("=================  Finish  =====================================");
+                OutputUtilities.PrintExecutionFinish();
             }
             catch(Exception e)
             {

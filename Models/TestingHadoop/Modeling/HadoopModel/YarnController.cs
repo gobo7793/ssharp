@@ -22,8 +22,10 @@
 // THE SOFTWARE.
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
@@ -89,18 +91,31 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
+            // Logging, trace printing and timing here because the probabilistic simulator
+            // doesn't support single step execution
+            OutputUtilities.PrintStepStart();
+            var stepStartTime = DateTime.Now;
+
             // only in this model in this place to be sure that constraint
             // checking will be done after updating and monitoring benchmarks
             foreach(var client in ConnectedClients)
                 client.UpdateBenchmark();
 
-            ModelUtilities.Sleep(); // optional, to allocate at least the AM container
+            // optional, to allocate at least the AM container
+            ModelUtilities.Sleep();
 
             MonitorNodes();
             MonitorApps();
 
             CheckConstraints();
             IsReconfPossible();
+
+            var stepTime = DateTime.Now - stepStartTime;
+            OutputUtilities.PrintSteptTime(stepTime);
+            if(stepTime < Model.MinStepTime)
+                Thread.Sleep(Model.MinStepTime - stepTime);
+
+            OutputUtilities.PrintFullTrace(this);
         }
 
         #endregion
