@@ -45,6 +45,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static readonly int _StepCount = 10;
         private static readonly bool _PrecreatedInputs = true;
 
+        /// <summary>
+        /// Analyzing model using DCCA (need >12 GB RAM)
+        /// </summary>
         [Test]
         public void Analyse()
         {
@@ -73,7 +76,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         //    var model = (Model)simulator.Model;
 
         //    Logger.Info("=================  START  =====================================");
-        //    TestUtilities.PrintTestSettings("DCCA", _BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
+        //    OutputUtilities.PrintTestSettings("DCCA", _BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
 
         //    for(var i = 0; i < steps; i++)
         //    {
@@ -88,7 +91,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
         //        Logger.Info($"Duration: {stepTime.ToString()}");
 
-        //        TestUtilities.PrintTrace(model);
+        //        OutputUtilities.PrintTrace(model);
         //    }
 
         //    Logger.Info("=================  Finish  =====================================");
