@@ -27,6 +27,7 @@ using System.Threading;
 using NUnit.Framework;
 using SafetySharp.Analysis;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
@@ -39,54 +40,109 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static readonly TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 20);
         //private static readonly int _BenchmarkSeed = 1;
         private static readonly int _BenchmarkSeed = Environment.TickCount;
-        private static readonly int _StepCount = 10;
-        private static readonly bool _PrecreatedInputs = true;
+        private static readonly int _StepCount = 3;
+        private static readonly bool _PrecreatedInputs = false;
+        //private static readonly double _FaultActivationProbability = 0.3;
 
+        /// <summary>
+        /// Only create input data for other benchmarks without simulation
+        /// </summary>
         [Test]
-        public void Simulate()
+        public void PrecreateInputData()
+        {
+            BenchmarkController.PrecreateInputData();
+        }
+
+        /// <summary>
+        /// Simulation without faults
+        /// </summary>
+        [Test]
+        public void SimulateHadoop()
         {
             Model.HostMode = Model.EHostMode.Multihost;
             Model.IsPrecreateBenchInputs = _PrecreatedInputs;
-            var model = Model.Instance;
-            model.InitModel(appCount: _StepCount, benchTransitionSeed: _BenchmarkSeed);
-            model.Faults.SuppressActivations();
+            var origModel = Model.Instance;
+            origModel.InitModel(appCount: _StepCount, benchTransitionSeed: _BenchmarkSeed);
+            origModel.Faults.SuppressActivations();
 
             try
             {
-                var simulator = new SafetySharpSimulator(model);
-                ExecuteSimulation(simulator, _StepCount);
+                var simulator = new SafetySharpSimulator(origModel);
+                var model = (Model)simulator.Model;
+
+                Logger.Info("=================  START  =====================================");
+                OutputUtilities.PrintTestSettings("Simulation", _BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
+
+                for(var i = 0; i < _StepCount; i++)
+                {
+                    Logger.Info($"=================  Step: {i}  =====================================");
+                    var stepStartTime = DateTime.Now;
+
+                    simulator.SimulateStep();
+
+                    var stepTime = DateTime.Now - stepStartTime;
+                    if(stepTime < _MinStepTime)
+                        Thread.Sleep(_MinStepTime - stepTime);
+
+                    Logger.Info($"Duration: {stepTime.ToString()}");
+
+                    OutputUtilities.PrintTrace(model);
+                }
+
+                Logger.Info("=================  Finish  =====================================");
             }
             catch(Exception e)
             {
-                Logger.Fatal("Fatal exception during simulation.", e);
+                Logger.Fatal("Fatal exception during Simulation.", e);
                 Assert.Fail("See logging output");
             }
         }
 
-        public static void ExecuteSimulation(SafetySharpSimulator simulator, int steps)
+        /// <summary>
+        /// Simulation with nondeterministic fault activation using <see cref="SafetySharpProbabilisticSimulator"/>
+        /// </summary>
+        [Test]
+        public void SimulateHadoopFaults()
         {
-            var model = (Model)simulator.Model;
+            Model.HostMode = Model.EHostMode.Multihost;
+            Model.IsPrecreateBenchInputs = _PrecreatedInputs;
+            var origModel = Model.Instance;
+            origModel.InitModel(appCount: _StepCount, benchTransitionSeed: _BenchmarkSeed);
+            //foreach(var f in origModel.Faults)
+            //    f.ProbabilityOfOccurrence = new ISSE.SafetyChecking.Modeling.Probability(_FaultActivationProbability);
+            origModel.Faults.MakeNondeterministic();
 
-            Logger.Info("=================  START  =====================================");
-            TestUtilities.PrintTestSettings("Simulation", _BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
-
-            for(var i = 0; i < steps; i++)
+            try
             {
-                Logger.Info($"=================  Step: {i}  =====================================");
-                var stepStartTime = DateTime.Now;
+                var simulator = new SafetySharpProbabilisticSimulator(origModel);
+                var model = (Model)simulator.Model;
 
-                simulator.SimulateStep();
+                Logger.Info("=================  START  =====================================");
+                OutputUtilities.PrintTestSettings("Probabilistic Simulation", _BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
 
-                var stepTime = DateTime.Now - stepStartTime;
-                if(stepTime < _MinStepTime)
-                    Thread.Sleep(_MinStepTime - stepTime);
+                //for(var i = 0; i < _StepCount; i++)
+                //{
+                    //Logger.Info($"=================  Step: {i}  =====================================");
+                    //var stepStartTime = DateTime.Now;
 
-                Logger.Info($"Duration: {stepTime.ToString()}");
+                    simulator.SimulateSteps(_StepCount);
 
-                TestUtilities.PrintTrace(model);
+                    //var stepTime = DateTime.Now - stepStartTime;
+                    //if(stepTime < _MinStepTime)
+                    //    Thread.Sleep(_MinStepTime - stepTime);
+
+                    //Logger.Info($"Duration: {stepTime.ToString()}");
+
+                    OutputUtilities.PrintTrace(model);
+                //}
+
+                Logger.Info("=================  Finish  =====================================");
             }
-
-            Logger.Info("=================  Finish  =====================================");
+            catch(Exception e)
+            {
+                Logger.Fatal("Fatal exception during Faulting Simulation.", e);
+                Assert.Fail("See logging output");
+            }
         }
 
     }
