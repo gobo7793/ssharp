@@ -50,12 +50,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <summary>
         /// The fault handling connection
         /// </summary>
-        private SshConnection Faulting { get; }
+        private List<SshConnection> Faulting { get; } = new List<SshConnection>();
 
         /// <summary>
         /// The application submitting connections
         /// </summary>
-        private List<SshConnection> Submitting { get; }
+        private List<SshConnection> Submitting { get; } = new List<SshConnection>();
 
         #endregion
 
@@ -71,25 +71,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <param name="submittingConnections">The count for submitting application connections</param>
         private CmdConnector(bool forMonitoring = false, bool forFaulting = true, int submittingConnections = 4)
         {
-            Submitting = new List<SshConnection>();
-
             if(forMonitoring)
-                Monitoring = new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, "cmdConnector_monitoring");
+                Monitoring = new SshConnection(Model.SshHosts[0], Model.SshUsernames[0], Model.SshPrivateKeyFiles[0],
+                    "cmdConnector_h1_monitoring");
             if(forFaulting)
-                Faulting = new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile, "cmdConnector_faulting");
+                for(int i = 0; i < Model.HostsCount; i++)
+                    Faulting.Add(new SshConnection(Model.SshHosts[0], Model.SshUsernames[0], Model.SshPrivateKeyFiles[0],
+                    $"cmdConnector_h{i + 1}_faulting"));
             for(int i = 0; i < submittingConnections; i++)
-                Submitting.Add(new SshConnection(Model.SshHost, Model.SshUsername, Model.SshPrivateKeyFile,
-                    @"Submitted application (application_\d+_\d+)", $"cmdConnector_submitting{i}"));
+                Submitting.Add(new SshConnection(Model.SshHosts[0], Model.SshUsernames[0], Model.SshPrivateKeyFiles[0],
+                    @"Submitted application (application_\d+_\d+)", $"cmdConnector_h1_submitting{i}"));
         }
 
         /// <summary>
         /// Creates a new <see cref="CmdConnector"/> instance without monitoring features,
-        /// saves and returns it if <see cref="Model.SshHost"/> is set
+        /// saves and returns it if <see cref="Model.SshHosts"/> is set
         /// </summary>
-        /// <returns>Null if <see cref="Model.SshHost"/> is not set, otherwise the instance</returns>
+        /// <returns>Null if <see cref="Model.SshHosts"/> is not set, otherwise the instance</returns>
         internal static CmdConnector CreateInstance()
         {
-            if(String.IsNullOrWhiteSpace(Model.SshHost))
+            if(String.IsNullOrWhiteSpace(Model.SshHosts[0]))
                 return null;
             _Instance = new CmdConnector();
             return _Instance;
@@ -97,12 +98,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
         /// <summary>
         /// Creates a new <see cref="CmdConnector"/> instance with monitoring features,
-        /// saves and returns it if <see cref="Model.SshHost"/> is set
+        /// saves and returns it if <see cref="Model.SshHosts"/> is set
         /// </summary>
-        /// <returns>Null if <see cref="Model.SshHost"/> is not set, otherwise the instance</returns>
+        /// <returns>Null if <see cref="Model.SshHosts"/> is not set, otherwise the instance</returns>
         internal static CmdConnector CreateFullInstance()
         {
-            if(String.IsNullOrWhiteSpace(Model.SshHost))
+            if(String.IsNullOrWhiteSpace(Model.SshHosts[0]))
                 return null;
             _Instance = new CmdConnector(true);
             return _Instance;
@@ -114,7 +115,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         public void Dispose()
         {
             Monitoring?.Dispose();
-            Faulting?.Dispose();
+            foreach(var con in Faulting)
+                con.Dispose();
             foreach(var con in Submitting)
                 con.Dispose();
         }
@@ -303,8 +305,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = DriverUtilities.ParseInt(nodeName);
-            Faulting.Run($"{Model.HadoopSetupScript} hadoop start {id}");
-            return CheckNodeRunning(id);
+            var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
+
+            Faulting[hostId - 1].Run($"{Model.HadoopSetupScript} hadoop start {id}");
+            return CheckNodeRunning(id, hostId);
         }
 
         /// <summary>
@@ -319,18 +323,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = DriverUtilities.ParseInt(nodeName);
-            Faulting.Run($"{Model.HadoopSetupScript} hadoop stop {id}");
-            return !CheckNodeRunning(id);
+            var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
+
+            Faulting[hostId - 1].Run($"{Model.HadoopSetupScript} hadoop stop {id}");
+            return !CheckNodeRunning(id, hostId);
         }
 
         /// <summary>
         /// Check node running and returns true if node docker container is running
         /// </summary>
         /// <param name="nodeId">Node id</param>
+        /// <param name="hostId">The host id of the node</param>
         /// <returns>True on node running</returns>
-        private bool CheckNodeRunning(int nodeId)
+        private bool CheckNodeRunning(int nodeId, int hostId)
         {
-            var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {nodeId} '{{{{.State.Running}}}}'");
+            var runCheckRes = Faulting[hostId - 1].Run($"{Model.HadoopSetupScript} hadoop info {nodeId} '{{{{.State.Running}}}}'");
             return runCheckRes.Contains("true");
         }
 
@@ -346,10 +353,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = DriverUtilities.ParseInt(nodeName);
-            //Faulting.Run($"{Model.HadoopSetupScript} net start {id}");
-            //return CheckNodeNetwork(id);
-            Faulting.Run($"{Model.HadoopSetupScript} hadoop restart {id}"); // Workaround to reconnect compute to controller
-            return CheckNodeRunning(id);
+            var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
+
+            //Faulting[hostId - 1].Run($"{Model.HadoopSetupScript} net start {id}");
+            //return CheckNodeNetwork(id, hostId);
+
+            // Workaround to reconnect compute to controller
+            Faulting[hostId - 1].Run($"{Model.HadoopSetupScript} hadoop restart {id}");
+            return CheckNodeRunning(id, hostId);
         }
 
         /// <summary>
@@ -364,18 +375,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = DriverUtilities.ParseInt(nodeName);
-            Faulting.Run($"{Model.HadoopSetupScript} net stop {id}");
-            return !CheckNodeNetwork(id);
+            var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
+
+            Faulting[hostId - 1].Run($"{Model.HadoopSetupScript} net stop {id}");
+            return !CheckNodeNetwork(id, hostId);
         }
 
         /// <summary>
         /// Check network connectivity and returns true if network is set for node docker container
         /// </summary>
         /// <param name="nodeId">Node id</param>
+        /// <param name="hostId">The host id of the node</param>
         /// <returns>True on network connectivity</returns>
-        private bool CheckNodeNetwork(int nodeId)
+        private bool CheckNodeNetwork(int nodeId, int hostId)
         {
-            var runCheckRes = Faulting.Run($"{Model.HadoopSetupScript} hadoop info {nodeId} '{{{{.NetworkSettings.Networks}}}}'");
+            var runCheckRes = Faulting[hostId - 1]
+                .Run($"{Model.HadoopSetupScript} hadoop info {nodeId} '{{{{.NetworkSettings.Networks}}}}'");
             return runCheckRes.Contains("hadoop-net");
         }
 
@@ -394,7 +409,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Faulting == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
-            var cmd = Faulting.Run($"{Model.HadoopSetupScript} cmd yarn application -kill {appId} | grep {appId}");
+            var cmd = Faulting[0].Run($"{Model.HadoopSetupScript} cmd yarn application -kill {appId} | grep {appId}");
             return cmd.Contains($"Killed application {appId}") || cmd.Contains($"Killing application {appId}") ||
                    cmd.Contains($"{appId} has already finished") || cmd.Contains($"'{appId}' doesn't exist");
         }

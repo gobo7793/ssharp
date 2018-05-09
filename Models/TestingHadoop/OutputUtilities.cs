@@ -31,7 +31,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
     /// <summary>
     /// General utilities for execution (analysis) tests
     /// </summary>
-    public class OutputUtilities
+    public static class OutputUtilities
     {
         private static log4net.ILog Logger { get; } = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static int _StepCount = 0;

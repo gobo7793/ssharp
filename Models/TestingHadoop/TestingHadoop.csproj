@@ -105,7 +105,7 @@
     <Compile Include="Tests\FullYarnArchitecutreOnlineTest.cs" />
     <Compile Include="Tests\FullYarnArchitectureOfflineTest.cs" />
     <Compile Include="Tests\JsonParserTest.cs" />
-    <Compile Include="Tests\DriverUtilitiesTest.cs" />
+    <Compile Include="Tests\UtilitiesTests.cs" />
     <Compile Include="Tests\YarnNodeTest.cs" />
   </ItemGroup>
   <ItemGroup>

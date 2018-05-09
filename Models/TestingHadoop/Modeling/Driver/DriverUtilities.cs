@@ -315,6 +315,33 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         }
 
         #endregion
+
+        #region Multihosting
+
+        /// <summary>
+        /// Gets the full node count on all hosts
+        /// </summary>
+        /// <returns>The full node count</returns>
+        public static int GetFullNodeCount()
+        {
+            return Model.NodeBaseCount + (Model.HostsCount - 1) * Model.NodeBaseCount / 2;
+        }
+
+        /// <summary>
+        /// Returns the host id for the given yarn node id (booth one-based index)
+        /// </summary>
+        /// <param name="nodeId">The node id</param>
+        /// <param name="hostsCount">Count of all hosts</param>
+        /// <param name="nodeBaseCount">Base count for nodes (= node count on host 0, on others the half)</param>
+        /// <returns>The host id for the node</returns>
+        public static int GetHostId(int nodeId, int hostsCount, int nodeBaseCount)
+        {
+            if(nodeId <= nodeBaseCount)
+                return 1;
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 
     #region EConverting

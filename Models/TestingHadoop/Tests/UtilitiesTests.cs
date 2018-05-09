@@ -21,13 +21,15 @@
 // THE SOFTWARE.
 
 using NUnit.Framework;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 {
     [TestFixture]
-    public class DriverUtilitiesTest
+    public class UtilitiesTests
     {
         [Test]
         [TestCase("Wed Jan 10 19:42:01 +0000 2018", CmdParser.HadoopDateFormat, Result = "2018-01-10T20:42:01.0000000+01:00")]
@@ -66,6 +68,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public string TestConvert(string input, int shortId, EConvertType targetType)
         {
             return DriverUtilities.ConvertId(input, shortId, targetType);
+        }
+
+        [Test]
+        [TestCase(1, 4, Result = 4)]
+        [TestCase(2, 4, Result = 6)]
+        [TestCase(1, 2, Result = 2)]
+        [TestCase(2, 2, Result = 3)]
+        [TestCase(3, 4, Result = 8)]
+        [TestCase(4, 6, Result = 15)]
+        public int TestGetFullNodeCount(int hostsCount, int nodeBaseCount)
+        {
+            Model.HostsCount = hostsCount;
+            Model.NodeBaseCount = nodeBaseCount;
+            return ModelUtilities.GetFullNodeCount();
         }
     }
 }

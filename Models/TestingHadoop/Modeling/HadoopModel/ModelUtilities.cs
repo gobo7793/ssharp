@@ -74,5 +74,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             if(seconds > 0)
                 Thread.Sleep(seconds * 1000);
         }
+
+        /// <summary>
+        /// Gets the full node count on all hosts
+        /// </summary>
+        /// <returns>The full node count</returns>
+        public static int GetFullNodeCount()
+        {
+            return Model.NodeBaseCount + (Model.HostsCount - 1) * Model.NodeBaseCount / 2;
+        }
     }
 }

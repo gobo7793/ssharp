@@ -85,19 +85,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         #region SSH
 
         /// <summary>
-        /// Hostname for the Hadoop cluster pc
+        /// Hostnames for supported Hadoop cluster hosts, controller/docker-machine host always the first
         /// </summary>
-        public const string SshHost = "swtse143.informatik.uni-augsburg.de";
+        public static string[] SshHosts => new[] { "swtse143.informatik.uni-augsburg.de", "swtse144.informatik.uni-augsburg.de" };
 
         /// <summary>
-        /// Username for the Hadoop cluster pc
+        /// Usernames for supported Hadoop cluster hosts, controller/docker-machine host always the first
         /// </summary>
-        public const string SshUsername = "hadoop";
+        public static string[] SshUsernames => new[] { "hadoop", "hadoop" };
 
         /// <summary>
-        /// Full file path to the private key file to login
+        /// Full file path to the private key files to login, controller/docker-machine host always the first
         /// </summary>
-        public const string SshPrivateKeyFile = @"%USERPROFILE%\.ssh\id_rsa";
+        public static string[] SshPrivateKeyFiles => new[] { @"%USERPROFILE%\.ssh\id_rsa", @"%USERPROFILE%\.ssh\id_rsa" };
 
         #endregion
 
@@ -109,7 +109,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public static EHostMode HostMode { get; set; } = EHostMode.DockerMachine;
 
         /// <summary>
-        /// Command for benchmark startup script
+        /// Command for benchmark startup script on controller/docker-machine host
         /// </summary>
         /// <remarks>
         /// Generic options for all benchmark related commands can be inserted here.
@@ -127,10 +127,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 
         /// <summary>
         /// The Hadoop setup script for use on multihost mode execution docker container
-        /// directly on pc without docker-machine and in swarm mode
+        /// directly on pc without docker-machine and in swarm mode.
         /// </summary>
         /// <remarks>
         /// Generic options for all cluster related commands can be inserted here.
+        /// Must be on the same location on all hosts.
         /// </remarks>
         public const string HadoopSetupScriptMultihost = "~/hadoop-benchmark/multihost.sh -q";
 
@@ -141,47 +142,58 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             HostMode == EHostMode.DockerMachine ? HadoopSetupScriptDockerMachine : HadoopSetupScriptMultihost;
 
         /// <summary>
-        /// Hadoop controller resource manager url for REST API on <see cref="SshHost"/>
+        /// Hadoop controller resource manager url for REST API on <see cref="SshHosts"/>
         /// on use with docker-machine cluster
         /// </summary>
         public const string ControllerRestRmUrlDockerMachine = "http://controller:8088";
 
         /// <summary>
-        /// Hadoop controller resource manager url for REST API on <see cref="SshHost"/>
+        /// Hadoop controller resource manager url for REST API on <see cref="SshHosts"/>
         /// on use with multihost docker cluster
         /// </summary>
         public const string ControllerRestRmUrlMultihost = "http://localhost:8088";
 
         /// <summary>
-        /// Hadoop controller resource manager url for REST API on <see cref="SshHost"/>
+        /// Hadoop controller resource manager url for REST API on <see cref="SshHosts"/>
         /// that will be used in the model
         /// </summary>
         public static string ControllerRestRmUrl =>
             HostMode == EHostMode.DockerMachine ? ControllerRestRmUrlDockerMachine : ControllerRestRmUrlMultihost;
 
         /// <summary>
-        /// Hadoop controller timeline server url for REST API on <see cref="SshHost"/>
+        /// Hadoop controller timeline server url for REST API on <see cref="SshHosts"/>
         /// on use with docker-machine cluster
         /// </summary>
         public const string ControllerRestTlsUrlDockerMachine = "http://controller:8188";
 
         /// <summary>
-        /// Hadoop controller timeline server url for REST API on <see cref="SshHost"/>
+        /// Hadoop controller timeline server url for REST API on <see cref="SshHosts"/>
         /// on use with multihost docker cluster
         /// </summary>
         public const string ControllerRestTlsUrlMultihost = "http://localhost:8188";
 
         /// <summary>
-        /// Hadoop controller timeline server url for REST API on <see cref="SshHost"/>
+        /// Hadoop controller timeline server url for REST API on <see cref="SshHosts"/>
         /// that will be used in the model
         /// </summary>
         public static string ControllerRestTlsUrl =>
             HostMode == EHostMode.DockerMachine ? ControllerRestTlsUrlDockerMachine : ControllerRestTlsUrlMultihost;
 
         /// <summary>
-        /// Hadoop compute node base http url (url without port number)
+        /// Hadoop compute node base http url (url without port number) for using on multihost cluster
         /// </summary>
-        public const string NodeHttpUrlBase = "http://localhost";
+        public const string NodeHttpUrlMultihostBase = "http://localhost";
+
+        /// <summary>
+        /// Base count for nodes on controller host.
+        /// In multihost mode the node count on other hosts is the half of the count on controller host.
+        /// </summary>
+        public static int NodeBaseCount { get; set; } = 4;
+
+        /// <summary>
+        /// The host count for multihost mode
+        /// </summary>
+        public static int HostsCount { get; set; } = 1;
 
         #endregion
 
@@ -340,10 +352,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <param name="appCount">The application count per client to initialize</param>
         /// <param name="attemptCount">The attempt count per application to initialize</param>
         /// <param name="containerCount">The container count per attempt to initialize</param>
-        /// <param name="nodeCount">The node count to initialize</param>
         /// <param name="benchTransitionSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
-        public void InitModel(int clientCount = 1, int appCount = 16, int attemptCount = 3, int containerCount = -1, int nodeCount = 4, int benchTransitionSeed = 1)
+        public void InitModel(int clientCount = 1, int appCount = 16, int attemptCount = 3, int containerCount = -1, int benchTransitionSeed = 1)
         {
+            var nodeCount = ModelUtilities.GetFullNodeCount();
+
             if(containerCount < 0)
                 containerCount = nodeCount * 8;
 
@@ -353,8 +366,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             UsingFaultingConnector = CmdConnector.Instance;
 
             //var submitterCount = (int)Math.Ceiling(clientCount * 1.5);
-            //var cmdConnector = new CmdConnector(SshHost, SshUsername, SshPrivateKeyFile, false, true, submitterCount);
-            //var restConnector = new RestConnector(SshHost, SshUsername, SshPrivateKeyFile, Controller.HttpUrl, Controller.TimelineHttpUrl);
+            //var cmdConnector = new CmdConnector(SshHosts, SshUsernames, SshPrivateKeyFiles, false, true, submitterCount);
+            //var restConnector = new RestConnector(SshHosts, SshUsernames, SshPrivateKeyFiles, Controller.HttpUrl, Controller.TimelineHttpUrl);
             //var restParser = new RestParser(this, restConnector);
             //Controller.Parser = restParser;
 
@@ -387,7 +400,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             {
                 var node = HostMode == EHostMode.DockerMachine
                     ? new YarnNode(NodeNamePrefix + i, Controller)
-                    : new YarnNode(NodeNamePrefix + i, Controller, $"{NodeHttpUrlBase}:{8041 + i}");
+                    : new YarnNode(NodeNamePrefix + i, Controller, $"{NodeHttpUrlMultihostBase}:{8041 + i}");
 
                 //Controller.ConnectedNodes.Add(node);
                 Nodes.Add(node);
