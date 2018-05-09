@@ -346,8 +346,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = DriverUtilities.ParseInt(nodeName);
-            Faulting.Run($"{Model.HadoopSetupScript} net start {id}");
-            return CheckNodeNetwork(id);
+            //Faulting.Run($"{Model.HadoopSetupScript} net start {id}");
+            //return CheckNodeNetwork(id);
+            Faulting.Run($"{Model.HadoopSetupScript} hadoop restart {id}"); // Workaround to reconnect compute to controller
+            return CheckNodeRunning(id);
         }
 
         /// <summary>
