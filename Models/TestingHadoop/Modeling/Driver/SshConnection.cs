@@ -221,7 +221,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             Client.Connect();
             Stream = Client.CreateShellStream("ssharpShell", 120, 24, 800, 600, 2048);
             ReadForAppId("Last login");
-            Logger.Info($"SSH connected to {Username}@{Host} ({ConnectionName}/{ConnId})");
+            InfoToAllLoggers($"SSH connected to {Username}@{Host} ({ConnectionName}/{ConnId})");
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             Stream.Close();
             Client.Disconnect();
-            Logger.Info($"SSH disconnected from {Username}@{Host} ({ConnectionName}/{ConnId})");
+            InfoToAllLoggers($"SSH disconnected from {Username}@{Host} ({ConnectionName}/{ConnId})");
         }
 
         /// <summary>
@@ -263,8 +263,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var exitStr = GetWaitingExitString();
             var sendStr = $"{command}; echo '{exitStr}'";
 
-            Logger.Debug($"[{ConnId}] Executing:\n{sendStr}");
-            SshOutLogger.Debug($"[{ConnId}] --> {sendStr}");
+            DebugToAllLoggers($"[{ConnId}] --> {sendStr}");
             Stream.WriteLine(sendStr);
 
             var id = ReadForAppId(exitStr);
@@ -315,8 +314,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The output of the command</returns>
         private string DoRunCommand(string command)
         {
-            Logger.Debug($"[{ConnId}] Executing: {command}");
-            SshOutLogger.Debug($"[{ConnId}] --> {command}");
+            DebugToAllLoggers($"[{ConnId}] --> {command}");
             var cmd = Client.RunCommand(command);
             var output = cmd.ExitStatus == 0 ? cmd.Result : cmd.Error;
             SshOutLogger.Debug($"[{ConnId}] {output.Trim()}");
@@ -371,6 +369,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         private string GetWaitingExitString()
         {
             return $"[cmd-end]id-{RandomGen.Next(0xffff):x4}";
+        }
+
+        /// <summary>
+        /// Logs the message to all Loggers as DEBUG
+        /// </summary>
+        /// <param name="message">Message to log</param>
+        private void DebugToAllLoggers(string message)
+        {
+            Logger.Debug(message);
+            SshOutLogger.Debug(message);
+        }
+
+        /// <summary>
+        /// Logs the message to all Loggers as INFO
+        /// </summary>
+        /// <param name="message">Message to log</param>
+        private void InfoToAllLoggers(string message)
+        {
+            Logger.Info(message);
+            SshOutLogger.Info(message);
         }
 
         #endregion
