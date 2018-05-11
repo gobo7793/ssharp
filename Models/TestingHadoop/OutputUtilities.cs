@@ -33,7 +33,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop
     /// </summary>
     public static class OutputUtilities
     {
-        private static log4net.ILog Logger { get; } = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static log4net.ILog Logger { get; } =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static int _StepCount = 0;
 
         #region General output
@@ -58,14 +59,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop
                 Logger.Info($"Min Step time:     {minStepTime}");
             if(stepCount.HasValue)
                 Logger.Info($"Step count:        {stepCount}");
-            if(isFaultActivationEnabled.HasValue)
-                Logger.Info($"Fault activation:  {stepCount}");
-            if(isInputsPrecreated.HasValue)
-                Logger.Info($"Inputs precreated: {isInputsPrecreated}");
 
-            Logger.Info($"Host mode:             {Model.HostMode}");
-            Logger.Info($"Setup script:          {Model.HadoopSetupScript}");
-            Logger.Info($"Controller url:        {Model.ControllerRestRmUrl}");
+            Logger.Info($"Fault activation:  {isFaultActivationEnabled == true}");
+            Logger.Info($"Inputs precreated: {isInputsPrecreated == true}");
+
+            Logger.Info($"Host mode:         {Model.HostMode}");
+            Logger.Info($"Hosts couent:      {Model.HostsCount}");
+            Logger.Info($"Node base count:   {Model.NodeBaseCount}");
+            Logger.Info($"Setup script path: {Model.HadoopSetupScript}");
+            Logger.Info($"Controller url:    {Model.ControllerRestRmUrl}");
         }
 
         /// <summary>
