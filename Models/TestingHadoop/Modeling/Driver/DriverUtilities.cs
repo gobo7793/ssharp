@@ -321,10 +321,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <summary>
         /// Gets the full node count on all hosts
         /// </summary>
+        /// <param name="hostsCount">Count of all hosts</param>
+        /// <param name="nodeBaseCount">Base count for nodes (= node count on host 1, on others the half)</param>
         /// <returns>The full node count</returns>
-        public static int GetFullNodeCount()
+        public static int GetFullNodeCount(int hostsCount, int nodeBaseCount)
         {
-            return Model.NodeBaseCount + (Model.HostsCount - 1) * Model.NodeBaseCount / 2;
+            return nodeBaseCount + (hostsCount - 1) * nodeBaseCount / 2;
         }
 
         /// <summary>
@@ -332,13 +334,27 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         /// <param name="nodeId">The node id</param>
         /// <param name="hostsCount">Count of all hosts</param>
-        /// <param name="nodeBaseCount">Base count for nodes (= node count on host 0, on others the half)</param>
+        /// <param name="nodeBaseCount">Base count for nodes (= node count on host 1, on others the half)</param>
         /// <returns>The host id for the node</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// If given <paramref name="nodeId"/> is higher than highest possible nodeId based on 
+        /// <paramref name="hostsCount"/> and <paramref name="nodeBaseCount"/>,
+        /// calculated by <see cref="GetFullNodeCount(int, int)"/>.
+        /// </exception>
         public static int GetHostId(int nodeId, int hostsCount, int nodeBaseCount)
         {
+            var highestNodeId = GetFullNodeCount(hostsCount, nodeBaseCount);
+            if(nodeId > highestNodeId)
+                throw new ArgumentOutOfRangeException($"nodeID {nodeId} is out of range, highest nodeId is {highestNodeId}");
+
             if(nodeId <= nodeBaseCount)
                 return 1;
-            throw new NotImplementedException();
+            var hostsNodeId = nodeId - nodeBaseCount;
+            var hostsPerNode = nodeBaseCount / 2.0;
+            var realHost = hostsNodeId / hostsPerNode;
+            var host = Math.Ceiling(realHost);
+            var actualHost = (int)host + 1;
+            return actualHost;
         }
 
         #endregion
