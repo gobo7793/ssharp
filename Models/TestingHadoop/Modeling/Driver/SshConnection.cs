@@ -35,7 +35,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
     {
         #region Properties
 
-        private static log4net.ILog Logger { get; } = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static log4net.ILog Logger { get; } =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        private static log4net.ILog SshOutLogger { get; } = log4net.LogManager.GetLogger("SshOutLogger");
 
 
         /// <summary>
@@ -261,6 +264,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var sendStr = $"{command}; echo '{exitStr}'";
 
             Logger.Debug($"[{ConnId}] Executing:\n{sendStr}");
+            SshOutLogger.Debug($"[{ConnId}] --> {sendStr}");
             Stream.WriteLine(sendStr);
 
             var id = ReadForAppId(exitStr);
@@ -312,9 +316,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         private string DoRunCommand(string command)
         {
             Logger.Debug($"[{ConnId}] Executing: {command}");
+            SshOutLogger.Debug($"[{ConnId}] --> {command}");
             var cmd = Client.RunCommand(command);
             var output = cmd.ExitStatus == 0 ? cmd.Result : cmd.Error;
-            Logger.Debug($"[{ConnId}] {output.Trim()}");
+            SshOutLogger.Debug($"[{ConnId}] {output.Trim()}");
             return output;
         }
 
@@ -337,7 +342,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 line = Stream.ReadLine();
 
                 result.AppendLine(line);
-                Logger.Debug($"[{ConnId}] {line.Trim()}");
+                SshOutLogger.Debug($"[{ConnId}] {line.Trim()}");
 
                 if(!isAsync && AppIdRegex != null)
                 {
