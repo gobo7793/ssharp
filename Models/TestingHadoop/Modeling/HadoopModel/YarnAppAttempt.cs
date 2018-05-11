@@ -250,11 +250,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                     throw new OutOfMemoryException($"Failed to allocate container {parsed.ContainerId}: No more containers available.");
 
                 container.AppAttemptId = AttemptId;
+                container.IsSelfMonitoring = IsSelfMonitoring;
                 if(IsSelfMonitoring)
                     container.ContainerId = parsed.ContainerId;
                 else
                     container.SetStatus(parsed);
-                container.IsSelfMonitoring = IsSelfMonitoring;
             }
         }
 

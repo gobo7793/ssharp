@@ -136,8 +136,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 if(node == null)
                     continue;
 
-                node.SetStatus(parsed);
                 node.IsSelfMonitoring = false;
+                node.SetStatus(parsed);
             }
         }
 
@@ -159,8 +159,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 if(app == null)
                     continue;
 
-                app.SetStatus(parsed);
                 app.IsSelfMonitoring = false;
+                app.SetStatus(parsed);
                 app.MonitorStatus();
             }
         }

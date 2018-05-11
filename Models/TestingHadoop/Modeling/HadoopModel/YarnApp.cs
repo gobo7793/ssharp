@@ -356,6 +356,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                         $"Failed to allocate application attempt {parsed.AttemptId}: No more application attempts available.");
 
                 attempt.AppId = AppId;
+                attempt.IsSelfMonitoring = IsSelfMonitoring;
                 if(IsSelfMonitoring)
                 {
                     attempt.AttemptId = parsed.AttemptId;
@@ -363,7 +364,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 else
                 {
                     attempt.SetStatus(parsed);
-                    attempt.IsSelfMonitoring = false;
                     attempt.MonitorStatus();
                 }
             }

@@ -49,6 +49,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             _Client1 = _Model.Clients[0];
             _App = _Model.Applications[0];
             _App.AppId = "application_1515488762656_0002";
+            _App.IsSelfMonitoring = true;
 
             _Attempt = _App.Attempts[0];
             _Container = _Attempt.Containers[0];
