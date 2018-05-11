@@ -41,11 +41,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private YarnAppAttempt _Attempt1;
         private YarnAppContainer _Container1;
 
-        private string _AppBase1 = "1517215519416_0001";
+        private static Model.EHostMode _HostMode = Model.EHostMode.Multihost;
+        private string _AppBase1 = "1525869172198_0001";
+
 
         [TestFixtureSetUp]
         public void Setup()
         {
+            Model.HostMode = _HostMode;
             _Model = Model.Instance;
             _Model.InitModel();
             _Model.Clients[0].BenchController = new BenchmarkController(1);
@@ -85,6 +88,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestFullMonitoring()
         {
+            _Attempt1.IsSelfMonitoring = true;
             //var startTime = DateTime.Now;
             _Controller.MonitorNodes();
             _Controller.MonitorApps();
@@ -101,12 +105,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Assert.NotNull(attempt);
 
             Assert.AreEqual($"container_{_AppBase1}_01_000001", _Attempt1.AmContainerId);
-            Assert.AreNotEqual(DateTime.MinValue, attempt.AmContainer.StartTime);
+            Assert.AreNotEqual(DateTime.MinValue, attempt.StartTime);
+            //Assert.AreNotEqual(DateTime.MinValue, attempt.AmContainer.StartTime);
         }
 
         [Test]
         public void TestAppMonitoring()
         {
+            _App1.IsSelfMonitoring = true;
             //var startTime = DateTime.Now;
             _App1.MonitorStatus();
             //var elapsedTime = DateTime.Now - startTime;
@@ -122,6 +128,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestAttemptMonitoring()
         {
+            _Attempt1.IsSelfMonitoring = true;
             if(String.IsNullOrWhiteSpace(_Attempt1.AttemptId))
                 _Attempt1.AttemptId = $"appattempt_{_AppBase1}_000001";
 
@@ -137,22 +144,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Assert.IsNotNullOrEmpty(_Attempt1.AmContainerId);
         }
 
-        [Test]
-        public void TestContainerMonitoring()
-        {
-            if(String.IsNullOrWhiteSpace(_Container1.ContainerId))
-                _Container1.ContainerId = $"container_{_AppBase1}_01_000001";
+        //[Test]
+        //public void TestContainerMonitoring()
+        //{
+        //    _Container1.IsSelfMonitoring = true;
+        //    if(String.IsNullOrWhiteSpace(_Container1.ContainerId))
+        //        _Container1.ContainerId = $"container_{_AppBase1}_01_000001";
 
-            //var startTime = DateTime.Now;
-            _Container1.MonitorStatus();
-            //var elapsedTime = DateTime.Now - startTime;
+        //    //var startTime = DateTime.Now;
+        //    _Container1.MonitorStatus();
+        //    //var elapsedTime = DateTime.Now - startTime;
 
-            //Console.WriteLine($"Time needed: {elapsedTime}");
-            var fullStatus = _Container1.StatusAsString();
-            Console.WriteLine(fullStatus);
+        //    //Console.WriteLine($"Time needed: {elapsedTime}");
+        //    var fullStatus = _Container1.StatusAsString();
+        //    Console.WriteLine(fullStatus);
 
-            Assert.AreNotEqual(DateTime.MinValue, _Container1.StartTime);
-        }
+        //    Assert.AreNotEqual(DateTime.MinValue, _Container1.StartTime);
+        //}
 
         [Test]
         public void TestStopNode()
