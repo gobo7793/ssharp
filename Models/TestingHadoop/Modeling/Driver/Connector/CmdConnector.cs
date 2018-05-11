@@ -50,7 +50,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <summary>
         /// The fault handling connection
         /// </summary>
-        private List<SshConnection> Faulting { get; } = new List<SshConnection>();
+        private Dictionary<int, SshConnection> Faulting { get; } = new Dictionary<int, SshConnection>();
 
         /// <summary>
         /// The application submitting connections
@@ -75,9 +75,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 Monitoring = new SshConnection(Model.SshHosts[0], Model.SshUsernames[0], Model.SshPrivateKeyFiles[0],
                     "cmdConnector_h1_monitoring");
             if(forFaulting)
-                for(int i = 0; i < Model.HostsCount; i++)
-                    Faulting.Add(new SshConnection(Model.SshHosts[0], Model.SshUsernames[0], Model.SshPrivateKeyFiles[0],
-                    $"cmdConnector_h{i + 1}_faulting"));
+                for(int i = 1; i <= Model.HostsCount; i++)
+                    Faulting[i] = new SshConnection(Model.SshHosts[0], Model.SshUsernames[0], Model.SshPrivateKeyFiles[0],
+                    $"cmdConnector_h{i + 1}_faulting");
             for(int i = 0; i < submittingConnections; i++)
                 Submitting.Add(new SshConnection(Model.SshHosts[0], Model.SshUsernames[0], Model.SshPrivateKeyFiles[0],
                     @"Submitted application (application_\d+_\d+)", $"cmdConnector_h1_submitting{i}"));
@@ -116,7 +116,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         {
             Monitoring?.Dispose();
             foreach(var con in Faulting)
-                con.Dispose();
+                con.Value.Dispose();
             foreach(var con in Submitting)
                 con.Dispose();
         }
@@ -307,7 +307,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             var id = DriverUtilities.ParseInt(nodeName);
             var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
 
-            Faulting[hostId - 1].Run($"{Model.HadoopSetupScript} hadoop start {id}");
+            Faulting[hostId].Run($"{Model.HadoopSetupScript} hadoop start {id}");
             return CheckNodeRunning(id, hostId);
         }
 
@@ -325,7 +325,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             var id = DriverUtilities.ParseInt(nodeName);
             var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
 
-            Faulting[hostId - 1].Run($"{Model.HadoopSetupScript} hadoop stop {id}");
+            Faulting[hostId].Run($"{Model.HadoopSetupScript} hadoop stop {id}");
             return !CheckNodeRunning(id, hostId);
         }
 
@@ -337,7 +337,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>True on node running</returns>
         private bool CheckNodeRunning(int nodeId, int hostId)
         {
-            var runCheckRes = Faulting[hostId - 1].Run($"{Model.HadoopSetupScript} hadoop info {nodeId} '{{{{.State.Running}}}}'");
+            var runCheckRes = Faulting[hostId].Run($"{Model.HadoopSetupScript} hadoop info {nodeId} '{{{{.State.Running}}}}'");
             return runCheckRes.Contains("true");
         }
 
@@ -355,11 +355,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             var id = DriverUtilities.ParseInt(nodeName);
             var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
 
-            //Faulting[hostId - 1].Run($"{Model.HadoopSetupScript} net start {id}");
+            //Faulting[hostId1].Run($"{Model.HadoopSetupScript} net start {id}");
             //return CheckNodeNetwork(id, hostId);
 
             // Workaround to reconnect compute to controller
-            Faulting[hostId - 1].Run($"{Model.HadoopSetupScript} hadoop restart {id}");
+            Faulting[hostId].Run($"{Model.HadoopSetupScript} hadoop restart {id}");
             return CheckNodeRunning(id, hostId);
         }
 
@@ -377,7 +377,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             var id = DriverUtilities.ParseInt(nodeName);
             var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
 
-            Faulting[hostId - 1].Run($"{Model.HadoopSetupScript} net stop {id}");
+            Faulting[hostId].Run($"{Model.HadoopSetupScript} net stop {id}");
             return !CheckNodeNetwork(id, hostId);
         }
 
@@ -389,7 +389,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>True on network connectivity</returns>
         private bool CheckNodeNetwork(int nodeId, int hostId)
         {
-            var runCheckRes = Faulting[hostId - 1]
+            var runCheckRes = Faulting[hostId]
                 .Run($"{Model.HadoopSetupScript} hadoop info {nodeId} '{{{{.NetworkSettings.Networks}}}}'");
             return runCheckRes.Contains("hadoop-net");
         }

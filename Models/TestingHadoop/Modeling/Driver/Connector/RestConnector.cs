@@ -44,12 +44,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <summary>
         /// The monitoring connections
         /// </summary>
-        private List<SshConnection> MonitoringConnections { get; } = new List<SshConnection>();
+        private Dictionary<int, SshConnection> MonitoringConnections { get; } = new Dictionary<int, SshConnection>();
 
         /// <summary>
         /// Monitoring connection for RM
         /// </summary>
-        private SshConnection MonitoringRm => MonitoringConnections.FirstOrDefault();
+        private SshConnection MonitoringRm => MonitoringConnections.FirstOrDefault().Value;
 
         /// <summary>
         /// ResourceManager URL
@@ -77,8 +77,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         private RestConnector()
         {
-            for(int i = 0; i < Model.HostsCount; i++)
-                MonitoringConnections.Add(new SshConnection(Model.SshHosts[i], Model.SshUsernames[i], Model.SshPrivateKeyFiles[i],
+            for(int i = 1; i <= Model.HostsCount; i++)
+                MonitoringConnections[i] = (new SshConnection(Model.SshHosts[i], Model.SshUsernames[i], Model.SshPrivateKeyFiles[i],
                     $"restConnector_h{i + 1}_monitoring"));
         }
 
@@ -106,7 +106,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(nodeId > 8041 && Model.HostMode == Model.EHostMode.Multihost)
             {
                 var hostId = DriverUtilities.GetHostId(nodeId - 8041, Model.HostsCount, Model.NodeBaseCount);
-                result = MonitoringConnections[hostId - 1].Run(cmd);
+                result = MonitoringConnections[hostId].Run(cmd);
             }
             else
             {
@@ -124,7 +124,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         public void Dispose()
         {
             foreach(var conn in MonitoringConnections)
-                conn.Dispose();
+                conn.Value.Dispose();
         }
 
         #endregion
