@@ -28,21 +28,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
     [TestFixture]
     public class YarnNodeTest
     {
-        [Test]
-        public void TestFaultInheritation()
-        {
-            var nodeName = "node";
-            var node = new YarnNode
-            {
-                Name = nodeName
-            };
-            var fault = new YarnNode.NodeDeadEffect
-            {
-                Name = nodeName
-            };
+        //[Test]
+        //public void TestFaultInheritation()
+        //{
+        //    var nodeName = "node";
+        //    var node = new YarnNode
+        //    {
+        //        Name = nodeName
+        //    };
+        //    var fault = new YarnNode.NodeDeadEffect
+        //    {
+        //        Name = nodeName
+        //    };
 
-            Assert.AreEqual($"http://{nodeName}:8042", node.HttpUrl);
-            Assert.AreEqual($"http://{nodeName}:8042", fault.HttpUrl);
-        }
+        //    Assert.AreEqual($"http://{nodeName}:8042", node.HttpUrl);
+        //    Assert.AreEqual($"http://{nodeName}:8042", fault.HttpUrl);
+        //}
     }
 }
