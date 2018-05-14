@@ -194,14 +194,29 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         }
 
         [Test]
-        public void TestStopNodeConnection()
+        public void TestStopNodeConnectionOnNode1()
         {
-            Console.WriteLine("Stop node connection...");
+            Console.WriteLine("Stop node connection on host 1...");
             var isStopped = _Node1.StopConnection();
             Assert.IsTrue(isStopped);
             Thread.Sleep(15000);
-            Console.WriteLine("Start node connection...");
+            Console.WriteLine("Start node connection on host 1...");
             var isStarted = _Node1.StartConnection();
+            Assert.IsTrue(isStarted);
+        }
+
+        [Test]
+        public void TestStopNodeConnectionOnNode2()
+        {
+            if(_Node5 == null)
+                return;
+
+            Console.WriteLine("Stop node connection on host 2...");
+            var isStopped = _Node5.StopConnection();
+            Assert.IsTrue(isStopped);
+            Thread.Sleep(15000);
+            Console.WriteLine("Start node connection on host 2...");
+            var isStarted = _Node5.StartConnection();
             Assert.IsTrue(isStarted);
         }
     }
