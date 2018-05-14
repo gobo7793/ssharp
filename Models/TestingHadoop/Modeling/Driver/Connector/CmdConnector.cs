@@ -358,7 +358,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             //var id = DriverUtilities.ParseInt(nodeName);
             //var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
 
-            //Faulting[hostId1].Run($"{Model.HadoopSetupScript} net start {id}");
+            //Faulting[hostId].Run($"{Model.HadoopSetupScript} net start {id}");
             //return CheckNodeNetwork(id, hostId);
 
             // Workaround to reconnect compute to controller
