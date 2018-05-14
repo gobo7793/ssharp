@@ -44,7 +44,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static readonly int _BenchmarkSeed = Environment.TickCount;
         private static readonly int _StepCount = 3;
         private static readonly bool _PrecreatedInputs = false;
-        private static readonly double _FaultActivationProbability = 0.000001;
+        private static readonly double _FaultActivationProbability = 95;
         private static readonly int _HostsCount = 2;
         private static readonly int _NodeBaseCount = 4;
 
@@ -55,6 +55,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         public void PrecreateInputData()
         {
             BenchmarkController.PrecreateInputData();
+        }
+
+        /// <summary>
+        /// Recreates input data for other benchmarks without simulation
+        /// </summary>
+        [Test]
+        public void RecreateInputData()
+        {
+            BenchmarkController.PrecreateInputData(true);
         }
 
         /// <summary>

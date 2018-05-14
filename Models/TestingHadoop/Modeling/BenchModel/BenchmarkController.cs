@@ -222,40 +222,35 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <summary>
         /// Creates input data for benchmarks and saves it into <see cref="Model.PrecreateBenchInputsBaseDir"/>
         /// </summary>
-        public static void PrecreateInputData()
+        /// <param name="removeExisting">Removes existing files to recreate input data</param>
+        public static void PrecreateInputData(bool removeExisting = false)
         {
             Logger.Info($"Precreate Benchmark input data into {Model.PrecreateBenchInputsBaseDir}");
 
             var cmdConnector = CmdConnector.Instance;
 
-            var dfsiow = Task.Run(() =>
-            {
-                if(!cmdConnector.ExistsHdfsDir(Benchmarks[0].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
-                    StartBenchmark(CmdConnector.Instance, Benchmarks[0], Model.PrecreateBenchInputsBaseDir);
-            });
-            var rtw = Task.Run(() =>
-            {
-                if(!cmdConnector.ExistsHdfsDir(Benchmarks[1].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
-                    StartBenchmark(CmdConnector.Instance, Benchmarks[1], Model.PrecreateBenchInputsBaseDir);
-            });
-            var tgen = Task.Run(() =>
-            {
-                if(!cmdConnector.ExistsHdfsDir(Benchmarks[2].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
-                    StartBenchmark(CmdConnector.Instance, Benchmarks[2], Model.PrecreateBenchInputsBaseDir);
-            });
+            var dfsiow = Task.Run(() => { DoPrecreateInputData(Benchmarks[0], cmdConnector, removeExisting); });
+            var rtw = Task.Run(() => { DoPrecreateInputData(Benchmarks[1], cmdConnector, removeExisting); });
+            var tgen = Task.Run(() => { DoPrecreateInputData(Benchmarks[2], cmdConnector, removeExisting); });
 
-            var sort = rtw.ContinueWith(s =>
-            {
-                if(!cmdConnector.ExistsHdfsDir(Benchmarks[6].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
-                    StartBenchmark(CmdConnector.Instance, Benchmarks[6], Model.PrecreateBenchInputsBaseDir);
-            });
-            var tval = tgen.ContinueWith(t =>
-            {
-                if(!cmdConnector.ExistsHdfsDir(Benchmarks[7].GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
-                    StartBenchmark(CmdConnector.Instance, Benchmarks[7], Model.PrecreateBenchInputsBaseDir);
-            });
+            var sort = rtw.ContinueWith(s => { DoPrecreateInputData(Benchmarks[6], cmdConnector, removeExisting); });
+            var tval = tgen.ContinueWith(t => { DoPrecreateInputData(Benchmarks[7], cmdConnector, removeExisting); });
 
             Task.WaitAll(dfsiow, rtw, tgen, sort, tval);
+        }
+
+        /// <summary>
+        /// Performs precreation of input data
+        /// </summary>
+        /// <param name="benchmark">The <see cref="Benchmark"/> to create input data</param>
+        /// <param name="connector">The <see cref="IHadoopConnector"/> to use</param>
+        /// <param name="removeExisting">Removes existing files</param>
+        private static void DoPrecreateInputData(Benchmark benchmark, IHadoopConnector connector, bool removeExisting)
+        {
+            if(removeExisting)
+                connector.RemoveHdfsDir(benchmark.GetOutputDir(Model.PrecreateBenchInputsBaseDir));
+            if(!connector.ExistsHdfsDir(benchmark.GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
+                StartBenchmark(connector, benchmark, Model.PrecreateBenchInputsBaseDir);
         }
 
         /// <summary>
