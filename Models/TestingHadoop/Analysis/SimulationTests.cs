@@ -140,10 +140,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             }
             finally
             {
+                Logger.Info("Restarting all Nodes...");
                 foreach(var node in origModel.Nodes)
                 {
+                    Model.UsingFaultingConnector.StopNode(node.Name);
                     Model.UsingFaultingConnector.StartNode(node.Name);
-                    Model.UsingFaultingConnector.StartNodeNetConnection(node.Name);
                 }
             }
 

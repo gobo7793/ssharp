@@ -114,12 +114,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
             var appRes = JsonConvert.DeserializeObject<ApplicationListJsonResult>(fullResult);
 
             // convert AM Hosts
-            var apps = appRes.Collection.List;
-            foreach(var app in apps)
+            var apps = appRes.Collection?.List;
+            if(apps != null)
             {
-                Logger.Debug($"Parsing app '{app.AppId}'");
-                if(!String.IsNullOrWhiteSpace(app.AmHostHttpAddress)) // if app is in preparing states
-                    app.AmHost = DriverUtilities.ParseNode(app.AmHostHttpAddress, Model);
+                foreach(var app in apps)
+                {
+                    Logger.Debug($"Parsing app '{app.AppId}'");
+                    if(!String.IsNullOrWhiteSpace(app.AmHostHttpAddress)) // if app is in preparing states
+                        app.AmHost = DriverUtilities.ParseNode(app.AmHostHttpAddress, Model);
+                }
             }
 
             return apps;

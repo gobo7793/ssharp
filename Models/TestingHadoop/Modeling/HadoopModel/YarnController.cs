@@ -149,6 +149,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             Logger.Debug("Monitoring applications");
 
             var parsedApps = Parser.ParseAppList(EAppState.ALL);
+            if(parsedApps == null)
+                return;
             foreach(var parsed in parsedApps)
             {
                 var app = Apps.FirstOrDefault(a => a.AppId == parsed.AppId);// ??
