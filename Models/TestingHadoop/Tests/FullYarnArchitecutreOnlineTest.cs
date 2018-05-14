@@ -37,11 +37,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private Client _Client1;
         private YarnController _Controller;
         private YarnNode _Node1;
+        private YarnNode _Node5;
         private YarnApp _App1;
         private YarnAppAttempt _Attempt1;
-        private YarnAppContainer _Container1;
 
         private static Model.EHostMode _HostMode = Model.EHostMode.Multihost;
+        private static int _HostsCount = 2;
+        private static int _NodeBaseCount = 4;
         private string _AppBase1 = "1525869172198_0001";
 
 
@@ -49,19 +51,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public void Setup()
         {
             Model.HostMode = _HostMode;
+            Model.HostsCount = _HostsCount;
+            Model.NodeBaseCount = _NodeBaseCount;
             _Model = Model.Instance;
             _Model.InitModel();
             _Model.Clients[0].BenchController = new BenchmarkController(1);
 
             _Controller = _Model.Controller;
             _Node1 = _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}1");
+            _Node5 = _Model.Nodes.FirstOrDefault(n => n.Name == $"{Model.NodeNamePrefix}5");
             _Client1 = _Model.Clients[0];
 
             _App1 = _Model.Applications[0];
             _App1.AppId = $"application_{_AppBase1}";
 
             _Attempt1 = _App1.Attempts[0];
-            _Container1 = _Attempt1.Containers[0];
         }
 
         [Test]
@@ -163,14 +167,29 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         //}
 
         [Test]
-        public void TestStopNode()
+        public void TestStopNodeOnHost1()
         {
-            Console.WriteLine("Stop node...");
+            Console.WriteLine("Stop node on host 1...");
             var isStopped = _Node1.StopNode();
             Assert.IsTrue(isStopped);
             Thread.Sleep(15000);
-            Console.WriteLine("Start node...");
+            Console.WriteLine("Start node on host 1...");
             var isStarted = _Node1.StartNode();
+            Assert.IsTrue(isStarted);
+        }
+
+        [Test]
+        public void TestStopNodeOnHost2()
+        {
+            if(_Node5 == null)
+                return;
+
+            Console.WriteLine("Stop node on host 2...");
+            var isStopped = _Node5.StopNode();
+            Assert.IsTrue(isStopped);
+            Thread.Sleep(15000);
+            Console.WriteLine("Start node on host 2...");
+            var isStarted = _Node5.StartNode();
             Assert.IsTrue(isStarted);
         }
 

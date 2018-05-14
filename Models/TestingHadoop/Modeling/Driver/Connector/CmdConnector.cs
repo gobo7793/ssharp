@@ -306,8 +306,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
             var id = DriverUtilities.ParseInt(nodeName);
             var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
+            var controlerIp = String.Empty;
+            if(hostId > 1)
+                controlerIp = Faulting[1].Run($"{Model.HadoopSetupScript} controllerip");
 
-            Faulting[hostId].Run($"{Model.HadoopSetupScript} hadoop start {id}");
+            Faulting[hostId].Run($"{Model.HadoopSetupScript} hadoop start {id} {controlerIp}");
             return CheckNodeRunning(id, hostId);
         }
 
@@ -352,15 +355,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Faulting == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
-            var id = DriverUtilities.ParseInt(nodeName);
-            var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
+            //var id = DriverUtilities.ParseInt(nodeName);
+            //var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
 
             //Faulting[hostId1].Run($"{Model.HadoopSetupScript} net start {id}");
             //return CheckNodeNetwork(id, hostId);
 
             // Workaround to reconnect compute to controller
-            Faulting[hostId].Run($"{Model.HadoopSetupScript} hadoop restart {id}");
-            return CheckNodeRunning(id, hostId);
+            StopNode(nodeName);
+            return StartNode(nodeName);
         }
 
         /// <summary>
