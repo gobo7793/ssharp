@@ -86,11 +86,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// </summary>
         public string ConnectionName { get; }
 
-        /// <summary>
-        /// Connection id to identify during runtime
-        /// </summary>
-        private string ConnId { get; }
-
         #endregion
 
         #region Main Methods
@@ -105,7 +100,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             RandomGen = new Random();
             ConnectionName = connectionName;
-            ConnId = Convert.ToBase64String(Guid.NewGuid().ToByteArray()).Substring(0, 10);
 
             Host = host;
             Username = username;
@@ -221,7 +215,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             Client.Connect();
             Stream = Client.CreateShellStream("ssharpShell", 120, 24, 800, 600, 2048);
             ReadForAppId("Last login");
-            InfoToAllLoggers($"SSH connected to {Username}@{Host} ({ConnectionName}/{ConnId})");
+            InfoToAllLoggers($"SSH connected to {Username}@{Host} ({ConnectionName})");
         }
 
         /// <summary>
@@ -231,7 +225,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         {
             Stream.Close();
             Client.Disconnect();
-            InfoToAllLoggers($"SSH disconnected from {Username}@{Host} ({ConnectionName}/{ConnId})");
+            InfoToAllLoggers($"SSH disconnected from {Username}@{Host} ({ConnectionName})");
         }
 
         /// <summary>
@@ -263,7 +257,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
             var exitStr = GetWaitingExitString();
             var sendStr = $"{command}; echo '{exitStr}'";
 
-            DebugToAllLoggers($"[{ConnId}] --> {sendStr}");
+            DebugToAllLoggers($"[{ConnectionName}] --> {sendStr}");
             Stream.WriteLine(sendStr);
 
             var id = ReadForAppId(exitStr);
@@ -314,10 +308,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The output of the command</returns>
         private string DoRunCommand(string command)
         {
-            DebugToAllLoggers($"[{ConnId}] --> {command}");
+            DebugToAllLoggers($"[{ConnectionName}] --> {command}");
             var cmd = Client.RunCommand(command);
             var output = cmd.ExitStatus == 0 ? cmd.Result : cmd.Error;
-            SshOutLogger.Debug($"[{ConnId}] {output.Trim()}");
+            SshOutLogger.Debug($"[{ConnectionName}] {output.Trim()}");
             return output;
         }
 
@@ -340,7 +334,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
                 line = Stream.ReadLine();
 
                 result.AppendLine(line);
-                SshOutLogger.Debug($"[{ConnId}] {line.Trim()}");
+                SshOutLogger.Debug($"[{ConnectionName}] {line.Trim()}");
 
                 if(!isAsync && AppIdRegex != null)
                 {
