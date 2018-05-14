@@ -80,6 +80,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [TestCase(4, 6, ExpectedResult = 15)]
         public int TestModelGetFullNodeCount(int hostsCount, int nodeBaseCount)
         {
+            Model.HostMode = Model.EHostMode.Multihost;
             Model.HostsCount = hostsCount;
             Model.NodeBaseCount = nodeBaseCount;
             return ModelUtilities.GetFullNodeCount();

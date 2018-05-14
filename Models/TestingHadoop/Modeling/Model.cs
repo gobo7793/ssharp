@@ -190,10 +190,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// </summary>
         public static int NodeBaseCount { get; set; } = 4;
 
+        public static int _HostsCount = 1;
+
         /// <summary>
-        /// The host count for multihost mode
+        /// The host count for multihost mode.
+        /// Can only be set if <see cref="HostMode"/> is on Multihost, else the host count is always 1.
         /// </summary>
-        public static int HostsCount { get; set; } = 1;
+        public static int HostsCount
+        {
+            get { return _HostsCount; }
+            set
+            {
+                if(HostMode == EHostMode.Multihost)
+                    _HostsCount = value;
+                else
+                    _HostsCount = 1;
+            }
+        }
 
         #endregion
 
