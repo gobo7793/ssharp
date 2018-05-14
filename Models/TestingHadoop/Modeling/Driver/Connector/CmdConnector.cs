@@ -412,7 +412,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Faulting == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
-            var cmd = Faulting[0].Run($"{Model.HadoopSetupScript} cmd yarn application -kill {appId} | grep {appId}");
+            var cmd = Faulting[1].Run($"{Model.HadoopSetupScript} cmd yarn application -kill {appId} | grep {appId}");
             return cmd.Contains($"Killed application {appId}") || cmd.Contains($"Killing application {appId}") ||
                    cmd.Contains($"{appId} has already finished") || cmd.Contains($"'{appId}' doesn't exist");
         }
