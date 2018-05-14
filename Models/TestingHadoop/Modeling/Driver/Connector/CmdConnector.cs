@@ -75,8 +75,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 Monitoring = new SshConnection(Model.SshHosts[0], Model.SshUsernames[0], Model.SshPrivateKeyFiles[0],
                     "cmdConnector_h1_monitoring");
             if(forFaulting)
-                for(int i = 1; i <= Model.HostsCount; i++)
-                    Faulting[i] = new SshConnection(Model.SshHosts[0], Model.SshUsernames[0], Model.SshPrivateKeyFiles[0],
+                for(int i = 0; i < Model.HostsCount; i++)
+                    Faulting[i + 1] = new SshConnection(Model.SshHosts[i], Model.SshUsernames[i], Model.SshPrivateKeyFiles[i],
                     $"cmdConnector_h{i + 1}_faulting");
             for(int i = 0; i < submittingConnections; i++)
                 Submitting.Add(new SshConnection(Model.SshHosts[0], Model.SshUsernames[0], Model.SshPrivateKeyFiles[0],

@@ -77,8 +77,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         private RestConnector()
         {
-            for(int i = 1; i <= Model.HostsCount; i++)
-                MonitoringConnections[i] = (new SshConnection(Model.SshHosts[i], Model.SshUsernames[i], Model.SshPrivateKeyFiles[i],
+            for(int i = 0; i < Model.HostsCount; i++)
+                MonitoringConnections[i + 1] = (new SshConnection(Model.SshHosts[i], Model.SshUsernames[i], Model.SshPrivateKeyFiles[i],
                     $"restConnector_h{i + 1}_monitoring"));
         }
 
