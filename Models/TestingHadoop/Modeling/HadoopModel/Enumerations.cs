@@ -24,6 +24,8 @@ using System;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
+    #region EAppState
+
     /// <summary>
     /// <see cref="YarnApp" /> execution states
     /// </summary>
@@ -82,4 +84,107 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         KILLED = 512
     }
+
+    #endregion
+
+    #region EContainerState
+
+    /// <summary>
+    /// Status of <see cref="YarnAppContainer"/>
+    /// </summary>
+    /// <remarks>
+    /// State of the container - valid states are:
+    ///     NEW, LOCALIZING, LOCALIZATION_FAILED, LOCALIZED, RUNNING,
+    ///     EXITED_WITH_SUCCESS, EXITED_WITH_FAILURE, KILLING,
+    ///     CONTAINER_CLEANEDUP_AFTER_KILL, CONTAINER_RESOURCES_CLEANINGUP, DONE
+    /// TL: COMPLETE
+    /// 
+    /// via http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/NodeManagerRest.html#Container_API
+    /// and http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/TimelineServer.html#GENERIC_DATA_REST_APIS
+    /// </remarks>
+    public enum EContainerState
+    {
+        None,
+        NEW,
+        LOCALIZING,
+        LOCALIZATION_FAILED,
+        LOCALIZED,
+        RUNNING,
+        EXITED_WITH_SUCCESS,
+        EXITED_WITH_FAILURE,
+        KILLING,
+        CONTAINER_CLEANEDUP_AFTER_KILL,
+        CONTAINER_RESOURCES_CLEANINGUP,
+        DONE,
+        COMPLETE
+    }
+
+    #endregion
+
+    #region EFinalStatus
+
+    /// <summary>
+    /// Final status of <see cref="YarnApp"/>
+    /// </summary>
+    /// <remarks>
+    /// The final status of the application if finished
+    ///     - reported by the application itself - valid values are:
+    ///     UNDEFINED, SUCCEEDED, FAILED, KILLED 
+    /// 
+    /// via http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html#Cluster_Application_API
+    /// </remarks>
+    public enum EFinalStatus
+    {
+        /// <summary>
+        /// Default value
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// Undefined status
+        /// </summary>
+        UNDEFINED = 1,
+
+        /// <summary>
+        /// Execution successfully finished
+        /// </summary>
+        SUCCEEDED = 2,
+
+        /// <summary>
+        /// Execution failed
+        /// </summary>
+        FAILED = 4,
+
+        /// <summary>
+        /// Execution was killed
+        /// </summary>
+        KILLED = 8
+    }
+
+    #endregion
+
+    #region ENodeState
+
+    /// <summary>
+    /// State of <see cref="YarnNode"/>
+    /// </summary>
+    /// <remarks>
+    /// State of the node - valid values are:
+    ///     NEW, RUNNING, UNHEALTHY, DECOMMISSIONED, LOST, REBOOTED
+    /// 
+    /// via http://hadoop.apache.org/docs/r2.7.1/hadoop-yarn/hadoop-yarn-site/ResourceManagerRest.html#Cluster_Node_API
+    /// </remarks>
+    [Flags]
+    public enum ENodeState
+    {
+        None = 0,
+        NEW = 1,
+        RUNNING = 2,
+        UNHEALTHY = 4,
+        DECOMMISSIONED = 8,
+        LOST = 16,
+        REBOOTED = 32
+    }
+
+    #endregion
 }

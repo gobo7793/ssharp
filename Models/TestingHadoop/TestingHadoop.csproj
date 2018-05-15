@@ -82,11 +82,8 @@
     <Compile Include="Modeling\Driver\DriverUtilities.cs" />
     <Compile Include="Modeling\Driver\Connector\RestConnector.cs" />
     <Compile Include="Modeling\Driver\SshConnection.cs" />
-    <Compile Include="Modeling\HadoopModel\EContainerState.cs" />
-    <Compile Include="Modeling\HadoopModel\EFinalStatus.cs" />
-    <Compile Include="Modeling\HadoopModel\ENodeState.cs" />
     <Compile Include="Modeling\HadoopModel\IYarnReadable.cs" />
-    <Compile Include="Modeling\HadoopModel\EAppState.cs" />
+    <Compile Include="Modeling\HadoopModel\Enumerations.cs" />
     <Compile Include="Modeling\HadoopModel\Client.cs" />
     <Compile Include="Modeling\HadoopModel\ModelUtilities.cs" />
     <Compile Include="Modeling\Model.cs" />
