@@ -301,7 +301,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <exception cref="InvalidOperationException">Faulting not initialized</exception>
         public bool StartNode(string nodeName)
         {
-            if(Faulting == null)
+            if(Faulting.Count < 1)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = DriverUtilities.ParseInt(nodeName);
@@ -310,7 +310,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(hostId > 1)
                 controlerIp = Faulting[1].Run($"{Model.HadoopSetupScript} controllerip");
 
-            Faulting[hostId].Run($"{Model.HadoopSetupScript} hadoop start {id} {controlerIp}");
+            Faulting[hostId].Run($"{Model.HadoopSetupScript} hadoop start {id} {controlerIp} soft");
             return CheckNodeRunning(id, hostId);
         }
 
@@ -322,7 +322,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <exception cref="InvalidOperationException">Faulting not initialized</exception>
         public bool StopNode(string nodeName)
         {
-            if(Faulting == null)
+            if(Faulting.Count < 1)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = DriverUtilities.ParseInt(nodeName);
@@ -352,7 +352,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <exception cref="InvalidOperationException">Faulting not initialized</exception>
         public bool StartNodeNetConnection(string nodeName)
         {
-            if(Faulting == null)
+            if(Faulting.Count < 1)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             //var id = DriverUtilities.ParseInt(nodeName);
@@ -374,7 +374,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <exception cref="InvalidOperationException">Faulting not initialized</exception>
         public bool StopNodeNetConnection(string nodeName)
         {
-            if(Faulting == null)
+            if(Faulting.Count < 1)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = DriverUtilities.ParseInt(nodeName);
@@ -409,7 +409,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <exception cref="InvalidOperationException">Faulting not initialized</exception>
         public bool KillApplication(string appId)
         {
-            if(Faulting == null)
+            if(Faulting.Count < 1)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var cmd = Faulting[1].Run($"{Model.HadoopSetupScript} cmd yarn application -kill {appId} | grep {appId}");
