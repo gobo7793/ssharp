@@ -91,10 +91,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
-            // Logging, trace printing and timing here because the probabilistic simulator
-            // doesn't support single step execution
-            OutputUtilities.PrintStepStart();
-            var stepStartTime = DateTime.Now;
+            //// Logging, trace printing and timing here because the probabilistic simulator
+            //// doesn't support single step execution
+            //OutputUtilities.PrintStepStart();
+            //var stepStartTime = DateTime.Now;
 
             // only in this model in this place to be sure that constraint
             // checking will be done after updating and monitoring benchmarks
@@ -110,12 +110,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             CheckConstraints();
             IsReconfPossible();
 
-            var stepTime = DateTime.Now - stepStartTime;
-            OutputUtilities.PrintSteptTime(stepTime);
-            if(stepTime < Model.MinStepTime)
-                Thread.Sleep(Model.MinStepTime - stepTime);
+            //var stepTime = DateTime.Now - stepStartTime;
+            //OutputUtilities.PrintSteptTime(stepTime);
+            //if(stepTime < Model.MinStepTime)
+            //    Thread.Sleep(Model.MinStepTime - stepTime);
 
-            OutputUtilities.PrintFullTrace(this);
+            //OutputUtilities.PrintFullTrace(this);
         }
 
         #endregion
