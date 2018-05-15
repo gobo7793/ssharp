@@ -47,9 +47,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             _Parser = RestParser.CreateInstance(new DummyHadoopRestConnector());
 
             _Model.InitTestConfig(_Parser, _Parser.Connection);
-            _Node1 = _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}1");
-            _Node2 = _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}2");
-            _Node4 = _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}4");
+            _Node1 = _Model.Nodes.First(n => n.Name == $"{ModelSettings.NodeNamePrefix}1");
+            _Node2 = _Model.Nodes.First(n => n.Name == $"{ModelSettings.NodeNamePrefix}2");
+            _Node4 = _Model.Nodes.First(n => n.Name == $"{ModelSettings.NodeNamePrefix}4");
         }
 
         [Test]

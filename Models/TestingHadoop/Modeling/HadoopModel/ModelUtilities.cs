@@ -81,7 +81,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <returns>The full node count</returns>
         public static int GetFullNodeCount()
         {
-            return Model.NodeBaseCount + (Model.HostsCount - 1) * Model.NodeBaseCount / 2;
+            return ModelSettings.NodeBaseCount + (ModelSettings.HostsCount - 1) * ModelSettings.NodeBaseCount / 2;
         }
     }
 }

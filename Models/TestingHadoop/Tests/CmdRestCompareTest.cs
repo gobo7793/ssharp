@@ -39,7 +39,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
         // After restart cluster and executing applications change this value for the app!
         private static string _ClusterStartTime = "1525869172198";
-        private static Model.EHostMode _ModelHostMode = Model.EHostMode.Multihost;
+        private static Model.EHostMode _ModelHostMode = ModelSettings.EHostMode.Multihost;
 
         private string _AppId = $"application_{_ClusterStartTime}_0001";
         private string _AttemptId = $"appattempt_{_ClusterStartTime}_0001_000001";
@@ -49,12 +49,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private string _FaultNodeName = "compute-4";
         private string _FaultAppId = $"application_{_ClusterStartTime}_0018";
 
-        private string _AmNodeUrl = _ModelHostMode == Model.EHostMode.DockerMachine ? "http://compute-2:8042" : "http://localhost:8043";
+        private string _AmNodeUrl = _ModelHostMode == ModelSettings.EHostMode.DockerMachine ? "http://compute-2:8042" : "http://localhost:8043";
 
         [TestFixtureSetUp]
         public void Setup()
         {
-            Model.HostMode = _ModelHostMode;
+            ModelSettings.HostMode = _ModelHostMode;
             var model = Model.Instance;
             model.InitTestConfig(null, null);
 

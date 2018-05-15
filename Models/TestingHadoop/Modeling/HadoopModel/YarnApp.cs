@@ -268,14 +268,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             IsSelfMonitoring = false;
 
-            NameActual = new char[Model.AppNameLength];
-            AppIdActual = new char[Model.AppIdLength];
-            StartingClientIdActual = new char[Model.ClientIdLength];
+            NameActual = new char[ModelSettings.AppNameLength];
+            AppIdActual = new char[ModelSettings.AppIdLength];
+            StartingClientIdActual = new char[ModelSettings.ClientIdLength];
             StartTime = DateTime.MinValue;
             EndTime = DateTime.MinValue;
-            AmHostIdActual = new char[Model.NodeIdLength];
-            TrackingUrlActual = new char[Model.TrackingUrlLength];
-            DiagnosticsActual = new char[Model.DiagnosticsLength];
+            AmHostIdActual = new char[ModelSettings.NodeIdLength];
+            TrackingUrlActual = new char[ModelSettings.TrackingUrlLength];
+            DiagnosticsActual = new char[ModelSettings.DiagnosticsLength];
             IsCancelled = false;
         }
 

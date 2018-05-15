@@ -159,10 +159,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public YarnAppContainer()
         {
-            ContainerIdActual = new char[Model.ContainerIdLength];
-            HostIdActual = new char[Model.NodeIdLength];
-            AppAttemptIdActual = new char[Model.AppAttemptIdLength];
-            DiagnosticsActual = new char[Model.DiagnosticsLength];
+            ContainerIdActual = new char[ModelSettings.ContainerIdLength];
+            HostIdActual = new char[ModelSettings.NodeIdLength];
+            AppAttemptIdActual = new char[ModelSettings.AppAttemptIdLength];
+            DiagnosticsActual = new char[ModelSettings.DiagnosticsLength];
 
             IsSelfMonitoring = false;
 

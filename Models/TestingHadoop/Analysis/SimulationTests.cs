@@ -92,10 +92,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// <returns>The initialized model</returns>
         public Model InitModel()
         {
-            Model.HostMode = Model.EHostMode.Multihost;
-            Model.HostsCount = _HostsCount;
-            Model.NodeBaseCount = _NodeBaseCount;
-            Model.IsPrecreateBenchInputs = _PrecreatedInputs;
+            ModelSettings.HostMode = ModelSettings.EHostMode.Multihost;
+            ModelSettings.HostsCount = _HostsCount;
+            ModelSettings.NodeBaseCount = _NodeBaseCount;
+            ModelSettings.IsPrecreateBenchInputs = _PrecreatedInputs;
 
             var model = Model.Instance;
             model.InitModel(appCount: _StepCount, benchTransitionSeed: _BenchmarkSeed);
@@ -135,8 +135,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
                     var stepTime = DateTime.Now - stepStartTime;
                     OutputUtilities.PrintSteptTime(stepTime);
-                    if(stepTime < Model.MinStepTime)
-                        Thread.Sleep(Model.MinStepTime - stepTime);
+                    if(stepTime < ModelSettings.MinStepTime)
+                        Thread.Sleep(ModelSettings.MinStepTime - stepTime);
 
                     OutputUtilities.PrintFullTrace(((Model)simulator.Model).Controller);
                 }
@@ -191,8 +191,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
                     var stepTime = DateTime.Now - stepStartTime;
                     OutputUtilities.PrintSteptTime(stepTime);
-                    if(stepTime < Model.MinStepTime)
-                        Thread.Sleep(Model.MinStepTime - stepTime);
+                    if(stepTime < ModelSettings.MinStepTime)
+                        Thread.Sleep(ModelSettings.MinStepTime - stepTime);
 
                     OutputUtilities.PrintFullTrace(((Model)simulator.Model).Controller);
                 }

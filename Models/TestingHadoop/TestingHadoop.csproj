@@ -65,6 +65,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Analysis\SimulationTests.cs" />
+    <Compile Include="Modeling\ModelSettings.cs" />
     <Compile Include="OutputUtilities.cs" />
     <Compile Include="Modeling\BenchModel\BenchmarkController.cs" />
     <Compile Include="Modeling\BenchModel\Benchmark.cs" />

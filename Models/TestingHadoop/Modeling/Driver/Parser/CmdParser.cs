@@ -347,7 +347,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
             foreach(var resLine in resLines)
             {
                 var nodeMatches = _GenericListRegex.Matches(resLine);
-                if(nodeMatches.Count != 4 || !nodeMatches[0].Groups[1].Value.StartsWith(Model.NodeNamePrefix))
+                if(nodeMatches.Count != 4 || !nodeMatches[0].Groups[1].Value.StartsWith(ModelSettings.NodeNamePrefix))
                     continue;
 
                 var node = new NodeResult

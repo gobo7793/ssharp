@@ -181,12 +181,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             Containers = new List<YarnAppContainer>();
             State = EAppState.NotStartedYet;
 
-            AppIdActual = new char[Model.AppIdLength];
-            AttemptIdActual = new char[Model.AppAttemptIdLength];
-            AmContainerIdActual = new char[Model.ContainerIdLength];
-            AmHostIdActual = new char[Model.NodeIdLength];
-            TrackingUrlActual = new char[Model.TrackingUrlLength];
-            DiagnosticsActual = new char[Model.DiagnosticsLength];
+            AppIdActual = new char[ModelSettings.AppIdLength];
+            AttemptIdActual = new char[ModelSettings.AppAttemptIdLength];
+            AmContainerIdActual = new char[ModelSettings.ContainerIdLength];
+            AmHostIdActual = new char[ModelSettings.NodeIdLength];
+            TrackingUrlActual = new char[ModelSettings.TrackingUrlLength];
+            DiagnosticsActual = new char[ModelSettings.DiagnosticsLength];
 
             IsSelfMonitoring = false;
         }

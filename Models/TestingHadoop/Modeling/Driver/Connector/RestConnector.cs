@@ -54,12 +54,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <summary>
         /// ResourceManager URL
         /// </summary>
-        private string RmUrl => Model.ControllerRestRmUrl;
+        private string RmUrl => ModelSettings.ControllerRestRmUrl;
 
         /// <summary>
         /// Timeline server URL
         /// </summary>
-        private string TlUrl => Model.ControllerRestTlsUrl;
+        private string TlUrl => ModelSettings.ControllerRestTlsUrl;
 
         /// <summary>
         /// The curl base command
@@ -77,8 +77,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         private RestConnector()
         {
-            for(int i = 0; i < Model.HostsCount; i++)
-                MonitoringConnections[i + 1] = (new SshConnection(Model.SshHosts[i], Model.SshUsernames[i], Model.SshPrivateKeyFiles[i],
+            for(int i = 0; i < ModelSettings.HostsCount; i++)
+                MonitoringConnections[i + 1] = (new SshConnection(ModelSettings.SshHosts[i], ModelSettings.SshUsernames[i], ModelSettings.SshPrivateKeyFiles[i],
                     $"resMonH{i + 1}"));
         }
 
@@ -88,7 +88,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>Null if <see cref="Model.SshHosts"/> is not set, otherwise the instance</returns>
         private static RestConnector CreateInstance()
         {
-            if(Model.SshHosts.Length < 1)
+            if(ModelSettings.SshHosts.Length < 1)
                 return null;
             _Instance = new RestConnector();
             return _Instance;
@@ -103,9 +103,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         private string MonitorCompute(string cmd, int nodeId)
         {
             string result;
-            if(nodeId > 8041 && Model.HostMode == Model.EHostMode.Multihost)
+            if(nodeId > 8041 && ModelSettings.HostMode == ModelSettings.EHostMode.Multihost)
             {
-                var hostId = DriverUtilities.GetHostId(nodeId - 8041, Model.HostsCount, Model.NodeBaseCount);
+                var hostId = DriverUtilities.GetHostId(nodeId - 8041, ModelSettings.HostsCount, ModelSettings.NodeBaseCount);
                 result = MonitoringConnections[hostId].Run(cmd);
             }
             else

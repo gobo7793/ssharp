@@ -72,14 +72,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         private CmdConnector(bool forMonitoring = false, bool forFaulting = true, int submittingConnections = 4)
         {
             if(forMonitoring)
-                Monitoring = new SshConnection(Model.SshHosts[0], Model.SshUsernames[0], Model.SshPrivateKeyFiles[0],
+                Monitoring = new SshConnection(ModelSettings.SshHosts[0], ModelSettings.SshUsernames[0], ModelSettings.SshPrivateKeyFiles[0],
                     "cmdMonH1");
             if(forFaulting)
-                for(int i = 0; i < Model.HostsCount; i++)
-                    Faulting[i + 1] = new SshConnection(Model.SshHosts[i], Model.SshUsernames[i], Model.SshPrivateKeyFiles[i],
+                for(int i = 0; i < ModelSettings.HostsCount; i++)
+                    Faulting[i + 1] = new SshConnection(ModelSettings.SshHosts[i], ModelSettings.SshUsernames[i], ModelSettings.SshPrivateKeyFiles[i],
                     $"cmdFauH{i + 1}");
             for(int i = 0; i < submittingConnections; i++)
-                Submitting.Add(new SshConnection(Model.SshHosts[0], Model.SshUsernames[0], Model.SshPrivateKeyFiles[0],
+                Submitting.Add(new SshConnection(ModelSettings.SshHosts[0], ModelSettings.SshUsernames[0], ModelSettings.SshPrivateKeyFiles[0],
                     @"Submitted application (application_\d+_\d+)", $"cmdSu{i}H1"));
         }
 
@@ -90,7 +90,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>Null if <see cref="Model.SshHosts"/> is not set, otherwise the instance</returns>
         internal static CmdConnector CreateInstance()
         {
-            if(String.IsNullOrWhiteSpace(Model.SshHosts[0]))
+            if(String.IsNullOrWhiteSpace(ModelSettings.SshHosts[0]))
                 return null;
             _Instance = new CmdConnector();
             return _Instance;
@@ -103,7 +103,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>Null if <see cref="Model.SshHosts"/> is not set, otherwise the instance</returns>
         internal static CmdConnector CreateFullInstance()
         {
-            if(String.IsNullOrWhiteSpace(Model.SshHosts[0]))
+            if(String.IsNullOrWhiteSpace(ModelSettings.SshHosts[0]))
                 return null;
             _Instance = new CmdConnector(true);
             return _Instance;
@@ -137,7 +137,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for monitoring initialized!");
 
-            var cmd = $"{Model.HadoopSetupScript} cmd yarn application -list";
+            var cmd = $"{ModelSettings.HadoopSetupScript} cmd yarn application -list";
             if(!String.IsNullOrWhiteSpace(states))
                 cmd = $"{cmd} -appStates {states}";
 
@@ -155,7 +155,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn applicationattempt -list {appId}");
+            return Monitoring.Run($"{ModelSettings.HadoopSetupScript} cmd yarn applicationattempt -list {appId}");
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn container -list {id}");
+            return Monitoring.Run($"{ModelSettings.HadoopSetupScript} cmd yarn container -list {id}");
         }
 
         /// <summary>
@@ -209,7 +209,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn application -status {appId}");
+            return Monitoring.Run($"{ModelSettings.HadoopSetupScript} cmd yarn application -status {appId}");
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn applicationattempt -status {attemptId}");
+            return Monitoring.Run($"{ModelSettings.HadoopSetupScript} cmd yarn applicationattempt -status {attemptId}");
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn container -status {containerId}");
+            return Monitoring.Run($"{ModelSettings.HadoopSetupScript} cmd yarn container -status {containerId}");
         }
 
         /// <summary>
@@ -276,7 +276,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn node -list -all");
+            return Monitoring.Run($"{ModelSettings.HadoopSetupScript} cmd yarn node -list -all");
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn node -status {nodeId}");
+            return Monitoring.Run($"{ModelSettings.HadoopSetupScript} cmd yarn node -status {nodeId}");
         }
 
         /// <summary>
@@ -305,12 +305,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = DriverUtilities.ParseInt(nodeName);
-            var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
+            var hostId = DriverUtilities.GetHostId(id, ModelSettings.HostsCount, ModelSettings.NodeBaseCount);
             var controlerIp = String.Empty;
             if(hostId > 1)
-                controlerIp = Faulting[1].Run($"{Model.HadoopSetupScript} controllerip");
+                controlerIp = Faulting[1].Run($"{ModelSettings.HadoopSetupScript} controllerip");
 
-            Faulting[hostId].Run($"{Model.HadoopSetupScript} hadoop start {id} {controlerIp} soft");
+            Faulting[hostId].Run($"{ModelSettings.HadoopSetupScript} hadoop start {id} {controlerIp} soft");
             return CheckNodeRunning(id, hostId);
         }
 
@@ -326,9 +326,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = DriverUtilities.ParseInt(nodeName);
-            var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
+            var hostId = DriverUtilities.GetHostId(id, ModelSettings.HostsCount, ModelSettings.NodeBaseCount);
 
-            Faulting[hostId].Run($"{Model.HadoopSetupScript} hadoop stop {id}");
+            Faulting[hostId].Run($"{ModelSettings.HadoopSetupScript} hadoop stop {id}");
             return !CheckNodeRunning(id, hostId);
         }
 
@@ -340,7 +340,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>True on node running</returns>
         private bool CheckNodeRunning(int nodeId, int hostId)
         {
-            var runCheckRes = Faulting[hostId].Run($"{Model.HadoopSetupScript} hadoop info {nodeId} '{{{{.State.Running}}}}'");
+            var runCheckRes = Faulting[hostId].Run($"{ModelSettings.HadoopSetupScript} hadoop info {nodeId} '{{{{.State.Running}}}}'");
             return runCheckRes.Contains("true");
         }
 
@@ -378,9 +378,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var id = DriverUtilities.ParseInt(nodeName);
-            var hostId = DriverUtilities.GetHostId(id, Model.HostsCount, Model.NodeBaseCount);
+            var hostId = DriverUtilities.GetHostId(id, ModelSettings.HostsCount, ModelSettings.NodeBaseCount);
 
-            Faulting[hostId].Run($"{Model.HadoopSetupScript} net stop {id}");
+            Faulting[hostId].Run($"{ModelSettings.HadoopSetupScript} net stop {id}");
             return !CheckNodeNetwork(id, hostId);
         }
 
@@ -393,7 +393,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         private bool CheckNodeNetwork(int nodeId, int hostId)
         {
             var runCheckRes = Faulting[hostId]
-                .Run($"{Model.HadoopSetupScript} hadoop info {nodeId} '{{{{.NetworkSettings.Networks}}}}'");
+                .Run($"{ModelSettings.HadoopSetupScript} hadoop info {nodeId} '{{{{.NetworkSettings.Networks}}}}'");
             return runCheckRes.Contains("hadoop-net");
         }
 
@@ -412,7 +412,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Faulting.Count < 1)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
-            var cmd = Faulting[1].Run($"{Model.HadoopSetupScript} cmd yarn application -kill {appId} | grep {appId}");
+            var cmd = Faulting[1].Run($"{ModelSettings.HadoopSetupScript} cmd yarn application -kill {appId} | grep {appId}");
             return cmd.Contains($"Killed application {appId}") || cmd.Contains($"Killing application {appId}") ||
                    cmd.Contains($"{appId} has already finished") || cmd.Contains($"'{appId}' doesn't exist");
         }
@@ -429,7 +429,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         {
             var submitter = GetSubmitter(cmd);
 
-            return submitter.Run($"{Model.BenchmarkStartupScript} {cmd}");
+            return submitter.Run($"{ModelSettings.BenchmarkStartupScript} {cmd}");
             //submitter.Run($"{Model.BenchmarkStartupScript} {cmd}", true);
         }
 
@@ -445,7 +445,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         {
             var submitter = GetSubmitter(cmd);
 
-            return submitter.RunAttachedTillAppId($"{Model.BenchmarkStartupScript} {cmd}");
+            return submitter.RunAttachedTillAppId($"{ModelSettings.BenchmarkStartupScript} {cmd}");
             //submitter.Run($"{Model.BenchmarkStartupScript} {cmd}", true);
         }
 
@@ -458,7 +458,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         {
             var submitter = GetSubmitter(cmd);
 
-            submitter.RunAsync($"{Model.BenchmarkStartupScript} {cmd}");
+            submitter.RunAsync($"{ModelSettings.BenchmarkStartupScript} {cmd}");
         }
 
         private SshConnection GetSubmitter(string cmd)
@@ -489,7 +489,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <returns>True if the directory exists</returns>
         public bool ExistsHdfsDir(string directory)
         {
-            var cmd = $"{Model.HadoopSetupScript} hdfs dfs -test -e {directory}";
+            var cmd = $"{ModelSettings.HadoopSetupScript} hdfs dfs -test -e {directory}";
             var submitter = GetSubmitter(cmd);
 
             var exitCode = submitter.Run(cmd);
@@ -503,7 +503,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <exception cref="InvalidOperationException">Application submitting not initialized</exception>
         public void RemoveHdfsDir(string directory)
         {
-            var cmd = $"{Model.HadoopSetupScript} cmd hdfs dfs -rm -r {directory}";
+            var cmd = $"{ModelSettings.HadoopSetupScript} cmd hdfs dfs -rm -r {directory}";
             var submitter = GetSubmitter(cmd);
 
             submitter.Run(cmd);
@@ -519,7 +519,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for monitoring initialized!");
 
-            return Monitoring.Run($"{Model.HadoopSetupScript} cmd yarn version");
+            return Monitoring.Run($"{ModelSettings.HadoopSetupScript} cmd yarn version");
         }
 
         #endregion

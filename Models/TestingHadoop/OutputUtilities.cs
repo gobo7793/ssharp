@@ -63,11 +63,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info($"Fault activation:  {isFaultActivationEnabled == true}");
             Logger.Info($"Inputs precreated: {isInputsPrecreated == true}");
 
-            Logger.Info($"Host mode:         {Model.HostMode}");
-            Logger.Info($"Hosts couent:      {Model.HostsCount}");
-            Logger.Info($"Node base count:   {Model.NodeBaseCount}");
-            Logger.Info($"Setup script path: {Model.HadoopSetupScript}");
-            Logger.Info($"Controller url:    {Model.ControllerRestRmUrl}");
+            Logger.Info($"Host mode:         {ModelSettings.HostMode}");
+            Logger.Info($"Hosts couent:      {ModelSettings.HostsCount}");
+            Logger.Info($"Node base count:   {ModelSettings.NodeBaseCount}");
+            Logger.Info($"Setup script path: {ModelSettings.HadoopSetupScript}");
+            Logger.Info($"Controller url:    {ModelSettings.ControllerRestRmUrl}");
         }
 
         /// <summary>

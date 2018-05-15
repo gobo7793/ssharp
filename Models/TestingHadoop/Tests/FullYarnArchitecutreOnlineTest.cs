@@ -41,7 +41,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private YarnApp _App1;
         private YarnAppAttempt _Attempt1;
 
-        private static Model.EHostMode _HostMode = Model.EHostMode.Multihost;
+        private static Model.EHostMode _HostMode = ModelSettings.EHostMode.Multihost;
         private static int _HostsCount = 2;
         private static int _NodeBaseCount = 4;
         private string _AppBase1 = "1525869172198_0001";
@@ -50,16 +50,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [TestFixtureSetUp]
         public void Setup()
         {
-            Model.HostMode = _HostMode;
-            Model.HostsCount = _HostsCount;
-            Model.NodeBaseCount = _NodeBaseCount;
+            ModelSettings.HostMode = _HostMode;
+            ModelSettings.HostsCount = _HostsCount;
+            ModelSettings.NodeBaseCount = _NodeBaseCount;
             _Model = Model.Instance;
             _Model.InitModel();
             _Model.Clients[0].BenchController = new BenchmarkController(1);
 
             _Controller = _Model.Controller;
-            _Node1 = _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}1");
-            _Node5 = _Model.Nodes.FirstOrDefault(n => n.Name == $"{Model.NodeNamePrefix}5");
+            _Node1 = _Model.Nodes.First(n => n.Name == $"{ModelSettings.NodeNamePrefix}1");
+            _Node5 = _Model.Nodes.FirstOrDefault(n => n.Name == $"{ModelSettings.NodeNamePrefix}5");
             _Client1 = _Model.Clients[0];
 
             _App1 = _Model.Applications[0];
@@ -102,7 +102,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
             var app = _Model.Applications.FirstOrDefault(a => a.AppId == $"application_{_AppBase1}");
 
-            Assert.AreEqual(ENodeState.RUNNING, _Model.Nodes.First(n => n.Name == $"{Model.NodeNamePrefix}1").State);
+            Assert.AreEqual(ENodeState.RUNNING, _Model.Nodes.First(n => n.Name == $"{ModelSettings.NodeNamePrefix}1").State);
             Assert.NotNull(app);
 
             var attempt = app.Attempts.FirstOrDefault(a => a.AttemptId == $"appattempt_{_AppBase1}_000001");

@@ -225,7 +225,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         /// <param name="removeExisting">Removes existing files to recreate input data</param>
         public static void PrecreateInputData(bool removeExisting = false)
         {
-            Logger.Info($"Precreate Benchmark input data into {Model.PrecreateBenchInputsBaseDir}");
+            Logger.Info($"Precreate Benchmark input data into {ModelSettings.PrecreateBenchInputsBaseDir}");
 
             var cmdConnector = CmdConnector.Instance;
 
@@ -248,9 +248,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
         private static void DoPrecreateInputData(Benchmark benchmark, IHadoopConnector connector, bool removeExisting)
         {
             if(removeExisting)
-                connector.RemoveHdfsDir(benchmark.GetOutputDir(Model.PrecreateBenchInputsBaseDir));
-            if(!connector.ExistsHdfsDir(benchmark.GetOutputDir(Model.PrecreateBenchInputsBaseDir)))
-                StartBenchmark(connector, benchmark, Model.PrecreateBenchInputsBaseDir);
+                connector.RemoveHdfsDir(benchmark.GetOutputDir(ModelSettings.PrecreateBenchInputsBaseDir));
+            if(!connector.ExistsHdfsDir(benchmark.GetOutputDir(ModelSettings.PrecreateBenchInputsBaseDir)))
+                StartBenchmark(connector, benchmark, ModelSettings.PrecreateBenchInputsBaseDir);
         }
 
         /// <summary>

@@ -47,7 +47,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// ID of the client
         /// </summary>
         // public string ClientId { get; set; }
-        public char[] ClientIdActual { get; } = new char[Model.ClientIdLength];
+        public char[] ClientIdActual { get; } = new char[ModelSettings.ClientIdLength];
 
         /// <summary>
         /// ID of the client, based on <see cref="ClientIdActual"/>
@@ -69,7 +69,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// The current executing application id
         /// </summary>
-        public char[] CurrentExecutingAppIdActual { get; } = new char[Model.AppIdLength];
+        public char[] CurrentExecutingAppIdActual { get; } = new char[ModelSettings.AppIdLength];
 
         /// <summary>
         /// The current executing application id, based on <see cref="CurrentExecutingAppIdActual"/>
@@ -217,7 +217,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 SubmittingConnector.RemoveHdfsDir(benchmark.GetOutputDir(ClientDir));
             var appId = SubmittingConnector.StartApplicationAsyncTillId(benchmark.GetStartCmd(ClientDir));
 
-            if(appId.Length == Model.AppIdLength)
+            if(appId.Length == ModelSettings.AppIdLength)
             {
                 var app = Apps.FirstOrDefault(a => String.IsNullOrWhiteSpace(a.AppId));// ??
                                                                                        //Apps.FirstOrDefault(a => a.AppId == appId);
