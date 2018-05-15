@@ -37,9 +37,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static log4net.ILog Logger { get; } =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
+        #region Settings
+
         // Simulation settings
         private static readonly TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 20);
-
         //private static readonly int _BenchmarkSeed = 1;
         private static readonly int _BenchmarkSeed = Environment.TickCount;
         private static readonly int _StepCount = 3;
@@ -47,6 +48,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static readonly double _FaultActivationProbability = 95;
         private static readonly int _HostsCount = 2;
         private static readonly int _NodeBaseCount = 4;
+
+        #endregion
+
+        #region Preparing
 
         /// <summary>
         /// Only create input data for other benchmarks without simulation
@@ -67,6 +72,25 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         }
 
         /// <summary>
+        /// Only simulates which benchmarks will be executed
+        /// </summary>
+        [Test]
+        public void SimulateBenchmarks()
+        {
+            var benchController = new BenchmarkController(_BenchmarkSeed);
+            Logger.Info($"Simulating Benchmarks with Seed {_BenchmarkSeed}:");
+            for(int i = 0; i < _StepCount; i++)
+            {
+                benchController.ChangeBenchmark();
+                Logger.Info($"Step {i}: {benchController.CurrentBenchmark.Name}");
+            }
+        }
+
+        #endregion
+
+        #region Simulation
+
+        /// <summary>
         /// Simulation without faults
         /// </summary>
         [Test]
@@ -79,6 +103,60 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             var origModel = Model.Instance;
             origModel.InitModel(appCount: _StepCount, benchTransitionSeed: _BenchmarkSeed);
             origModel.Faults.SuppressActivations();
+
+            SimulateBenchmarks();
+
+            var wasFatalError = false;
+            try
+            {
+                var simulator = new SafetySharpSimulator(origModel);
+
+                OutputUtilities.PrintExecutionStart();
+                OutputUtilities.PrintTestSettings("Simulation", _BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
+
+                for(var i = 0; i < _StepCount; i++)
+                {
+                    simulator.SimulateStep();
+                }
+
+                OutputUtilities.PrintExecutionFinish();
+            }
+            catch(Exception e)
+            {
+                Logger.Fatal("Fatal exception during Faulting Simulation.", e);
+
+                wasFatalError = true;
+            }
+            finally
+            {
+                foreach(var node in origModel.Nodes)
+                {
+                    Model.UsingFaultingConnector.StartNode(node.Name);
+                    Model.UsingFaultingConnector.StartNodeNetConnection(node.Name);
+                }
+            }
+
+            Assert.IsFalse(wasFatalError, "fatal error occured, see log for details");
+        }
+
+        #endregion
+
+        #region Analysis
+
+        /// <summary>
+        /// Simulation without faults
+        /// </summary>
+        [Test]
+        public void SimulateHadoopFaults()
+        {
+            Model.HostMode = Model.EHostMode.Multihost;
+            Model.HostsCount = _HostsCount;
+            Model.NodeBaseCount = _NodeBaseCount;
+            Model.IsPrecreateBenchInputs = _PrecreatedInputs;
+            var origModel = Model.Instance;
+            origModel.InitModel(appCount: _StepCount, benchTransitionSeed: _BenchmarkSeed);
+
+            SimulateBenchmarks();
 
             var wasFatalError = false;
             try
@@ -117,7 +195,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// Simulation with nondeterministic fault activation using <see cref="SafetySharpProbabilisticSimulator"/>
         /// </summary>
         [Test]
-        public void SimulateHadoopFaults()
+        public void SimulateHadoopProbabilisticSimulator()
         {
             Model.HostMode = Model.EHostMode.Multihost;
             Model.HostsCount = _HostsCount;
@@ -128,6 +206,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             foreach(var f in origModel.Faults)
                 f.ProbabilityOfOccurrence = new ISSE.SafetyChecking.Modeling.Probability(_FaultActivationProbability);
             origModel.Faults.MakeNondeterministic();
+
+            SimulateBenchmarks();
 
             var wasFatalError = false;
             try
@@ -160,5 +240,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             Assert.IsFalse(wasFatalError, "fatal error occured, see log for details");
         }
 
+        #endregion
     }
 }
