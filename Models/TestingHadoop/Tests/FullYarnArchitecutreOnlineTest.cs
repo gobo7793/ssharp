@@ -41,7 +41,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private YarnApp _App1;
         private YarnAppAttempt _Attempt1;
 
-        private static Model.EHostMode _HostMode = ModelSettings.EHostMode.Multihost;
+        private static ModelSettings.EHostMode _HostMode = ModelSettings.EHostMode.Multihost;
         private static int _HostsCount = 2;
         private static int _NodeBaseCount = 4;
         private string _AppBase1 = "1525869172198_0001";

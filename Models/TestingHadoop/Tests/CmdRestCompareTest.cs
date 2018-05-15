@@ -38,18 +38,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         private RestConnector _Rest;
 
         // After restart cluster and executing applications change this value for the app!
-        private static string _ClusterStartTime = "1525869172198";
-        private static Model.EHostMode _ModelHostMode = ModelSettings.EHostMode.Multihost;
+        private static readonly string _ClusterStartTime = "1525869172198";
+        private static readonly ModelSettings.EHostMode _ModelHostMode = ModelSettings.EHostMode.Multihost;
 
-        private string _AppId = $"application_{_ClusterStartTime}_0001";
-        private string _AttemptId = $"appattempt_{_ClusterStartTime}_0001_000001";
-        private string _ContainerId = $"container_{_ClusterStartTime}_0001_01_000001";
-        private string _AmNodeId = "compute-2:45454";
+        private readonly string _AppId = $"application_{_ClusterStartTime}_0001";
+        private readonly string _AttemptId = $"appattempt_{_ClusterStartTime}_0001_000001";
+        private readonly string _ContainerId = $"container_{_ClusterStartTime}_0001_01_000001";
+        private readonly string _AmNodeId = "compute-2:45454";
         // For Fault Handling, set id of next starting application
-        private string _FaultNodeName = "compute-4";
-        private string _FaultAppId = $"application_{_ClusterStartTime}_0018";
+        private readonly string _FaultNodeName = "compute-4";
+        private readonly string _FaultAppId = $"application_{_ClusterStartTime}_0018";
 
-        private string _AmNodeUrl = _ModelHostMode == ModelSettings.EHostMode.DockerMachine ? "http://compute-2:8042" : "http://localhost:8043";
+        private readonly string _AmNodeUrl = _ModelHostMode == ModelSettings.EHostMode.DockerMachine ? "http://compute-2:8042" : "http://localhost:8043";
 
         [TestFixtureSetUp]
         public void Setup()
