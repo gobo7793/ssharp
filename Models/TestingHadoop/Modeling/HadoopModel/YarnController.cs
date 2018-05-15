@@ -25,7 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using SafetySharp.CompilerServices;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
@@ -38,11 +38,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #region Properties
 
-        private static log4net.ILog Logger { get; } = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        [NonSerializable]
+        private static log4net.ILog Logger { get; } =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        /// <summary>
+        /// Random generator for fault handling
+        /// </summary>
+        private Random _RanGen = new Random();
 
         /// <summary>
         /// HTTP URL of the timeline server
         /// </summary>
+        [NonSerializable]
         public string TimelineHttpUrl => $"http://{Name}:8188";
 
         /// <summary>
@@ -96,6 +104,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             //OutputUtilities.PrintStepStart();
             //var stepStartTime = DateTime.Now;
 
+            DeactivateFaults();
+            ActivateFaults();
+
             // only in this model in this place to be sure that constraint
             // checking will be done after updating and monitoring benchmarks
             foreach(var client in ConnectedClients)
@@ -116,6 +127,36 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             //    Thread.Sleep(Model.MinStepTime - stepTime);
 
             //OutputUtilities.PrintFullTrace(this);
+        }
+
+        #endregion
+
+        #region Faulting methods
+
+        /// <summary>
+        /// Activates fault based on <see cref="ModelSettings.FaultActivationProbability"/>
+        /// </summary>
+        public void ActivateFaults()
+        {
+            foreach(var fault in Model.Instance.Faults)
+            {
+                var ranValue = _RanGen.Next(100);
+                if(ranValue < ModelSettings.FaultActivationProbability)
+                    FaultHelper.Activate(fault);
+            }
+        }
+
+        /// <summary>
+        /// Deactivates fault based on <see cref="ModelSettings.FaultDeactivationProbability"/>
+        /// </summary>
+        public void DeactivateFaults()
+        {
+            foreach(var fault in Model.Instance.Faults)
+            {
+                var ranValue = _RanGen.Next(100);
+                if(ranValue < ModelSettings.FaultDeactivationProbability)
+                    FaultHelper.UndoActivation(fault);
+            }
         }
 
         #endregion

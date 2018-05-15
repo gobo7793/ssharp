@@ -33,7 +33,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 
         #endregion
 
-        #region General settings and constants
+        #region General
 
         /// <summary>
         /// Prefix for compute nodes
@@ -44,6 +44,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Minimum step time for execution
         /// </summary>
         public static TimeSpan MinStepTime { get; set; } = new TimeSpan(0, 0, 20);
+
+        /// <summary>
+        /// Probability to activate faults, from 0 (never, default), up to 100 (always)
+        /// </summary>
+        public static byte FaultActivationProbability { get; set; } = 0;
+
+        /// <summary>
+        /// Probability to deactivate faults, from 0 (never), up to 100 (always in step after activation, default)
+        /// </summary>
+        public static byte FaultDeactivationProbability { get; set; } = 100;
+
+        #endregion
 
         #region SSH
 
@@ -215,8 +227,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 
         public const int TrackingUrlLength = 0x7F;
         public const int DiagnosticsLength = 0xFF;
-
-        #endregion
 
         #endregion
     }

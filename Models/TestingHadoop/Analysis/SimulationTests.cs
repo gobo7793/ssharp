@@ -45,7 +45,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static readonly int _BenchmarkSeed = Environment.TickCount;
         private static readonly int _StepCount = 3;
         private static readonly bool _PrecreatedInputs = true;
-        private static readonly double _FaultActivationProbability = 95;
+        private static readonly byte _FaultActivationProbability = 30; // 0 -> inactive, 100 -> always
+        private static readonly byte _FaultDeactivationProbability = 50; // 0 -> inactive, 100 -> always
         private static readonly int _HostsCount = 1;
         private static readonly int _NodeBaseCount = 4;
         private static readonly int _ClientCount = 1;
@@ -119,6 +120,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         public void SimulateHadoop()
         {
             var origModel = InitModel();
+            ModelSettings.FaultActivationProbability = 0;
+            ModelSettings.FaultDeactivationProbability = 100;
             origModel.Faults.SuppressActivations();
 
             var wasFatalError = false;
@@ -150,12 +153,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             }
             catch(Exception e)
             {
-                Logger.Fatal("Fatal exception during Faulting Simulation.", e);
+                Logger.Fatal("Fatal exception during Simulation.", e);
 
                 foreach(var node in origModel.Nodes)
                 {
+                    Model.UsingFaultingConnector.StopNode(node.Name);
                     Model.UsingFaultingConnector.StartNode(node.Name);
-                    Model.UsingFaultingConnector.StartNodeNetConnection(node.Name);
                 }
 
                 wasFatalError = true;
@@ -175,7 +178,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         public void SimulateHadoopFaults()
         {
             var origModel = InitModel();
-            origModel.Faults.SuppressActivations();
+            ModelSettings.FaultActivationProbability = _FaultActivationProbability;
+            ModelSettings.FaultDeactivationProbability = _FaultDeactivationProbability;
 
             var wasFatalError = false;
             try
@@ -214,8 +218,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             {
                 foreach(var node in origModel.Nodes)
                 {
+                    Model.UsingFaultingConnector.StopNode(node.Name);
                     Model.UsingFaultingConnector.StartNode(node.Name);
-                    Model.UsingFaultingConnector.StartNodeNetConnection(node.Name);
                 }
             }
 
