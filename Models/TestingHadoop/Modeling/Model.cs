@@ -37,11 +37,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
     /// </summary>
     public class Model : ModelBase
     {
-        #region EHostMode
-
-        #endregion
-
-        #region General settings and constants
+        #region Instance
 
         private static Model _Instance;
 
@@ -49,22 +45,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <see cref="Model"/> instance
         /// </summary>
         public static Model Instance => _Instance ?? CreateNewInstance();
-
-        #region SSH
-
-        #endregion
-
-        #region Host mode
-
-        #endregion
-
-        #region Benchmarks
-
-        #endregion
-
-        #region Char array lengths
-
-        #endregion
 
         #endregion
 
@@ -237,12 +217,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Init submitting clients
         /// </summary>
         /// <param name="clientCount">Instances count</param>
-        /// <param name="benchTransitionSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
+        /// <param name="benchTransitionSeed">Base seed for <see cref="BenchmarkController"/> transition system,
+        ///      clientId will be added to the seed</param>
         private void InitClients(int clientCount, int benchTransitionSeed)
         {
             for(int i = 1; i <= clientCount; i++)
             {
-                var client = new Client($"client{i}", benchTransitionSeed);
+                var client = new Client($"client{i}", benchTransitionSeed + i);
 
                 //Controller.ConnectedClients.Add(client);
                 Clients.Add(client);

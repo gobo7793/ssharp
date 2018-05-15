@@ -48,6 +48,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static readonly double _FaultActivationProbability = 95;
         private static readonly int _HostsCount = 1;
         private static readonly int _NodeBaseCount = 4;
+        private static readonly int _ClientCount = 1;
 
         #endregion
 
@@ -77,12 +78,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         [Test]
         public void SimulateBenchmarks()
         {
-            var benchController = new BenchmarkController(_BenchmarkSeed);
-            Logger.Info($"Simulating Benchmarks with Seed {_BenchmarkSeed}:");
-            for(int i = 0; i < _StepCount; i++)
+            for(int i = 1; i <= _ClientCount; i++)
             {
-                benchController.ChangeBenchmark();
-                Logger.Info($"Step {i}: {benchController.CurrentBenchmark.Name}");
+                var seed = _BenchmarkSeed + i;
+                var benchController = new BenchmarkController(seed);
+                Logger.Info($"Simulating Benchmarks for Client {i} with Seed {seed}:");
+                for(int j = 0; j < _StepCount; j++)
+                {
+                    benchController.ChangeBenchmark();
+                    Logger.Info($"Step {j}: {benchController.CurrentBenchmark.Name}");
+                }
             }
         }
 
@@ -98,7 +103,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             ModelSettings.IsPrecreateBenchInputs = _PrecreatedInputs;
 
             var model = Model.Instance;
-            model.InitModel(appCount: _StepCount, benchTransitionSeed: _BenchmarkSeed);
+            model.InitModel(appCount: _StepCount, clientCount: _ClientCount, benchTransitionSeed: _BenchmarkSeed);
 
             return model;
         }

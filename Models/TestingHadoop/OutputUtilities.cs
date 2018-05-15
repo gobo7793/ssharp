@@ -54,20 +54,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info($"Starting {type} test");
 
             if(benchmarkSeed.HasValue)
-                Logger.Info($"Benchmark seed:    {benchmarkSeed}");
+                Logger.Info($"Base benchmark seed: {benchmarkSeed}");
             if(minStepTime.HasValue)
-                Logger.Info($"Min Step time:     {minStepTime}");
+                Logger.Info($"Min Step time:       {minStepTime}");
             if(stepCount.HasValue)
-                Logger.Info($"Step count:        {stepCount}");
+                Logger.Info($"Step count:          {stepCount}");
 
-            Logger.Info($"Fault activation:  {isFaultActivationEnabled == true}");
-            Logger.Info($"Inputs precreated: {isInputsPrecreated == true}");
+            Logger.Info($"Fault activation:    {isFaultActivationEnabled == true}");
+            Logger.Info($"Inputs precreated:   {isInputsPrecreated == true}");
 
-            Logger.Info($"Host mode:         {ModelSettings.HostMode}");
-            Logger.Info($"Hosts couent:      {ModelSettings.HostsCount}");
-            Logger.Info($"Node base count:   {ModelSettings.NodeBaseCount}");
-            Logger.Info($"Setup script path: {ModelSettings.HadoopSetupScript}");
-            Logger.Info($"Controller url:    {ModelSettings.ControllerRestRmUrl}");
+            Logger.Info($"Host mode:           {ModelSettings.HostMode}");
+            Logger.Info($"Hosts couent:        {ModelSettings.HostsCount}");
+            Logger.Info($"Node base count:     {ModelSettings.NodeBaseCount}");
+            Logger.Info($"Setup script path:   {ModelSettings.HadoopSetupScript}");
+            Logger.Info($"Controller url:      {ModelSettings.ControllerRestRmUrl}");
         }
 
         /// <summary>
