@@ -65,6 +65,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Analysis\SimulationTests.cs" />
+    <Compile Include="Modeling\HadoopModel\NodeFaultAttribute.cs" />
     <Compile Include="Modeling\ModelSettings.cs" />
     <Compile Include="OutputUtilities.cs" />
     <Compile Include="Modeling\BenchModel\BenchmarkController.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Modeling\HadoopModel\YarnHost.cs" />
     <Compile Include="Modeling\HadoopModel\YarnAppContainer.cs" />
     <Compile Include="Modeling\HadoopModel\YarnAppAttempt.cs" />
+    <Compile Include="Tests\AttributeTest.cs" />
     <Compile Include="Tests\BenchmarkTest.cs" />
     <Compile Include="Tests\CmdLineParserTest.cs" />
     <Compile Include="Tests\CmdRestCompareTest.cs" />

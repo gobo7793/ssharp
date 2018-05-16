@@ -23,11 +23,16 @@
 #endregion
 
 using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
+using ISSE.SafetyChecking.Modeling;
 using NUnit.Framework;
 using SafetySharp.Analysis;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
@@ -45,8 +50,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static readonly int _BenchmarkSeed = Environment.TickCount;
         private static readonly int _StepCount = 3;
         private static readonly bool _PrecreatedInputs = true;
-        private static readonly byte _FaultActivationProbability = 30; // 0 -> inactive, 100 -> always
-        private static readonly byte _FaultDeactivationProbability = 50; // 0 -> inactive, 100 -> always
+        private static readonly double _FaultActivationProbability = 0.3; // 0.0 -> inactive, 1.0 -> always
+        private static readonly double _FaultDeactivationProbability = 0.5; // 0.0 -> inactive, 1.0 -> always
         private static readonly int _HostsCount = 1;
         private static readonly int _NodeBaseCount = 4;
         private static readonly int _ClientCount = 1;
@@ -105,8 +110,30 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
             var model = Model.Instance;
             model.InitModel(appCount: _StepCount, clientCount: _ClientCount, benchTransitionSeed: _BenchmarkSeed);
+            model.Faults.SuppressActivations();
 
             return model;
+        }
+
+        /// <summary>
+        /// Collects the faults from <see cref="YarnNode"/>
+        /// </summary>
+        /// <param name="model">The model</param>
+        /// <returns>The Faults and their fault activation attributes</returns>
+        public Tuple<Fault, NodeFaultAttribute, YarnNode>[] CollectYarnNodeFaults(Model model)
+        {
+            return (from node in model.Nodes
+
+                    from faultField in node.GetType().GetFields()
+                    where typeof(Fault).IsAssignableFrom(faultField.FieldType)
+
+                    let attribute = faultField.GetCustomAttribute<NodeFaultAttribute>()
+                    where attribute != null
+
+                    let fault = (Fault)faultField.GetValue(node)
+
+                    select Tuple.Create(fault, attribute, node)
+            ).ToArray();
         }
 
         #endregion
@@ -120,9 +147,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         public void SimulateHadoop()
         {
             var origModel = InitModel();
-            ModelSettings.FaultActivationProbability = 0;
-            ModelSettings.FaultDeactivationProbability = 100;
-            origModel.Faults.SuppressActivations();
+            ModelSettings.FaultActivationProbability = 0.0;
+            ModelSettings.FaultRepairProbability = 1.0;
 
             var wasFatalError = false;
             try
@@ -179,12 +205,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         {
             var origModel = InitModel();
             ModelSettings.FaultActivationProbability = _FaultActivationProbability;
-            ModelSettings.FaultDeactivationProbability = _FaultDeactivationProbability;
+            ModelSettings.FaultRepairProbability = _FaultDeactivationProbability;
 
             var wasFatalError = false;
             try
             {
                 var simulator = new SafetySharpSimulator(origModel);
+                var faults = CollectYarnNodeFaults((Model)simulator.Model);
 
                 OutputUtilities.PrintExecutionStart();
                 OutputUtilities.PrintTestSettings("Simulation", _BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
@@ -195,6 +222,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 {
                     OutputUtilities.PrintStepStart();
                     var stepStartTime = DateTime.Now;
+
+                    foreach(var fault in faults)
+                    {
+                        if(!fault.Item1.IsActivated && fault.Item2.CanActivate(fault.Item3))
+                            fault.Item1.ForceActivation();
+                        else if(fault.Item1.IsActivated && fault.Item2.CanRepair(fault.Item3))
+                            fault.Item1.SuppressActivation();
+                    }
 
                     simulator.SimulateStep();
 

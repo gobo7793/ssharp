@@ -40,11 +40,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Fault for connection errors
         /// </summary>
+        [NodeFault]
         public readonly Fault NodeConnectionErrorFault = new TransientFault();
 
         /// <summary>
         /// Fault for dead nodes
         /// </summary>
+        [NodeFault]
         public readonly Fault NodeDeadFault = new TransientFault();
 
         #endregion

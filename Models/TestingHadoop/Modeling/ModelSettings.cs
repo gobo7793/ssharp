@@ -1,5 +1,6 @@
 ﻿using System;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
+using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
 {
@@ -46,14 +47,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public static TimeSpan MinStepTime { get; set; } = new TimeSpan(0, 0, 20);
 
         /// <summary>
-        /// Probability to activate faults, from 0 (never, default), up to 100 (always)
+        /// Probability to activate faults, from 0.0 (never, default), up to 1.0 (always)
         /// </summary>
-        public static byte FaultActivationProbability { get; set; } = 0;
+        [Range(0.0, 1.0, OverflowBehavior.Clamp)]
+        public static double FaultActivationProbability { get; set; } = 0.0;
 
         /// <summary>
-        /// Probability to deactivate faults, from 0 (never), up to 100 (always in step after activation, default)
+        /// Probability to repair faults, from 0.0 (never), up to 1.0 (always in step after activation, default)
         /// </summary>
-        public static byte FaultDeactivationProbability { get; set; } = 100;
+        [Range(0.0, 1.0, OverflowBehavior.Clamp)]
+        public static double FaultRepairProbability { get; set; } = 1.0;
 
         #endregion
 
