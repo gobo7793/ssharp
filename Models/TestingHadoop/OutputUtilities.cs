@@ -46,10 +46,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         /// <param name="benchmarkSeed">The used benchmark seed</param>
         /// <param name="minStepTime">Minimum step time</param>
         /// <param name="stepCount">Executing step count</param>
-        /// <param name="isInputsPrecreated">Indicates if the input data of some benchmarks are created before execution</param>
-        /// <param name="isFaultActivationEnabled">Indicates if S# fault activation is active</param>
-        public static void PrintTestSettings(string type, int? benchmarkSeed = null, TimeSpan? minStepTime = null, int? stepCount = null,
-                                             bool? isInputsPrecreated = null, bool? isFaultActivationEnabled = null)
+        public static void PrintTestSettings(string type, int? benchmarkSeed = null, TimeSpan? minStepTime = null, int? stepCount = null)
         {
             Logger.Info($"Starting {type} test");
 
@@ -60,8 +57,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             if(stepCount.HasValue)
                 Logger.Info($"Step count:          {stepCount}");
 
-            Logger.Info($"Fault activation:    {isFaultActivationEnabled == true}");
-            Logger.Info($"Inputs precreated:   {isInputsPrecreated == true}");
+            Logger.Info($"Fault probability:   {ModelSettings.FaultActivationProbability}");
+            Logger.Info($"Fault repair prob.:  {ModelSettings.FaultRepairProbability}");
+            Logger.Info($"Inputs precreated:   {ModelSettings.IsPrecreateBenchInputs}");
 
             Logger.Info($"Host mode:           {ModelSettings.HostMode}");
             Logger.Info($"Hosts couent:        {ModelSettings.HostsCount}");

@@ -23,7 +23,6 @@
 #endregion
 
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -40,7 +39,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
     public class SimulationTests
     {
         private static log4net.ILog Logger { get; } =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Settings
 
@@ -156,7 +155,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 var simulator = new SafetySharpSimulator(origModel);
 
                 OutputUtilities.PrintExecutionStart();
-                OutputUtilities.PrintTestSettings("Simulation", _BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
+                OutputUtilities.PrintTestSettings("Simulation", _BenchmarkSeed, _MinStepTime, _StepCount);
 
                 SimulateBenchmarks();
 
@@ -214,7 +213,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 var faults = CollectYarnNodeFaults((Model)simulator.Model);
 
                 OutputUtilities.PrintExecutionStart();
-                OutputUtilities.PrintTestSettings("Simulation", _BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
+                OutputUtilities.PrintTestSettings("Simulation", _BenchmarkSeed, _MinStepTime, _StepCount);
 
                 SimulateBenchmarks();
 
