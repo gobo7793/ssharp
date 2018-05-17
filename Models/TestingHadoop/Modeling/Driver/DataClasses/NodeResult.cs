@@ -42,10 +42,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses
     [DebuggerDisplay("Node {" + nameof(NodeId) + "}")]
     public class NodeResult : INodeResult
     {
-        private long _MemCap;
-        private long _MemAvail;
-        private long _CpuCap;
-        private long _CpuAvail;
+        private long _MemCap = -1;
+        private long _MemAvail = -1;
+        private long _CpuCap = -1;
+        private long _CpuAvail = -1;
 
         /// <summary>
         /// Node-Id
@@ -92,7 +92,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses
         {
             get
             {
-                if(_MemAvail <= 0)
+                if(_MemAvail < 0)
                     _MemAvail = _MemCap - MemoryUsed;
                 return _MemAvail;
             }
@@ -107,7 +107,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses
         {
             get
             {
-                if(_MemCap <= 0)
+                if(_MemCap < 0)
                     _MemCap = _MemAvail + MemoryUsed;
                 return _MemCap;
             }
@@ -128,7 +128,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses
         {
             get
             {
-                if(_CpuAvail <= 0)
+                if(_CpuAvail < 0)
                     _CpuAvail = _CpuCap - CpuUsed;
                 return _CpuAvail;
             }
@@ -143,7 +143,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses
         {
             get
             {
-                if(_CpuCap <= 0)
+                if(_CpuCap < 0)
                     _CpuCap = _CpuAvail + CpuUsed;
                 return _CpuCap;
             }
