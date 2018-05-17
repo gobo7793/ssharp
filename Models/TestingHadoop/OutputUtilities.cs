@@ -121,9 +121,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         public static void PrintTrace(YarnNode node)
         {
             Logger.Info($"=== Node {node.NodeId} ===");
-            Logger.Info($"    State:       {node.State}");
-            Logger.Info($"    IsActive:    {node.IsActive}");
-            Logger.Info($"    IsConnected: {node.IsConnected}");
+            Logger.Info($"    State:         {node.State}");
+            Logger.Info($"    IsActive:      {node.IsActive}");
+            Logger.Info($"    IsConnected:   {node.IsConnected}");
+            Logger.Info($"    Container Cnt: {node.RunningContainerCount}");
+            Logger.Info($"    Memory used:   {node.MemoryUsed}/{node.MemoryAvailable} ({node.MemoryUsage:F3})");
+            Logger.Info($"    CPU used:      {node.CpuUsed}/{node.CpuAvailable} ({node.MemoryUsage:F3})");
         }
 
         /// <summary>

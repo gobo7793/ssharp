@@ -49,7 +49,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static readonly int _BenchmarkSeed = Environment.TickCount;
         private static readonly int _StepCount = 3;
         private static readonly bool _PrecreatedInputs = true;
-        private static readonly double _FaultActivationProbability = 0.3; // 0.0 -> inactive, 1.0 -> always
+        private static readonly double _FaultActivationProbability = 0.4; // 0.0 -> inactive, 1.0 -> always
         private static readonly double _FaultDeactivationProbability = 0.5; // 0.0 -> inactive, 1.0 -> always
         private static readonly int _HostsCount = 1;
         private static readonly int _NodeBaseCount = 4;

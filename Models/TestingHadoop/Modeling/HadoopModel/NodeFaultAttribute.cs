@@ -61,13 +61,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <returns>The usage</returns>
         private double GetCurrentNodeUsage(YarnNode node)
         {
-            var nodeUsage = 0.0;
-            if(node.CpuCapacity > 0 && node.MemoryCapacity > 0)
-            {
-                var cpuPercentage = (double)node.CpuUsed / node.CpuCapacity;
-                var memPercentage = (double)node.MemoryUsed / node.MemoryCapacity;
-                nodeUsage = (cpuPercentage + memPercentage) / 2;
-            }
+            var nodeUsage = (node.MemoryUsage + node.CpuUsage) / 2;
+
             if(nodeUsage < 0.1) nodeUsage = 0.1;
             else if(nodeUsage > 0.9) nodeUsage = 0.9;
 

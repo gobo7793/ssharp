@@ -87,12 +87,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Indicates if this <see cref="YarnNode"/> is aktive
         /// </summary>
-        public bool IsActive { get; set; }
+        public virtual bool IsActive { get; set; }
 
         /// <summary>
         /// Indicates if this <see cref="YarnNode"/> connection is acitve
         /// </summary>
-        public bool IsConnected { get; set; }
+        public virtual bool IsConnected { get; set; }
 
         /// <summary>
         /// Current State
@@ -112,7 +112,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Total Memory capacity in MB
         /// </summary>
+        [NonSerializable]
         public long MemoryCapacity => MemoryUsed + MemoryAvailable;
+
+        /// <summary>
+        /// Memory usage in percentage
+        /// </summary>
+        [NonSerializable]
+        public double MemoryUsage => MemoryCapacity > 0 ? (double)MemoryUsed / MemoryCapacity : 0.0;
 
         /// <summary>
         /// Current CPU vcores in use
@@ -127,7 +134,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Total CPU vcores capacity
         /// </summary>
+        [NonSerializable]
         public long CpuCapacity => CpuUsed + CpuAvailable;
+
+        /// <summary>
+        /// CPU core usage in percentage
+        /// </summary>
+        [NonSerializable]
+        public double CpuUsage => CpuCapacity > 0 ? (double)CpuUsed / CpuCapacity : 0.0;
 
         /// <summary>
         /// Number of current running containers
@@ -138,6 +152,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Latest health update to <see cref="YarnController"/>
         /// </summary>
         public DateTime LastHealthUpdate { get; set; }
+
+        /// <summary>
+        /// Health report for the node
+        /// </summary>
+        // public string HealthReport { get; set; }
+        public char[] HealthReportActual { get; } = new char[ModelSettings.DiagnosticsLength];
+
+        /// <summary>
+        /// Health report for the node as string, based on <see cref="HealthReportActual"/>
+        /// </summary>
+        [NonSerializable]
+        public string HealthReport
+        {
+            get { return ModelUtilities.GetCharArrayAsString(HealthReportActual); }
+            set { ModelUtilities.SetCharArrayOnString(HealthReportActual, value); }
+        }
 
         #endregion
 
@@ -248,6 +278,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             CpuUsed = node.CpuUsed;
             CpuAvailable = node.CpuAvailable;
             LastHealthUpdate = node.LastHealthUpdate;
+            HealthReport = node.HealthReport;
         }
 
         /// <summary>
