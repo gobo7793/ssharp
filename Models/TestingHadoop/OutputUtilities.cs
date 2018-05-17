@@ -125,8 +125,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info($"    IsActive:      {node.IsActive}");
             Logger.Info($"    IsConnected:   {node.IsConnected}");
             Logger.Info($"    Container Cnt: {node.RunningContainerCount}");
-            Logger.Info($"    Memory used:   {node.MemoryUsed}/{node.MemoryAvailable} ({node.MemoryUsage:F3})");
-            Logger.Info($"    CPU used:      {node.CpuUsed}/{node.CpuAvailable} ({node.MemoryUsage:F3})");
+            Logger.Info($"    Mem used/free: {node.MemoryUsed}/{node.MemoryAvailable} ({node.MemoryUsage:F3})");
+            Logger.Info($"    CPU used/free: {node.CpuUsed}/{node.CpuAvailable} ({node.MemoryUsage:F3})");
         }
 
         /// <summary>

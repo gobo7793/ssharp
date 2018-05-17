@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Reflection;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
@@ -32,6 +33,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     public class NodeFaultAttribute : Attribute
     {
         #region Properties
+
+        private static log4net.ILog Logger { get; } =
+            log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Random number generator
@@ -50,15 +54,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         [NonSerializable]
         public double RepairProbability => ModelSettings.FaultRepairProbability;
 
+        /// <summary>
+        /// Node usage of the node on fault activation time
+        /// </summary>
+        private double NodeUsageOnActivation { get; set; }
+
         #endregion
 
         #region Methods
 
         /// <summary>
-        /// Calculates the current node usage based on memory and cpu usage (between 0 and 2)
+        /// Calculates the current node usage based on memory and cpu usage (between 0 and 2).
+        /// Saves also the returning usage in <see cref="NodeUsageOnActivation"/>.
         /// </summary>
         /// <param name="node">The node</param>
-        /// <returns>The usage</returns>
+        /// <returns>The usage saved in <see cref="NodeUsageOnActivation"/></returns>
         private double GetCurrentNodeUsage(YarnNode node)
         {
             var nodeUsage = (node.MemoryUsage + node.CpuUsage) / 2;
@@ -66,6 +76,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             if(nodeUsage < 0.1) nodeUsage = 0.1;
             else if(nodeUsage > 0.9) nodeUsage = 0.9;
 
+            NodeUsageOnActivation = nodeUsage;
             return nodeUsage;
         }
 
@@ -82,15 +93,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// Indicates if the fault can be activated.
-        /// Uses <see cref="GetFaultProbability"/> to get the probability.
+        /// Indicates if the fault can be activated. The probability will be calculated
+        /// based on the node usage, <see cref="ActivationProbability"/> and a random generated number.
         /// </summary>
+        /// <param name="node">The node of the fault to calculate the probability</param>
         /// <returns>True if the fault can be activated</returns>
         public bool CanActivate(YarnNode node)
         {
             var probability = GetFaultProbability(node);
             //Console.WriteLine(probability);
             var randomValue = RandomGen.NextDouble();
+            Logger.Info($"Activation probability: {probability} < {randomValue}");
             return probability < randomValue;
         }
 
@@ -98,24 +111,25 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Gets the current probability to toggle the fault state. Based on current/last saved Memory and CPU usage of the node.
         /// </summary>
         /// <returns>The probability to toggle the fault</returns>
-        private double GetRepairProbability(YarnNode node)
+        private double GetRepairProbability()
         {
-            var nodeUsage = GetCurrentNodeUsage(node);
+            var nodeUsage = NodeUsageOnActivation;
             var faultUsage = nodeUsage * RepairProbability * 2;
             return 1 - faultUsage;
         }
 
         /// <summary>
-        /// Indicates if the fault can be repaired.
-        /// Uses <see cref="GetRepairProbability"/> to get the probability.
+        /// Indicates if the fault can be repaired. The probability will be calculated
+        /// based on the node usage, <see cref="RepairProbability"/> and a random generated number.
         /// </summary>
         /// <returns>True if the fault can be repaired</returns>
-        public bool CanRepair(YarnNode node)
+        public bool CanRepair()
         {
-            var probability = GetRepairProbability(node);
+            var probability = GetRepairProbability();
             //Console.WriteLine(probability);
             var randomValue = RandomGen.NextDouble();
-            return probability < randomValue;
+            Logger.Info($"Repairing probability: {probability} > {randomValue}");
+            return probability > randomValue;
         }
 
         #endregion
