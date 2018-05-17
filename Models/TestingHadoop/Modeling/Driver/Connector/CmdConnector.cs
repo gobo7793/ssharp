@@ -480,6 +480,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             return submitter;
         }
 
+        #endregion
+
+        #region HDFS related
+
+        /// <summary>
+        /// Runs the hdfs file system check and delete corrupted/missing files.
+        /// </summary>
+        public void RunHdfsFsckDelete()
+        {
+            var cmd = $"{ModelSettings.HadoopSetupScript} hdfs dfs fsck / -delete";
+            var submitter = GetSubmitter(cmd);
+
+            submitter.Run(cmd);
+        }
+
         /// <summary>
         /// Checks if the given directory exists on hdfs
         /// </summary>

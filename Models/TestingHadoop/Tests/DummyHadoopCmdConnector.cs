@@ -164,6 +164,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine($"[]Application {cmd} started async...");
         }
 
+        public void RunHdfsFsckDelete()
+        {
+            Console.WriteLine("[]HDFS okay...");
+        }
+
         public bool ExistsHdfsDir(string directory)
         {
             return false;

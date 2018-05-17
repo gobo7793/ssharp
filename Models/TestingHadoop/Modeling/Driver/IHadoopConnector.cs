@@ -188,6 +188,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="cmd">The command to submit</param>
         void StartApplicationAsyncFull(string cmd);
 
+        #endregion
+
+        #region HDFS related
+
+        /// <summary>
+        /// Runs the hdfs file system check and delete corrupted/missing files.
+        /// </summary>
+        void RunHdfsFsckDelete();
+
         /// <summary>
         /// Checks if the given directory exists on hdfs
         /// </summary>
