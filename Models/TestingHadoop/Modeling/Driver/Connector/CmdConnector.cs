@@ -306,9 +306,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
             var id = DriverUtilities.ParseInt(nodeName);
             var hostId = DriverUtilities.GetHostId(id, ModelSettings.HostsCount, ModelSettings.NodeBaseCount);
-            var controlerIp = Faulting[1].Run($"{ModelSettings.HadoopSetupScript} controllerip");
+            var controlerIp = Faulting[1].Run($"{ModelSettings.HadoopSetupScript} controllerip").Trim();
 
-            Faulting[hostId].Run($"{ModelSettings.HadoopSetupScript} hadoop start {id} {controlerIp} soft");
+            Faulting[hostId].Run($"{ModelSettings.HadoopSetupScript} hadoop start {id} {controlerIp}");
             return CheckNodeRunning(id, hostId);
         }
 
