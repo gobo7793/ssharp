@@ -33,7 +33,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     {
         #region Properties
 
-        private readonly Random _RandomGen = new Random();
+        /// <summary>
+        /// Random number generator
+        /// </summary>
+        public static Random RandomGen { get; } = new Random();
 
         /// <summary>
         /// Fault activation probability, based on <see cref="ModelSettings.FaultActivationProbability"/>
@@ -63,9 +66,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             {
                 var cpuPercentage = (double)node.CpuUsed / node.CpuCapacity;
                 var memPercentage = (double)node.MemoryUsed / node.MemoryCapacity;
-                nodeUsage = cpuPercentage + memPercentage;
+                nodeUsage = (cpuPercentage + memPercentage) / 2;
             }
-            return nodeUsage / 2;
+            if(nodeUsage < 0.1) nodeUsage = 0.1;
+            else if(nodeUsage > 0.9) nodeUsage = 0.9;
+
+            return nodeUsage;
         }
 
         /// <summary>
@@ -76,6 +82,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             var nodeUsage = GetCurrentNodeUsage(node);
             var faultUsage = nodeUsage * ActivationProbability * 2;
+
             return 1 - faultUsage;
         }
 
@@ -88,7 +95,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             var probability = GetFaultProbability(node);
             //Console.WriteLine(probability);
-            var randomValue = _RandomGen.NextDouble();
+            var randomValue = RandomGen.NextDouble();
             return probability < randomValue;
         }
 
@@ -112,7 +119,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             var probability = GetRepairProbability(node);
             //Console.WriteLine(probability);
-            var randomValue = _RandomGen.NextDouble();
+            var randomValue = RandomGen.NextDouble();
             return probability < randomValue;
         }
 

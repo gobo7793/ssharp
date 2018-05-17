@@ -50,7 +50,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
         [Test]
         [TestCase(5, 5, 0.0)]
+        [TestCase(0, 0, 0.5)]
+        [TestCase(0, 0, 0.8)]
         [TestCase(5, 5, 1.0)]
+        [TestCase(10, 10, 0.5)]
         [TestCase(5, 5, 0.5)]
         [TestCase(5, 5, 0.8)]
         [TestCase(5, 5, 0.2)]
