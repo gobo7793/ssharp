@@ -43,15 +43,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         /// Prints the initial test settings to logging outputs if set
         /// </summary>
         /// <param name="type">Type of the executing test</param>
-        /// <param name="benchmarkSeed">The used benchmark seed</param>
         /// <param name="minStepTime">Minimum step time</param>
         /// <param name="stepCount">Executing step count</param>
-        public static void PrintTestSettings(string type, int? benchmarkSeed = null, TimeSpan? minStepTime = null, int? stepCount = null)
+        public static void PrintTestSettings(string type, TimeSpan? minStepTime = null, int? stepCount = null)
         {
             Logger.Info($"Starting {type} test");
 
-            if(benchmarkSeed.HasValue)
-                Logger.Info($"Base benchmark seed: {benchmarkSeed}");
+            Logger.Info($"Base benchmark seed: {ModelSettings.RandomBaseSeed}");
             if(minStepTime.HasValue)
                 Logger.Info($"Min Step time:       {minStepTime}");
             if(stepCount.HasValue)

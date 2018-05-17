@@ -46,7 +46,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         // Simulation settings
         private static readonly TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 20);
         //private static readonly int _BenchmarkSeed = 1;
-        private static readonly int _BenchmarkSeed = Environment.TickCount;
+        //private static readonly int _BenchmarkSeed = Environment.TickCount;
+        private static readonly int _BenchmarkSeed = 4770109;
         private static readonly int _StepCount = 3;
         private static readonly bool _PrecreatedInputs = true;
         private static readonly double _FaultActivationProbability = 0.4; // 0.0 -> inactive, 1.0 -> always
@@ -106,9 +107,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             ModelSettings.HostsCount = _HostsCount;
             ModelSettings.NodeBaseCount = _NodeBaseCount;
             ModelSettings.IsPrecreateBenchInputs = _PrecreatedInputs;
+            ModelSettings.RandomBaseSeed = _BenchmarkSeed;
 
             var model = Model.Instance;
-            model.InitModel(appCount: _StepCount, clientCount: _ClientCount, benchTransitionSeed: _BenchmarkSeed);
+            model.InitModel(appCount: _StepCount, clientCount: _ClientCount);
             model.Faults.SuppressActivations();
 
             return model;
@@ -155,13 +157,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 var simulator = new SafetySharpSimulator(origModel);
 
                 OutputUtilities.PrintExecutionStart();
-                OutputUtilities.PrintTestSettings("Simulation", _BenchmarkSeed, _MinStepTime, _StepCount);
+                OutputUtilities.PrintTestSettings("Simulation", _MinStepTime, _StepCount);
 
                 SimulateBenchmarks();
 
                 for(var i = 0; i < _StepCount; i++)
                 {
                     OutputUtilities.PrintStepStart();
+                    foreach(var node in ((Model)simulator.Model).Nodes)
+                        OutputUtilities.PrintTrace(node);
                     var stepStartTime = DateTime.Now;
 
                     simulator.SimulateStep();
@@ -213,20 +217,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 var faults = CollectYarnNodeFaults((Model)simulator.Model);
 
                 OutputUtilities.PrintExecutionStart();
-                OutputUtilities.PrintTestSettings("Simulation", _BenchmarkSeed, _MinStepTime, _StepCount);
+                OutputUtilities.PrintTestSettings("Simulation", _MinStepTime, _StepCount);
 
                 SimulateBenchmarks();
 
                 for(var i = 0; i < _StepCount; i++)
                 {
                     OutputUtilities.PrintStepStart();
+                    foreach(var node in ((Model)simulator.Model).Nodes)
+                        OutputUtilities.PrintTrace(node);
                     var stepStartTime = DateTime.Now;
 
                     foreach(var fault in faults)
                     {
+                        Logger.Info($"Fault {fault.Item1.Name}@{fault.Item3.Name}");
                         if(!fault.Item1.IsActivated && fault.Item2.CanActivate(fault.Item3))
                             fault.Item1.ForceActivation();
-                        else if(fault.Item1.IsActivated && fault.Item2.CanRepair(fault.Item3))
+                        else if(fault.Item1.IsActivated && fault.Item2.CanRepair())
                             fault.Item1.SuppressActivation();
                     }
 

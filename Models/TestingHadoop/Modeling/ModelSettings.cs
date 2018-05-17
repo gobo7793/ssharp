@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
@@ -57,6 +59,29 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// </summary>
         [Range(0.0, 1.0, OverflowBehavior.Clamp)]
         public static double FaultRepairProbability { get; set; } = 1.0;
+
+        private static int _RandomBaseSeed = Environment.TickCount;
+
+        /// <summary>
+        /// Base seed for model random generators, default <see cref="Environment.TickCount"/>.
+        /// </summary>
+        /// <remarks>
+        /// Static generators which will use the seed have to be added here.
+        /// </remarks>
+        public static int RandomBaseSeed
+        {
+            get { return _RandomBaseSeed; }
+            set
+            {
+                if(value != _RandomBaseSeed)
+                {
+                    _RandomBaseSeed = value;
+
+                    NodeFaultAttribute.RandomGen = new Random(_RandomBaseSeed);
+                }
+            }
+        }
+
 
         #endregion
 

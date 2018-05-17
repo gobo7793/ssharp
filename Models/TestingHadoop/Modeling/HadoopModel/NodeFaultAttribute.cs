@@ -40,7 +40,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Random number generator
         /// </summary>
-        public static Random RandomGen { get; } = new Random();
+        public static Random RandomGen { get; internal set; } = new Random();
 
         /// <summary>
         /// Fault activation probability, based on <see cref="ModelSettings.FaultActivationProbability"/>

@@ -134,8 +134,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// </summary>
         /// <param name="usingParser">The <see cref="IHadoopParser"/> to use</param>
         /// <param name="usingConnector">The <see cref="IHadoopConnector"/> to use</param>
-        /// <param name="benchTransitionSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
-        public void InitTestConfig(IHadoopParser usingParser, IHadoopConnector usingConnector, int benchTransitionSeed = 1)
+        public void InitTestConfig(IHadoopParser usingParser, IHadoopConnector usingConnector)
         {
             if(Controller == null)
                 InitController();
@@ -144,7 +143,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             UsingMonitoringParser = usingParser;
 
             InitYarnNodes(4);
-            InitClients(1, benchTransitionSeed);
+            InitClients(1);
             InitApplications(8);
             InitAppAttempts(4);
             InitContainers(32);
@@ -158,8 +157,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <param name="appCount">The application count per client to initialize</param>
         /// <param name="attemptCount">The attempt count per application to initialize</param>
         /// <param name="containerCount">The container count per attempt to initialize</param>
-        /// <param name="benchTransitionSeed">Seed for <see cref="BenchmarkController"/> transition system</param>
-        public void InitModel(int clientCount = 1, int appCount = 16, int attemptCount = 3, int containerCount = -1, int benchTransitionSeed = 1)
+        public void InitModel(int clientCount = 1, int appCount = 16, int attemptCount = 3, int containerCount = -1)
         {
             var nodeCount = ModelUtilities.GetFullNodeCount();
 
@@ -178,7 +176,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             //Controller.Parser = restParser;
 
             InitYarnNodes(nodeCount);
-            InitClients(clientCount, benchTransitionSeed);
+            InitClients(clientCount);
             InitApplications(appCount);
             InitAppAttempts(attemptCount);
             InitContainers(containerCount);
@@ -217,13 +215,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// Init submitting clients
         /// </summary>
         /// <param name="clientCount">Instances count</param>
-        /// <param name="benchTransitionSeed">Base seed for <see cref="BenchmarkController"/> transition system,
-        ///      clientId will be added to the seed</param>
-        private void InitClients(int clientCount, int benchTransitionSeed)
+        private void InitClients(int clientCount)
         {
             for(int i = 1; i <= clientCount; i++)
             {
-                var client = new Client($"client{i}", benchTransitionSeed + i);
+                var client = new Client($"client{i}", ModelSettings.RandomBaseSeed + i);
 
                 //Controller.ConnectedClients.Add(client);
                 Clients.Add(client);
