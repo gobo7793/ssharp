@@ -36,6 +36,9 @@ using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 {
+
+    using FaultTuple = Tuple<Fault, NodeFaultAttribute, YarnNode>;
+
     public class SimulationTests
     {
         private static log4net.ILog Logger { get; } =
@@ -116,12 +119,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             return model;
         }
 
+        #endregion
+
+        #region Utilities
+
         /// <summary>
         /// Collects the faults from <see cref="YarnNode"/>
         /// </summary>
         /// <param name="model">The model</param>
         /// <returns>The Faults and their fault activation attributes</returns>
-        public Tuple<Fault, NodeFaultAttribute, YarnNode>[] CollectYarnNodeFaults(Model model)
+        private FaultTuple[] CollectYarnNodeFaults(Model model)
         {
             return (from node in model.Nodes
 
@@ -135,6 +142,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
                     select Tuple.Create(fault, attribute, node)
             ).ToArray();
+        }
+
+        /// <summary>
+        /// Execute fault handling
+        /// </summary>
+        /// <param name="faults">The fault tuples</param>
+        private void HandleFaults(FaultTuple[] faults)
+        {
+            foreach(var fault in faults)
+            {
+                Logger.Info($"Fault {fault.Item1.Name}@{fault.Item3.Name}");
+                if(!fault.Item1.IsActivated && fault.Item2.CanActivate(fault.Item3))
+                    fault.Item1.ForceActivation();
+                else if(fault.Item1.IsActivated && fault.Item2.CanRepair())
+                    fault.Item1.SuppressActivation();
+            }
         }
 
         #endregion
@@ -164,8 +187,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 for(var i = 0; i < _StepCount; i++)
                 {
                     OutputUtilities.PrintStepStart();
-                    foreach(var node in ((Model)simulator.Model).Nodes)
-                        OutputUtilities.PrintTrace(node);
                     var stepStartTime = DateTime.Now;
 
                     simulator.SimulateStep();
@@ -224,20 +245,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 for(var i = 0; i < _StepCount; i++)
                 {
                     OutputUtilities.PrintStepStart();
-                    foreach(var node in ((Model)simulator.Model).Nodes)
-                        OutputUtilities.PrintTrace(node);
                     var stepStartTime = DateTime.Now;
 
-                    foreach(var fault in faults)
-                    {
-                        Logger.Info($"Fault {fault.Item1.Name}@{fault.Item3.Name}");
-                        if(!fault.Item1.IsActivated && fault.Item2.CanActivate(fault.Item3))
-                            fault.Item1.ForceActivation();
-                        else if(fault.Item1.IsActivated && fault.Item2.CanRepair())
-                            fault.Item1.SuppressActivation();
-                    }
-
                     simulator.SimulateStep();
+                    HandleFaults(faults);
 
                     var stepTime = DateTime.Now - stepStartTime;
                     OutputUtilities.PrintSteptTime(stepTime);
