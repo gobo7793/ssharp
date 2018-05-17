@@ -78,14 +78,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         private RestConnector()
         {
             for(int i = 0; i < ModelSettings.HostsCount; i++)
-                MonitoringConnections[i + 1] = (new SshConnection(ModelSettings.SshHosts[i], ModelSettings.SshUsernames[i], ModelSettings.SshPrivateKeyFiles[i],
-                    $"resMonH{i + 1}"));
+                MonitoringConnections[i + 1] = (new SshConnection(ModelSettings.SshHosts[i], ModelSettings.SshUsernames[i],
+                    ModelSettings.SshPrivateKeyFiles[i], $"resMonH{i + 1}"));
         }
 
         /// <summary>
-        /// Creates a new <see cref="RestConnector"/> instance, saves and returns it if <see cref="Model.SshHosts"/> are available
+        /// Creates a new <see cref="RestConnector"/> instance, saves and returns it if <see cref="ModelSettings.SshHosts"/> are available
         /// </summary>
-        /// <returns>Null if <see cref="Model.SshHosts"/> is not set, otherwise the instance</returns>
+        /// <returns>Null if <see cref="ModelSettings.SshHosts"/> is not set, otherwise the instance</returns>
         private static RestConnector CreateInstance()
         {
             if(ModelSettings.SshHosts.Length < 1)
@@ -113,7 +113,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 result = MonitoringRm.Run(cmd);
             }
 
-            if(result.Trim().EndsWith("Connection refused"))
+            result = result.Trim();
+            if(result.EndsWith("Connection refused") || result.EndsWith("Connection reset by peer"))
                 return String.Empty;
             return result;
         }
