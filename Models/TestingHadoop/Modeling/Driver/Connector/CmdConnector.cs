@@ -489,7 +489,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         public void RunHdfsFsckDelete()
         {
-            var cmd = $"{ModelSettings.HadoopSetupScript} hdfs dfs fsck / -delete";
+            var cmd = $"{ModelSettings.HadoopSetupScript} hdfs fsck / -delete";
             var submitter = GetSubmitter(cmd);
 
             submitter.Run(cmd);

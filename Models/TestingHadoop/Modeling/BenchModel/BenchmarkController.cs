@@ -156,7 +156,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel
 
             var cmdConnector = CmdConnector.Instance;
             if(removeExisting)
+            {
+                Logger.Info("Running HDFS file system check");
                 cmdConnector.RunHdfsFsckDelete();
+            }
 
             var dfsiow = Task.Run(() => { DoPrecreateInputData(Benchmarks[0], cmdConnector, removeExisting); });
             var rtw = Task.Run(() => { DoPrecreateInputData(Benchmarks[1], cmdConnector, removeExisting); });
