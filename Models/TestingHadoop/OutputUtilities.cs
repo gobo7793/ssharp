@@ -124,7 +124,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info($"    IsConnected:   {node.IsConnected}");
             Logger.Info($"    Container Cnt: {node.RunningContainerCount}");
             Logger.Info($"    Mem used/free: {node.MemoryUsed}/{node.MemoryAvailable} ({node.MemoryUsage:F3})");
-            Logger.Info($"    CPU used/free: {node.CpuUsed}/{node.CpuAvailable} ({node.MemoryUsage:F3})");
+            Logger.Info($"    CPU used/free: {node.CpuUsed}/{node.CpuAvailable} ({node.CpuUsage:F3})");
         }
 
         /// <summary>
@@ -169,9 +169,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         /// <param name="container">Container to print</param>
         public static void PrintTrace(YarnAppContainer container)
         {
-            Logger.Info($"          === Container {container.ContainerId} ===");
-            Logger.Info($"              State: {container.State}");
-            Logger.Info($"              Host:  {container.HostId} ({container.Host?.State})");
+            //Logger.Info($"          === Container {container.ContainerId} ===");
+            //Logger.Info($"              State: {container.State}");
+            //Logger.Info($"              Host:  {container.HostId} ({container.Host?.State})");
+            Logger.Info($"          === Container {container.ContainerId}@{container.HostId}: {container.State}");
         }
 
         #endregion
