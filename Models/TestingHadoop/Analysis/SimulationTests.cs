@@ -153,7 +153,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             foreach(var fault in faults)
             {
                 Logger.Info($"Fault {fault.Item1.Name}@{fault.Item3.Name}");
-                if(!fault.Item1.IsActivated && fault.Item2.CanActivate(fault.Item3))
+                if(!fault.Item1.IsActivated && fault.Item2.CanActivate(fault.Item3.Name))
                     fault.Item1.ForceActivation();
                 else if(fault.Item1.IsActivated && fault.Item2.CanRepair())
                     fault.Item1.SuppressActivation();
@@ -247,8 +247,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                     OutputUtilities.PrintStepStart();
                     var stepStartTime = DateTime.Now;
 
-                    simulator.SimulateStep();
                     HandleFaults(faults);
+                    simulator.SimulateStep();
 
                     var stepTime = DateTime.Now - stepStartTime;
                     OutputUtilities.PrintSteptTime(stepTime);

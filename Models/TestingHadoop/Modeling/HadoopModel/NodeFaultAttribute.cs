@@ -21,6 +21,8 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using SafetySharp.Modeling;
 
@@ -55,6 +57,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public double RepairProbability => ModelSettings.FaultRepairProbability;
 
         /// <summary>
+        /// All <see cref="YarnNode"/> in the model
+        /// </summary>
+        [NonSerializable]
+        public List<YarnNode> Nodes => Model.Instance.Nodes;
+
+        /// <summary>
         /// Node usage of the node on fault activation time
         /// </summary>
         private double NodeUsageOnActivation { get; set; }
@@ -67,10 +75,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Calculates the current node usage based on memory and cpu usage (between 0 and 2).
         /// Saves also the returning usage in <see cref="NodeUsageOnActivation"/>.
         /// </summary>
-        /// <param name="node">The node</param>
+        /// <param name="nodeName">Name of the node</param>
         /// <returns>The usage saved in <see cref="NodeUsageOnActivation"/></returns>
-        private double GetCurrentNodeUsage(YarnNode node)
+        private double GetCurrentNodeUsage(string nodeName)
         {
+            var node = Nodes.First(n => n.Name == nodeName);
             var nodeUsage = (node.MemoryUsage + node.CpuUsage) / 2;
 
             if(nodeUsage < 0.1) nodeUsage = 0.1;
@@ -83,10 +92,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Gets the current probability to toggle the fault state. Based on current/last saved Memory and CPU usage of the node.
         /// </summary>
+        /// <param name="nodeName">Name of the node</param>
         /// <returns>The probability to toggle the fault</returns>
-        private double GetFaultProbability(YarnNode node)
+        private double GetFaultProbability(string nodeName)
         {
-            var nodeUsage = GetCurrentNodeUsage(node);
+            var nodeUsage = GetCurrentNodeUsage(nodeName);
             var faultUsage = nodeUsage * ActivationProbability * 2;
 
             return 1 - faultUsage;
@@ -96,11 +106,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Indicates if the fault can be activated. The probability will be calculated
         /// based on the node usage, <see cref="ActivationProbability"/> and a random generated number.
         /// </summary>
-        /// <param name="node">The node of the fault to calculate the probability</param>
+        /// <param name="nodeName">Name of the node of the fault to calculate the probability</param>
         /// <returns>True if the fault can be activated</returns>
-        public bool CanActivate(YarnNode node)
+        public bool CanActivate(string nodeName)
         {
-            var probability = GetFaultProbability(node);
+            var probability = GetFaultProbability(nodeName);
             //Console.WriteLine(probability);
             var randomValue = RandomGen.NextDouble();
             Logger.Info($"Activation probability: {probability} < {randomValue}");

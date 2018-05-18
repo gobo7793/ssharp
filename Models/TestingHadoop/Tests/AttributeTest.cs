@@ -83,7 +83,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             var steps = 100;
             for(int i = 0; i < steps; i++)
             {
-                var act = faultTuple.Item2.CanActivate(_Node1);
+                var act = faultTuple.Item2.CanActivate(_Node1.Name);
                 var rep = faultTuple.Item2.CanRepair();
                 //Console.WriteLine($"Activation in step {i:D2}: {act}");
                 //Console.WriteLine($"Repair     in step {i:D2}: {rep}");
