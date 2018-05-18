@@ -20,8 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Linq;
 using NUnit.Framework;
-using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 {
@@ -44,5 +46,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         //    Assert.AreEqual($"http://{nodeName}:8042", node.HttpUrl);
         //    Assert.AreEqual($"http://{nodeName}:8042", fault.HttpUrl);
         //}
+
+        [Test]
+        public void TestCpuUsage()
+        {
+            var model = Model.Instance;
+            var connector = new DummyHadoopRestConnector();
+            model.InitTestConfig(RestParser.CreateInstance(connector), connector);
+            model.Controller.MonitorNodes();
+            var node = model.Nodes.First(n => n.Name == "compute-1");
+            Assert.AreEqual(7, node.CpuUsed);
+            Assert.AreEqual(1, node.CpuAvailable);
+            Assert.AreEqual(8, node.CpuCapacity);
+            Assert.AreEqual(0.875, node.CpuUsage);
+        }
     }
 }
