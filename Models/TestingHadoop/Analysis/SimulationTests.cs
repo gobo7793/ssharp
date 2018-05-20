@@ -200,7 +200,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             try
             {
                 var simulator = new SafetySharpSimulator(origModel);
-                var faults = CollectYarnNodeFaults((Model)simulator.Model);
+                var simModel = (Model)simulator.Model;
+                var faults = CollectYarnNodeFaults(simModel);
 
                 OutputUtilities.PrintExecutionStart();
                 OutputUtilities.PrintTestSettings("Simulation", _MinStepTime, _StepCount);
@@ -221,7 +222,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                     if(stepTime < ModelSettings.MinStepTime)
                         Thread.Sleep(ModelSettings.MinStepTime - stepTime);
 
-                    OutputUtilities.PrintFullTrace(((Model)simulator.Model).Controller);
+                    OutputUtilities.PrintFullTrace(simModel.Controller);
                 }
 
                 OutputUtilities.PrintExecutionFinish();
