@@ -104,7 +104,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// Saves the settings and initializes the model and returns the instance.
         /// </summary>
         /// <returns>The initialized model</returns>
-        public Model InitModel()
+        private Model InitModel()
         {
             ModelSettings.HostMode = ModelSettings.EHostMode.Multihost;
             ModelSettings.HostsCount = _HostsCount;
@@ -170,66 +170,31 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         [Test]
         public void SimulateHadoop()
         {
-            var origModel = InitModel();
             ModelSettings.FaultActivationProbability = 0.0;
             ModelSettings.FaultRepairProbability = 1.0;
 
-            var wasFatalError = false;
-            try
-            {
-                var simulator = new SafetySharpSimulator(origModel);
-
-                OutputUtilities.PrintExecutionStart();
-                OutputUtilities.PrintTestSettings("Simulation", _MinStepTime, _StepCount);
-
-                SimulateBenchmarks();
-
-                for(var i = 0; i < _StepCount; i++)
-                {
-                    OutputUtilities.PrintStepStart();
-                    var stepStartTime = DateTime.Now;
-
-                    simulator.SimulateStep();
-
-                    var stepTime = DateTime.Now - stepStartTime;
-                    OutputUtilities.PrintSteptTime(stepTime);
-                    if(stepTime < ModelSettings.MinStepTime)
-                        Thread.Sleep(ModelSettings.MinStepTime - stepTime);
-
-                    OutputUtilities.PrintFullTrace(((Model)simulator.Model).Controller);
-                }
-
-                OutputUtilities.PrintExecutionFinish();
-            }
-            catch(Exception e)
-            {
-                Logger.Fatal("Fatal exception during Simulation.", e);
-
-                foreach(var node in origModel.Nodes)
-                {
-                    Model.UsingFaultingConnector.StopNode(node.Name);
-                    Model.UsingFaultingConnector.StartNode(node.Name);
-                }
-
-                wasFatalError = true;
-            }
-
-            Assert.IsFalse(wasFatalError, "fatal error occured, see log for details");
+            ExecuteSimulation(false);
         }
 
-        #endregion
-
-        #region Analysis
-
         /// <summary>
-        /// Simulation without faults
+        /// Simulation with faults
         /// </summary>
         [Test]
         public void SimulateHadoopFaults()
         {
-            var origModel = InitModel();
             ModelSettings.FaultActivationProbability = _FaultActivationProbability;
             ModelSettings.FaultRepairProbability = _FaultDeactivationProbability;
+
+            ExecuteSimulation(true);
+        }
+
+        /// <summary>
+        /// Execution of the simulation
+        /// </summary>
+        /// <param name="isWithFaults">Indicates if the fault activation mechanism is active</param>
+        private void ExecuteSimulation(bool isWithFaults)
+        {
+            var origModel = InitModel();
 
             var wasFatalError = false;
             try
@@ -247,7 +212,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                     OutputUtilities.PrintStepStart();
                     var stepStartTime = DateTime.Now;
 
-                    HandleFaults(faults);
+                    if(isWithFaults)
+                        HandleFaults(faults);
                     simulator.SimulateStep();
 
                     var stepTime = DateTime.Now - stepStartTime;
@@ -268,10 +234,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             }
             finally
             {
-                foreach(var node in origModel.Nodes)
+                if(isWithFaults)
                 {
-                    Model.UsingFaultingConnector.StopNode(node.Name);
-                    Model.UsingFaultingConnector.StartNode(node.Name);
+                    foreach(var node in origModel.Nodes)
+                    {
+                        Model.UsingFaultingConnector.StopNode(node.Name);
+                        Model.UsingFaultingConnector.StartNode(node.Name);
+                    }
                 }
             }
 
