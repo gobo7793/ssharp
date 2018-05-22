@@ -134,8 +134,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         public static void PrintTrace(Client client)
         {
             Logger.Info($"=== Client {client.ClientId} ===");
-            Logger.Info($"    Current executing bench: {client.BenchController?.CurrentBenchmark?.Name}");
-            Logger.Info($"    Current executing app:   {client.CurrentExecutingApp?.AppId}");
+            Logger.Info($"    Current executing bench:  {client.BenchController?.CurrentBenchmark?.Name}");
+            Logger.Info($"    Current executing app id: {client.CurrentExecutingAppId}");
         }
 
         /// <summary>
