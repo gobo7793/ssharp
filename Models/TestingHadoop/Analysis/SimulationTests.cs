@@ -270,6 +270,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             {
                 foreach(var node in origModel.Nodes)
                 {
+                    if(node.IsActive && node.IsConnected)
+                        continue;
                     Model.UsingFaultingConnector.StopNode(node.Name);
                     Model.UsingFaultingConnector.StartNode(node.Name);
                 }
