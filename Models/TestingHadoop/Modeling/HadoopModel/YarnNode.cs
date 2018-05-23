@@ -23,6 +23,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using ISSE.SafetyChecking.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
@@ -323,7 +324,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             {
                 StartNode();
                 StartConnection();
+                HandleFaultingOnSingleton();
                 MonitorStatus();
+            }
+        }
+
+        /// <summary>
+        /// Handles the saving of <see cref="IsActive"/> and <see cref="IsConnected"/>
+        /// in the node that is saved by <see cref="Model.Instance"/> and not in
+        /// the simulator copy.
+        /// </summary>
+        private void HandleFaultingOnSingleton()
+        {
+            var nodeInSingleton = Model.Instance.Nodes.First(n => n.Name == Name);
+            if(this != nodeInSingleton)
+            {
+                nodeInSingleton.IsActive = IsActive;
+                nodeInSingleton.IsConnected = IsConnected;
             }
         }
 
@@ -431,6 +448,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             public override void Update()
             {
                 StopConnection();
+                HandleFaultingOnSingleton();
             }
         }
 
@@ -444,6 +462,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             public override void Update()
             {
                 StopNode();
+                HandleFaultingOnSingleton();
             }
         }
 

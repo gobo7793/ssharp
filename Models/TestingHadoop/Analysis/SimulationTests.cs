@@ -194,12 +194,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// <param name="isWithFaults">Indicates if the fault activation mechanism is active</param>
         private void ExecuteSimulation(bool isWithFaults)
         {
-            var origModel = InitModel();
+            var model = InitModel();
 
             var wasFatalError = false;
             try
             {
-                var simulator = new SafetySharpSimulator(origModel);
+                var simulator = new SafetySharpSimulator(model);
                 var simModel = (Model)simulator.Model;
                 var faults = CollectYarnNodeFaults(simModel);
 
@@ -237,10 +237,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             {
                 if(isWithFaults)
                 {
-                    foreach(var node in origModel.Nodes)
+                    foreach(var node in model.Nodes)
                     {
                         if(node.IsActive && node.IsConnected)
                             continue;
+                        Logger.Info($"Starting node {node.Name} after fault activation.");
                         Model.UsingFaultingConnector.StopNode(node.Name);
                         Model.UsingFaultingConnector.StartNode(node.Name);
                     }
