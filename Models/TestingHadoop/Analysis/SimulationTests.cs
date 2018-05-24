@@ -47,7 +47,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         #region Settings
 
         // Simulation settings
-        private static readonly TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 20);
+        private static readonly TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 25);
         //private static readonly int _BenchmarkSeed = 1;
         //private static readonly int _BenchmarkSeed = Environment.TickCount;
         private static readonly int _BenchmarkSeed = 4770109;
@@ -255,50 +255,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
             Assert.IsFalse(wasFatalError, "fatal error occured, see log for details");
         }
-
-        ///// <summary>
-        ///// Simulation with nondeterministic fault activation using <see cref="SafetySharpProbabilisticSimulator"/>
-        ///// </summary>
-        //[Test]
-        //public void SimulateHadoopProbabilisticSimulator()
-        //{
-        //    var origModel = InitModel();
-        //    foreach(var f in origModel.Faults)
-        //        f.ProbabilityOfOccurrence = new ISSE.SafetyChecking.Modeling.Probability(_FaultActivationProbability);
-        //    origModel.Faults.MakeNondeterministic();
-
-        //    SimulateBenchmarks();
-
-        //    var wasFatalError = false;
-        //    try
-        //    {
-        //        var simulator = new SafetySharpProbabilisticSimulator(origModel);
-
-        //        OutputUtilities.PrintExecutionStart();
-        //        OutputUtilities.PrintTestSettings("Probabilistic Simulation", _BenchmarkSeed, _MinStepTime, _StepCount, _PrecreatedInputs);
-
-        //        simulator.SimulateSteps(_StepCount);
-
-        //        OutputUtilities.PrintExecutionFinish();
-        //    }
-        //    catch(Exception e)
-        //    {
-        //        Logger.Fatal("Fatal exception during Faulting Simulation.", e);
-
-        //        wasFatalError = true;
-        //    }
-        //    finally
-        //    {
-        //        Logger.Info("Restarting all Nodes...");
-        //        foreach(var node in origModel.Nodes)
-        //        {
-        //            Model.UsingFaultingConnector.StopNode(node.Name);
-        //            Model.UsingFaultingConnector.StartNode(node.Name);
-        //        }
-        //    }
-
-        //    Assert.IsFalse(wasFatalError, "fatal error occured, see log for details");
-        //}
 
         #endregion
     }
