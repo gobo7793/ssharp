@@ -208,6 +208,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
                 SimulateBenchmarks();
 
+                var simulationStartTime = DateTime.Now;
+
                 for(var i = 0; i < _StepCount; i++)
                 {
                     OutputUtilities.PrintStepStart();
@@ -218,12 +220,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                     simulator.SimulateStep();
 
                     var stepTime = DateTime.Now - stepStartTime;
-                    OutputUtilities.PrintSteptTime(stepTime);
+                    OutputUtilities.PrintDuration(stepTime);
                     if(stepTime < ModelSettings.MinStepTime)
                         Thread.Sleep(ModelSettings.MinStepTime - stepTime);
 
                     OutputUtilities.PrintFullTrace(simModel.Controller);
                 }
+
+                var simulationTime = DateTime.Now - simulationStartTime;
+                OutputUtilities.PrintDuration(simulationTime, "Simulation");
 
                 OutputUtilities.PrintExecutionFinish();
             }

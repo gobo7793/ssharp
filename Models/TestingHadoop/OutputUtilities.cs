@@ -92,12 +92,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         }
 
         /// <summary>
-        /// Prints the time needed to execute the step
+        /// Prints the time needed to execute the simulation part, eg Step or whole simulation
         /// </summary>
         /// <param name="stepTime">The execution time</param>
-        public static void PrintSteptTime(TimeSpan stepTime)
+        /// <param name="type">The simulation part type to print</param>
+        public static void PrintDuration(TimeSpan stepTime, string type = "Step")
         {
-            Logger.Info($"Duration: {stepTime.ToString()}");
+            Logger.Info($"{type} Duration: {stepTime.ToString()}");
         }
 
         /// <summary>

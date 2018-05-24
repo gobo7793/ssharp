@@ -114,7 +114,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             IsReconfPossible();
 
             //var stepTime = DateTime.Now - stepStartTime;
-            //OutputUtilities.PrintSteptTime(stepTime);
+            //OutputUtilities.PrintDuration(stepTime);
             //if(stepTime < Model.MinStepTime)
             //    Thread.Sleep(Model.MinStepTime - stepTime);
 
