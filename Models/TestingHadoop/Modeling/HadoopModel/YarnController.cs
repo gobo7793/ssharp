@@ -105,7 +105,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 client.UpdateBenchmark();
 
             // optional, to allocate at least the AM container
-            ModelUtilities.Sleep(4);
+            ModelUtilities.Sleep(5);
 
             MonitorNodes();
             MonitorApps();
