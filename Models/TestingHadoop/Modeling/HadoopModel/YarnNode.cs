@@ -50,6 +50,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         [NodeFault]
         public readonly Fault NodeDeadFault = new TransientFault();
 
+        /// <summary>
+        /// Indicates if a fault is activated
+        /// </summary>
+        public virtual bool IsFaultActive => false;
+
         #endregion
 
         #region Properties
@@ -320,13 +325,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
-            if(!String.IsNullOrWhiteSpace(NodeId))
+            if(!IsFaultActive && !String.IsNullOrWhiteSpace(NodeId))
             {
                 StartNode();
                 StartConnection();
-                HandleFaultingOnSingleton();
                 MonitorStatus();
             }
+            HandleFaultingOnSingleton();
         }
 
         /// <summary>
@@ -445,10 +450,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         [Priority(0)] // will be ignored if NodeDeadFault is active
         public class NodeConnectionErrorEffect : YarnNode
         {
+            public override bool IsFaultActive => true;
+
             public override void Update()
             {
                 StopConnection();
-                HandleFaultingOnSingleton();
+                base.Update();
             }
         }
 
@@ -459,10 +466,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         [Priority(1)]
         public class NodeDeadEffect : YarnNode
         {
+            public override bool IsFaultActive => true;
+
             public override void Update()
             {
                 StopNode();
-                HandleFaultingOnSingleton();
+                base.Update();
             }
         }
 
