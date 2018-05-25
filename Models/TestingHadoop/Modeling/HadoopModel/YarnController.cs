@@ -122,10 +122,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             MonitorNodes();
             MonitorApps();
 
-            _IsSutConsraintsValid = CheckConstraints(EConstraintType.Sut);
-            _IsReconfPossible = IsReconfPossible();
+            _IsSutConsraintsValid = Oracle.ValidateConstraints(EConstraintType.Sut);
+            _IsReconfPossible = Oracle.IsReconfPossible();
 
-            CheckConstraints(EConstraintType.Test);
+            Oracle.ValidateConstraints(EConstraintType.Test);
 
             //var stepTime = DateTime.Now - stepStartTime;
             //OutputUtilities.PrintDuration(stepTime);
@@ -218,108 +218,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                     return ConnectedClients.All(c => c.CurrentExecutingApp.FinalStatus != EFinalStatus.None);
             }
         };
-
-        /// <summary>
-        /// Checks the constraints for all YARN components
-        /// </summary>
-        /// <param name="constraintType">Sets the constraint type to check</param>
-        /// <returns>True if constraints are valid</returns>
-        public bool CheckConstraints(EConstraintType constraintType)
-        {
-            Logger.Debug("Checking constraints");
-
-            var isAllValid = true;
-            if(constraintType == EConstraintType.Test)
-            {
-                if(!ValidateConstraints("Controller", TestConstraints))
-                    isAllValid = false;
-            }
-
-            foreach(var node in ConnectedNodes)
-            {
-                if(!ValidateConstraints(node, constraintType))
-                    isAllValid = false;
-            }
-
-            foreach(var app in Apps)
-            {
-                if(!ValidateConstraints(app, constraintType))
-                    isAllValid = false;
-
-                foreach(var attempt in app.Attempts)
-                {
-
-                    if(!ValidateConstraints(attempt, constraintType))
-                        isAllValid = false;
-
-                    foreach(var container in attempt.Containers)
-                    {
-                        if(!ValidateConstraints(container, constraintType))
-                            isAllValid = false;
-                    }
-                }
-            }
-
-            return isAllValid;
-        }
-
-        /// <summary>
-        /// Validate the constraints for the given yarn component
-        /// </summary>
-        /// <param name="yarnComponent">The yarn component to validate</param>
-        /// <param name="constraintType">Sets the constraint type to check</param>
-        /// <returns>True if constraints are valid</returns>
-        internal bool ValidateConstraints(IYarnReadable yarnComponent, EConstraintType constraintType)
-        {
-            var constraints = constraintType == EConstraintType.Sut ? yarnComponent.SutConstraints : yarnComponent.TestConstraints;
-            var isComponentValid = ValidateConstraints(yarnComponent.GetId(), constraints);
-            return isComponentValid;
-        }
-
-        /// <summary>
-        /// Validates the constraints and logs invalid constraints and returns if all constraints are valid
-        /// </summary>
-        /// <param name="componentId">The component ID for logging</param>
-        /// <param name="constraints">The constraints to validate</param>
-        /// <returns>True if constraints are valid</returns>
-        private bool ValidateConstraints(string componentId, Func<bool>[] constraints)
-        {
-            var isCompontenValid = true;
-            for(int i = 0; i < constraints.Length; i++)
-            {
-                var isValid = constraints[i]();
-                if(!isValid)
-                {
-                    Logger.Error($"YARN component not valid: Constraint {i} in {componentId}");
-                    if(isCompontenValid)
-                        isCompontenValid = false;
-                }
-            }
-            return isCompontenValid;
-        }
-
-        #endregion
-
-        #region Reconfiguration
-
-        /// <summary>
-        /// Validates if reconfiguration for the cluster would be possible
-        /// </summary>
-        /// <returns>True if reconfiguration is possible</returns>
-        /// <exception cref="Exception">Throws an exception if reconfiguration is not possible</exception>
-        public bool IsReconfPossible()
-        {
-            Logger.Debug("Checking if reconfiguration is possible");
-
-            var isReconfPossible = ConnectedNodes.Any(n => n.State == ENodeState.RUNNING);
-            if(!isReconfPossible)
-            {
-                Logger.Error("No reconfiguration possible!");
-                throw new Exception("No reconfiguration possible!");
-            }
-
-            return true;
-        }
 
         #endregion
 
