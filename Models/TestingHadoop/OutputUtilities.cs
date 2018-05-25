@@ -37,7 +37,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static int _StepCount = 0;
 
-        #region General output
+        #region General test output
 
         /// <summary>
         /// Prints the initial test settings to logging outputs if set
@@ -260,6 +260,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop
 
                 PrintTrace(container);
             }
+        }
+
+        #endregion
+
+        #region Other output
+
+        /// <summary>
+        /// Prints on Debug level which constraint for which requirement number on which component is currently testing
+        /// </summary>
+        /// <param name="requirementNo">The requirement number of the constraint</param>
+        /// <param name="component">The component</param>
+        public static void PrintTestConstraint(int requirementNo, string component = "")
+        {
+            if(!String.IsNullOrWhiteSpace(component))
+                component = $" ({component})";
+            Logger.Debug($"Test constraint for requirement {requirementNo}{component}");
         }
 
         #endregion

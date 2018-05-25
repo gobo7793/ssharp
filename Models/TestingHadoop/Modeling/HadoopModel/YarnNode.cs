@@ -243,6 +243,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 4 defects are recognized
             () =>
             {
+                OutputUtilities.PrintTestConstraint(4, GetId());
                 if(IsActive && IsConnected && State == ENodeState.RUNNING) return true;
                 if((!IsActive || !IsConnected) && State != ENodeState.RUNNING) return true;
                 return false;
@@ -255,7 +256,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public Func<bool>[] TestConstraints => new Func<bool>[]
         {
             // 6 defect nodes are recognized
-            () => SutConstraints[0](),
+            () =>
+            {
+                OutputUtilities.PrintTestConstraint(6, GetId());
+                return SutConstraints[0]();
+            },
         };
 
         /// <summary>

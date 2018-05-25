@@ -313,6 +313,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 1) task will be completed if not canceled
             () =>
             {
+                OutputUtilities.PrintTestConstraint(1, GetId());
                 if(FinalStatus != EFinalStatus.FAILED) return true;
                 if(!String.IsNullOrWhiteSpace(Name) && Name.ToLower().Contains("fail job")) return true;
                 return false;
@@ -320,6 +321,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 3) configuration will be updated
             () =>
             {
+                OutputUtilities.PrintTestConstraint(3, GetId());
                 if(State == EAppState.RUNNING)
                     return AmHost?.State == ENodeState.RUNNING;
                 return true;

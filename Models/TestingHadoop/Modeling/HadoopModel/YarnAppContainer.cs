@@ -194,6 +194,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 3) configuration will be updated
             () =>
             {
+                OutputUtilities.PrintTestConstraint(2, GetId());
+                OutputUtilities.PrintTestConstraint(3, GetId());
                 if(State == EContainerState.RUNNING)
                     return Host?.State == ENodeState.RUNNING;
                 return true;

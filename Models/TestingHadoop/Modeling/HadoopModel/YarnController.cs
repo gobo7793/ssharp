@@ -196,12 +196,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 7 if no node is running no reconfiguration possibility is recognized
             () =>
             {
+                OutputUtilities.PrintTestConstraint(7, "controller");
                 var isOneNodeAlive = ConnectedNodes.Any(n => n.State == ENodeState.RUNNING);
                 return isOneNodeAlive == _IsReconfPossible;
             },
             // 10 multihost cluster is working
             () =>
             {
+                OutputUtilities.PrintTestConstraint(10, "controller");
                 if(ModelSettings.HostsCount <= 1)
                     return true;
                 var nodeCount = ConnectedNodes.Count(n => n.State != ENodeState.None);
@@ -210,6 +212,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 11 multiple apps can be running on same time
             () =>
             {
+                OutputUtilities.PrintTestConstraint(11, "controller");
                 if(ConnectedClients.Count <= 1)
                 return true;
                     return ConnectedClients.All(c => c.CurrentExecutingApp.FinalStatus != EFinalStatus.None);
