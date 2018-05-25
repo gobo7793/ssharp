@@ -166,6 +166,24 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             }
         }
 
+        /// <summary>
+        /// Counts the activated and repaired faults
+        /// </summary>
+        /// <param name="faults">The fault tuple</param>
+        /// <returns>The activated and repaired faults count</returns>
+        private Tuple<int?, int?> CountFaults(FaultTuple[] faults)
+        {
+            int? act = 0;
+            int? rep = 0;
+            foreach(var fault in faults)
+            {
+                act += fault.Item4.Value;
+                rep += fault.Item5.Value;
+            }
+
+            return Tuple.Create(act, rep);
+        }
+
         #endregion
 
         #region Simulation
@@ -236,6 +254,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 var simulationTime = DateTime.Now - simulationStartTime;
                 OutputUtilities.PrintDuration(simulationTime, "Simulation");
 
+                Tuple<int?, int?> faultCounts = null;
+                if(isWithFaults)
+                    faultCounts = CountFaults(faults);
+                OutputUtilities.PrintTestResults(faultCounts?.Item1, faultCounts?.Item2);
+
                 OutputUtilities.PrintExecutionFinish();
             }
             catch(Exception e)
@@ -265,7 +288,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         #endregion
 
         #region Test suite constraint checking related
-        
+
         /// <summary>
         /// Wrapper class to change integers inside tuples
         /// </summary>

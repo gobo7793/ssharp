@@ -60,8 +60,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info($"Inputs precreated:   {ModelSettings.IsPrecreateBenchInputs}");
 
             Logger.Info($"Host mode:           {ModelSettings.HostMode}");
-            Logger.Info($"Hosts couent:        {ModelSettings.HostsCount}");
+            Logger.Info($"Hosts count:         {ModelSettings.HostsCount}");
             Logger.Info($"Node base count:     {ModelSettings.NodeBaseCount}");
+            Logger.Info($"Full node count:     {ModelUtilities.GetFullNodeCount()}");
             Logger.Info($"Setup script path:   {ModelSettings.HadoopSetupScript}");
             Logger.Info($"Controller url:      {ModelSettings.ControllerRestRmUrl}");
         }
@@ -99,6 +100,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         public static void PrintDuration(TimeSpan stepTime, string type = "Step")
         {
             Logger.Info($"{type} Duration: {stepTime.ToString()}");
+        }
+
+        /// <summary>
+        /// Prints the test results
+        /// </summary>
+        /// <param name="activatedFaults">Activated fault count</param>
+        /// <param name="repairedFaults">Repaired fault count</param>
+        public static void PrintTestResults(int? activatedFaults = null, int? repairedFaults = null)
+        {
+            Logger.Info("Finishing test. Results:");
+
+            if(activatedFaults.HasValue)
+                Logger.Info($"Activated Faults:    {activatedFaults}");
+            if(repairedFaults.HasValue)
+                Logger.Info($"Repaired Faults      {repairedFaults}");
         }
 
         /// <summary>
@@ -149,6 +165,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info($"        Name:        {app.Name}");
             Logger.Info($"        State:       {app.State}");
             Logger.Info($"        FinalStatus: {app.FinalStatus}");
+            Logger.Info($"        IsKillable:  {app.IsKillable}");
             Logger.Info($"        AM Host:     {app.AmHostId} ({app.AmHost?.State})");
         }
 
