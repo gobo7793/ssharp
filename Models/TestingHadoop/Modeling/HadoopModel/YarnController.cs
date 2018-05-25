@@ -193,10 +193,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public Func<bool>[] TestConstraints => new Func<bool>[]
         {
-            // 7 if no node is running no reconfiguration possibility is recognized
+            // 8 if no node is running no reconfiguration possibility is recognized
             () =>
             {
-                OutputUtilities.PrintTestConstraint(7, "controller");
+                OutputUtilities.PrintTestConstraint(8, "controller");
                 var isOneNodeAlive = ConnectedNodes.Any(n => n.State == ENodeState.RUNNING);
                 return isOneNodeAlive == _IsReconfPossible;
             },
