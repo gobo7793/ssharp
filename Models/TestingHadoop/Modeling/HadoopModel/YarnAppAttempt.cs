@@ -207,10 +207,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public bool IsSelfMonitoring { get; set; }
 
         /// <summary>
-        /// S# analysis/DCCA constraints for the oracle
+        /// S# constraints for the oracle based on requirement for the SuT
         /// </summary>
         [Hidden(HideElements = true)]
-        public Func<bool>[] Constraints => new Func<bool>[]
+        public Func<bool>[] SutConstraints => new Func<bool>[]
         {
             // 3) configuration will be updated
             () =>
@@ -219,6 +219,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                     return AmHost?.State == ENodeState.RUNNING;
                 return true;
             },
+        };
+
+        /// <summary>
+        /// Constraints to check the requirements of the test suite itself
+        /// </summary>
+        public Func<bool>[] TestConstraints => new Func<bool>[]
+        {
+
         };
 
         /// <summary>

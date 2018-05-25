@@ -20,9 +20,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         bool IsSelfMonitoring { get; set; }
 
         /// <summary>
-        /// S# analysis/DCCA constraints for the oracle
+        /// S# constraints for the oracle based on requirement for the SuT
         /// </summary>
-        Func<bool>[] Constraints { get; }
+        Func<bool>[] SutConstraints { get; }
+
+        /// <summary>
+        /// Constraints to check the requirements of the test suite itself
+        /// </summary>
+        Func<bool>[] TestConstraints { get; }
 
         /// <summary>
         /// Returns the ID of the component

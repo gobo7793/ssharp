@@ -235,10 +235,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public bool IsSelfMonitoring { get; set; }
 
         /// <summary>
-        /// S# analysis/DCCA constraints for the oracle
+        /// S# constraints for the oracle based on requirement for the SuT
         /// </summary>
         [NonSerializable]
-        public Func<bool>[] Constraints => new Func<bool>[]
+        public Func<bool>[] SutConstraints => new Func<bool>[]
         {
             // 4 defects are recognized
             () =>
@@ -247,6 +247,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 if((!IsActive || !IsConnected) && State != ENodeState.RUNNING) return true;
                 return false;
             }
+        };
+
+        /// <summary>
+        /// Constraints to check the requirements of the test suite itself
+        /// </summary>
+        public Func<bool>[] TestConstraints => new Func<bool>[]
+        {
+            // 6 defect nodes are recognized
+            () => SutConstraints[0](),
         };
 
         /// <summary>

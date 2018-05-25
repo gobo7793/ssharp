@@ -110,8 +110,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             MonitorNodes();
             MonitorApps();
 
-            CheckConstraints();
+            CheckConstraints(EConstraintType.Sut);
             IsReconfPossible();
+
+            CheckConstraints(EConstraintType.Test);
 
             //var stepTime = DateTime.Now - stepStartTime;
             //OutputUtilities.PrintDuration(stepTime);
@@ -175,26 +177,38 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region Constraints
 
         /// <summary>
+        /// Constraints to check the requirements of the test suite itself
+        /// </summary>
+        public Func<bool>[] TestConstraints => new Func<bool>[]
+        {
+
+        };
+
+        /// <summary>
         /// Checks the constraints for all YARN components
         /// </summary>
-        public void CheckConstraints()
+        /// <param name="constraintType">Sets the constraint type to check</param>
+        public void CheckConstraints(EConstraintType constraintType)
         {
             Logger.Debug("Checking constraints");
 
+            if(constraintType == EConstraintType.Test)
+                ValidateConstraints("Controller", TestConstraints);
+
             foreach(var node in ConnectedNodes)
-                ValidateConstraints(node);
+                ValidateConstraints(node, constraintType);
 
             foreach(var app in Apps)
             {
-                ValidateConstraints(app);
+                ValidateConstraints(app, constraintType);
 
                 foreach(var attempt in app.Attempts)
                 {
 
-                    ValidateConstraints(attempt);
+                    ValidateConstraints(attempt, constraintType);
 
                     foreach(var container in attempt.Containers)
-                        ValidateConstraints(container);
+                        ValidateConstraints(container, constraintType);
                 }
             }
         }
@@ -203,13 +217,35 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Validate the constraints for the given yarn component
         /// </summary>
         /// <param name="yarnComponent">The yarn component to validate</param>
+        /// <param name="constraintType">Sets the constraint type to check</param>
         /// <returns>True if constraints are valid</returns>
-        internal bool ValidateConstraints(IYarnReadable yarnComponent)
+        internal bool ValidateConstraints(IYarnReadable yarnComponent, EConstraintType constraintType)
         {
-            var isComponentValid = yarnComponent.Constraints.All(constraint => constraint());
-            if(!isComponentValid)
-                Logger.Error($"YARN component not valid: {yarnComponent.GetId()}");
+            var constraints = constraintType == EConstraintType.Sut ? yarnComponent.SutConstraints : yarnComponent.TestConstraints;
+            var isComponentValid = ValidateConstraints(yarnComponent.GetId(), constraints);
             return isComponentValid;
+        }
+
+        /// <summary>
+        /// Validates the constraints and logs invalid constraints and returns if all constraints are valid
+        /// </summary>
+        /// <param name="componentId">The component ID for logging</param>
+        /// <param name="constraints">The constraints to validate</param>
+        /// <returns>True if constraints are valid</returns>
+        private bool ValidateConstraints(string componentId, Func<bool>[] constraints)
+        {
+            var isCompontenValid = true;
+            for(int i = 0; i < constraints.Length; i++)
+            {
+                var isValid = constraints[i]();
+                if(!isValid)
+                {
+                    Logger.Error($"YARN component not valid: Constraint {i} in {componentId}");
+                    if(isCompontenValid)
+                        isCompontenValid = false;
+                }
+            }
+            return isCompontenValid;
         }
 
         #endregion

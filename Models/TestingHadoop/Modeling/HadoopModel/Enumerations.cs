@@ -187,4 +187,24 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     }
 
     #endregion
+    
+    #region EConstraintType
+
+    /// <summary>
+    /// Defines the constraint type to check
+    /// </summary>
+    public enum EConstraintType
+    {
+        /// <summary>
+        /// Indicates constraints for the system under test
+        /// </summary>
+        Sut,
+
+        /// <summary>
+        /// Indicates constraints for the test suite itself
+        /// </summary>
+        Test
+    }
+
+    #endregion
 }
