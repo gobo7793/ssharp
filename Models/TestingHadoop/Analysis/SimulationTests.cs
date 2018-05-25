@@ -36,8 +36,8 @@ using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 {
-
-    using FaultTuple = Tuple<Fault, NodeFaultAttribute, YarnNode>;
+    // Fault, Attribute, Node, Activation count, repairing count
+    using FaultTuple = Tuple<Fault, NodeFaultAttribute, YarnNode, SimulationTests.IntWrapper, SimulationTests.IntWrapper>;
 
     public class SimulationTests
     {
@@ -140,7 +140,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
                     let fault = (Fault)faultField.GetValue(node)
 
-                    select Tuple.Create(fault, attribute, node)
+                    select Tuple.Create(fault, attribute, node, new IntWrapper(0), new IntWrapper(0))
             ).ToArray();
         }
 
@@ -154,9 +154,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             {
                 Logger.Info($"Fault {fault.Item1.Name}@{fault.Item3.Name}");
                 if(!fault.Item1.IsActivated && fault.Item2.CanActivate(fault.Item3.Name))
+                {
                     fault.Item1.ForceActivation();
+                    fault.Item4.Value++;
+                }
                 else if(fault.Item1.IsActivated && fault.Item2.CanRepair())
+                {
                     fault.Item1.SuppressActivation();
+                    fault.Item5.Value++;
+                }
             }
         }
 
@@ -254,6 +260,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             }
 
             Assert.IsFalse(wasFatalError, "fatal error occured, see log for details");
+        }
+
+        #endregion
+
+        #region Test suite constraint checking related
+        
+        /// <summary>
+        /// Wrapper class to change integers inside tuples
+        /// </summary>
+        internal class IntWrapper
+        {
+            public int Value { get; set; }
+
+            public IntWrapper(int i)
+            {
+                Value = i;
+            }
         }
 
         #endregion

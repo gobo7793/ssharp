@@ -38,6 +38,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         #region Properties
 
+        /// <summary>
+        /// Indicates if the reconfiguration would be possible
+        /// </summary>
+        [NonSerializable]
+        private bool _IsReconfPossible { get; set; }
+
+        /// <summary>
+        /// Indicates if all SuT constraints are valid
+        /// </summary>
+        [NonSerializable]
+        private bool _IsSutConsraintsValid { get; set; }
+
         [NonSerializable]
         private static log4net.ILog Logger { get; } =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -110,8 +122,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             MonitorNodes();
             MonitorApps();
 
-            CheckConstraints(EConstraintType.Sut);
-            IsReconfPossible();
+            _IsSutConsraintsValid = CheckConstraints(EConstraintType.Sut);
+            _IsReconfPossible = IsReconfPossible();
 
             CheckConstraints(EConstraintType.Test);
 
@@ -181,36 +193,71 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public Func<bool>[] TestConstraints => new Func<bool>[]
         {
-
+            // 7 if no node is running no reconfiguration possibility is recognized
+            () =>
+            {
+                var isOneNodeAlive = ConnectedNodes.Any(n => n.State == ENodeState.RUNNING);
+                return isOneNodeAlive == _IsReconfPossible;
+            },
+            // 10 multihost cluster is working
+            () =>
+            {
+                if(ModelSettings.HostsCount <= 1)
+                    return true;
+                var nodeCount = ConnectedNodes.Count(n => n.State != ENodeState.None);
+                return nodeCount == ModelUtilities.GetFullNodeCount();
+            },
+            // 11 multiple apps can be running on same time
+            () =>
+            {
+                if(ConnectedClients.Count <= 1)
+                return true;
+                    return ConnectedClients.All(c => c.CurrentExecutingApp.FinalStatus != EFinalStatus.None);
+            }
         };
 
         /// <summary>
         /// Checks the constraints for all YARN components
         /// </summary>
         /// <param name="constraintType">Sets the constraint type to check</param>
-        public void CheckConstraints(EConstraintType constraintType)
+        /// <returns>True if constraints are valid</returns>
+        public bool CheckConstraints(EConstraintType constraintType)
         {
             Logger.Debug("Checking constraints");
 
+            var isAllValid = true;
             if(constraintType == EConstraintType.Test)
-                ValidateConstraints("Controller", TestConstraints);
+            {
+                if(!ValidateConstraints("Controller", TestConstraints))
+                    isAllValid = false;
+            }
 
             foreach(var node in ConnectedNodes)
-                ValidateConstraints(node, constraintType);
+            {
+                if(!ValidateConstraints(node, constraintType))
+                    isAllValid = false;
+            }
 
             foreach(var app in Apps)
             {
-                ValidateConstraints(app, constraintType);
+                if(!ValidateConstraints(app, constraintType))
+                    isAllValid = false;
 
                 foreach(var attempt in app.Attempts)
                 {
 
-                    ValidateConstraints(attempt, constraintType);
+                    if(!ValidateConstraints(attempt, constraintType))
+                        isAllValid = false;
 
                     foreach(var container in attempt.Containers)
-                        ValidateConstraints(container, constraintType);
+                    {
+                        if(!ValidateConstraints(container, constraintType))
+                            isAllValid = false;
+                    }
                 }
             }
+
+            return isAllValid;
         }
 
         /// <summary>

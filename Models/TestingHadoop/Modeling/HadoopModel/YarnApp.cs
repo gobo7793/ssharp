@@ -241,7 +241,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// Indicates that the app can be killed
+        /// Indicates that the app can be killed (short: is the app running)
         /// </summary>
         //public bool IsKillable => State != EAppState.None &&
         //                          (State & (EAppState.FAILED | EAppState.FINISHED | EAppState.KILLED | EAppState.NotStartedYet)) ==
