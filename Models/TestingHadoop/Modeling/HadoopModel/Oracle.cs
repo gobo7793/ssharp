@@ -29,7 +29,8 @@ using SafetySharp.Modeling;
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 {
     /// <summary>
-    /// Checks and validates the constraints of the model
+    /// Checks and validates the constraints of the model.
+    /// Constraints have to be saved as <see cref="Func{TResult}"/>[] where TResult is <see cref="Boolean"/>
     /// </summary>
     public static class Oracle
     {
@@ -109,22 +110,24 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Validates the constraints and logs invalid constraints and returns if all constraints are valid
         /// </summary>
-        /// <param name="componentId">The component ID for logging</param>
+        /// <param name="componentId">The component ID or name for logging</param>
         /// <param name="constraints">The constraints to validate</param>
         /// <returns>True if constraints are valid</returns>
-        private static bool ValidateConstraints(string componentId, Func<bool>[] constraints)
+        public static bool ValidateConstraints(string componentId, Func<bool>[] constraints)
         {
             var isCompontenValid = true;
-            foreach(var constraint in constraints)
+            for(var i = 0; i < constraints.Length; i++)
             {
+                var constraint = constraints[i];
                 var isValid = constraint();
                 if(!isValid)
                 {
-                    Logger.Error($"YARN component not valid: Constraint in {componentId}");
+                    Logger.Error($"YARN component not valid: Constraint {i} in {componentId}");
                     if(isCompontenValid)
                         isCompontenValid = false;
                 }
             }
+
             return isCompontenValid;
         }
 

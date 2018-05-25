@@ -256,9 +256,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public Func<bool>[] TestConstraints => new Func<bool>[]
         {
             // 6 defect nodes are recognized
+            // 7 faults are injected/repaired
             () =>
             {
                 OutputUtilities.PrintTestConstraint(6, GetId());
+                OutputUtilities.PrintTestConstraint(7, GetId());
                 return SutConstraints[0]();
             },
         };

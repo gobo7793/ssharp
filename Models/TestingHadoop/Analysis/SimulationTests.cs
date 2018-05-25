@@ -188,6 +188,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
         #region Simulation
 
+        private Tuple<int?, int?> _FaultCounts { get; set; }
+
         /// <summary>
         /// Simulation without faults
         /// </summary>
@@ -223,6 +225,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             var wasFatalError = false;
             try
             {
+                // init simulation
                 var simulator = new SafetySharpSimulator(model);
                 var simModel = (Model)simulator.Model;
                 var faults = CollectYarnNodeFaults(simModel);
@@ -234,6 +237,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
                 var simulationStartTime = DateTime.Now;
 
+                // do simuluation
                 for(var i = 0; i < _StepCount; i++)
                 {
                     OutputUtilities.PrintStepStart();
@@ -254,10 +258,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 var simulationTime = DateTime.Now - simulationStartTime;
                 OutputUtilities.PrintDuration(simulationTime, "Simulation");
 
-                Tuple<int?, int?> faultCounts = null;
+                // collect fault counts and check constraint for it
                 if(isWithFaults)
-                    faultCounts = CountFaults(faults);
-                OutputUtilities.PrintTestResults(faultCounts?.Item1, faultCounts?.Item2);
+                {
+                    _FaultCounts = CountFaults(faults);
+                    Oracle.ValidateConstraints("simulator", TestConstraints);
+                }
+
+                OutputUtilities.PrintTestResults(_FaultCounts?.Item1, _FaultCounts?.Item2);
 
                 OutputUtilities.PrintExecutionFinish();
             }
@@ -288,6 +296,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         #endregion
 
         #region Test suite constraint checking related
+
+        /// <summary>
+        /// Constraints to check the requirements of the test suite itself
+        /// </summary>
+        public Func<bool>[] TestConstraints => new Func<bool>[]
+        {
+            // 7 faults are injected/repaired
+            () =>
+            {
+                OutputUtilities.PrintTestConstraint(7, "simulator");
+                if(_FaultCounts == null)
+                    return true;
+                if(_FaultCounts.Item1.HasValue && _FaultCounts.Item1.Value > 0)
+                    return true;
+                return false;
+            },
+        };
 
         /// <summary>
         /// Wrapper class to change integers inside tuples
