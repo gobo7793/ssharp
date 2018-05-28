@@ -253,6 +253,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// Constraints to check the requirements of the test suite itself
         /// </summary>
+        [Hidden(HideElements = true)]
         public Func<bool>[] TestConstraints => new Func<bool>[]
         {
             // 6 defect nodes are recognized
