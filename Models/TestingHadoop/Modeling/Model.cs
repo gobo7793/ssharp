@@ -20,10 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using SafetySharp.CaseStudies.TestingHadoop.Modeling.BenchModel;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser;
@@ -162,7 +159,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             var nodeCount = ModelUtilities.GetFullNodeCount();
 
             if(containerCount < 0)
-                containerCount = nodeCount * 8;
+                containerCount = nodeCount * 8 + 3;
 
             InitController();
 
