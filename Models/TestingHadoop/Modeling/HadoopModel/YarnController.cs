@@ -109,9 +109,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             MonitorNodes();
             MonitorApps();
 
+            Logger.Info("Checking SuT constraints.");
             Oracle.ValidateConstraints(EConstraintType.Sut);
             Oracle.IsReconfPossible();
 
+            Logger.Info("Checking test constraints");
             Oracle.ValidateConstraints(EConstraintType.Test);
 
             //var stepTime = DateTime.Now - stepStartTime;

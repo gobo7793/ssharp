@@ -49,8 +49,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         // Simulation settings
         private static readonly TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 25);
         //private static readonly int _BenchmarkSeed = 1;
-        //private static readonly int _BenchmarkSeed = Environment.TickCount;
-        private static readonly int _BenchmarkSeed = 4770109;
+        private static readonly int _BenchmarkSeed = Environment.TickCount;
         private static readonly int _StepCount = 3;
         private static readonly bool _PrecreatedInputs = true;
         private static readonly double _FaultActivationProbability = 0.4; // 0.0 -> inactive, 1.0 -> always

@@ -269,7 +269,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 5 current state is detected and saved
             () =>
             {
-                if(String.IsNullOrWhiteSpace(NodeId))
+                if(String.IsNullOrWhiteSpace(NodeId) || !IsActive || !IsConnected)
                     return true;
 
                 var prev = PreviousParsedComponent as INodeResult;
