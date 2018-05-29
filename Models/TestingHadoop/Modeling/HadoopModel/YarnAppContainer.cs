@@ -185,6 +185,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public bool IsSelfMonitoring { get; set; }
 
         /// <summary>
+        /// The <see cref="IParsedComponent"/> to get the status on the previous step
+        /// </summary>
+        public IParsedComponent PreviousParsedComponent { get; set; }
+
+        /// <summary>
+        /// The <see cref="IParsedComponent"/> to get the status on the current step
+        /// </summary>
+        public IParsedComponent CurrentParsedComponent { get; set; }
+
+        /// <summary>
         /// S# constraints for the oracle based on requirement for the SuT
         /// </summary>
         [Hidden(HideElements = true)]
@@ -208,7 +218,30 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         [Hidden(HideElements = true)]
         public Func<bool>[] TestConstraints => new Func<bool>[]
         {
+            // 5 current state is detected and saved
+            () =>
+            {
+                if(String.IsNullOrWhiteSpace(ContainerId))
+                    return true;
 
+                var prev = PreviousParsedComponent as IContainerResult;
+                var curr = CurrentParsedComponent as IContainerResult;
+                if((prev == null && curr != null) ||
+                   (prev != null && curr != null && !ReferenceEquals(curr, prev)))
+                {
+                    return StartTime == curr.StartTime &&
+                           EndTime == curr.FinishTime &&
+                           State == curr.State &&
+                           HostId == curr.Host.NodeId &&
+                           Priority == curr.Priority &&
+                           ExitCode == curr.ExitCode &&
+                           AllocatedMemory == curr.MemoryNeeded &&
+                           AllocatedVcores == curr.VcoresNeeded &&
+                           String.IsNullOrWhiteSpace(Diagnostics) == String.IsNullOrWhiteSpace(curr.Diagnostics) ||
+                           curr.Diagnostics.StartsWith(Diagnostics);
+                }
+                return false;
+            },
         };
 
         /// <summary>
@@ -238,6 +271,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <param name="parsed">The parsed component</param>
         public void SetStatus(IParsedComponent parsed)
         {
+            PreviousParsedComponent = CurrentParsedComponent;
+            CurrentParsedComponent = parsed;
+
             var container = parsed as IContainerResult;
             ContainerId = container.ContainerId;
             StartTime = container.StartTime;

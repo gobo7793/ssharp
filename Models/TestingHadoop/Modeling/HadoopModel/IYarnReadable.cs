@@ -20,6 +20,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         bool IsSelfMonitoring { get; set; }
 
         /// <summary>
+        /// The <see cref="IParsedComponent"/> to get the status on the previous step
+        /// </summary>
+        IParsedComponent PreviousParsedComponent { get; set; }
+
+        /// <summary>
+        /// The <see cref="IParsedComponent"/> to get the status on the current step
+        /// </summary>
+        IParsedComponent CurrentParsedComponent { get; set; }
+
+        /// <summary>
         /// S# constraints for the oracle based on requirement for the SuT
         /// </summary>
         Func<bool>[] SutConstraints { get; }

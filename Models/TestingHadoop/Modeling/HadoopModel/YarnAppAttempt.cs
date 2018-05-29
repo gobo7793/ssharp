@@ -207,6 +207,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public bool IsSelfMonitoring { get; set; }
 
         /// <summary>
+        /// The <see cref="IParsedComponent"/> to get the status on the previous step
+        /// </summary>
+        public IParsedComponent PreviousParsedComponent { get; set; }
+
+        /// <summary>
+        /// The <see cref="IParsedComponent"/> to get the status on the current step
+        /// </summary>
+        public IParsedComponent CurrentParsedComponent { get; set; }
+
+        /// <summary>
         /// S# constraints for the oracle based on requirement for the SuT
         /// </summary>
         [Hidden(HideElements = true)]
@@ -228,7 +238,28 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         [Hidden(HideElements = true)]
         public Func<bool>[] TestConstraints => new Func<bool>[]
         {
+            // 5 current state is detected and saved
+            () =>
+            {
+                if(String.IsNullOrWhiteSpace(AttemptId))
+                    return true;
 
+                var prev = PreviousParsedComponent as IAppAttemptResult;
+                var curr = CurrentParsedComponent as IAppAttemptResult;
+                if((prev == null && curr != null) ||
+                   (prev != null && curr != null && !ReferenceEquals(curr, prev)))
+                {
+                    return State == curr.State &&
+                           AmContainerId == curr.AmContainerId &&
+                           AmHostId == curr.AmHost.NodeId &&
+                           String.IsNullOrWhiteSpace(TrackingUrl) == String.IsNullOrWhiteSpace(curr.TrackingUrl) ||
+                           curr.TrackingUrl.StartsWith(TrackingUrl)&&
+                           StartTime == curr.StartTime &&
+                           String.IsNullOrWhiteSpace(Diagnostics) == String.IsNullOrWhiteSpace(curr.Diagnostics) ||
+                           curr.Diagnostics.StartsWith(Diagnostics);
+                }
+                return false;
+            },
         };
 
         /// <summary>
@@ -274,6 +305,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <param name="parsed">The parsed component</param>
         public void SetStatus(IParsedComponent parsed)
         {
+            PreviousParsedComponent = CurrentParsedComponent;
+            CurrentParsedComponent = parsed;
+
             var attempt = parsed as IAppAttemptResult;
             AttemptId = attempt.AttemptId;
             State = attempt.State;

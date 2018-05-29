@@ -26,7 +26,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using ISSE.SafetyChecking.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
 
@@ -305,6 +304,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public bool IsSelfMonitoring { get; set; }
 
         /// <summary>
+        /// The <see cref="IParsedComponent"/> to get the status on the previous step
+        /// </summary>
+        public IParsedComponent PreviousParsedComponent { get; set; }
+
+        /// <summary>
+        /// The <see cref="IParsedComponent"/> to get the status on the current step
+        /// </summary>
+        public IParsedComponent CurrentParsedComponent { get; set; }
+
+        /// <summary>
         /// S# constraints for the oracle based on requirement for the SuT
         /// </summary>
         [Hidden(HideElements = true)]
@@ -334,7 +343,38 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         [Hidden(HideElements = true)]
         public Func<bool>[] TestConstraints => new Func<bool>[]
         {
+            // 5 current state is detected and saved
+            () =>
+            {
+                if(String.IsNullOrWhiteSpace(AppId))
+                    return true;
 
+                var prev = PreviousParsedComponent as IApplicationResult;
+                var curr = CurrentParsedComponent as IApplicationResult;
+                if((prev == null && curr != null) ||
+                   (prev != null && curr != null && !ReferenceEquals(curr, prev)))
+                {
+                    return Name == curr.AppName &&
+                           StartTime == curr.StartTime &&
+                           EndTime == curr.FinishTime &&
+                           Math.Abs(Progress - curr.Progess) < 0.01 &&
+                           State == curr.State &&
+                           FinalStatus == curr.FinalStatus &&
+                           AmHostId == curr.AmHost.NodeId &&
+                           AllocatedMb == curr.AllocatedMb &&
+                           AllocatedVcores == curr.AllocatedVcores &&
+                           MbSeconds == curr.MbSeconds &&
+                           VcoreSeconds == curr.VcoreSeconds &&
+                           PreemptedMb == curr.PreemptedMb &&
+                           PreemptedVcores == curr.PreemptedVcores &&
+                           AmContainerPreempted == curr.AmContainerPreempted &&
+                           NonAmContainerPreempted == curr.NonAmContainerPreempted &&
+                           CurrentRunningContainers == curr.RunningContainers &&
+                           String.IsNullOrWhiteSpace(Diagnostics) == String.IsNullOrWhiteSpace(curr.Diagnostics) ||
+                           curr.Diagnostics.StartsWith(Diagnostics);
+                }
+                return false;
+            },
         };
 
         /// <summary>
@@ -386,6 +426,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <param name="parsed">The parsed component</param>
         public void SetStatus(IParsedComponent parsed)
         {
+            PreviousParsedComponent = CurrentParsedComponent;
+            CurrentParsedComponent = parsed;
+
             var app = parsed as IApplicationResult;
             AppId = app.AppId;
             Name = app.AppName;

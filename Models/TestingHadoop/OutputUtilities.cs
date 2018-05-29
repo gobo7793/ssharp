@@ -109,7 +109,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         /// <param name="repairedFaults">Repaired fault count</param>
         public static void PrintTestResults(int? activatedFaults = null, int? repairedFaults = null)
         {
-            Logger.Info("Finishing test. Results:");
+            Logger.Info("Finishing test.");
 
             if(activatedFaults.HasValue)
                 Logger.Info($"Activated Faults:    {activatedFaults}");

@@ -235,6 +235,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public bool IsSelfMonitoring { get; set; }
 
         /// <summary>
+        /// The <see cref="IParsedComponent"/> to get the status on the previous step
+        /// </summary>
+        public IParsedComponent PreviousParsedComponent { get; set; }
+
+        /// <summary>
+        /// The <see cref="IParsedComponent"/> to get the status on the current step
+        /// </summary>
+        public IParsedComponent CurrentParsedComponent { get; set; }
+
+        /// <summary>
         /// S# constraints for the oracle based on requirement for the SuT
         /// </summary>
         [NonSerializable]
@@ -256,6 +266,29 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         [Hidden(HideElements = true)]
         public Func<bool>[] TestConstraints => new Func<bool>[]
         {
+            // 5 current state is detected and saved
+            () =>
+            {
+                if(String.IsNullOrWhiteSpace(NodeId))
+                    return true;
+
+                var prev = PreviousParsedComponent as INodeResult;
+                var curr = CurrentParsedComponent as INodeResult;
+                if((prev == null && curr != null) ||
+                   (prev != null && curr != null && !ReferenceEquals(curr, prev)))
+                {
+                    return State == curr.NodeState &&
+                           RunningContainerCount == curr.RunningContainerCount &&
+                           MemoryUsed == curr.MemoryUsed &&
+                           MemoryAvailable == curr.MemoryAvailable &&
+                           CpuUsed == curr.CpuUsed &&
+                           CpuAvailable == curr.CpuAvailable &&
+                           LastHealthUpdate == curr.LastHealthUpdate &&
+                           String.IsNullOrWhiteSpace(HealthReport) == String.IsNullOrWhiteSpace(curr.HealthReport) ||
+                           curr.HealthReport.StartsWith(HealthReport);
+                }
+                return false;
+            },
             // 6 defect nodes are recognized
             // 7 faults are injected/repaired
             () =>
@@ -293,6 +326,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <param name="parsed">The parsed component</param>
         public void SetStatus(IParsedComponent parsed)
         {
+            PreviousParsedComponent = CurrentParsedComponent;
+            CurrentParsedComponent = parsed;
+
             var node = parsed as INodeResult;
             State = node.NodeState;
             RunningContainerCount = node.RunningContainerCount;

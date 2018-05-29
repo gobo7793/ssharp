@@ -44,7 +44,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// The using controller
         /// </summary>
         [NonSerializable]
-        private static YarnController _Controller => Model.Instance.Controller;
+        private static YarnController Controller => Model.Instance.Controller;
 
         #endregion
 
@@ -62,17 +62,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             var isAllValid = true;
             if(constraintType == EConstraintType.Test)
             {
-                if(!ValidateConstraints("Controller", _Controller.TestConstraints))
+                if(!ValidateConstraints("Controller", Controller.TestConstraints))
                     isAllValid = false;
             }
 
-            foreach(var node in _Controller.ConnectedNodes)
+            foreach(var node in Controller.ConnectedNodes)
             {
                 if(!ValidateConstraints(node, constraintType))
                     isAllValid = false;
             }
 
-            foreach(var app in _Controller.Apps)
+            foreach(var app in Controller.Apps)
             {
                 if(!ValidateConstraints(app, constraintType))
                     isAllValid = false;
@@ -144,7 +144,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             Logger.Debug("Checking if reconfiguration is possible");
 
-            var isReconfPossible = _Controller.ConnectedNodes.Any(n => n.State == ENodeState.RUNNING);
+            var isReconfPossible = Controller.ConnectedNodes.Any(n => n.State == ENodeState.RUNNING);
             if(!isReconfPossible)
             {
                 Logger.Error("No reconfiguration possible!");

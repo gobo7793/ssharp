@@ -25,7 +25,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SafetySharp.CompilerServices;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
@@ -37,19 +36,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     {
 
         #region Properties
-
-        /// <summary>
-        /// Indicates if the reconfiguration would be possible
-        /// </summary>
-        [NonSerializable]
-        private bool _IsReconfPossible { get; set; }
-
-        /// <summary>
-        /// Indicates if all SuT constraints are valid
-        /// </summary>
-        [NonSerializable]
-        private bool _IsSutConsraintsValid { get; set; }
-
+        
         [NonSerializable]
         private static log4net.ILog Logger { get; } =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -122,8 +109,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             MonitorNodes();
             MonitorApps();
 
-            _IsSutConsraintsValid = Oracle.ValidateConstraints(EConstraintType.Sut);
-            _IsReconfPossible = Oracle.IsReconfPossible();
+            Oracle.ValidateConstraints(EConstraintType.Sut);
+            Oracle.IsReconfPossible();
 
             Oracle.ValidateConstraints(EConstraintType.Test);
 
@@ -199,7 +186,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             {
                 OutputUtilities.PrintTestConstraint(8, "controller");
                 var isOneNodeAlive = ConnectedNodes.Any(n => n.State == ENodeState.RUNNING);
-                return isOneNodeAlive == _IsReconfPossible;
+                return isOneNodeAlive;
             },
             // 10 multihost cluster is working
             () =>
