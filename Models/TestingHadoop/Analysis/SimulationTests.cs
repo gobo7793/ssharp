@@ -23,6 +23,7 @@
 #endregion
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -185,10 +186,40 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             return Tuple.Create(act, rep);
         }
 
+        /// <summary>
+        /// Moving the case study log files so each case study has its own logs.
+        /// Logs will be moved from /logs to /testingHadoopCaseStudyLogs with
+        /// following filename scheme:
+        /// "<see cref="_BenchmarkSeed"/>-<see cref="_FaultActivationProbability"/>-
+        /// <see cref="_HostsCount"/>-<see cref="_ClientCount"/>-<see cref="_StepCount"/>-today"
+        /// where today is in format "yyMMdd".
+        /// </summary>
+        private void MoveCaseStudyLogs()
+        {
+            var origLogDir = $@"{Environment.CurrentDirectory}\logs";
+            var todayStrLong = DateTime.Today.ToString("yyyy-MM-dd");
+            var origLogFile = $@"{origLogDir}\{todayStrLong}.log";
+            var origSshLog = $@"{origLogDir}\{todayStrLong}-sshout.log";
+
+            var caseStudyLogDir = $@"{Environment.CurrentDirectory}\testingHadoopCaseStudyLogs";
+            var todayStrShort = DateTime.Today.ToString("yyMMdd");
+            var filename = $"{_BenchmarkSeed:X8}-{_FaultActivationProbability:F1}-" +
+                           $"{_HostsCount:D1}-{_ClientCount:D1}-{_StepCount:D2}-{todayStrShort}";
+            var newLogFile = $@"{caseStudyLogDir}\{filename}.log";
+            var newSshLog = $@"{caseStudyLogDir}\{filename}-ssh.log";
+
+            Directory.CreateDirectory(caseStudyLogDir);
+            File.Move(origLogFile, newLogFile);
+            File.Move(origSshLog, newSshLog);
+        }
+
         #endregion
 
         #region Simulation
 
+        /// <summary>
+        /// The fault counts (activated/repaired)
+        /// </summary>
         private Tuple<int?, int?> _FaultCounts { get; set; }
 
         /// <summary>
@@ -298,6 +329,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
         #region Case study test cases
 
+        /// <summary>
+        /// Executing the case study
+        /// </summary>
+        /// <param name="benchmarkSeed">The benchmark seed</param>
+        /// <param name="faultProbability">The base probability for faults</param>
+        /// <param name="hostsCount">The hosts count</param>
+        /// <param name="clientCount">The client count</param>
+        /// <param name="stepCount">The step count</param>
         [Test]
         [TestCase(105838460, 0.0, 1, 1, 5)]
         [TestCase(105838460, 0.0, 1, 2, 5)]
@@ -363,9 +402,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
             _StepCount = stepCount;
 
+            // execute
             SimulateHadoopFaults();
+
+            // move logs
+            MoveCaseStudyLogs();
         }
 
+        /// <summary>
+        /// Generate the case study seeds
+        /// </summary>
         [Test]
         public void GenerateCaseStudyBenchSeeds()
         {
@@ -374,7 +420,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             var s1 = ran.Next(int.MinValue, int.MaxValue);
             var s2 = ran.Next(int.MinValue, int.MaxValue);
             var s3 = ran.Next(int.MinValue, int.MaxValue);
-            Console.WriteLine($"Ticks: {ticks} | s1: {s1} | s2: {s2} | s3: {s3}");
+            Console.WriteLine($"Ticks: {ticks:X} | s1: {s1:X} | s2: {s2:X} | s3: {s3:X}");
             // Specific output for generating test case seeds:
             // Ticks: 40595187 | s1: 105838460 | s2: -2044864785 | s3: 514633513
         }
