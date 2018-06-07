@@ -24,6 +24,8 @@ using System;
 using System.Linq;
 using System.Reflection;
 using ISSE.SafetyChecking.Modeling;
+using log4net;
+using log4net.Core;
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser;
@@ -40,6 +42,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [TestFixtureSetUp]
         public void Setup()
         {
+            // prevent spamming the log file
+            ((log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository()).Root.Level = Level.Off;
+            ((log4net.Repository.Hierarchy.Hierarchy)LogManager.GetRepository()).RaiseConfigurationChanged(EventArgs.Empty);
+
             _Model = Model.Instance;
             var parser = CmdParser.CreateInstance(new DummyHadoopCmdConnector());
 
@@ -50,17 +56,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
 
         [Test]
         [TestCase(5, 5, 0.0)]
-        [TestCase(0, 0, 0.5)]
-        [TestCase(0, 0, 0.8)]
-        [TestCase(5, 5, 1.0)]
-        [TestCase(10, 10, 0.5)]
-        [TestCase(5, 5, 0.5)]
-        [TestCase(5, 5, 0.8)]
-        [TestCase(5, 5, 0.2)]
-        [TestCase(8, 8, 0.5)]
-        [TestCase(2, 2, 0.5)]
         [TestCase(2, 2, 0.2)]
+        [TestCase(5, 5, 0.2)]
+        [TestCase(0, 0, 0.25)]
+        [TestCase(2, 2, 0.25)]
+        [TestCase(5, 5, 0.25)]
+        [TestCase(8, 8, 0.25)]
+        [TestCase(10, 10, 0.25)]
+        [TestCase(0, 0, 0.3)]
+        [TestCase(2, 2, 0.3)]
+        [TestCase(5, 5, 0.3)]
+        [TestCase(8, 8, 0.3)]
+        [TestCase(10, 10, 0.3)]
+        [TestCase(0, 0, 0.4)]
+        [TestCase(2, 2, 0.4)]
+        [TestCase(5, 5, 0.4)]
+        [TestCase(8, 8, 0.4)]
+        [TestCase(10, 10, 0.4)]
+        [TestCase(0, 0, 0.5)]
+        [TestCase(2, 2, 0.5)]
+        [TestCase(5, 5, 0.5)]
+        [TestCase(8, 8, 0.5)]
+        [TestCase(10, 10, 0.5)]
+        [TestCase(0, 0, 0.8)]
+        [TestCase(5, 5, 0.8)]
         [TestCase(8, 8, 0.8)]
+        [TestCase(5, 5, 1.0)]
         public void TestFaultActivation(int memUsage, int cpuUsage, double prob)
         {
             _Node1.MemoryAvailable = 10 - memUsage;
