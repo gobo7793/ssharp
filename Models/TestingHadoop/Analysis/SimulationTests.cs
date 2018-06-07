@@ -39,6 +39,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
     // Fault, Attribute, Node, Activation count, repairing count
     using FaultTuple = Tuple<Fault, NodeFaultAttribute, YarnNode, SimulationTests.IntWrapper, SimulationTests.IntWrapper>;
 
+    [TestFixture]
     public class SimulationTests
     {
         private static log4net.ILog Logger { get; } =
@@ -47,16 +48,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         #region Settings
 
         // Simulation settings
-        private static readonly TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 25);
-        //private static readonly int _BenchmarkSeed = 1;
-        private static readonly int _BenchmarkSeed = Environment.TickCount;
-        private static readonly int _StepCount = 3;
-        private static readonly bool _PrecreatedInputs = true;
-        private static readonly double _FaultActivationProbability = 0.25; // 0.0 -> inactive, 1.0 -> always
-        private static readonly double _FaultRepairProbability = 0.5; // 0.0 -> inactive, 1.0 -> always
-        private static readonly int _HostsCount = 1;
-        private static readonly int _NodeBaseCount = 4;
-        private static readonly int _ClientCount = 1;
+        private static TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 25);
+
+        //private static int _BenchmarkSeed = 1;
+        private static int _BenchmarkSeed = Environment.TickCount;
+        private static int _StepCount = 3;
+        private static bool _PrecreatedInputs = true;
+        private static double _FaultActivationProbability = 0.25; // 0.0 -> inactive, 1.0 -> always
+        private static double _FaultRepairProbability = 0.5; // 0.0 -> inactive, 1.0 -> always
+        private static int _HostsCount = 1;
+        private static int _NodeBaseCount = 4;
+        private static int _ClientCount = 2;
 
         #endregion
 
@@ -290,6 +292,91 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             }
 
             Assert.IsFalse(wasFatalError, "fatal error occured, see log for details");
+        }
+
+        #endregion
+
+        #region Case study test cases
+
+        [Test]
+        [TestCase(105838460, 0.0, 1, 1, 5)]
+        [TestCase(105838460, 0.0, 1, 2, 5)]
+        [TestCase(105838460, 0.0, 2, 1, 5)]
+        [TestCase(105838460, 0.0, 2, 2, 5)]
+        [TestCase(105838460, 0.3, 1, 1, 5)]
+        [TestCase(105838460, 0.3, 1, 2, 5)]
+        [TestCase(105838460, 0.3, 2, 1, 5)]
+        [TestCase(105838460, 0.3, 2, 2, 5)]
+        [TestCase(105838460, 0.0, 1, 1, 15)]
+        [TestCase(105838460, 0.0, 1, 2, 15)]
+        [TestCase(105838460, 0.0, 2, 1, 15)]
+        [TestCase(105838460, 0.0, 2, 2, 15)]
+        [TestCase(105838460, 0.3, 1, 1, 15)]
+        [TestCase(105838460, 0.3, 1, 2, 15)]
+        [TestCase(105838460, 0.3, 2, 1, 15)]
+        [TestCase(105838460, 0.3, 2, 2, 15)]
+        [TestCase(-2044864785, 0.0, 1, 1, 5)]
+        [TestCase(-2044864785, 0.0, 1, 2, 5)]
+        [TestCase(-2044864785, 0.0, 2, 1, 5)]
+        [TestCase(-2044864785, 0.0, 2, 2, 5)]
+        [TestCase(-2044864785, 0.3, 1, 1, 5)]
+        [TestCase(-2044864785, 0.3, 1, 2, 5)]
+        [TestCase(-2044864785, 0.3, 2, 1, 5)]
+        [TestCase(-2044864785, 0.3, 2, 2, 5)]
+        [TestCase(-2044864785, 0.0, 1, 1, 15)]
+        [TestCase(-2044864785, 0.0, 1, 2, 15)]
+        [TestCase(-2044864785, 0.0, 2, 1, 15)]
+        [TestCase(-2044864785, 0.0, 2, 2, 15)]
+        [TestCase(-2044864785, 0.3, 1, 1, 15)]
+        [TestCase(-2044864785, 0.3, 1, 2, 15)]
+        [TestCase(-2044864785, 0.3, 2, 1, 15)]
+        [TestCase(-2044864785, 0.3, 2, 2, 15)]
+        [TestCase(514633513, 0.0, 1, 1, 5)]
+        [TestCase(514633513, 0.0, 1, 2, 5)]
+        [TestCase(514633513, 0.0, 2, 1, 5)]
+        [TestCase(514633513, 0.0, 2, 2, 5)]
+        [TestCase(514633513, 0.3, 1, 1, 5)]
+        [TestCase(514633513, 0.3, 1, 2, 5)]
+        [TestCase(514633513, 0.3, 2, 1, 5)]
+        [TestCase(514633513, 0.3, 2, 2, 5)]
+        [TestCase(514633513, 0.0, 1, 1, 15)]
+        [TestCase(514633513, 0.0, 1, 2, 15)]
+        [TestCase(514633513, 0.0, 2, 1, 15)]
+        [TestCase(514633513, 0.0, 2, 2, 15)]
+        [TestCase(514633513, 0.3, 1, 1, 15)]
+        [TestCase(514633513, 0.3, 1, 2, 15)]
+        [TestCase(514633513, 0.3, 2, 1, 15)]
+        [TestCase(514633513, 0.3, 2, 2, 15)]
+        public void ExecuteCaseStudy(int benchmarkSeed, double faultProbability, int hostsCount, int clientCount, int stepCount)
+        {
+            // For all test cases
+            _MinStepTime = new TimeSpan(0, 0, 0, 25);
+            _PrecreatedInputs = true;
+            _NodeBaseCount = 4;
+
+            // Test cases
+            _BenchmarkSeed = benchmarkSeed;
+            _FaultActivationProbability = faultProbability;
+            _FaultRepairProbability = faultProbability;
+            _HostsCount = hostsCount;
+            _ClientCount = clientCount;
+
+            _StepCount = stepCount;
+
+            SimulateHadoopFaults();
+        }
+
+        [Test]
+        public void GenerateCaseStudyBenchSeeds()
+        {
+            var ticks = Environment.TickCount;
+            var ran = new Random(ticks);
+            var s1 = ran.Next(int.MinValue, int.MaxValue);
+            var s2 = ran.Next(int.MinValue, int.MaxValue);
+            var s3 = ran.Next(int.MinValue, int.MaxValue);
+            Console.WriteLine($"Ticks: {ticks} | s1: {s1} | s2: {s2} | s3: {s3}");
+            // Specific output for generating test case seeds:
+            // Ticks: 40595187 | s1: 105838460 | s2: -2044864785 | s3: 514633513
         }
 
         #endregion
