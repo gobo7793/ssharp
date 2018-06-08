@@ -23,7 +23,6 @@
 #endregion
 
 using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -49,18 +48,18 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         #region Settings
 
         // Simulation settings
-        private static TimeSpan _MinStepTime = new TimeSpan(0, 0, 0, 25);
+        internal TimeSpan MinStepTime = new TimeSpan(0, 0, 0, 25);
 
-        //private static int _BenchmarkSeed = 1;
-        private static int _BenchmarkSeed = Environment.TickCount;
-        private static int _StepCount = 3;
-        private static bool _RecreatePreInputs = false;
-        private static bool _PrecreatedInputs = true;
-        private static double _FaultActivationProbability = 0.25; // 0.0 -> inactive, 1.0 -> always
-        private static double _FaultRepairProbability = 0.5; // 0.0 -> inactive, 1.0 -> always
-        private static int _HostsCount = 1;
-        private static int _NodeBaseCount = 4;
-        private static int _ClientCount = 2;
+        //private int _BenchmarkSeed = 1;
+        internal int BenchmarkSeed = Environment.TickCount;
+        internal int StepCount = 3;
+        internal bool RecreatePreInputs = false;
+        internal bool PrecreatedInputs = true;
+        internal double FaultActivationProbability = 0.25; // 0.0 -> inactive, 1.0 -> always
+        internal double FaultRepairProbability = 0.5; // 0.0 -> inactive, 1.0 -> always
+        internal int HostsCount = 1;
+        internal int NodeBaseCount = 4;
+        internal int ClientCount = 2;
 
         #endregion
 
@@ -90,12 +89,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         [Test]
         public void SimulateBenchmarks()
         {
-            for(int i = 1; i <= _ClientCount; i++)
+            for(int i = 1; i <= ClientCount; i++)
             {
-                var seed = _BenchmarkSeed + i;
+                var seed = BenchmarkSeed + i;
                 var benchController = new BenchmarkController(seed);
                 Logger.Info($"Simulating Benchmarks for Client {i} with Seed {seed}:");
-                for(int j = 0; j < _StepCount; j++)
+                for(int j = 0; j < StepCount; j++)
                 {
                     benchController.ChangeBenchmark();
                     Logger.Info($"Step {j}: {benchController.CurrentBenchmark.Name}");
@@ -110,14 +109,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private Model InitModel()
         {
             ModelSettings.HostMode = ModelSettings.EHostMode.Multihost;
-            ModelSettings.HostsCount = _HostsCount;
-            ModelSettings.NodeBaseCount = _NodeBaseCount;
-            ModelSettings.IsPrecreateBenchInputsRecreate = _RecreatePreInputs;
-            ModelSettings.IsPrecreateBenchInputs = _PrecreatedInputs;
-            ModelSettings.RandomBaseSeed = _BenchmarkSeed;
+            ModelSettings.HostsCount = HostsCount;
+            ModelSettings.NodeBaseCount = NodeBaseCount;
+            ModelSettings.IsPrecreateBenchInputsRecreate = RecreatePreInputs;
+            ModelSettings.IsPrecreateBenchInputs = PrecreatedInputs;
+            ModelSettings.RandomBaseSeed = BenchmarkSeed;
 
             var model = Model.Instance;
-            model.InitModel(appCount: _StepCount, clientCount: _ClientCount);
+            model.InitModel(appCount: StepCount, clientCount: ClientCount);
             model.Faults.SuppressActivations();
 
             return model;
@@ -188,33 +187,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             return Tuple.Create(act, rep);
         }
 
-        /// <summary>
-        /// Moving the case study log files so each case study has its own logs.
-        /// Logs will be moved from /logs to /testingHadoopCaseStudyLogs with
-        /// following filename scheme:
-        /// "<see cref="_BenchmarkSeed"/>-<see cref="_FaultActivationProbability"/>-
-        /// <see cref="_HostsCount"/>-<see cref="_ClientCount"/>-<see cref="_StepCount"/>-today"
-        /// where today is in format "yyMMdd".
-        /// </summary>
-        private void MoveCaseStudyLogs()
-        {
-            var origLogDir = $@"{Environment.CurrentDirectory}\logs";
-            var todayStrLong = DateTime.Today.ToString("yyyy-MM-dd");
-            var origLogFile = $@"{origLogDir}\{todayStrLong}.log";
-            var origSshLog = $@"{origLogDir}\{todayStrLong}-sshout.log";
-
-            var caseStudyLogDir = $@"{Environment.CurrentDirectory}\testingHadoopCaseStudyLogs";
-            var todayStrShort = DateTime.Today.ToString("yyMMdd");
-            var filename = $"{_BenchmarkSeed:X8}-{_FaultActivationProbability:F1}-" +
-                           $"{_HostsCount:D1}-{_ClientCount:D1}-{_StepCount:D2}-{todayStrShort}";
-            var newLogFile = $@"{caseStudyLogDir}\{filename}.log";
-            var newSshLog = $@"{caseStudyLogDir}\{filename}-ssh.log";
-
-            Directory.CreateDirectory(caseStudyLogDir);
-            File.Move(origLogFile, newLogFile);
-            File.Move(origSshLog, newSshLog);
-        }
-
         #endregion
 
         #region Simulation
@@ -233,7 +205,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             ModelSettings.FaultActivationProbability = 0.0;
             ModelSettings.FaultRepairProbability = 1.0;
 
-            ExecuteSimulation();
+            var execRes = ExecuteSimulation();
+            Assert.IsTrue(execRes, "fatal error occured, see log for details");
         }
 
         /// <summary>
@@ -242,19 +215,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         [Test]
         public void SimulateHadoopFaults()
         {
-            ModelSettings.FaultActivationProbability = _FaultActivationProbability;
-            ModelSettings.FaultRepairProbability = _FaultRepairProbability;
+            ModelSettings.FaultActivationProbability = FaultActivationProbability;
+            ModelSettings.FaultRepairProbability = FaultRepairProbability;
 
-            ExecuteSimulation();
+            var execRes = ExecuteSimulation();
+            Assert.IsTrue(execRes, "fatal error occured, see log for details");
         }
 
         /// <summary>
         /// Execution of the simulation
         /// </summary>
-        private void ExecuteSimulation()
+        /// <returns>True on execution without exceptions</returns>
+        private bool ExecuteSimulation()
         {
             var model = InitModel();
-            var isWithFaults = _FaultActivationProbability > 0.000001; // prevent inaccuracy
+            var isWithFaults = FaultActivationProbability > 0.000001; // prevent inaccuracy
 
             var wasFatalError = false;
             try
@@ -265,14 +240,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 var faults = CollectYarnNodeFaults(simModel);
 
                 OutputUtilities.PrintExecutionStart();
-                OutputUtilities.PrintTestSettings("Simulation", _MinStepTime, _StepCount);
+                OutputUtilities.PrintTestSettings("Simulation", MinStepTime, StepCount);
 
                 SimulateBenchmarks();
 
                 var simulationStartTime = DateTime.Now;
 
                 // do simuluation
-                for(var i = 0; i < _StepCount; i++)
+                for(var i = 0; i < StepCount; i++)
                 {
                     OutputUtilities.PrintStepStart();
                     var stepStartTime = DateTime.Now;
@@ -330,108 +305,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 }
             }
 
-            Assert.IsFalse(wasFatalError, "fatal error occured, see log for details");
-        }
-
-        #endregion
-
-        #region Case study test cases
-
-        /// <summary>
-        /// Executing the case study
-        /// </summary>
-        /// <param name="benchmarkSeed">The benchmark seed</param>
-        /// <param name="faultProbability">The base probability for faults</param>
-        /// <param name="hostsCount">The hosts count</param>
-        /// <param name="clientCount">The client count</param>
-        /// <param name="stepCount">The step count</param>
-        [Test]
-        [TestCase(105838460, 0.0, 1, 1, 5)]
-        [TestCase(105838460, 0.0, 1, 2, 5)]
-        [TestCase(105838460, 0.0, 2, 1, 5)]
-        [TestCase(105838460, 0.0, 2, 2, 5)]
-        [TestCase(105838460, 0.3, 1, 1, 5)]
-        [TestCase(105838460, 0.3, 1, 2, 5)]
-        [TestCase(105838460, 0.3, 2, 1, 5)]
-        [TestCase(105838460, 0.3, 2, 2, 5)]
-        [TestCase(105838460, 0.0, 1, 1, 15)]
-        [TestCase(105838460, 0.0, 1, 2, 15)]
-        [TestCase(105838460, 0.0, 2, 1, 15)]
-        [TestCase(105838460, 0.0, 2, 2, 15)]
-        [TestCase(105838460, 0.3, 1, 1, 15)]
-        [TestCase(105838460, 0.3, 1, 2, 15)]
-        [TestCase(105838460, 0.3, 2, 1, 15)]
-        [TestCase(105838460, 0.3, 2, 2, 15)]
-        [TestCase(-2044864785, 0.0, 1, 1, 5)]
-        [TestCase(-2044864785, 0.0, 1, 2, 5)]
-        [TestCase(-2044864785, 0.0, 2, 1, 5)]
-        [TestCase(-2044864785, 0.0, 2, 2, 5)]
-        [TestCase(-2044864785, 0.3, 1, 1, 5)]
-        [TestCase(-2044864785, 0.3, 1, 2, 5)]
-        [TestCase(-2044864785, 0.3, 2, 1, 5)]
-        [TestCase(-2044864785, 0.3, 2, 2, 5)]
-        [TestCase(-2044864785, 0.0, 1, 1, 15)]
-        [TestCase(-2044864785, 0.0, 1, 2, 15)]
-        [TestCase(-2044864785, 0.0, 2, 1, 15)]
-        [TestCase(-2044864785, 0.0, 2, 2, 15)]
-        [TestCase(-2044864785, 0.3, 1, 1, 15)]
-        [TestCase(-2044864785, 0.3, 1, 2, 15)]
-        [TestCase(-2044864785, 0.3, 2, 1, 15)]
-        [TestCase(-2044864785, 0.3, 2, 2, 15)]
-        [TestCase(514633513, 0.0, 1, 1, 5)]
-        [TestCase(514633513, 0.0, 1, 2, 5)]
-        [TestCase(514633513, 0.0, 2, 1, 5)]
-        [TestCase(514633513, 0.0, 2, 2, 5)]
-        [TestCase(514633513, 0.3, 1, 1, 5)]
-        [TestCase(514633513, 0.3, 1, 2, 5)]
-        [TestCase(514633513, 0.3, 2, 1, 5)]
-        [TestCase(514633513, 0.3, 2, 2, 5)]
-        [TestCase(514633513, 0.0, 1, 1, 15)]
-        [TestCase(514633513, 0.0, 1, 2, 15)]
-        [TestCase(514633513, 0.0, 2, 1, 15)]
-        [TestCase(514633513, 0.0, 2, 2, 15)]
-        [TestCase(514633513, 0.3, 1, 1, 15)]
-        [TestCase(514633513, 0.3, 1, 2, 15)]
-        [TestCase(514633513, 0.3, 2, 1, 15)]
-        [TestCase(514633513, 0.3, 2, 2, 15)]
-        public void ExecuteCaseStudy(int benchmarkSeed, double faultProbability, int hostsCount, int clientCount, int stepCount)
-        {
-            // For all test cases
-            _MinStepTime = new TimeSpan(0, 0, 0, 25);
-            _RecreatePreInputs = true;
-            _PrecreatedInputs = true;
-            _NodeBaseCount = 4;
-
-            // Test cases
-            _BenchmarkSeed = benchmarkSeed;
-            _FaultActivationProbability = faultProbability;
-            _FaultRepairProbability = faultProbability;
-            _HostsCount = hostsCount;
-            _ClientCount = clientCount;
-
-            _StepCount = stepCount;
-
-            // execute
-            SimulateHadoopFaults();
-
-            // move logs
-            MoveCaseStudyLogs();
-        }
-
-        /// <summary>
-        /// Generate the case study seeds
-        /// </summary>
-        [Test]
-        public void GenerateCaseStudyBenchSeeds()
-        {
-            var ticks = Environment.TickCount;
-            var ran = new Random(ticks);
-            var s1 = ran.Next(int.MinValue, int.MaxValue);
-            var s2 = ran.Next(int.MinValue, int.MaxValue);
-            var s3 = ran.Next(int.MinValue, int.MaxValue);
-            Console.WriteLine($"Ticks: {ticks:X} | s1: {s1:X} | s2: {s2:X} | s3: {s3:X}");
-            // Specific output for generating test case seeds:
-            // Ticks: 40595187 | s1: 105838460 | s2: -2044864785 | s3: 514633513
+            return !wasFatalError;
         }
 
         #endregion

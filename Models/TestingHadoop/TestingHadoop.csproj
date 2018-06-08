@@ -64,6 +64,7 @@
     <Compile Include="..\..\Source\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Analysis\CaseStudyTests.cs" />
     <Compile Include="Analysis\SimulationTests.cs" />
     <Compile Include="Modeling\HadoopModel\Oracle.cs" />
     <Compile Include="Modeling\HadoopModel\NodeFaultAttribute.cs" />
