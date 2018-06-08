@@ -157,6 +157,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                                      int clientCount, int stepCount, bool isMutated)
         {
             Logger.Info("Starting Case Study test");
+            Logger.Info("Parameter:");
+            Logger.Info($"  benchmarkSeed=    {benchmarkSeed}");
+            Logger.Info($"  faultProbability= {faultProbability}");
+            Logger.Info($"  hostsCount=       {hostsCount}");
+            Logger.Info($"  clientCount=      {clientCount}");
+            Logger.Info($"  stepCount=        {stepCount}");
+            Logger.Info($"  isMutated=        {isMutated}");
+
             StartCluster(hostsCount, isMutated);
             Thread.Sleep(7000); // wait for startup
 
@@ -206,6 +214,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
             var connector = CmdConnector.Instance;
             var isStarted = connector.StartCluster(config);
+            Logger.Info($"Is cluster started: {isStarted}");
             Assert.IsTrue(isStarted, $"failed to start cluster on {hostsCount} hosts (mutated: {isMutated})");
         }
 
@@ -216,6 +225,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         {
             Logger.Info("Stop cluster");
             var isStopped = CmdConnector.Instance.StopCluster();
+            Logger.Info($"Is cluster stopped: {isStopped}");
             Assert.IsTrue(isStopped, "failed to stop cluster)");
         }
 
