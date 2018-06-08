@@ -59,7 +59,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static double _FaultRepairProbability = 0.5; // 0.0 -> inactive, 1.0 -> always
         private static int _HostsCount = 1;
         private static int _NodeBaseCount = 4;
-        private static int _ClientCount = 2;
+        private static int _ClientCount = 3;
 
         #endregion
 
@@ -309,6 +309,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             }
             finally
             {
+                // kill runnig apps
+                Logger.Info("Killing running apps.");
+                foreach(var app in model.Applications)
+                    app.StopApp();
+                // restart nodes
                 if(isWithFaults)
                 {
                     foreach(var node in model.Nodes)
