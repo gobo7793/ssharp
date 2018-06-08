@@ -165,6 +165,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             throw new NotImplementedException();
         }
 
+        public bool StartCluster(string config = "")
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool StopCluster()
+        {
+            throw new NotImplementedException();
+        }
+
         public string GetHadoopVersion()
         {
             throw new NotImplementedException();

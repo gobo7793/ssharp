@@ -210,6 +210,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <param name="directory">The directory to remove</param>
         void RemoveHdfsDir(string directory);
 
+        #endregion
+
+        #region Other
+
+        /// <summary>
+        /// Starts the whole hadoop cluster
+        /// </summary>
+        /// <param name="config">The config to use to start</param>
+        /// <returns>True if the cluster is running</returns>
+        bool StartCluster(string config = "");
+
+        /// <summary>
+        /// Stops the whole hadoop cluster
+        /// </summary>
+        /// <returns>True if the cluster is not running</returns>
+        bool StopCluster();
+
         /// <summary>
         /// Returns the version information from Hadoop
         /// </summary>

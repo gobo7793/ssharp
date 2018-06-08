@@ -158,7 +158,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine($"[]Application {cmd} started async...");
             return "application_1515488762656_0002";
         }
-        
+
         public void StartApplicationAsyncFull(string cmd)
         {
             Console.WriteLine($"[]Application {cmd} started async...");
@@ -179,9 +179,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             Console.WriteLine($"[]Directory {directory} removed...");
         }
 
+        public bool StartCluster(string config = "")
+        {
+            return true;
+        }
+
+        public bool StopCluster()
+        {
+            return false;
+        }
+
         public string GetHadoopVersion()
         {
-            throw new NotImplementedException();
+            return "Dummy Hadoop";
         }
 
         public void Dispose()

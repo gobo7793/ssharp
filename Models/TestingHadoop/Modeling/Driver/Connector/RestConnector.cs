@@ -376,6 +376,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             throw new PlatformNotSupportedException("Hadoop REST API does not support remove hdfs directories!");
         }
 
+        #endregion
+
+        #region Other
+
+        /// <summary>
+        /// Not supported
+        /// </summary>
+        public bool StartCluster(string config = "")
+        {
+            throw new PlatformNotSupportedException("Hadoop REST API does not support starting cluster!");
+        }
+
+        /// <summary>
+        /// Not supported
+        /// </summary>
+        public bool StopCluster()
+        {
+            throw new PlatformNotSupportedException("Hadoop REST API does not support stopping cluster!");
+        }
+
         /// <summary>
         /// Returns the version information from Hadoop
         /// </summary>

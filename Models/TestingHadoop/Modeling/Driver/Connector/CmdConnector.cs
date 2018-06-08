@@ -48,7 +48,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         private SshConnection Monitoring { get; }
 
         /// <summary>
-        /// The fault handling connection
+        /// The fault handling connection (one-based index)
         /// </summary>
         private Dictionary<int, SshConnection> Faulting { get; } = new Dictionary<int, SshConnection>();
 
@@ -306,7 +306,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
             var id = DriverUtilities.ParseInt(nodeName);
             var hostId = DriverUtilities.GetHostId(id, ModelSettings.HostsCount, ModelSettings.NodeBaseCount);
-            var controlerIp = Faulting[1].Run($"{ModelSettings.HadoopSetupScript} controllerip").Trim();
+            var controlerIp = GetControllerIp();
 
             Faulting[hostId].Run($"{ModelSettings.HadoopSetupScript} hadoop start {id} {controlerIp}");
             return CheckNodeRunning(id, hostId);
@@ -393,6 +393,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             var runCheckRes = Faulting[hostId]
                 .Run($"{ModelSettings.HadoopSetupScript} hadoop info {nodeId} '{{{{.NetworkSettings.Networks}}}}'");
             return runCheckRes.Contains("hadoop-net");
+        }
+
+        /// <summary>
+        /// Gets the IP of the controller
+        /// </summary>
+        /// <returns>The ip</returns>
+        private string GetControllerIp()
+        {
+            return Faulting[1].Run($"{ModelSettings.HadoopSetupScript} controllerip").Trim();
         }
 
         #endregion
@@ -520,6 +529,65 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             var submitter = GetSubmitter(cmd);
 
             submitter.Run(cmd);
+        }
+
+        #endregion
+
+        #region Other
+
+        /// <summary>
+        /// Starts the whole hadoop cluster
+        /// </summary>
+        /// <param name="config">The config to use to start</param>
+        /// <returns>True if the last node on host1 is running</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Cluster mode is not multihost mode or faulting not initialized
+        /// </exception>
+        public bool StartCluster(string config = "")
+        {
+            return ExecuteStartStopCluster("start", config);
+        }
+
+        /// <summary>
+        /// Stops the whole hadoop cluster
+        /// </summary>
+        /// <returns>True if the cluster is not running</returns>
+        /// <exception cref="InvalidOperationException">
+        /// Cluster mode is not multihost mode or faulting not initialized
+        /// </exception>
+        public bool StopCluster()
+        {
+            return !ExecuteStartStopCluster("stop");
+        }
+
+        /// <summary>
+        /// Executes start/stop cluster
+        /// </summary>
+        /// <param name="action">The action (start/stop)</param>
+        /// <param name="config">The cluster config</param>
+        /// <returns>True if the last node on host1 is running</returns>
+        private bool ExecuteStartStopCluster(string action, string config = "")
+        {
+            if(ModelSettings.HostMode != ModelSettings.EHostMode.Multihost)
+                throw new InvalidOperationException("Starting cluster needs multihost cluster mode!");
+            if(Faulting.Count < 1)
+                throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
+
+            var cfgArg = !String.IsNullOrWhiteSpace(config) ? $"-c {config} " : String.Empty;
+            var cmdBase = $"{ModelSettings.HadoopSetupScript} {cfgArg}{action} host";
+
+            // host 1
+            Faulting[1].Run($"{cmdBase} 1");
+            var ip = GetControllerIp();
+
+            // other hosts
+            for(int i = 2; i <= ModelSettings.HostsCount; i++)
+            {
+                Faulting[i].Run($"{cmdBase} {i} {ip}"); // works on stop 'cause last arg is ignored by multihost.sh
+            }
+
+            var isNodeRunning = CheckNodeRunning(ModelSettings.NodeBaseCount, 1);
+            return isNodeRunning;
         }
 
         /// <summary>
