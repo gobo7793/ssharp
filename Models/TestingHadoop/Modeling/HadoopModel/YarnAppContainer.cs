@@ -232,7 +232,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                     return StartTime == curr.StartTime &&
                            EndTime == curr.FinishTime &&
                            State == curr.State &&
-                           HostId == curr.Host.NodeId &&
+                           (String.IsNullOrWhiteSpace(HostId) && curr.Host == null ||
+                            HostId == curr.Host.NodeId) &&
                            Priority == curr.Priority &&
                            ExitCode == curr.ExitCode &&
                            AllocatedMemory == curr.MemoryNeeded &&
@@ -240,6 +241,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                            String.IsNullOrWhiteSpace(Diagnostics) == String.IsNullOrWhiteSpace(curr.Diagnostics) ||
                            curr.Diagnostics.StartsWith(Diagnostics);
                 }
+
                 return false;
             },
         };

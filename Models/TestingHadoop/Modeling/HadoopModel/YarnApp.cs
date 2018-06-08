@@ -240,7 +240,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// Indicates that the app can be killed (short: is the app running)
+        /// Indicates that the app can be killed (is the app running)
         /// </summary>
         //public bool IsKillable => State != EAppState.None &&
         //                          (State & (EAppState.FAILED | EAppState.FINISHED | EAppState.KILLED | EAppState.NotStartedYet)) ==
@@ -360,7 +360,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                            Math.Abs(Progress - curr.Progess) < 0.01 &&
                            State == curr.State &&
                            FinalStatus == curr.FinalStatus &&
-                           AmHostId == curr.AmHost.NodeId &&
+                           (String.IsNullOrWhiteSpace(AmHostId) && curr.AmHost == null ||
+                            AmHostId == curr.AmHost.NodeId) &&
                            AllocatedMb == curr.AllocatedMb &&
                            AllocatedVcores == curr.AllocatedVcores &&
                            MbSeconds == curr.MbSeconds &&
@@ -373,6 +374,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                            String.IsNullOrWhiteSpace(Diagnostics) == String.IsNullOrWhiteSpace(curr.Diagnostics) ||
                            curr.Diagnostics.StartsWith(Diagnostics);
                 }
+
                 return false;
             },
         };
@@ -505,7 +507,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </remarks>
         public bool StopApp()
         {
-            if(!String.IsNullOrWhiteSpace(AppId)/* && State != EAppState.None && State != EAppState.NotStartedYet && IsKillable*/)
+            if(!String.IsNullOrWhiteSpace(AppId) && IsKillable)
             {
                 IsCancelled = FaultConnector.KillApplication(AppId);
             }

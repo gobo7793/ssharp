@@ -251,13 +251,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 {
                     return State == curr.State &&
                            AmContainerId == curr.AmContainerId &&
-                           AmHostId == curr.AmHost.NodeId &&
+                           (String.IsNullOrWhiteSpace(AmHostId) && curr.AmHost == null ||
+                            AmHostId == curr.AmHost.NodeId) &&
                            String.IsNullOrWhiteSpace(TrackingUrl) == String.IsNullOrWhiteSpace(curr.TrackingUrl) ||
-                           curr.TrackingUrl.StartsWith(TrackingUrl)&&
+                           curr.TrackingUrl.StartsWith(TrackingUrl) &&
                            StartTime == curr.StartTime &&
                            String.IsNullOrWhiteSpace(Diagnostics) == String.IsNullOrWhiteSpace(curr.Diagnostics) ||
                            curr.Diagnostics.StartsWith(Diagnostics);
                 }
+
                 return false;
             },
         };
