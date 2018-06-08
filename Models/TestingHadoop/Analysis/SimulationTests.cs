@@ -54,12 +54,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         //private static int _BenchmarkSeed = 1;
         private static int _BenchmarkSeed = Environment.TickCount;
         private static int _StepCount = 3;
+        private static bool _RecreatePreInputs = false;
         private static bool _PrecreatedInputs = true;
         private static double _FaultActivationProbability = 0.25; // 0.0 -> inactive, 1.0 -> always
         private static double _FaultRepairProbability = 0.5; // 0.0 -> inactive, 1.0 -> always
         private static int _HostsCount = 1;
         private static int _NodeBaseCount = 4;
-        private static int _ClientCount = 3;
+        private static int _ClientCount = 2;
 
         #endregion
 
@@ -111,6 +112,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             ModelSettings.HostMode = ModelSettings.EHostMode.Multihost;
             ModelSettings.HostsCount = _HostsCount;
             ModelSettings.NodeBaseCount = _NodeBaseCount;
+            ModelSettings.IsPrecreateBenchInputsRecreate = _RecreatePreInputs;
             ModelSettings.IsPrecreateBenchInputs = _PrecreatedInputs;
             ModelSettings.RandomBaseSeed = _BenchmarkSeed;
 
@@ -220,7 +222,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// <summary>
         /// The fault counts (activated/repaired)
         /// </summary>
-        private Tuple<int?, int?> _FaultCounts { get; set; }
+        private Tuple<int?, int?> FaultCounts { get; set; }
 
         /// <summary>
         /// Simulation without faults
@@ -231,7 +233,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             ModelSettings.FaultActivationProbability = 0.0;
             ModelSettings.FaultRepairProbability = 1.0;
 
-            ExecuteSimulation(false);
+            ExecuteSimulation();
         }
 
         /// <summary>
@@ -243,16 +245,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             ModelSettings.FaultActivationProbability = _FaultActivationProbability;
             ModelSettings.FaultRepairProbability = _FaultRepairProbability;
 
-            ExecuteSimulation(true);
+            ExecuteSimulation();
         }
 
         /// <summary>
         /// Execution of the simulation
         /// </summary>
-        /// <param name="isWithFaults">Indicates if the fault activation mechanism is active</param>
-        private void ExecuteSimulation(bool isWithFaults)
+        private void ExecuteSimulation()
         {
             var model = InitModel();
+            var isWithFaults = _FaultActivationProbability > 0.000001; // prevent inaccuracy
 
             var wasFatalError = false;
             try
@@ -293,11 +295,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 // collect fault counts and check constraint for it
                 if(isWithFaults)
                 {
-                    _FaultCounts = CountFaults(faults);
+                    FaultCounts = CountFaults(faults);
                     Oracle.ValidateConstraints("simulator", TestConstraints);
                 }
 
-                OutputUtilities.PrintTestResults(_FaultCounts?.Item1, _FaultCounts?.Item2);
+                OutputUtilities.PrintTestResults(FaultCounts?.Item1, FaultCounts?.Item2);
 
                 OutputUtilities.PrintExecutionFinish();
             }
@@ -313,6 +315,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 Logger.Info("Killing running apps.");
                 foreach(var app in model.Applications)
                     app.StopApp();
+
                 // restart nodes
                 if(isWithFaults)
                 {
@@ -395,6 +398,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         {
             // For all test cases
             _MinStepTime = new TimeSpan(0, 0, 0, 25);
+            _RecreatePreInputs = true;
             _PrecreatedInputs = true;
             _NodeBaseCount = 4;
 
@@ -443,9 +447,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             () =>
             {
                 OutputUtilities.PrintTestConstraint(7, "simulator");
-                if(_FaultCounts == null)
+                if(FaultCounts == null)
                     return true;
-                if(_FaultCounts.Item1.HasValue && _FaultCounts.Item1.Value > 0)
+                if(FaultCounts.Item1.HasValue && FaultCounts.Item1.Value > 0)
                     return true;
                 return false;
             },

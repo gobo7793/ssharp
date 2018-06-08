@@ -223,9 +223,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public const string PrecreateBenchInputsBaseDir = "InputData";
 
         /// <summary>
+        /// Indicates if the precreated benchmark input data will be fully recreated, default false.
+        /// For effects the value must be set before <see cref="IsPrecreateBenchInputs"/>.
+        /// </summary>
+        public static bool IsPrecreateBenchInputsRecreate { get; set; } = false;
+
+        /// <summary>
         /// Indicates if the benchmark input data is precreated before model execution, default false.
         /// Precreated data will be saved into <see cref="PrecreateBenchInputsBaseDir"/> and
-        /// used as input data for benchmarks.
+        /// used as input data for benchmarks. For full recreation of the input data
+        /// <see cref="IsPrecreateBenchInputsRecreate"/> must be set before.
         /// </summary>
         public static bool IsPrecreateBenchInputs
         {
@@ -233,7 +240,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             set
             {
                 if(value)
-                    BenchmarkController.PrecreateInputData();
+                    BenchmarkController.PrecreateInputData(IsPrecreateBenchInputsRecreate);
                 _IsPrecreateBenchInputs = value;
             }
         }
