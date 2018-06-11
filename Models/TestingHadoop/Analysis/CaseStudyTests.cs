@@ -60,9 +60,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             var s1 = ran.Next(int.MinValue, int.MaxValue);
             var s2 = ran.Next(int.MinValue, int.MaxValue);
             var s3 = ran.Next(int.MinValue, int.MaxValue);
-            Console.WriteLine($"Ticks: {ticks:X} | s1: {s1:X} | s2: {s2:X} | s3: {s3:X}");
+            Console.WriteLine($"Ticks: 0x{ticks:X} | s1: 0x{s1:X} | s2: 0x{s2:X} | s3: 0x{s3:X}");
             // Specific output for generating test case seeds:
-            // Ticks: 40595187 | s1: 105838460 | s2: -2044864785 | s3: 514633513
+            // Ticks: 0x1A69E6 | s1: 0x7D037E51 | s2: -0x1105B75C | s3: 0x9AE430C9
         }
 
         #endregion
@@ -89,9 +89,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// </summary>
         private IEnumerable GetSeeds()
         {
-            yield return 123;
-            yield return 456;
-            yield return 789;
+            yield return 0x7D037E51;
+            yield return -0x1105B75C;
+            yield return 0x9AE430C9;
         }
 
         /// <summary>
