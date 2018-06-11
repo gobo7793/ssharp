@@ -167,6 +167,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         //}
 
         [Test]
+        public void TestStartStopCluster()
+        {
+            var isStarted = Model.UsingFaultingConnector.StartCluster();
+            Assert.IsTrue(isStarted);
+            Thread.Sleep(15000);
+            var isStopped = Model.UsingFaultingConnector.StopCluster();
+            Assert.IsTrue(isStopped);
+        }
+
+        [Test]
         public void TestStopNodeOnHost1()
         {
             Console.WriteLine("Stop node on host 1...");

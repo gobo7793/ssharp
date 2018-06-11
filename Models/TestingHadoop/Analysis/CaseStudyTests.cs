@@ -167,7 +167,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             Logger.Info($"  isMutated=        {isMutated}");
 
             StartCluster(hostsCount, isMutated);
-            Thread.Sleep(7000); // wait for startup
+            Thread.Sleep(5000); // wait for startup
 
             Logger.Info("Setting up test case");
             var simTest = new SimulationTests

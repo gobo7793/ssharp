@@ -581,9 +581,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             var ip = GetControllerIp();
 
             // other hosts
+            if(action.StartsWith("start"))
+                Thread.Sleep(5000); // waiting controller is started
             for(int i = 2; i <= ModelSettings.HostsCount; i++)
             {
-                Faulting[i].Run($"{cmdBase} {i} {ip}"); // works on stop 'cause last arg is ignored by multihost.sh
+                Faulting[i].Run($"{cmdBase} {i} {ip}");
             }
 
             var isNodeRunning = CheckNodeRunning(ModelSettings.NodeBaseCount, 1);
