@@ -30,15 +30,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
     public class BenchmarkTest
     {
         private BenchmarkController _Bench1;
-        //private BenchmarkController _Bench2;
-        //private BenchmarkController _Bench3;
+        private BenchmarkController _Bench2;
+        private BenchmarkController _Bench3;
 
         [SetUp]
         public void Setup()
         {
-            _Bench1 = new BenchmarkController(1);
-            //_Bench2 = new BenchmarkController(7);
-            //_Bench3 = new BenchmarkController(11);
+            _Bench1 = new BenchmarkController(0xE99032B);
+            _Bench2 = new BenchmarkController(0x4F009539);
+            _Bench3 = new BenchmarkController(0x319140E0);
 
             /* Benchmarks for Seed 1:
                 Bench 01:randomtextwriter
@@ -67,15 +67,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestTransitions()
         {
-            //_Bench1.InitStartBench();
-            //_Bench2.InitStartBench();
-            //_Bench3.InitStartBench();
-            for(int i = 1; i < 100; i++)
+            for(int i = 0; i < 15; i++)
             {
-                Console.WriteLine($"Bench {i:D2}:{_Bench1.CurrentBenchmark.Name,-16}");
                 _Bench1.ChangeBenchmark();
-                //_Bench2.ChangeBenchmark();
-                //_Bench3.ChangeBenchmark();
+                Console.WriteLine($"Bench {i:D2}:{_Bench1.CurrentBenchmark.Name,-16}");
+            }
+            for(int i = 0; i < 15; i++)
+            {
+                _Bench2.ChangeBenchmark();
+                Console.WriteLine($"Bench {i:D2}:{_Bench2.CurrentBenchmark.Name,-16}");
+            }
+            for(int i = 0; i < 15; i++)
+            {
+                _Bench3.ChangeBenchmark();
+                Console.WriteLine($"Bench {i:D2}:{_Bench3.CurrentBenchmark.Name,-16}");
             }
         }
     }

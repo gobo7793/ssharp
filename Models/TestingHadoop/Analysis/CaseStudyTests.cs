@@ -57,12 +57,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         {
             var ticks = Environment.TickCount;
             var ran = new Random(ticks);
-            var s1 = ran.Next(int.MinValue, int.MaxValue);
-            var s2 = ran.Next(int.MinValue, int.MaxValue);
-            var s3 = ran.Next(int.MinValue, int.MaxValue);
-            Console.WriteLine($"Ticks: 0x{ticks:X} | s1: 0x{s1:X} | s2: 0x{s2:X} | s3: 0x{s3:X}");
+            var s1 = ran.Next(0, int.MaxValue);
+            var s2 = ran.Next(0, int.MaxValue);
+            var s3 = ran.Next(0, int.MaxValue);
+            Console.WriteLine($"Ticks: 0x{ticks:X}");
+            Console.WriteLine($"s1: 0x{s1:X} | s2: 0x{s2:X} | s3: 0x{s3:X}");
             // Specific output for generating test case seeds:
-            // Ticks: 0x1A69E6 | s1: 0x7D037E51 | s2: -0x1105B75C | s3: 0x9AE430C9
+            // Ticks: 0x719E8C
+            // s1: 0xE99032B | s2: 0x4F009539 | s3: 0x319140E0
         }
 
         #endregion
@@ -89,9 +91,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// </summary>
         private IEnumerable GetSeeds()
         {
-            yield return 0x7D037E51;
-            yield return -0x1105B75C;
-            yield return 0x9AE430C9;
+            yield return 0xE99032B;
+            yield return 0x4F009539;
+            yield return 0x319140E0;
         }
 
         /// <summary>
