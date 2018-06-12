@@ -74,12 +74,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
         #region Test cases
 
-        [Test]
-        public void Test()
-        {
-            Console.WriteLine(GetHostCounts().Max());
-        }
-
         /// <summary>
         /// Returns the test cases for nunit
         /// </summary>
