@@ -47,19 +47,72 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
         #region Settings
 
-        // Simulation settings
-        internal TimeSpan MinStepTime = new TimeSpan(0, 0, 0, 25);
+        #region Test case related
 
-        //private int _BenchmarkSeed = 1;
-        internal int BenchmarkSeed = Environment.TickCount;
-        internal int StepCount = 3;
-        internal bool RecreatePreInputs = false;
-        internal bool PrecreatedInputs = true;
-        internal double FaultActivationProbability = 0.25; // 0.0 -> inactive, 1.0 -> always
-        internal double FaultRepairProbability = 0.5; // 0.0 -> inactive, 1.0 -> always
-        internal int HostsCount = 1;
-        internal int NodeBaseCount = 4;
-        internal int ClientCount = 2;
+        /// <summary>
+        /// Minimum step time for simulation
+        /// </summary>
+        public TimeSpan MinStepTime { get; set; } = new TimeSpan(0, 0, 0, 25);
+
+        /// <summary>
+        /// Base seed for Benchmark controller and other random generators
+        /// </summary>
+        //public int BenchmarkSeed { get; set; } = 1;
+        public int BenchmarkSeed { get; set; } = Environment.TickCount;
+
+        /// <summary>
+        /// Executing step count
+        /// </summary>
+        public int StepCount { get; set; } = 3;
+
+        /// <summary>
+        /// Use precreated inputs for benchmarks. The data will be created on model initialization.
+        /// </summary>
+        public bool PrecreatedInputs { get; set; } = true;
+
+        /// <summary>
+        /// If precreated inputs are used, set true to recreate existing
+        /// </summary>
+        public bool RecreatePreInputs { get; set; } = false;
+
+        /// <summary>
+        /// General fault activation probability,
+        /// set 0 to activate faults never or 1 to activate faults always.
+        /// </summary>
+        public double FaultActivationProbability { get; set; } = 0.25;
+
+        /// <summary>
+        /// General fault deactivation probability,
+        /// set 0 to deactivate faults never or 1 to deactivate faults always.
+        /// </summary>
+        public double FaultRepairProbability { get; set; } = 0.5;
+
+        /// <summary>
+        /// The physical hosts count of the used cluster
+        /// </summary>
+        public int HostsCount { get; set; } = 1;
+
+        /// <summary>
+        /// The node base count of the used cluster
+        /// (=nodes on host 1, on other hosts the half)
+        /// </summary>
+        public int NodeBaseCount { get; set; } = 4;
+
+        /// <summary>
+        /// The simulated client count to start benchmarks
+        /// </summary>
+        public int ClientCount { get; set; } = 2;
+
+        #endregion
+
+        #region Test case independent
+
+        /// <summary>
+        /// If set to true, faulty nodes at the end of the simulation will be restarted
+        /// </summary>
+        public bool IsRestartingNodesAfterFaultingSimulation { get; set; } = true;
+
+        #endregion
 
         #endregion
 
@@ -292,15 +345,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                     app.StopApp();
 
                 // restart nodes
-                if(isWithFaults)
+                if(isWithFaults && IsRestartingNodesAfterFaultingSimulation)
                 {
                     foreach(var node in model.Nodes)
                     {
                         if(node.IsActive && node.IsConnected)
                             continue;
                         Logger.Info($"Starting node {node.Name} after fault activation.");
-                        Model.UsingFaultingConnector.StopNode(node.Name);
-                        Model.UsingFaultingConnector.StartNode(node.Name);
+                        Model.Instance.UsingFaultingConnector.StopNode(node.Name);
+                        Model.Instance.UsingFaultingConnector.StartNode(node.Name);
                     }
                 }
             }
