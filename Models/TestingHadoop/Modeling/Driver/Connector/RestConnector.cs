@@ -120,6 +120,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         }
 
         /// <summary>
+        /// Resets the <see cref="RestConnector"/> instance
+        /// </summary>
+        public static void ResetInstance()
+        {
+            if(_Instance == null)
+                return;
+
+            //_Instance?.Dispose();
+            foreach(var con in _Instance.MonitoringConnections)
+                con.Value.Disconnect();
+            _Instance.MonitoringConnections.Clear();
+
+            _Instance = null;
+        }
+
+        /// <summary>
         /// Disposing
         /// </summary>
         public void Dispose()

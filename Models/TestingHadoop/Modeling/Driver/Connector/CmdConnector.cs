@@ -45,7 +45,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <summary>
         /// The monitoring connection
         /// </summary>
-        private SshConnection Monitoring { get; }
+        private SshConnection Monitoring { get; set; }
 
         /// <summary>
         /// The fault handling connection (one-based index)
@@ -107,6 +107,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
                 return null;
             _Instance = new CmdConnector(true);
             return _Instance;
+        }
+
+        /// <summary>
+        /// Resets the <see cref="CmdConnector"/> instance
+        /// </summary>
+        public static void ResetInstance()
+        {
+            if(Instance == null)
+                return;
+
+            //_Instance?.Dispose();
+            _Instance.Monitoring?.Disconnect();
+            foreach(var con in _Instance.Faulting)
+                con.Value.Disconnect();
+            foreach(var con in _Instance.Submitting)
+                con.Disconnect();
+            _Instance.Monitoring = null;
+            _Instance.Faulting.Clear();
+            _Instance.Submitting.Clear();
+            _Instance = null;
         }
 
         /// <summary>

@@ -35,7 +35,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop
     {
         private static log4net.ILog Logger { get; } =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        #region Utilities
+
         private static int _StepCount = 0;
+
+        /// <summary>
+        /// Resets the output utilities like the step counter
+        /// </summary>
+        public static void Reset()
+        {
+            _StepCount = 0;
+        }
+
+        #endregion
 
         #region General test output
 

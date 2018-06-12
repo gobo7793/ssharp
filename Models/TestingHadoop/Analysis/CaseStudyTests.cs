@@ -24,8 +24,10 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using NUnit.Framework;
@@ -44,6 +46,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private string MutationConfig = "mut";
+        private bool _IsInitConnectors;
 
         #endregion
 
@@ -71,6 +74,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
         #region Test cases
 
+        [Test]
+        public void Test()
+        {
+            Console.WriteLine(GetHostCounts().Max());
+        }
+
         /// <summary>
         /// Returns the test cases for nunit
         /// </summary>
@@ -89,7 +98,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// <summary>
         /// The seeds to use
         /// </summary>
-        private IEnumerable GetSeeds()
+        private IEnumerable<int> GetSeeds()
         {
             yield return 0xE99032B;
             yield return 0x4F009539;
@@ -99,7 +108,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// <summary>
         /// The general fault injection/repair probabilities to use in test cases
         /// </summary>
-        private IEnumerable GetFaultProbabilities()
+        private IEnumerable<double> GetFaultProbabilities()
         {
             yield return 0.0;
             yield return 0.3;
@@ -108,7 +117,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// <summary>
         /// The hosts counts to use in test cases
         /// </summary>
-        private IEnumerable GetHostCounts()
+        private IEnumerable<int> GetHostCounts()
         {
             yield return 1;
             yield return 2;
@@ -117,7 +126,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// <summary>
         /// The client counts to use in test cases
         /// </summary>
-        private IEnumerable GetClientCounts()
+        private IEnumerable<int> GetClientCounts()
         {
             yield return 1;
             yield return 2;
@@ -126,7 +135,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// <summary>
         /// The step counts to use in test cases
         /// </summary>
-        private IEnumerable GetStepCounts()
+        private IEnumerable<int> GetStepCounts()
         {
             yield return 5;
             yield return 15;
@@ -135,10 +144,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// <summary>
         /// Indicates if the cluster is mutated for the test cases
         /// </summary>
-        private IEnumerable GetIsMutated()
+        private IEnumerable<bool> GetIsMutated()
         {
-            yield return true;
             yield return false;
+            yield return true;
         }
 
         #endregion
@@ -154,6 +163,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// <param name="clientCount">The client count</param>
         /// <param name="stepCount">The step count</param>
         /// <param name="isMutated">Using the mutated cluster scenario</param>
+        /// <remarks>
+        /// To execute a test case, all physical hosts must be reachable via SSH and
+        /// the connection and login data written to <see cref="ModelSettings.SshHosts"/>,
+        /// <see cref="ModelSettings.SshUsernames"/> and <see cref="ModelSettings.SshPrivateKeyFiles"/>.
+        /// It will create the needed connector instances before the first test execution.
+        /// The cluster will be started before the test and stopped after the test.
+        /// </remarks>
         [Test]
         [TestCaseSource(nameof(GetTestCases))]
         public void ExecuteCaseStudy(int benchmarkSeed, double faultProbability, int hostsCount,
@@ -168,12 +184,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             Logger.Info($"  stepCount=        {stepCount}");
             Logger.Info($"  isMutated=        {isMutated}");
 
+            // Setup
+            InitInstances();
             StartCluster(hostsCount, isMutated);
             Thread.Sleep(5000); // wait for startup
 
             Logger.Info("Setting up test case");
             var simTest = new SimulationTests
             {
+                IsRestartingNodesAfterFaultingSimulation = false,
                 MinStepTime = new TimeSpan(0, 0, 0, 25),
                 RecreatePreInputs = true,
                 PrecreatedInputs = true,
@@ -188,12 +207,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 StepCount = stepCount,
             };
 
-            // execute
+            // Execution
             simTest.SimulateHadoopFaults();
 
+            // Teardown
             StopCluster();
-
-            // move logs
+            ResetInstances();
             MoveCaseStudyLogs(benchmarkSeed, faultProbability, hostsCount,
                 clientCount, stepCount, isMutated);
         }
@@ -201,6 +220,32 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         #endregion
 
         #region Utilities
+
+        /// <summary>
+        /// Initializes the connector instances
+        /// </summary>
+        private void InitInstances()
+        {
+            if(_IsInitConnectors)
+                return;
+
+            ModelSettings.HostMode = ModelSettings.EHostMode.Multihost;
+            ModelSettings.HostsCount = GetHostCounts().Max();
+            var cmd = CmdConnector.Instance;
+            var rest = RestConnector.Instance;
+            _IsInitConnectors = cmd != null && rest != null;
+        }
+
+        /// <summary>
+        /// Resets the singleton instances using in the test
+        /// </summary>
+        private void ResetInstances()
+        {
+            Model.ResetInstance();
+            //CmdConnector.ResetInstance();
+            //RestConnector.ResetInstance();
+            OutputUtilities.Reset();
+        }
 
         /// <summary>
         /// Starts the Cluster for the case study
@@ -215,8 +260,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
             var config = isMutated ? MutationConfig : String.Empty;
 
-            var connector = CmdConnector.Instance;
-            var isStarted = connector.StartCluster(config);
+            var isStarted = CmdConnector.Instance.StartCluster(config);
             Logger.Info($"Is cluster started: {isStarted}");
             Assert.IsTrue(isStarted, $"failed to start cluster on {hostsCount} hosts (mutated: {isMutated})");
         }
