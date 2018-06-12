@@ -87,12 +87,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         public IEnumerable GetTestCases()
         {
             foreach(var seed in GetSeeds())
-            foreach(var prob in GetFaultProbabilities())
-            foreach(var hosts in GetHostCounts())
-            foreach(var clients in GetClientCounts())
-            foreach(var steps in GetStepCounts())
-            foreach(var isMut in GetIsMutated())
-                yield return new TestCaseData(seed, prob, hosts, clients, steps, isMut);
+                foreach(var prob in GetFaultProbabilities())
+                    foreach(var hosts in GetHostCounts())
+                        foreach(var clients in GetClientCounts())
+                            foreach(var steps in GetStepCounts())
+                                foreach(var isMut in GetIsMutated())
+                                    yield return new TestCaseData(seed, prob, hosts, clients, steps, isMut);
         }
 
         /// <summary>
@@ -184,37 +184,50 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             Logger.Info($"  stepCount=        {stepCount}");
             Logger.Info($"  isMutated=        {isMutated}");
 
-            // Setup
             InitInstances();
-            StartCluster(hostsCount, isMutated);
-            Thread.Sleep(5000); // wait for startup
-
-            Logger.Info("Setting up test case");
-            var simTest = new SimulationTests
+            var isFaled = false;
+            try
             {
-                IsRestartingNodesAfterFaultingSimulation = false,
-                MinStepTime = new TimeSpan(0, 0, 0, 25),
-                RecreatePreInputs = true,
-                PrecreatedInputs = true,
-                NodeBaseCount = 4,
+                // Setup
+                StartCluster(hostsCount, isMutated);
+                Thread.Sleep(5000); // wait for startup
 
-                BenchmarkSeed = benchmarkSeed,
-                FaultActivationProbability = faultProbability,
-                FaultRepairProbability = faultProbability,
-                HostsCount = hostsCount,
-                ClientCount = clientCount,
+                Logger.Info("Setting up test case");
+                var simTest = new SimulationTests
+                {
+                    IsRestartingNodesAfterFaultingSimulation = false,
+                    MinStepTime = new TimeSpan(0, 0, 0, 25),
+                    RecreatePreInputs = true,
+                    PrecreatedInputs = true,
+                    NodeBaseCount = 4,
 
-                StepCount = stepCount,
-            };
+                    BenchmarkSeed = benchmarkSeed,
+                    FaultActivationProbability = faultProbability,
+                    FaultRepairProbability = faultProbability,
+                    HostsCount = hostsCount,
+                    ClientCount = clientCount,
 
-            // Execution
-            simTest.SimulateHadoopFaults();
+                    StepCount = stepCount,
+                };
 
-            // Teardown
-            StopCluster();
-            ResetInstances();
-            MoveCaseStudyLogs(benchmarkSeed, faultProbability, hostsCount,
-                clientCount, stepCount, isMutated);
+                // Execution
+                simTest.SimulateHadoopFaults();
+            }
+            catch(Exception e)
+            {
+                Logger.Fatal("Fatal exception during executing test case.", e);
+                isFaled = true;
+            }
+            finally
+            {
+                // Teardown
+                StopCluster();
+                ResetInstances();
+                MoveCaseStudyLogs(benchmarkSeed, faultProbability, hostsCount,
+                    clientCount, stepCount, isMutated);
+            }
+
+            Assert.False(isFaled);
         }
 
         #endregion
