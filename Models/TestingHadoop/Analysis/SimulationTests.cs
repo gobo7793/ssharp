@@ -288,11 +288,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             try
             {
                 // init simulation
+                OutputUtilities.PrintExecutionStart();
                 var simulator = new SafetySharpSimulator(model);
                 var simModel = (Model)simulator.Model;
                 var faults = CollectYarnNodeFaults(simModel);
 
-                OutputUtilities.PrintExecutionStart();
                 OutputUtilities.PrintTestSettings("Simulation", MinStepTime, StepCount);
 
                 SimulateBenchmarks();
