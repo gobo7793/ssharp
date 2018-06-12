@@ -185,7 +185,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             Logger.Info($"  isMutated=        {isMutated}");
 
             InitInstances();
-            var isFaled = false;
+            var isFailed = false;
             try
             {
                 // Setup
@@ -216,7 +216,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             catch(Exception e)
             {
                 Logger.Fatal("Fatal exception during executing test case.", e);
-                isFaled = true;
+                isFailed = true;
             }
             finally
             {
@@ -227,7 +227,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                     clientCount, stepCount, isMutated);
             }
 
-            Assert.False(isFaled);
+            Assert.False(isFailed);
         }
 
         #endregion
