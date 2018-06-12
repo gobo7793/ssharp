@@ -314,10 +314,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
             var caseStudyLogDir = $@"{Environment.CurrentDirectory}\testingHadoopCaseStudyLogs";
             var todayStrShort = DateTime.Today.ToString("yyMMdd");
-            var mutatedInt = isMutated ? 'T' : 'F';
+            var mutated = isMutated ? 'T' : 'F';
             var faultProbStr = faultProbability.ToString(CultureInfo.InvariantCulture);
             var filename = $"{benchmarkSeed:X8}-{faultProbStr}-{hostsCount:D1}-" +
-                           $"{clientCount:D1}-{stepCount:D2}-{mutatedInt}-{todayStrShort}";
+                           $"{clientCount:D1}-{stepCount:D2}-{mutated}-{todayStrShort}";
             var newLogFile = $@"{caseStudyLogDir}\{filename}.log";
             var newSshLog = $@"{caseStudyLogDir}\{filename}-ssh.log";
 
