@@ -53,8 +53,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// The connector to use for fault handling
         /// </summary>
         [NonSerializable]
-        public IHadoopConnector FaultConnector => Model.UsingFaultingConnector;
-
+        public IHadoopConnector FaultConnector => Model.Instance.UsingFaultingConnector;
         /// <summary>
         /// <see cref="YarnAppAttempt"/> for this <see cref="YarnApp"/>
         /// </summary>
@@ -296,7 +295,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Parser to monitoring data from cluster
         /// </summary>
         [NonSerializable]
-        public IHadoopParser Parser => Model.UsingMonitoringParser;
+        public IHadoopParser Parser => Model.Instance.UsingMonitoringParser;
 
         /// <summary>
         /// Indicates if the data is collected and parsed by the component itself

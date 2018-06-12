@@ -68,7 +68,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// The connector to use for fault handling
         /// </summary>
         [NonSerializable]
-        public IHadoopConnector FaultConnector => Model.UsingFaultingConnector;
+        public IHadoopConnector FaultConnector => Model.Instance.UsingFaultingConnector;
 
         ///// <summary>
         ///// <see cref="YarnApp" />s executing by this node

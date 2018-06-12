@@ -104,7 +104,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// The connector to submit a <see cref="CurrentExecutingApp"/>
         /// </summary>
         [NonSerializable]
-        public IHadoopConnector SubmittingConnector => Model.UsingFaultingConnector;
+        public IHadoopConnector SubmittingConnector => Model.Instance.UsingFaultingConnector;
 
         /// <summary>
         /// HDFS base directory for the client

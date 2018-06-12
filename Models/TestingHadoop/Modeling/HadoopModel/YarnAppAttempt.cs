@@ -199,7 +199,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Parser to monitoring data from cluster
         /// </summary>
         [NonSerializable]
-        public IHadoopParser Parser => Model.UsingMonitoringParser;
+        public IHadoopParser Parser => Model.Instance.UsingMonitoringParser;
 
         /// <summary>
         /// Indicates if the data is collected and parsed by the component itself

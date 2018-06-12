@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using System.Diagnostics;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
@@ -50,7 +49,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Parser to monitoring data from cluster
         /// </summary>
         [NonSerializable]
-        public IHadoopParser Parser => Model.UsingMonitoringParser;
+        public IHadoopParser Parser => Model.Instance.UsingMonitoringParser;
 
         #endregion
 

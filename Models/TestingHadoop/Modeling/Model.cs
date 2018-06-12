@@ -87,13 +87,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// The <see cref="IHadoopConnector"/> in use
         /// </summary>
         [NonSerializable]
-        public static IHadoopConnector UsingFaultingConnector { get; private set; }
+        public IHadoopConnector UsingFaultingConnector { get; private set; }
 
         /// <summary>
         /// The <see cref="IHadoopParser"/> in use
         /// </summary>
         [NonSerializable]
-        public static IHadoopParser UsingMonitoringParser { get; private set; }
+        public IHadoopParser UsingMonitoringParser { get; private set; }
 
         #endregion
 
@@ -120,6 +120,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             _Instance = new Model();
 
             return _Instance;
+        }
+
+        /// <summary>
+        /// Resets the <see cref="Model"/> instance
+        /// </summary>
+        public static void ResetInstance()
+        {
+            _Instance = null;
         }
 
         #endregion

@@ -169,10 +169,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         [Test]
         public void TestStartStopCluster()
         {
-            var isStarted = Model.UsingFaultingConnector.StartCluster();
+            var isStarted = Model.Instance.UsingFaultingConnector.StartCluster();
             Assert.IsTrue(isStarted);
             Thread.Sleep(15000);
-            var isStopped = Model.UsingFaultingConnector.StopCluster();
+            var isStopped = Model.Instance.UsingFaultingConnector.StopCluster();
             Assert.IsTrue(isStopped);
         }
 
