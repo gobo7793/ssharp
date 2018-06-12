@@ -114,7 +114,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             }
 
             result = result.Trim();
-            if(result.EndsWith("Connection refused") || result.EndsWith("Connection reset by peer"))
+            if(result.EndsWith("Connection refused") ||
+               result.EndsWith("Connection reset by peer") ||
+               result.EndsWith("</html>"))
                 return String.Empty;
             return result;
         }
