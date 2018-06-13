@@ -360,6 +360,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
             return node;
         }
 
+        /// <summary>
+        /// Not Supported
+        /// </summary>
+        public double ParseMarpValue()
+        {
+            return 0.0;
+        }
+
         #endregion
     }
 }

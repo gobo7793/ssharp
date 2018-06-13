@@ -94,6 +94,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         /// <returns>The node details</returns>
         INodeResult ParseNodeDetails(string nodeId);
 
+        /// <summary>
+        /// Gets and parses the current MARP value from the controllers scheduler
+        /// </summary>
+        /// <returns>The current MARP value</returns>
+        double ParseMarpValue();
+
         #endregion
     }
 }

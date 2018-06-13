@@ -183,5 +183,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         public void Dispose()
         {
         }
+
+        public string GetMarpValue()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

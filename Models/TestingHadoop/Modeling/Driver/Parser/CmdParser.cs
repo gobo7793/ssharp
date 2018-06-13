@@ -1,4 +1,5 @@
-﻿// The MIT License (MIT)
+﻿#region License
+// The MIT License (MIT)
 // 
 // Copyright (c) 2014-2018, Institute for Software & Systems Engineering
 // 
@@ -19,7 +20,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+#endregion
 
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector;
@@ -393,6 +396,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Gets and parses the current MARP value from the controllers scheduler.
+        /// If value cannot be getted by the scheduler, the default value 0.0 will be returned.
+        /// </summary>
+        /// <returns>The current MARP value or the default value</returns>
+        public double ParseMarpValue()
+        {
+            var valueStr = Connection.GetMarpValue();
+            if(Double.TryParse(valueStr, out var result))
+                return result;
+            return result;
         }
 
         #endregion

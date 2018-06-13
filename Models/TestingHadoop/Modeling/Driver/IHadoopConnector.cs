@@ -228,6 +228,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver
         bool StopCluster();
 
         /// <summary>
+        /// Gets the current MARP value from the controllers scheduler
+        /// </summary>
+        /// <returns>The current MARP value</returns>
+        string GetMarpValue();
+
+        /// <summary>
         /// Returns the version information from Hadoop
         /// </summary>
         /// <returns>Hadoop version</returns>

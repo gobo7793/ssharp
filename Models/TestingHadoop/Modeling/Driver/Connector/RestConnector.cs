@@ -415,6 +415,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         }
 
         /// <summary>
+        /// Not supported
+        /// </summary>
+        public string GetMarpValue()
+        {
+            throw new PlatformNotSupportedException("Hadoop REST API does not support getting MARP value!");
+        }
+
+        /// <summary>
         /// Returns the version information from Hadoop
         /// </summary>
         /// <returns>Hadoop version</returns>

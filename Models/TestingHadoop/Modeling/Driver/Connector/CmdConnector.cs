@@ -40,7 +40,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// <summary>
         /// <see cref="CmdConnector"/> instance
         /// </summary>
-        public static CmdConnector Instance => _Instance ?? CreateInstance();
+        public static CmdConnector Instance => _Instance ?? CreateFullInstance();
 
         /// <summary>
         /// The monitoring connection
@@ -610,6 +610,21 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
             var isNodeRunning = CheckNodeRunning(ModelSettings.NodeBaseCount, 1);
             return isNodeRunning;
+        }
+
+        /// <summary>
+        /// Gets the current MARP value from the controllers scheduler
+        /// </summary>
+        /// <returns>The current MARP value</returns>
+        /// <exception cref="InvalidOperationException">Monitoring not initialized</exception>
+        public string GetMarpValue()
+        {
+            if(Monitoring == null)
+                throw new InvalidOperationException($"{nameof(CmdConnector)} not for monitoring initialized!");
+
+            var cmd = $"{ModelSettings.HadoopSetupScript} cmd cat /usr/local/hadoop/etc/hadoop/capacity-scheduler.xml |" +
+                      " grep -oPm1 \"(?<=<name>yarn.scheduler.capacity.maximum-am-resource-percent</name><value>)[^<]+\")";
+            return Monitoring.Run(cmd);
         }
 
         /// <summary>
