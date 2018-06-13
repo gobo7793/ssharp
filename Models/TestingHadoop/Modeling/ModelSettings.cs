@@ -67,6 +67,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public const string NodeNamePrefix = "compute-";
 
         /// <summary>
+        /// Gets the container count per node
+        /// </summary>
+        public const int ContainersPerNode = 8;
+
+        /// <summary>
         /// Minimum step time for execution
         /// </summary>
         public static TimeSpan MinStepTime { get; set; } = new TimeSpan(0, 0, 20);
@@ -96,12 +101,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             get { return _RandomBaseSeed; }
             set
             {
-                if(value != _RandomBaseSeed)
-                {
-                    _RandomBaseSeed = value;
-
-                    NodeFaultAttribute.RandomGen = new Random(_RandomBaseSeed);
-                }
+                _RandomBaseSeed = value;
+                NodeFaultAttribute.RandomGen = new Random(_RandomBaseSeed);
             }
         }
 
