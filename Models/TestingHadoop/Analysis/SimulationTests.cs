@@ -112,6 +112,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// </summary>
         public bool IsRestartingNodesAfterFaultingSimulation { get; set; } = true;
 
+        /// <summary>
+        /// Indicates if app containers are monitored
+        /// </summary>
+        public bool IsContainerMonitoring { get; set; } = false;
+
         #endregion
 
         #endregion
@@ -169,7 +174,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             ModelSettings.RandomBaseSeed = BenchmarkSeed;
 
             var model = Model.Instance;
-            model.InitModel(appCount: StepCount, clientCount: ClientCount);
+            var initContainerCount = !IsContainerMonitoring ? 0 : -1; // -1 indicates auto count
+            model.InitModel(appCount: StepCount, clientCount: ClientCount, containerCount: initContainerCount);
             model.Faults.SuppressActivations();
 
             return model;

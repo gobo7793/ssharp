@@ -161,7 +161,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <param name="clientCount">The client count to initialize</param>
         /// <param name="appCount">The application count per client to initialize</param>
         /// <param name="attemptCount">The attempt count per application to initialize</param>
-        /// <param name="containerCount">The container count per attempt to initialize</param>
+        /// <param name="containerCount">
+        /// The container count per attempt to initialize,
+        /// 0 to disable containers and container monitoring,
+        /// -1 for auto detection based on <see cref="ModelSettings.NodeBaseCount"/> and <see cref="ModelSettings.ContainersPerNode"/>
+        /// </param>
         public void InitModel(int clientCount = 1, int appCount = 16, int attemptCount = 3, int containerCount = -1)
         {
             var nodeCount = ModelUtilities.GetFullNodeCount();

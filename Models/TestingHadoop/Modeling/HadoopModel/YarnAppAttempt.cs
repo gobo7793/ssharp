@@ -284,20 +284,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                     SetStatus(parsed);
             }
 
-            var parsedContainers = Parser.ParseContainerList(AttemptId);
-            foreach(var container in Containers) container.CleanContainer();
-            foreach(var parsed in parsedContainers)
+            if(Containers.Any())
             {
-                var container = Containers.FirstOrDefault(c => String.IsNullOrWhiteSpace(c.ContainerId));
-                if(container == null)
-                    throw new OutOfMemoryException($"Failed to allocate container {parsed.ContainerId}: No more containers available.");
+                var parsedContainers = Parser.ParseContainerList(AttemptId);
+                foreach(var container in Containers) container.CleanContainer();
+                foreach(var parsed in parsedContainers)
+                {
+                    var container = Containers.FirstOrDefault(c => String.IsNullOrWhiteSpace(c.ContainerId));
+                    if(container == null)
+                        throw new OutOfMemoryException($"Failed to allocate container {parsed.ContainerId}: No more containers available.");
 
-                container.AppAttemptId = AttemptId;
-                container.IsSelfMonitoring = IsSelfMonitoring;
-                if(IsSelfMonitoring)
-                    container.ContainerId = parsed.ContainerId;
-                else
-                    container.SetStatus(parsed);
+                    container.AppAttemptId = AttemptId;
+                    container.IsSelfMonitoring = IsSelfMonitoring;
+                    if(IsSelfMonitoring)
+                        container.ContainerId = parsed.ContainerId;
+                    else
+                        container.SetStatus(parsed);
+                }
             }
         }
 
