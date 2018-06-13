@@ -167,7 +167,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             var nodeCount = ModelUtilities.GetFullNodeCount();
 
             if(containerCount < 0)
-                containerCount = nodeCount * 8 + 3;
+                containerCount = nodeCount * 8 + 1;
 
             InitController();
 
