@@ -45,8 +45,20 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private static log4net.ILog Logger { get; } =
             log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private string MutationConfig = "mut";
-        private bool _IsInitConnectors;
+        /// <summary>
+        /// Indicates if connectors are initialized
+        /// </summary>
+        public bool IsInitConnectors { get; set; }
+
+        /// <summary>
+        /// Mutation scenario name
+        /// </summary>
+        public string MutationConfig { get; set; } = "mut";
+
+        /// <summary>
+        /// Sets the maximum executed app count per test case
+        /// </summary>
+        public int MaxPossibleAppCount { get; set; } = 12;
 
         #endregion
 
@@ -62,12 +74,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             var ran = new Random(ticks);
             var s1 = ran.Next(0, int.MaxValue);
             var s2 = ran.Next(0, int.MaxValue);
-            var s3 = ran.Next(0, int.MaxValue);
             Console.WriteLine($"Ticks: 0x{ticks:X}");
-            Console.WriteLine($"s1: 0x{s1:X} | s2: 0x{s2:X} | s3: 0x{s3:X}");
+            Console.WriteLine($"s1: 0x{s1:X} | s2: 0x{s2:X}");
             // Specific output for generating test case seeds:
-            // Ticks: 0x719E8C
-            // s1: 0xE99032B | s2: 0x4F009539 | s3: 0x319140E0
+            // Ticks: 0xC426B8
+            // s1: 0x36159C73 | s2: 0x60E70223
         }
 
         #endregion
@@ -80,13 +91,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// <returns>A test case</returns>
         public IEnumerable GetTestCases()
         {
-            foreach(var seed in GetSeeds())
-            foreach(var prob in GetFaultProbabilities())
-            foreach(var hosts in GetHostCounts())
-            foreach(var clients in GetClientCounts())
-            foreach(var steps in GetStepCounts())
-            foreach(var isMut in GetIsMutated())
-                yield return new TestCaseData(seed, prob, hosts, clients, steps, isMut);
+            return from seed in GetSeeds()
+                   from prob in GetFaultProbabilities()
+                   from hosts in GetHostCounts()
+                   from clients in GetClientCounts()
+                   from steps in GetStepCounts()
+                   from isMut in GetIsMutated()
+
+                   where clients * steps <= MaxPossibleAppCount
+                   select new TestCaseData(seed, prob, hosts, clients, steps, isMut);
         }
 
         /// <summary>
@@ -132,7 +145,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private IEnumerable<int> GetStepCounts()
         {
             yield return 5;
-            yield return 15;
+            yield return 12;
         }
 
         /// <summary>
@@ -165,13 +178,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// The cluster will be started before the test and stopped after the test.
         /// </remarks>
         [Test]
-        [TestCaseSource(nameof(GetTestCases))]
+        //[TestCaseSource(nameof(GetTestCases))]
+        [TestCase(0x36159C73, 0.3, 2, 4, 3, false)]
+        [TestCase(0x36159C73, 0.3, 2, 4, 3, true)]
         public void ExecuteCaseStudy(int benchmarkSeed, double faultProbability, int hostsCount,
                                      int clientCount, int stepCount, bool isMutated)
         {
             Logger.Info("Starting Case Study test");
             Logger.Info("Parameter:");
-            Logger.Info($"  benchmarkSeed=    {benchmarkSeed}");
+            Logger.Info($"  benchmarkSeed=    0x{benchmarkSeed:X8} ({benchmarkSeed:D})");
             Logger.Info($"  faultProbability= {faultProbability}");
             Logger.Info($"  hostsCount=       {hostsCount}");
             Logger.Info($"  clientCount=      {clientCount}");
@@ -192,7 +207,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                     IsRestartingNodesAfterFaultingSimulation = false,
                     MinStepTime = new TimeSpan(0, 0, 0, 25),
                     RecreatePreInputs = true,
-                    PrecreatedInputs = true,
+                    PrecreatedInputs = false,
                     NodeBaseCount = 4,
 
                     BenchmarkSeed = benchmarkSeed,
@@ -233,14 +248,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// </summary>
         private void InitInstances()
         {
-            if(_IsInitConnectors)
+            if(IsInitConnectors)
                 return;
 
             ModelSettings.HostMode = ModelSettings.EHostMode.Multihost;
             ModelSettings.HostsCount = GetHostCounts().Max();
             var cmd = CmdConnector.Instance;
             var rest = RestConnector.Instance;
-            _IsInitConnectors = cmd != null && rest != null;
+            IsInitConnectors = cmd != null && rest != null;
         }
 
         /// <summary>

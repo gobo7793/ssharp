@@ -36,7 +36,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
     {
 
         #region Properties
-        
+
         [NonSerializable]
         private static log4net.ILog Logger { get; } =
             log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -67,6 +67,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         //public List<YarnApp> Apps { get; private set; } = new List<YarnApp>();
         [NonSerializable]
         public List<YarnApp> Apps => Model.Instance.Applications;
+
+        /// <summary>
+        /// Gets the old AM percentage value from prevoius step
+        /// </summary>
+        public double OldAmPercentage { get; private set; } = 0.0;
 
         #endregion
 
@@ -178,11 +183,31 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region Constraints
 
         /// <summary>
+        /// Gets the current percentage of AM container
+        /// </summary>
+        /// <returns>The current percentage</returns>
+        private double GetCurrentAmPercentage()
+        {
+            var allNodesMem = ConnectedNodes.Sum(n => n.MemoryCapacity);
+            double allAmsMem = Apps.Where(app => app.IsKillable)
+                                   .SelectMany(app => app.Attempts.Where(at => at.AmContainer != null))
+                                   .Select(at => at.AmContainer)
+                                   .Sum(am => am.AllocatedMemory);
+
+            return allAmsMem / allNodesMem;
+        }
+
+        /// <summary>
         /// Constraints to check the requirements of the test suite itself
         /// </summary>
         [Hidden(HideElements = true)]
         public Func<bool>[] TestConstraints => new Func<bool>[]
         {
+            // marp value is changing
+            //() =>
+            //{
+
+            //},
             // 8 if no node is running no reconfiguration possibility is recognized
             () =>
             {
