@@ -321,7 +321,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 1) task will be completed if not canceled
             () =>
             {
-                OutputUtilities.PrintTestConstraint(1, GetId());
+                if(String.IsNullOrWhiteSpace(AppId))
+                    return true;
+
+                OutputUtilities.PrintTestConstraint("task will be completed if not canceled", GetId());
                 if(FinalStatus != EFinalStatus.FAILED) return true;
                 if(!String.IsNullOrWhiteSpace(Name) && Name.ToLower().Contains("fail job")) return true;
                 return false;
@@ -329,7 +332,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 3) configuration will be updated
             () =>
             {
-                OutputUtilities.PrintTestConstraint(3, GetId());
+                if(String.IsNullOrWhiteSpace(AppId))
+                    return true;
+
+                OutputUtilities.PrintTestConstraint("configuration will be updated", GetId());
                 if(State == EAppState.RUNNING)
                     return AmHost?.State == ENodeState.RUNNING;
                 return true;
@@ -348,6 +354,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 if(String.IsNullOrWhiteSpace(AppId))
                     return true;
 
+                OutputUtilities.PrintTestConstraint("current state is detected and saved", GetId());
                 var prev = PreviousParsedComponent as IApplicationResult;
                 var curr = CurrentParsedComponent as IApplicationResult;
                 if((prev == null && curr != null) ||

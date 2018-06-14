@@ -158,7 +158,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #region Monitoring methods
 
         /// <summary>
-        /// Gets all node informations
+        /// Monitors all node informations
         /// </summary>
         public void MonitorNodes()
         {
@@ -177,7 +177,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         }
 
         /// <summary>
-        /// Gets all apps executed on the cluster and their informations
+        /// Monitors all apps executed on the cluster and their informations
         /// </summary>
         public void MonitorApps()
         {
@@ -202,6 +202,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             }
         }
 
+        /// <summary>
+        /// Monitors the current MARP value
+        /// </summary>
         public void MonitorMarp()
         {
             if(MarpValues == null)
@@ -228,6 +231,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // marp value is changing
             () =>
             {
+                OutputUtilities.PrintTestConstraint("marp value is changing", "controller");
                 if(MarpValues.Count(d => d >= 0) < 1)
                     return true; // not enough values to compare
                 var uniqueMarpValues = MarpValues.Distinct();
@@ -236,14 +240,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 8 if no node is running no reconfiguration possibility is recognized
             () =>
             {
-                OutputUtilities.PrintTestConstraint(8, "controller");
+                OutputUtilities.PrintTestConstraint(
+                    "no node is running no reconfiguration possibility is recognized", "controller");
                 var isOneNodeAlive = ConnectedNodes.Any(n => n.State == ENodeState.RUNNING);
                 return isOneNodeAlive;
             },
             // 10 multihost cluster is working
             () =>
             {
-                OutputUtilities.PrintTestConstraint(10, "controller");
+                OutputUtilities.PrintTestConstraint("multihost cluster is working", "controller");
                 if(ModelSettings.HostsCount <= 1)
                     return true;
                 var nodeCount = ConnectedNodes.Count(n => n.State != ENodeState.None);
@@ -252,7 +257,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 11 multiple apps can be running on same time
             () =>
             {
-                OutputUtilities.PrintTestConstraint(11, "controller");
+                OutputUtilities.PrintTestConstraint("multiple apps can be running on same time", "controller");
                 if(ConnectedClients.Count <= 1)
                     return true;
                 return ConnectedClients.All(c => c.CurrentExecutingApp.FinalStatus != EFinalStatus.None);

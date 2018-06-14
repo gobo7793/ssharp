@@ -204,8 +204,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 3) configuration will be updated
             () =>
             {
-                OutputUtilities.PrintTestConstraint(2, GetId());
-                OutputUtilities.PrintTestConstraint(3, GetId());
+                if(String.IsNullOrWhiteSpace(ContainerId))
+                    return true;
+
+                OutputUtilities.PrintTestConstraint(
+                    "no workload is allocated to an inactive/defect/disconnected node", GetId());
+                OutputUtilities.PrintTestConstraint("configuration will be updated", GetId());
                 if(State == EContainerState.RUNNING)
                     return Host?.State == ENodeState.RUNNING;
                 return true;
@@ -224,6 +228,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 if(String.IsNullOrWhiteSpace(ContainerId))
                     return true;
 
+                OutputUtilities.PrintTestConstraint("current state is detected and saved", GetId());
                 var prev = PreviousParsedComponent as IContainerResult;
                 var curr = CurrentParsedComponent as IContainerResult;
                 if((prev == null && curr != null) ||

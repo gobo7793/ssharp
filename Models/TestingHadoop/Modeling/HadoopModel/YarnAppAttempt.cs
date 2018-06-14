@@ -225,7 +225,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 3) configuration will be updated
             () =>
             {
-                OutputUtilities.PrintTestConstraint(3, GetId());
+                if(String.IsNullOrWhiteSpace(AttemptId))
+                    return true;
+
+                OutputUtilities.PrintTestConstraint("configuration will be updated", GetId());
                 if(State == EAppState.RUNNING)
                     return AmHost?.State == ENodeState.RUNNING;
                 return true;
@@ -244,6 +247,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 if(String.IsNullOrWhiteSpace(AttemptId))
                     return true;
 
+                OutputUtilities.PrintTestConstraint("current state is detected and saved", GetId());
                 var prev = PreviousParsedComponent as IAppAttemptResult;
                 var curr = CurrentParsedComponent as IAppAttemptResult;
                 if((prev == null && curr != null) ||

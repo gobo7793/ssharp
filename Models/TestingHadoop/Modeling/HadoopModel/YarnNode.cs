@@ -253,7 +253,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 4 defects are recognized
             () =>
             {
-                OutputUtilities.PrintTestConstraint(4, GetId());
+                if(String.IsNullOrWhiteSpace(NodeId))
+                    return true;
+
+                OutputUtilities.PrintTestConstraint("defects are recognized", GetId());
                 if(IsActive && IsConnected && State == ENodeState.RUNNING) return true;
                 if((!IsActive || !IsConnected) && State != ENodeState.RUNNING) return true;
                 return false;
@@ -272,6 +275,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 if(String.IsNullOrWhiteSpace(NodeId) || !IsActive || !IsConnected)
                     return true;
 
+                OutputUtilities.PrintTestConstraint("current state is detected and saved", GetId());
                 var prev = PreviousParsedComponent as INodeResult;
                 var curr = CurrentParsedComponent as INodeResult;
                 if((prev == null && curr != null) ||
@@ -293,8 +297,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // 7 faults are injected/repaired
             () =>
             {
-                OutputUtilities.PrintTestConstraint(6, GetId());
-                OutputUtilities.PrintTestConstraint(7, GetId());
+                OutputUtilities.PrintTestConstraint("defect nodes are recognized", GetId());
+                OutputUtilities.PrintTestConstraint("faults are injected/repaired", GetId());
                 return SutConstraints[0]();
             },
         };

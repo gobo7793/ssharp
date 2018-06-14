@@ -379,7 +379,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             // 7 faults are injected/repaired
             () =>
             {
-                OutputUtilities.PrintTestConstraint(7, "simulator");
+                OutputUtilities.PrintTestConstraint("faults are injected/repaired", "simulator");
                 if(FaultCounts == null)
                     return true;
                 if(FaultCounts.Item1.HasValue && FaultCounts.Item1.Value > 0)

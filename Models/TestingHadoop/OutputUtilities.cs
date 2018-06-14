@@ -297,13 +297,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         /// <summary>
         /// Prints on Debug level which constraint for which requirement number on which component is currently testing
         /// </summary>
-        /// <param name="requirementNo">The requirement number of the constraint</param>
+        /// <param name="requirement">The requirement to check</param>
         /// <param name="component">The component</param>
-        public static void PrintTestConstraint(int requirementNo, string component = "")
+        public static void PrintTestConstraint(string requirement, string component)
         {
             if(!String.IsNullOrWhiteSpace(component))
                 component = $" ({component})";
-            Logger.Debug($"Test constraint for requirement {requirementNo}{component}");
+            Logger.Debug($"Test constraint for {requirement} on {component}");
         }
 
         #endregion
