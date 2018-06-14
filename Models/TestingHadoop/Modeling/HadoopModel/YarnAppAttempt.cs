@@ -46,6 +46,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public List<YarnAppContainer> Containers { get; }
 
         /// <summary>
+        /// Running Containers count
+        /// </summary>
+        public int RunningContainerCount { get; set; }
+
+        /// <summary>
         /// <see cref="YarnApp"/> ID from this attempt
         /// </summary>
         // public string AppId { get; set; }
@@ -288,9 +293,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                     SetStatus(parsed);
             }
 
+            var parsedContainers = Parser.ParseContainerList(AttemptId);
+            RunningContainerCount = parsedContainers.Length;
             if(Containers.Any())
             {
-                var parsedContainers = Parser.ParseContainerList(AttemptId);
                 foreach(var container in Containers) container.CleanContainer();
                 foreach(var parsed in parsedContainers)
                 {
