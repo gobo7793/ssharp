@@ -38,7 +38,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
 
         #region Utilities
 
-        private static int _StepCount = 0;
+        private static int _StepCount;
 
         /// <summary>
         /// Resets the output utilities like the step counter
@@ -143,6 +143,19 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         #region Trace output
 
         /// <summary>
+        /// Prints the current controller trace to logging outputs
+        /// </summary>
+        /// <param name="controller">Client to print</param>
+        public static void PrintTrace(YarnController controller)
+        {
+            if(controller.MarpValues != null)
+            {
+                Logger.Info("=== Controller ===");
+                Logger.Info($"Current MARP Value:  {controller.MarpValues[_StepCount]}");
+            }
+        }
+
+        /// <summary>
         /// Prints the current node trace to logging outputs
         /// </summary>
         /// <param name="node">Node to print</param>
@@ -218,6 +231,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         /// <param name="controller">Controller to print</param>
         public static void PrintFullTrace(YarnController controller)
         {
+            PrintTrace(controller);
+
             foreach(var node in controller.ConnectedNodes)
                 PrintTrace(node);
 

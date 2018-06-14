@@ -226,10 +226,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public Func<bool>[] TestConstraints => new Func<bool>[]
         {
             // marp value is changing
-            //() =>
-            //{
-
-            //},
+            () =>
+            {
+                if(MarpValues.Count(d => d >= 0) < 1)
+                    return true; // not enough values to compare
+                var uniqueMarpValues = MarpValues.Distinct();
+                return uniqueMarpValues.Count() > 1;
+            },
             // 8 if no node is running no reconfiguration possibility is recognized
             () =>
             {
@@ -251,8 +254,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             {
                 OutputUtilities.PrintTestConstraint(11, "controller");
                 if(ConnectedClients.Count <= 1)
-                return true;
-                    return ConnectedClients.All(c => c.CurrentExecutingApp.FinalStatus != EFinalStatus.None);
+                    return true;
+                return ConnectedClients.All(c => c.CurrentExecutingApp.FinalStatus != EFinalStatus.None);
             }
         };
 
