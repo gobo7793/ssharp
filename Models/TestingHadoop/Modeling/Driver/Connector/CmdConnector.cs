@@ -416,11 +416,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         }
 
         /// <summary>
-        /// Gets the IP of the controller
+        /// Gets the IP of the controller in multihost mode
         /// </summary>
         /// <returns>The ip</returns>
+        /// <exception cref="InvalidOperationException">If cluster is not in multihost mode</exception>
         private string GetControllerIp()
         {
+            if(ModelSettings.HostMode != ModelSettings.EHostMode.Multihost)
+                throw new InvalidOperationException("Starting cluster needs multihost cluster mode!");
             return Faulting[1].Run($"{ModelSettings.HadoopSetupScript} controllerip").Trim();
         }
 
@@ -585,31 +588,44 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// </summary>
         /// <param name="action">The action (start/stop)</param>
         /// <param name="config">The cluster config</param>
-        /// <returns>True if the last node on host1 is running</returns>
+        /// <returns>True if the cluster is started</returns>
+        /// <remarks>
+        /// To check if the cluster is started, the last node on host1 will be checked for running.
+        /// </remarks>
         private bool ExecuteStartStopCluster(string action, string config = "")
         {
-            if(ModelSettings.HostMode != ModelSettings.EHostMode.Multihost)
-                throw new InvalidOperationException("Starting cluster needs multihost cluster mode!");
             if(Faulting.Count < 1)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for faulting initialized!");
 
             var cfgArg = !String.IsNullOrWhiteSpace(config) ? $"-c {config} " : String.Empty;
-            var cmdBase = $"{ModelSettings.HadoopSetupScript} {cfgArg}{action} host";
 
-            // host 1
-            Faulting[1].Run($"{cmdBase} 1");
-            var ip = GetControllerIp();
-
-            // other hosts
-            if(action.StartsWith("start"))
-                Thread.Sleep(5000); // waiting controller is started
-            for(int i = 2; i <= ModelSettings.HostsCount; i++)
+            if(ModelSettings.HostMode == ModelSettings.EHostMode.DockerMachine)
             {
-                Faulting[i].Run($"{cmdBase} {i} {ip}");
+                var cmd = $"{ModelSettings.HadoopSetupScript} {cfgArg}cluster {action}";
+                Faulting[1].Run(cmd);
+                var isNodeRunning = CheckNodeRunning(ModelSettings.NodeBaseCount, 1);
+                return isNodeRunning;
             }
+            if(ModelSettings.HostMode == ModelSettings.EHostMode.Multihost)
+            {
+                var cmdBase = $"{ModelSettings.HadoopSetupScript} {cfgArg}{action} host";
 
-            var isNodeRunning = CheckNodeRunning(ModelSettings.NodeBaseCount, 1);
-            return isNodeRunning;
+                // host 1
+                Faulting[1].Run($"{cmdBase} 1");
+                var ip = GetControllerIp();
+
+                // other hosts
+                if(action.StartsWith("start"))
+                    Thread.Sleep(5000); // waiting controller is started
+                for(int i = 2; i <= ModelSettings.HostsCount; i++)
+                {
+                    Faulting[i].Run($"{cmdBase} {i} {ip}");
+                }
+
+                var isNodeRunning = CheckNodeRunning(ModelSettings.NodeBaseCount, 1);
+                return isNodeRunning;
+            }
+            return false;
         }
 
         /// <summary>
