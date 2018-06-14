@@ -85,9 +85,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
         /// <summary>
         /// Creates a new <see cref="CmdConnector"/> instance without monitoring features,
-        /// saves and returns it if <see cref="Model.SshHosts"/> is set
+        /// saves and returns it if <see cref="ModelSettings.SshHosts"/> is set
         /// </summary>
-        /// <returns>Null if <see cref="Model.SshHosts"/> is not set, otherwise the instance</returns>
+        /// <returns>Null if <see cref="ModelSettings.SshHosts"/> is not set, otherwise the instance</returns>
         internal static CmdConnector CreateInstance()
         {
             if(String.IsNullOrWhiteSpace(ModelSettings.SshHosts[0]))
@@ -98,9 +98,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
 
         /// <summary>
         /// Creates a new <see cref="CmdConnector"/> instance with monitoring features,
-        /// saves and returns it if <see cref="Model.SshHosts"/> is set
+        /// saves and returns it if <see cref="ModelSettings.SshHosts"/> is set
         /// </summary>
-        /// <returns>Null if <see cref="Model.SshHosts"/> is not set, otherwise the instance</returns>
+        /// <returns>Null if <see cref="ModelSettings.SshHosts"/> is not set, otherwise the instance</returns>
         internal static CmdConnector CreateFullInstance()
         {
             if(String.IsNullOrWhiteSpace(ModelSettings.SshHosts[0]))
@@ -638,9 +638,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
             if(Monitoring == null)
                 throw new InvalidOperationException($"{nameof(CmdConnector)} not for monitoring initialized!");
 
-            var cmd = $"{ModelSettings.HadoopSetupScript} cmd cat /usr/local/hadoop/etc/hadoop/capacity-scheduler.xml |" +
-                      " grep -oPm1 \"(?<=<name>yarn.scheduler.capacity.maximum-am-resource-percent</name><value>)[^<]+\")";
-            return Monitoring.Run(cmd);
+            var cmd = $"{ModelSettings.HadoopSetupScript} marp";
+            return Monitoring.Run(cmd).Trim();
         }
 
         /// <summary>

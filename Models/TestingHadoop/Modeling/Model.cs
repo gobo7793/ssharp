@@ -95,6 +95,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         [NonSerializable]
         public IHadoopParser UsingMonitoringParser { get; private set; }
 
+        /// <summary>
+        /// The <see cref="IHadoopParser"/> in for getting marp value (set to null to disable)
+        /// </summary>
+        [NonSerializable]
+        public IHadoopParser UsingMarpParser { get; private set; }
+
         #endregion
 
         #region Base methods
@@ -142,7 +148,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         public void InitTestConfig(IHadoopParser usingParser, IHadoopConnector usingConnector)
         {
             if(Controller == null)
-                InitController();
+                InitController(10);
 
             UsingFaultingConnector = usingConnector;
             UsingMonitoringParser = usingParser;
@@ -173,10 +179,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
             if(containerCount < 0)
                 containerCount = nodeCount * ModelSettings.ContainersPerNode + 1;
 
-            InitController();
+            InitController(appCount);
 
             UsingMonitoringParser = RestParser.Instance;
             UsingFaultingConnector = CmdConnector.Instance;
+            UsingMarpParser = CmdParser.Instance;
 
             //var submitterCount = (int)Math.Ceiling(clientCount * 1.5);
             //var cmdConnector = new CmdConnector(SshHosts, SshUsernames, SshPrivateKeyFiles, false, true, submitterCount);
@@ -198,9 +205,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// <summary>
         /// Init hadoop controller
         /// </summary>
-        private void InitController()
+        /// <param name="marpValueCount">The maximum saveable marp values count</param>
+        private void InitController(int marpValueCount)
         {
-            Controller = new YarnController("controller");
+            Controller = new YarnController("controller", marpValueCount);
         }
 
         /// <summary>

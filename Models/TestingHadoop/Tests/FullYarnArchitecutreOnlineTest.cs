@@ -229,5 +229,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
             var isStarted = _Node5.StartConnection();
             Assert.IsTrue(isStarted);
         }
+
+        [Test]
+        public void TestGetMarpValue()
+        {
+            Console.WriteLine("Getting MARP value...");
+            _Controller.MonitorMarp();
+            var first=_Controller.MarpValues.FirstOrDefault();
+            Console.WriteLine($"First MARP: {first}");
+            Assert.AreEqual(0.1, first);
+        }
     }
 }

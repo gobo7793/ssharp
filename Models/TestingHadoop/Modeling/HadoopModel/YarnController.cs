@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver;
 using SafetySharp.Modeling;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
@@ -69,9 +70,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public List<YarnApp> Apps => Model.Instance.Applications;
 
         /// <summary>
-        /// Gets the old AM percentage value from prevoius step
+        /// The monitored MARP values, set null to disable MARP monitoring
         /// </summary>
-        public double OldAmPercentage { get; private set; } = 0.0;
+        public List<double> MarpValues { get; }
+
+        /// <summary>
+        /// Parser to monitor MARP value
+        /// </summary>
+        [NonSerializable]
+        public IHadoopParser MarpParser => Model.Instance.UsingMarpParser;
 
         #endregion
 
@@ -88,8 +95,24 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// Initialize a new <see cref="YarnController"/>
         /// </summary>
         /// <param name="name">Name of the Host</param>
-        public YarnController(string name) : base(name, 8088)
+        public YarnController(string name)
+            : this(name, 0)
         {
+        }
+
+        /// <summary>
+        /// Initialize a new <see cref="YarnController"/>
+        /// </summary>
+        /// <param name="name">Name of the Host</param>
+        /// <param name="marpValuesCount">The maximum saveable marp value count</param>
+        public YarnController(string name, int marpValuesCount) : base(name, 8088)
+        {
+            if(marpValuesCount > 0)
+            {
+                MarpValues = new List<double>(marpValuesCount);
+                for(int i = 0; i < marpValuesCount; i++)
+                    MarpValues.Add(-1);
+            }
         }
 
         #endregion
@@ -113,6 +136,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             MonitorNodes();
             MonitorApps();
+            MonitorMarp();
 
             Logger.Info("Checking SuT constraints.");
             Oracle.ValidateConstraints(EConstraintType.Sut);
@@ -178,24 +202,22 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             }
         }
 
+        public void MonitorMarp()
+        {
+            if(MarpValues == null)
+                return;
+
+            Logger.Debug("Monitoring MARP value");
+            var marpValue = MarpParser.ParseMarpValue();
+            var index = MarpValues.IndexOf(-1);
+            if(index < 0)
+                throw new OutOfMemoryException($"Failed to save MARP value {marpValue}: No more memory available.");
+            MarpValues[index] = marpValue;
+        }
+
         #endregion
 
         #region Constraints
-
-        /// <summary>
-        /// Gets the current percentage of AM container
-        /// </summary>
-        /// <returns>The current percentage</returns>
-        private double GetCurrentAmPercentage()
-        {
-            var allNodesMem = ConnectedNodes.Sum(n => n.MemoryCapacity);
-            double allAmsMem = Apps.Where(app => app.IsKillable)
-                                   .SelectMany(app => app.Attempts.Where(at => at.AmContainer != null))
-                                   .Select(at => at.AmContainer)
-                                   .Sum(am => am.AllocatedMemory);
-
-            return allAmsMem / allNodesMem;
-        }
 
         /// <summary>
         /// Constraints to check the requirements of the test suite itself

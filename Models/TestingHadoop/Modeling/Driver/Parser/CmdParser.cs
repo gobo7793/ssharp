@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses;
@@ -406,7 +407,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Parser
         public double ParseMarpValue()
         {
             var valueStr = Connection.GetMarpValue();
-            if(Double.TryParse(valueStr, out var result))
+            double result;
+            if(Double.TryParse(valueStr, NumberStyles.Float, CultureInfo.InvariantCulture, out result))
                 return result;
             return result;
         }
