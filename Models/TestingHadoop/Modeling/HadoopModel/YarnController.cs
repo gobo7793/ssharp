@@ -109,8 +109,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         {
             if(marpValuesCount > 0)
             {
-                MarpValues = new List<double>(marpValuesCount);
-                for(int i = 0; i < marpValuesCount; i++)
+                var monitoringCount = marpValuesCount * 2;
+                MarpValues = new List<double>(monitoringCount);
+                for(int i = 0; i < monitoringCount; i++)
                     MarpValues.Add(-1);
             }
         }
@@ -121,10 +122,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
         public override void Update()
         {
-            //// Logging, trace printing and timing here because the probabilistic simulator
-            //// doesn't support single step execution
-            //OutputUtilities.PrintStepStart();
-            //var stepStartTime = DateTime.Now;
+            // pre monitoring for getting more values
+            MonitorMarp();
 
             // only in this model in this place to be sure that constraint
             // checking will be done after updating and monitoring benchmarks
@@ -144,13 +143,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
 
             Logger.Info("Checking test constraints");
             Oracle.ValidateConstraints(EConstraintType.Test);
-
-            //var stepTime = DateTime.Now - stepStartTime;
-            //OutputUtilities.PrintDuration(stepTime);
-            //if(stepTime < Model.MinStepTime)
-            //    Thread.Sleep(Model.MinStepTime - stepTime);
-
-            //OutputUtilities.PrintFullTrace(this);
         }
 
         #endregion
