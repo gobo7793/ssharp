@@ -321,6 +321,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                         Thread.Sleep(ModelSettings.MinStepTime - stepTime);
 
                     OutputUtilities.PrintFullTrace(simModel.Controller);
+                    OutputUtilities.PrintStepEnd();
                 }
 
                 var simulationTime = DateTime.Now - simulationStartTime;

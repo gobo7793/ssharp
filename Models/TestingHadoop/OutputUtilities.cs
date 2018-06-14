@@ -38,14 +38,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop
 
         #region Utilities
 
-        private static int _StepCount;
+        /// <summary>
+        /// The step counter for outputting
+        /// </summary>
+        private static int StepCount { get; set; }
 
         /// <summary>
         /// Resets the output utilities like the step counter
         /// </summary>
         public static void Reset()
         {
-            _StepCount = 0;
+            StepCount = 0;
         }
 
         #endregion
@@ -93,7 +96,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         /// </summary>
         public static void PrintStepStart()
         {
-            PrintStepStart(_StepCount++);
+            PrintStepStart(StepCount);
         }
 
         /// <summary>
@@ -113,6 +116,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         public static void PrintDuration(TimeSpan stepTime, string type = "Step")
         {
             Logger.Info($"{type} Duration: {stepTime.ToString()}");
+        }
+
+        /// <summary>
+        /// Prints the end of a simulation/execution step
+        /// </summary>
+        public static void PrintStepEnd()
+        {
+            // nothing to print, but Step++
+            StepCount++;
         }
 
         /// <summary>
@@ -151,7 +163,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             if(controller.MarpValues != null)
             {
                 Logger.Info("=== Controller ===");
-                Logger.Info($"Current MARP Value:  {controller.MarpValues[_StepCount]}");
+                Logger.Info($"Current MARP Value:  {controller.MarpValues[StepCount]}");
             }
         }
 
