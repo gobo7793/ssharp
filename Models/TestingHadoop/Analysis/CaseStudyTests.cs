@@ -179,8 +179,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// </remarks>
         [Test]
         //[TestCaseSource(nameof(GetTestCases))]
-        [TestCase(0x36159C73, 0.3, 2, 4, 3, false)]
-        [TestCase(0x36159C73, 0.3, 2, 4, 3, true)]
+        [TestCase(0x36159C73, 0.3, 2, 4, 6, false)]
+        [TestCase(0x36159C73, 0.3, 2, 4, 6, true)]
         public void ExecuteCaseStudy(int benchmarkSeed, double faultProbability, int hostsCount,
                                      int clientCount, int stepCount, bool isMutated)
         {

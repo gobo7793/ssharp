@@ -71,10 +71,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         #region Methods
 
         /// <summary>
-        /// Initializes a new connection to the hadoop cluster only for monitoring using the REST API.
-        /// Note that one connection is needed for Monitoring, so maybe set <c>/etc/ssh/sshd_config</c>
-        /// MaxSessions to the needed value (default 10)!
+        /// Initializes a new connection to the hadoop cluster only for monitoring using the REST API
         /// </summary>
+        /// <remarks>
+        /// Note that one connection is needed for Monitoring.
+        /// If you need more connections, maybe set <c>/etc/ssh/sshd_config</c>
+        /// MaxSessions to the needed value (default 10)!
+        /// </remarks>
         private RestConnector()
         {
             for(int i = 0; i < ModelSettings.HostsCount; i++)

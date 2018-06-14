@@ -62,14 +62,17 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         #region Methods
 
         /// <summary>
-        /// Initializes a new connection to the hadoop cluster.
-        /// Note that one connection is needed for Monitoring, so maybe set <c>/etc/ssh/sshd_config</c>
-        /// MaxSessions to the needed value (default 10)!
+        /// Initializes a new connection to the hadoop cluster
         /// </summary>
         /// <param name="forMonitoring">True to use this connection for monitoring</param>
         /// <param name="forFaulting">True to use this connection for fault handling</param>
         /// <param name="submittingConnections">The count for submitting application connections</param>
-        private CmdConnector(bool forMonitoring = false, bool forFaulting = true, int submittingConnections = 4)
+        /// <remarks>
+        /// Note that per host one connection is needed for Monitoring and Faulting.
+        /// If you need more connections, maybe set <c>/etc/ssh/sshd_config</c>
+        /// MaxSessions to the needed value (default 10)!
+        /// </remarks>
+        private CmdConnector(bool forMonitoring = false, bool forFaulting = true, int submittingConnections = 8)
         {
             if(forMonitoring)
                 Monitoring = new SshConnection(ModelSettings.SshHosts[0], ModelSettings.SshUsernames[0], ModelSettings.SshPrivateKeyFiles[0],
