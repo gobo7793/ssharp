@@ -160,10 +160,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         /// <param name="controller">Client to print</param>
         public static void PrintTrace(YarnController controller)
         {
-            if(controller.MarpValues != null)
+            if(YarnController.MarpValues != null)
             {
+                var realStep = StepCount + 1;
+                var secondVal = realStep * 2;
+                var firstVal = secondVal - 1;
                 Logger.Info("=== Controller ===");
-                Logger.Info($"Current MARP Value:  {controller.MarpValues[StepCount]}");
+                Logger.Info($"MARP Value on start: {YarnController.MarpValues[firstVal - 1]}");
+                Logger.Info($"MARP value on end:   {YarnController.MarpValues[secondVal - 1]}");
             }
         }
 
@@ -217,6 +221,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info($"            State:        {attempt.State}");
             Logger.Info($"            AM Container: {attempt.AmContainerId}");
             Logger.Info($"            AM Host:      {attempt.AmHostId} ({attempt.AmHost?.State})");
+            Logger.Info($"            Cont. Count:  {attempt.RunningContainerCount}");
         }
 
         /// <summary>

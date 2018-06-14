@@ -235,7 +235,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
         {
             Console.WriteLine("Getting MARP value...");
             _Controller.MonitorMarp();
-            var first=_Controller.MarpValues.FirstOrDefault();
+            var first = YarnController.MarpValues.FirstOrDefault();
             Console.WriteLine($"First MARP: {first}");
             Assert.AreEqual(0.1, first);
         }

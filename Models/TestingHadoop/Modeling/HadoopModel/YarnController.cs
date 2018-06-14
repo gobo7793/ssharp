@@ -72,7 +72,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <summary>
         /// The monitored MARP values, set null to disable MARP monitoring
         /// </summary>
-        public List<double> MarpValues { get; }
+        public static List<double> MarpValues { get; private set; }
 
         /// <summary>
         /// Parser to monitor MARP value
@@ -113,6 +113,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
                 MarpValues = new List<double>(monitoringCount);
                 for(int i = 0; i < monitoringCount; i++)
                     MarpValues.Add(-1);
+            }
+            else
+            {
+                MarpValues = null;
             }
         }
 
@@ -224,9 +228,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             () =>
             {
                 OutputUtilities.PrintTestConstraint("marp value is changing", "controller");
-                if(MarpValues.Count(d => d >= 0) < 1)
+                var usableValues = MarpValues.Where(d => d >= 0);
+                if(!usableValues.Any())
                     return true; // not enough values to compare
-                var uniqueMarpValues = MarpValues.Distinct();
+                var uniqueMarpValues = usableValues.Distinct();
                 return uniqueMarpValues.Count() > 1;
             },
             // 8 if no node is running no reconfiguration possibility is recognized
