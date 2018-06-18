@@ -110,8 +110,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             if(marpValuesCount > 0)
             {
                 var monitoringCount = marpValuesCount * 2;
-                MarpValues = new List<double>(monitoringCount);
-                for(int i = 0; i < monitoringCount; i++)
+                MarpValues = new List<double>(monitoringCount+1);
+                for(int i = 0; i <= monitoringCount; i++)
                     MarpValues.Add(-1);
             }
             else
