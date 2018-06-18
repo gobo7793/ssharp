@@ -29,16 +29,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
     [TestFixture]
     public class BenchmarkTest
     {
+        private int _BaseSeed = 0x11399D3;
         private BenchmarkController _Bench1;
         private BenchmarkController _Bench2;
         private BenchmarkController _Bench3;
+        private BenchmarkController _Bench4;
+        private BenchmarkController _Bench5;
+        private BenchmarkController _Bench6;
 
         [SetUp]
         public void Setup()
         {
-            _Bench1 = new BenchmarkController(0xE99032B);
-            _Bench2 = new BenchmarkController(0x4F009539);
-            _Bench3 = new BenchmarkController(0x319140E0);
+            _Bench1 = new BenchmarkController(_BaseSeed + 1);
+            _Bench2 = new BenchmarkController(_BaseSeed + 2);
+            _Bench3 = new BenchmarkController(_BaseSeed + 3);
+            _Bench4 = new BenchmarkController(_BaseSeed + 4);
+            _Bench5 = new BenchmarkController(_BaseSeed + 5);
+            _Bench6 = new BenchmarkController(_BaseSeed + 6);
 
             /* Benchmarks for Seed 1:
                 Bench 01:randomtextwriter
@@ -72,15 +79,35 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Tests
                 _Bench1.ChangeBenchmark();
                 Console.WriteLine($"Bench {i:D2}:{_Bench1.CurrentBenchmark.Name,-16}");
             }
+            Console.WriteLine("----");
             for(int i = 0; i < 15; i++)
             {
                 _Bench2.ChangeBenchmark();
                 Console.WriteLine($"Bench {i:D2}:{_Bench2.CurrentBenchmark.Name,-16}");
             }
+            Console.WriteLine("----");
             for(int i = 0; i < 15; i++)
             {
                 _Bench3.ChangeBenchmark();
                 Console.WriteLine($"Bench {i:D2}:{_Bench3.CurrentBenchmark.Name,-16}");
+            }
+            Console.WriteLine("----");
+            for(int i = 0; i < 15; i++)
+            {
+                _Bench4.ChangeBenchmark();
+                Console.WriteLine($"Bench {i:D2}:{_Bench4.CurrentBenchmark.Name,-16}");
+            }
+            Console.WriteLine("----");
+            for(int i = 0; i < 15; i++)
+            {
+                _Bench5.ChangeBenchmark();
+                Console.WriteLine($"Bench {i:D2}:{_Bench5.CurrentBenchmark.Name,-16}");
+            }
+            Console.WriteLine("----");
+            for(int i = 0; i < 15; i++)
+            {
+                _Bench6.ChangeBenchmark();
+                Console.WriteLine($"Bench {i:D2}:{_Bench6.CurrentBenchmark.Name,-16}");
             }
         }
     }
