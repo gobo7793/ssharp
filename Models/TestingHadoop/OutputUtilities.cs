@@ -184,6 +184,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info($"    Container Cnt: {node.RunningContainerCount}");
             Logger.Info($"    Mem used/free: {node.MemoryUsed}/{node.MemoryAvailable} ({node.MemoryUsage:F3})");
             Logger.Info($"    CPU used/free: {node.CpuUsed}/{node.CpuAvailable} ({node.CpuUsage:F3})");
+            Logger.Info($"    Health Report: {node.HealthReport}");
         }
 
         /// <summary>
@@ -209,6 +210,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info($"        FinalStatus: {app.FinalStatus}");
             Logger.Info($"        IsKillable:  {app.IsKillable}");
             Logger.Info($"        AM Host:     {app.AmHostId} ({app.AmHost?.State})");
+            Logger.Info($"        Diagnostics: {app.Diagnostics}");
         }
 
         /// <summary>
@@ -222,6 +224,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info($"            AM Container: {attempt.AmContainerId}");
             Logger.Info($"            AM Host:      {attempt.AmHostId} ({attempt.AmHost?.State})");
             Logger.Info($"            Cont. Count:  {attempt.RunningContainerCount}");
+            Logger.Info($"            Diagnostics:  {attempt.Diagnostics}");
         }
 
         /// <summary>
