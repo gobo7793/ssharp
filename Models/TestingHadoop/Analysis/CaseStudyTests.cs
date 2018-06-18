@@ -55,11 +55,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// </summary>
         public string MutationConfig { get; set; } = "mut";
 
-        /// <summary>
-        /// Sets the maximum executed app count per test case
-        /// </summary>
-        public int MaxPossibleAppCount { get; set; } = 12;
-
         #endregion
 
         #region Preparing
@@ -98,7 +93,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                    from steps in GetStepCounts()
                    from isMut in GetIsMutated()
 
-                   where clients * steps <= MaxPossibleAppCount
+                   where !(hosts == 1 && clients >= 6)
+                   where !(clients <= 2 && steps >= 10)
                    select new TestCaseData(seed, prob, hosts, clients, steps, isMut);
         }
 
@@ -107,9 +103,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// </summary>
         private IEnumerable<int> GetSeeds()
         {
-            yield return 0xE99032B;
-            yield return 0x4F009539;
-            yield return 0x319140E0;
+            //yield return 0xE99032B;
+            //yield return 0x4F009539;
+            //yield return 0x319140E0;
+            yield return 0x36159C73;
+            yield return 0x60E70223;
         }
 
         /// <summary>
@@ -117,7 +115,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// </summary>
         private IEnumerable<double> GetFaultProbabilities()
         {
-            yield return 0.0;
+            //yield return 0.0;
             yield return 0.3;
         }
 
@@ -135,8 +133,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// </summary>
         private IEnumerable<int> GetClientCounts()
         {
-            yield return 1;
+            //yield return 1;
             yield return 2;
+            yield return 4;
+            yield return 6;
         }
 
         /// <summary>
@@ -145,7 +145,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         private IEnumerable<int> GetStepCounts()
         {
             yield return 5;
-            yield return 12;
+            yield return 10;
+            //yield return 12;
         }
 
         /// <summary>
@@ -178,40 +179,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// The cluster will be started before the test and stopped after the test.
         /// </remarks>
         [Test]
-        //[TestCaseSource(nameof(GetTestCases))]
-        [TestCase(0x36159C73, 0.3, 1, 2, 5, false)]
-        [TestCase(0x36159C73, 0.3, 1, 4, 5, false)]
-        [TestCase(0x36159C73, 0.3, 1, 4, 10, false)]
-        [TestCase(0x36159C73, 0.3, 2, 2, 5, false)]
-        [TestCase(0x36159C73, 0.3, 2, 4, 5, false)]
-        [TestCase(0x36159C73, 0.3, 2, 4, 10, false)]
-        [TestCase(0x36159C73, 0.3, 2, 6, 5, false)]
-        [TestCase(0x36159C73, 0.3, 2, 6, 10, false)]
-        [TestCase(0x36159C73, 0.3, 1, 2, 5, true)]
-        [TestCase(0x36159C73, 0.3, 1, 4, 5, true)]
-        [TestCase(0x36159C73, 0.3, 1, 4, 10, true)]
-        [TestCase(0x36159C73, 0.3, 2, 2, 5, true)]
-        [TestCase(0x36159C73, 0.3, 2, 4, 5, true)]
-        [TestCase(0x36159C73, 0.3, 2, 4, 10, true)]
-        [TestCase(0x36159C73, 0.3, 2, 6, 5, true)]
-        [TestCase(0x36159C73, 0.3, 2, 6, 10, true)]
-
-        [TestCase(0x60E70223, 0.3, 1, 2, 5, false)]
-        [TestCase(0x60E70223, 0.3, 1, 4, 5, false)]
-        [TestCase(0x60E70223, 0.3, 1, 4, 10, false)]
-        [TestCase(0x60E70223, 0.3, 2, 2, 5, false)]
-        [TestCase(0x60E70223, 0.3, 2, 4, 5, false)]
-        [TestCase(0x60E70223, 0.3, 2, 4, 10, false)]
-        [TestCase(0x60E70223, 0.3, 2, 6, 5, false)]
-        [TestCase(0x60E70223, 0.3, 2, 6, 10, false)]
-        [TestCase(0x60E70223, 0.3, 1, 2, 5, true)]
-        [TestCase(0x60E70223, 0.3, 1, 4, 5, true)]
-        [TestCase(0x60E70223, 0.3, 1, 4, 10, true)]
-        [TestCase(0x60E70223, 0.3, 2, 2, 5, true)]
-        [TestCase(0x60E70223, 0.3, 2, 4, 5, true)]
-        [TestCase(0x60E70223, 0.3, 2, 4, 10, true)]
-        [TestCase(0x60E70223, 0.3, 2, 6, 5, true)]
-        [TestCase(0x60E70223, 0.3, 2, 6, 10, true)]
+        [TestCaseSource(nameof(GetTestCases))]
         public void ExecuteCaseStudy(int benchmarkSeed, double faultProbability, int hostsCount,
                                      int clientCount, int stepCount, bool isMutated)
         {
@@ -262,7 +230,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             {
                 // Teardown
                 StopCluster();
-                ResetInstances();
                 MoveCaseStudyLogs(benchmarkSeed, faultProbability, hostsCount,
                     clientCount, stepCount, isMutated);
             }
@@ -275,10 +242,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         #region Utilities
 
         /// <summary>
-        /// Initializes the connector instances
+        /// Resets needed instances and if not already initialized, initializes the connector instances
         /// </summary>
         private void InitInstances()
         {
+            Model.ResetInstance();
+            OutputUtilities.Reset();
+
             if(IsInitConnectors)
                 return;
 
@@ -287,17 +257,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             var cmd = CmdConnector.Instance;
             var rest = RestConnector.Instance;
             IsInitConnectors = cmd != null && rest != null;
-        }
-
-        /// <summary>
-        /// Resets the singleton instances using in the test
-        /// </summary>
-        private void ResetInstances()
-        {
-            Model.ResetInstance();
-            //CmdConnector.ResetInstance();
-            //RestConnector.ResetInstance();
-            OutputUtilities.Reset();
         }
 
         /// <summary>
@@ -356,10 +315,10 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             var todayStrShort = DateTime.Today.ToString("yyMMdd");
             var mutated = isMutated ? "MT" : "MF";
             var faultProbStr = faultProbability.ToString(CultureInfo.InvariantCulture);
-            var filename = $"0x{benchmarkSeed:X8}-{faultProbStr}F-{hostsCount:D1}H-" +
+            var baseFileName = $"0x{benchmarkSeed:X8}-{faultProbStr}F-{hostsCount:D1}H-" +
                            $"{clientCount:D1}C-{stepCount:D2}S-{mutated}-{todayStrShort}";
-            var newLogFile = $@"{caseStudyLogDir}\{filename}.log";
-            var newSshLog = $@"{caseStudyLogDir}\{filename}-ssh.log";
+            var newLogFile = $@"{caseStudyLogDir}\{baseFileName}.log";
+            var newSshLog = $@"{caseStudyLogDir}\{baseFileName}-ssh.log";
 
             Directory.CreateDirectory(caseStudyLogDir);
             File.Move(origLogFile, newLogFile);
