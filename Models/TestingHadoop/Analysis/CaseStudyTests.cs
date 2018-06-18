@@ -320,7 +320,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             var newLogFile = $@"{caseStudyLogDir}\{baseFileName}.log";
             var newSshLog = $@"{caseStudyLogDir}\{baseFileName}-ssh.log";
 
+            var timeStr = DateTime.Now.ToString("HHmmss");
             Directory.CreateDirectory(caseStudyLogDir);
+            if(File.Exists(newLogFile))
+                File.Move(newLogFile, $"{newLogFile}-{timeStr}");
+            if(File.Exists(newSshLog))
+                File.Move(newSshLog, $"{newSshLog}-{timeStr}");
             File.Move(origLogFile, newLogFile);
             File.Move(origSshLog, newSshLog);
         }
