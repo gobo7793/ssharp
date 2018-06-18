@@ -45,10 +45,25 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// </summary>
         public List<YarnAppContainer> Containers { get; }
 
+        private int _RunningContainerCount;
+
         /// <summary>
-        /// Running Containers count
+        /// Current running Containers count
         /// </summary>
-        public int RunningContainerCount { get; set; }
+        public int RunningContainerCount
+        {
+            get { return _RunningContainerCount; }
+            set
+            {
+                _RunningContainerCount = value;
+                DetectedContainerCount += value;
+            }
+        }
+
+        /// <summary>
+        /// All detected running container count
+        /// </summary>
+        public int DetectedContainerCount { get; private set; }
 
         /// <summary>
         /// <see cref="YarnApp"/> ID from this attempt

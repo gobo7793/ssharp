@@ -23,6 +23,7 @@
 #endregion
 
 using System;
+using System.Linq;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
@@ -130,16 +131,26 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         /// <summary>
         /// Prints the test results
         /// </summary>
+        /// <param name="model">The model</param>
+        /// <param name="simulationTime">The simulation time</param>
+        /// <param name="maxFaultCount">The maximum possible fault activation count</param>
         /// <param name="activatedFaults">Activated fault count</param>
         /// <param name="repairedFaults">Repaired fault count</param>
-        public static void PrintTestResults(int? activatedFaults = null, int? repairedFaults = null)
+        public static void PrintTestResults(Model model, TimeSpan simulationTime, int? maxFaultCount = null, int? activatedFaults = null, int? repairedFaults = null)
         {
             Logger.Info("Finishing test.");
 
+            PrintDuration(simulationTime, "Simulation");
             if(activatedFaults.HasValue)
-                Logger.Info($"Activated Faults:    {activatedFaults}");
+                Logger.Info($"Activated Faults:     {activatedFaults}/{maxFaultCount ?? 0}");
             if(repairedFaults.HasValue)
-                Logger.Info($"Repaired Faults      {repairedFaults}");
+                Logger.Info($"Repaired Faults:      {repairedFaults}");
+            Logger.Info($"Executed apps:        {model.Applications.Count(app => !String.IsNullOrWhiteSpace(app.AppId))}");
+            Logger.Info($"Successed apps:       {model.Applications.Count(app => app.FinalStatus == EFinalStatus.SUCCEEDED)}");
+            Logger.Info($"Failed apps:          {model.Applications.Count(app => app.FinalStatus == EFinalStatus.FAILED)}");
+            Logger.Info($"Killed apps:          {model.Applications.Count(app => app.FinalStatus == EFinalStatus.KILLED)}");
+            Logger.Info($"Executed attempts:    {model.AppAttempts.Count(att => !String.IsNullOrWhiteSpace(att.AttemptId))}");
+            Logger.Info($"Detected containers:  {model.AppAttempts.Sum(att => att.DetectedContainerCount)}");
         }
 
         /// <summary>
@@ -224,6 +235,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info($"            AM Container: {attempt.AmContainerId}");
             Logger.Info($"            AM Host:      {attempt.AmHostId} ({attempt.AmHost?.State})");
             Logger.Info($"            Cont. Count:  {attempt.RunningContainerCount}");
+            Logger.Info($"            Detected Cnt: {attempt.DetectedContainerCount}");
             Logger.Info($"            Diagnostics:  {attempt.Diagnostics}");
         }
 

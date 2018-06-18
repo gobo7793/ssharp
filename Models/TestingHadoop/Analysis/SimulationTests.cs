@@ -293,6 +293,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             var wasFatalError = false;
             Model simModel = null;
             FaultTuple[] faults = null;
+            DateTime simulationStartTime = DateTime.Now;
+            TimeSpan simulationTime = new TimeSpan();
             try
             {
                 // init simulation
@@ -305,7 +307,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
                 SimulateBenchmarks();
 
-                var simulationStartTime = DateTime.Now;
+                simulationStartTime = DateTime.Now;
 
                 // do simuluation
                 for(var i = 0; i < StepCount; i++)
@@ -326,8 +328,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                     OutputUtilities.PrintStepEnd();
                 }
 
-                var simulationTime = DateTime.Now - simulationStartTime;
-                OutputUtilities.PrintDuration(simulationTime, "Simulation");
+                simulationTime = DateTime.Now - simulationStartTime;
 
                 // collect fault counts and check constraint for it
                 if(isWithFaults)
@@ -340,6 +341,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             }
             catch(Exception e)
             {
+                simulationTime = DateTime.Now - simulationStartTime;
                 Logger.Fatal("Fatal exception during Faulting Simulation.", e);
 
                 wasFatalError = true;
@@ -355,7 +357,9 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 }
                 if(FaultCounts == null)
                     FaultCounts = CountFaults(faults);
-                OutputUtilities.PrintTestResults(FaultCounts?.Item1, FaultCounts?.Item2);
+                var faultCount = faults?.Length;
+                OutputUtilities.PrintTestResults(simModel, simulationTime,
+                    StepCount * faultCount, FaultCounts?.Item1, FaultCounts?.Item2);
 
                 // kill runnig apps
                 Logger.Info("Killing running apps.");
