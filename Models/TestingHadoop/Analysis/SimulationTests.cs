@@ -291,12 +291,13 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             var isWithFaults = FaultActivationProbability > 0.000001; // prevent inaccuracy
 
             var wasFatalError = false;
+            Model simModel = null;
             try
             {
                 // init simulation
                 OutputUtilities.PrintExecutionStart();
                 var simulator = new SafetySharpSimulator(model);
-                var simModel = (Model)simulator.Model;
+                simModel = (Model)simulator.Model;
                 var faults = CollectYarnNodeFaults(simModel);
 
                 OutputUtilities.PrintTestSettings("Simulation", MinStepTime, StepCount);
@@ -334,8 +335,6 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                     Oracle.ValidateConstraints("simulator", TestConstraints);
                 }
 
-                OutputUtilities.PrintTestResults(FaultCounts?.Item1, FaultCounts?.Item2);
-
                 OutputUtilities.PrintExecutionFinish();
             }
             catch(Exception e)
@@ -346,6 +345,15 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             }
             finally
             {
+                // get final status
+                if(simModel != null)
+                {
+                    simModel.Controller.MonitorAll();
+                    Logger.Info("Final status of the cluster:");
+                    OutputUtilities.PrintFullTrace(simModel.Controller);
+                }
+                OutputUtilities.PrintTestResults(FaultCounts?.Item1, FaultCounts?.Item2);
+
                 // kill runnig apps
                 Logger.Info("Killing running apps.");
                 foreach(var app in model.Applications)

@@ -137,9 +137,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             // optional, to allocate at least the AM container
             ModelUtilities.Sleep(5);
 
-            MonitorNodes();
-            MonitorApps();
-            MonitorMarp();
+            MonitorAll();
 
             Logger.Info("Checking SuT constraints.");
             Oracle.ValidateConstraints(EConstraintType.Sut);
@@ -152,6 +150,16 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         #endregion
 
         #region Monitoring methods
+
+        /// <summary>
+        /// Monitors all nodes, apps and marp value
+        /// </summary>
+        public void MonitorAll()
+        {
+            MonitorNodes();
+            MonitorApps();
+            MonitorMarp();
+        }
 
         /// <summary>
         /// Monitors all node informations
