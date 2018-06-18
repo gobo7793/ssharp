@@ -233,7 +233,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// </summary>
         /// <param name="faults">The fault tuple</param>
         /// <returns>The activated and repaired faults count</returns>
-        private Tuple<int?, int?> CountFaults(FaultTuple[] faults)
+        private static Tuple<int?, int?> CountFaults(FaultTuple[] faults)
         {
             int? act = 0;
             int? rep = 0;
@@ -292,13 +292,14 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 
             var wasFatalError = false;
             Model simModel = null;
+            FaultTuple[] faults = null;
             try
             {
                 // init simulation
                 OutputUtilities.PrintExecutionStart();
                 var simulator = new SafetySharpSimulator(model);
                 simModel = (Model)simulator.Model;
-                var faults = CollectYarnNodeFaults(simModel);
+                faults = CollectYarnNodeFaults(simModel);
 
                 OutputUtilities.PrintTestSettings("Simulation", MinStepTime, StepCount);
 
@@ -352,6 +353,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                     Logger.Info("Final status of the cluster:");
                     OutputUtilities.PrintFullTrace(simModel.Controller);
                 }
+                if(FaultCounts == null)
+                    FaultCounts = CountFaults(faults);
                 OutputUtilities.PrintTestResults(FaultCounts?.Item1, FaultCounts?.Item2);
 
                 // kill runnig apps
