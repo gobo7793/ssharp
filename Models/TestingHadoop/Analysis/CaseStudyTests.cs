@@ -33,6 +33,7 @@ using System.Threading;
 using NUnit.Framework;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling;
 using SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector;
+using SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel;
 
 namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
 {
@@ -244,6 +245,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         {
             Model.ResetInstance();
             OutputUtilities.Reset();
+            Oracle.ResetCounters();
 
             if(IsInitConnectors)
                 return;
