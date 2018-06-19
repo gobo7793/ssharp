@@ -172,7 +172,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling
         /// 0 to disable containers and container monitoring,
         /// -1 for auto detection based on <see cref="ModelSettings.NodeBaseCount"/> and <see cref="ModelSettings.ContainersPerNode"/>
         /// </param>
-        public void InitModel(int clientCount = 1, int appCount = 16, int attemptCount = 3, int containerCount = -1)
+        public void InitModel(int clientCount = 1, int appCount = 16, int attemptCount = 4, int containerCount = -1)
         {
             var nodeCount = ModelUtilities.GetFullNodeCount();
 
