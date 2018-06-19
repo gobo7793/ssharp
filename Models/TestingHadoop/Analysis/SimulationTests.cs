@@ -334,7 +334,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 if(isWithFaults)
                 {
                     FaultCounts = CountFaults(faults);
-                    Oracle.ValidateConstraints("simulator", TestConstraints);
+                    Oracle.ValidateConstraints("simulator", TestConstraints, EConstraintType.Test);
                 }
 
                 OutputUtilities.PrintExecutionFinish();
