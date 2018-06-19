@@ -141,7 +141,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info("Finishing test.");
 
             PrintDuration(simulationTime, "Simulation");
-            Logger.Info($"Executed Steps:       {StepCount + 1}");
+            Logger.Info($"Successfull Steps:    {StepCount}");
             if(activatedFaults.HasValue)
                 Logger.Info($"Activated Faults:     {activatedFaults}/{maxFaultCount ?? 0}");
             if(repairedFaults.HasValue)
