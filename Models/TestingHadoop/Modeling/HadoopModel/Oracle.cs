@@ -46,6 +46,67 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         [NonSerializable]
         private static YarnController Controller => Model.Instance.Controller;
 
+
+        /// <summary>
+        /// Checked SuT constraint count
+        /// </summary>
+        [NonSerializable]
+        public static int SuTConstraintCheckedCount { get; private set; }
+
+        /// <summary>
+        /// Failed SuT constraint count
+        /// </summary>
+        [NonSerializable]
+        public static int SuTConstraintFailedCount { get; private set; }
+
+        /// <summary>
+        /// Checked test constraint count
+        /// </summary>
+        [NonSerializable]
+        public static int TestConstraintCheckedCount { get; private set; }
+
+        /// <summary>
+        /// Failed test constraint count
+        /// </summary>
+        [NonSerializable]
+        public static int TestConstraintFailedCount { get; private set; }
+
+        #endregion
+
+        #region Utilities
+
+
+        /// <summary>
+        /// Resets the constraint counters
+        /// </summary>
+        public static void ResetCounters()
+        {
+            SuTConstraintCheckedCount = 0;
+            SuTConstraintFailedCount = 0;
+            TestConstraintCheckedCount = 0;
+            TestConstraintFailedCount = 0;
+        }
+
+        /// <summary>
+        /// Adds the constraint check to the counters
+        /// </summary>
+        private static void CountCheck(EConstraintType constraintType, bool isValid)
+        {
+            switch(constraintType)
+            {
+                case EConstraintType.Sut:
+                    SuTConstraintCheckedCount++;
+                    if(!isValid)
+                        SuTConstraintFailedCount++;
+                    break;
+                case EConstraintType.Test:
+                    TestConstraintCheckedCount++;
+                    if(!isValid)
+                        TestConstraintFailedCount++;
+                    break;
+            }
+        }
+
         #endregion
 
         #region Checking Constraints
@@ -62,7 +123,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
             var isAllValid = true;
             if(constraintType == EConstraintType.Test)
             {
-                if(!ValidateConstraints("Controller", Controller.TestConstraints))
+                if(!ValidateConstraints("Controller", Controller.TestConstraints, constraintType))
                     isAllValid = false;
             }
 
@@ -103,7 +164,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         public static bool ValidateConstraints(IYarnReadable yarnComponent, EConstraintType constraintType)
         {
             var constraints = constraintType == EConstraintType.Sut ? yarnComponent.SutConstraints : yarnComponent.TestConstraints;
-            var isComponentValid = ValidateConstraints(yarnComponent.GetId(), constraints);
+            var isComponentValid = ValidateConstraints(yarnComponent.GetId(), constraints, constraintType);
             return isComponentValid;
         }
 
@@ -113,13 +174,23 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel
         /// <param name="componentId">The component ID or name for logging</param>
         /// <param name="constraints">The constraints to validate</param>
         /// <returns>True if constraints are valid</returns>
-        public static bool ValidateConstraints(string componentId, Func<bool>[] constraints)
+        public static bool ValidateConstraints(string componentId, Func<bool>[] constraints, EConstraintType constraintType)
         {
             var isCompontenValid = true;
             for(var i = 0; i < constraints.Length; i++)
             {
                 var constraint = constraints[i];
-                var isValid = constraint();
+                bool isValid;
+                try
+                {
+                    isValid = constraint();
+                }
+                catch
+                {
+                    isValid = false;
+                }
+
+                CountCheck(constraintType, isValid);
                 if(!isValid)
                 {
                     Logger.Error($"YARN component not valid: Constraint {i} in {componentId}");

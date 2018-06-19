@@ -141,6 +141,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info("Finishing test.");
 
             PrintDuration(simulationTime, "Simulation");
+            Logger.Info($"Executed Steps:       {StepCount + 1}");
             if(activatedFaults.HasValue)
                 Logger.Info($"Activated Faults:     {activatedFaults}/{maxFaultCount ?? 0}");
             if(repairedFaults.HasValue)
@@ -152,6 +153,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             Logger.Info($"Killed apps:          {Model.Instance.Applications.Count(app => app.FinalStatus == EFinalStatus.KILLED)}");
             Logger.Info($"Executed attempts:    {Model.Instance.AppAttempts.Count(att => !String.IsNullOrWhiteSpace(att.AttemptId))}");
             Logger.Info($"Detected containers:  {Model.Instance.AppAttempts.Sum(att => att.DetectedContainerCount)}");
+            Logger.Info($"Checked Constraints:  {Oracle.SuTConstraintCheckedCount} SuT / {Oracle.TestConstraintCheckedCount} Test");
+            Logger.Info($"Failed Constraints:   {Oracle.SuTConstraintFailedCount} SuT / {Oracle.TestConstraintFailedCount} Test");
         }
 
         /// <summary>
