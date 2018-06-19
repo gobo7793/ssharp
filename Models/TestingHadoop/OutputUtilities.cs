@@ -131,12 +131,11 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         /// <summary>
         /// Prints the test results
         /// </summary>
-        /// <param name="model">The model</param>
         /// <param name="simulationTime">The simulation time</param>
         /// <param name="maxFaultCount">The maximum possible fault activation count</param>
         /// <param name="activatedFaults">Activated fault count</param>
         /// <param name="repairedFaults">Repaired fault count</param>
-        public static void PrintTestResults(Model model, TimeSpan simulationTime, int? maxFaultCount = null,
+        public static void PrintTestResults(TimeSpan simulationTime, int? maxFaultCount = null,
                                             int? activatedFaults = null, int? repairedFaults = null)
         {
             Logger.Info("Finishing test.");
@@ -147,12 +146,12 @@ namespace SafetySharp.CaseStudies.TestingHadoop
             if(repairedFaults.HasValue)
                 Logger.Info($"Repaired Faults:      {repairedFaults}");
             Logger.Info($"Last detected MARP:   {YarnController.MarpValues.Last(v => v >= 0)}");
-            Logger.Info($"Executed apps:        {model.Applications.Count(app => !String.IsNullOrWhiteSpace(app.AppId))}");
-            Logger.Info($"Successed apps:       {model.Applications.Count(app => app.FinalStatus == EFinalStatus.SUCCEEDED)}");
-            Logger.Info($"Failed apps:          {model.Applications.Count(app => app.FinalStatus == EFinalStatus.FAILED)}");
-            Logger.Info($"Killed apps:          {model.Applications.Count(app => app.FinalStatus == EFinalStatus.KILLED)}");
-            Logger.Info($"Executed attempts:    {model.AppAttempts.Count(att => !String.IsNullOrWhiteSpace(att.AttemptId))}");
-            Logger.Info($"Detected containers:  {model.AppAttempts.Sum(att => att.DetectedContainerCount)}");
+            Logger.Info($"Executed apps:        {Model.Instance.Applications.Count(app => !String.IsNullOrWhiteSpace(app.AppId))}");
+            Logger.Info($"Successed apps:       {Model.Instance.Applications.Count(app => app.FinalStatus == EFinalStatus.SUCCEEDED)}");
+            Logger.Info($"Failed apps:          {Model.Instance.Applications.Count(app => app.FinalStatus == EFinalStatus.FAILED)}");
+            Logger.Info($"Killed apps:          {Model.Instance.Applications.Count(app => app.FinalStatus == EFinalStatus.KILLED)}");
+            Logger.Info($"Executed attempts:    {Model.Instance.AppAttempts.Count(att => !String.IsNullOrWhiteSpace(att.AttemptId))}");
+            Logger.Info($"Detected containers:  {Model.Instance.AppAttempts.Sum(att => att.DetectedContainerCount)}");
         }
 
         /// <summary>

@@ -358,8 +358,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
                 if(FaultCounts == null)
                     FaultCounts = CountFaults(faults);
                 var faultCount = faults?.Length;
-                OutputUtilities.PrintTestResults(simModel, simulationTime,
-                    StepCount * faultCount, FaultCounts?.Item1, FaultCounts?.Item2);
+                OutputUtilities.PrintTestResults(simulationTime, StepCount * faultCount,
+                    FaultCounts?.Item1, FaultCounts?.Item2);
 
                 // kill runnig apps
                 Logger.Info("Killing running apps.");
