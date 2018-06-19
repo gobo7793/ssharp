@@ -136,7 +136,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop
         /// <param name="maxFaultCount">The maximum possible fault activation count</param>
         /// <param name="activatedFaults">Activated fault count</param>
         /// <param name="repairedFaults">Repaired fault count</param>
-        public static void PrintTestResults(Model model, TimeSpan simulationTime, int? maxFaultCount = null, int? activatedFaults = null, int? repairedFaults = null)
+        public static void PrintTestResults(Model model, TimeSpan simulationTime, int? maxFaultCount = null,
+                                            int? activatedFaults = null, int? repairedFaults = null)
         {
             Logger.Info("Finishing test.");
 
