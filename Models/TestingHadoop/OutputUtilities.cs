@@ -145,6 +145,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop
                 Logger.Info($"Activated Faults:     {activatedFaults}/{maxFaultCount ?? 0}");
             if(repairedFaults.HasValue)
                 Logger.Info($"Repaired Faults:      {repairedFaults}");
+            Logger.Info($"Last detected MARP:   {YarnController.MarpValues.Last(v => v >= 0)}");
             Logger.Info($"Executed apps:        {model.Applications.Count(app => !String.IsNullOrWhiteSpace(app.AppId))}");
             Logger.Info($"Successed apps:       {model.Applications.Count(app => app.FinalStatus == EFinalStatus.SUCCEEDED)}");
             Logger.Info($"Failed apps:          {model.Applications.Count(app => app.FinalStatus == EFinalStatus.FAILED)}");
