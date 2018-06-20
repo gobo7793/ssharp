@@ -72,7 +72,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.Connector
         /// If you need more connections, maybe set <c>/etc/ssh/sshd_config</c>
         /// MaxSessions to the needed value (default 10)!
         /// </remarks>
-        private CmdConnector(bool forMonitoring = false, bool forFaulting = true, int submittingConnections = 8)
+        private CmdConnector(bool forMonitoring = false, bool forFaulting = true, int submittingConnections = 10)
         {
             if(forMonitoring)
                 Monitoring = new SshConnection(ModelSettings.SshHosts[0], ModelSettings.SshUsernames[0], ModelSettings.SshPrivateKeyFiles[0],
