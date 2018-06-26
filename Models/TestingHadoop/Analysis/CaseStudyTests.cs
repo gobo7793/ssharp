@@ -54,7 +54,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         /// <summary>
         /// Mutation scenario name
         /// </summary>
-        public string MutationConfig { get; set; } = "mut";
+        public string MutationConfig { get; set; } = "mut3";
 
         #endregion
 
