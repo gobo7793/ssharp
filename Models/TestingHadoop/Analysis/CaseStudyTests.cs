@@ -323,7 +323,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
             if(File.Exists(newLogFile))
                 File.Move(newLogFile, $"{newLogFile.Substring(0, newLogFile.Length - 4)}-{timeStr}.log");
             if(File.Exists(newSshLog))
-                File.Move(newSshLog, $"{newSshLog.Substring(0, newSshLog.Length - 4)}-{timeStr}.log");
+                File.Move(newSshLog, $"{newSshLog.Substring(0, newSshLog.Length - 8)}-{timeStr}-ssh.log");
             File.Move(origLogFile, newLogFile);
             File.Move(origSshLog, newSshLog);
         }
