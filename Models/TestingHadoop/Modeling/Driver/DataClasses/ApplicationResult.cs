@@ -167,7 +167,7 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Modeling.Driver.DataClasses
         /// <summary>
         /// Diagnostics info
         /// </summary>
-        [JsonProperty("diagnosticsInfo")]
+        [JsonProperty("diagnostics")]
         public string Diagnostics { get; set; }
 
         public override bool Equals(object obj)
