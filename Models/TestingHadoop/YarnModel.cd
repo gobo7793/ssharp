@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnController">
-    <Position X="4.75" Y="4" Width="1.75" />
+    <Position X="4.75" Y="3.25" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAQAAAEAAAAAAAABAAAAAAAAAIABgAAIAABIAAAAAAA=</HashCode>
+      <HashCode>AAQAAAEAAAIAAAAAAAQACEAAAYABgAAIAABAAAAAAAA=</HashCode>
       <FileName>Modeling\HadoopModel\YarnController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnNode">
-    <Position X="9.5" Y="4" Width="2" />
+    <Position X="10.5" Y="3.5" Width="2" />
     <NestedTypes>
       <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnNode.NodeConnectionErrorEffect" Collapsed="true">
         <TypeIdentifier>
@@ -23,39 +23,34 @@
     </NestedTypes>
     <AssociationLine Name="Controller" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnController">
       <MemberNameLabel ManuallyPlaced="true">
-        <Position X="-0.93" Y="0.079" />
+        <Position X="1.481" Y="0.093" />
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>BAQAwAAAAQAgDEBBEAgEEEAAYGIDAAAACQgAJAAAAAg=</HashCode>
+      <HashCode>BAUAwAAAAYIgDEBAEAgEEAgB4WICAACACQAAJAIAKAk=</HashCode>
       <FileName>Modeling\HadoopModel\YarnNode.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Controller" />
     </ShowAsAssociation>
-    <Lollipop Orientation="Left" Position="3.254" />
+    <Lollipop Orientation="Left" Position="3.34" />
   </Class>
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.Client">
-    <Position X="2.5" Y="5.5" Width="1.75" />
-    <AssociationLine Name="CurrentExecutingApp" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnApp" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="3.375" Y="8.723" />
-        <Point X="3.375" Y="9.438" />
-        <Point X="4.5" Y="9.438" />
-      </Path>
+    <Position X="1.5" Y="5.5" Width="1.75" />
+    <AssociationLine Name="CurrentExecutingApp" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnApp">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.048" Y="-0.252" />
       </MemberNameLabel>
     </AssociationLine>
     <AssociationLine Name="ConnectedYarnController" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnController" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="2.864" Y="5.5" />
-        <Point X="2.864" Y="4.915" />
-        <Point X="4.75" Y="4.915" />
+        <Point X="1.864" Y="5.5" />
+        <Point X="1.864" Y="4.165" />
+        <Point X="4.75" Y="4.165" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAQoAAEAAAAAAAgAgAAAAAAAAAAAAAAQAIAAAACAABA=</HashCode>
+      <HashCode>AAQoQAEAAAIAAAgAgAAAAAAAAAAAgAAQAYAAAACAABA=</HashCode>
       <FileName>Modeling\HadoopModel\Client.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -64,39 +59,28 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnApp">
-    <Position X="4.5" Y="8" Width="2" />
-    <NestedTypes>
-      <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnApp.KillAppEffect" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Modeling\HadoopModel\YarnApp.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
+    <Position X="4.5" Y="9" Width="2" />
     <AssociationLine Name="StartingClient" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.Client" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="5.25" Y="8" />
+        <Point X="5.25" Y="9" />
         <Point X="5.25" Y="7.625" />
-        <Point X="4.25" Y="7.625" />
+        <Point X="3.25" Y="7.625" />
       </Path>
     </AssociationLine>
-    <AssociationLine Name="FinalStatus" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.EFinalStatus" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="5.5" Y="15.203" />
-        <Point X="5.5" Y="15.688" />
-        <Point X="4" Y="15.688" />
-      </Path>
+    <AssociationLine Name="FinalStatus" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.EFinalStatus">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.048" Y="-0.252" />
       </MemberNameLabel>
     </AssociationLine>
     <AssociationLine Name="AmHost" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnNode" FixedToPoint="true">
       <Path>
-        <Point X="6.5" Y="8.312" />
-        <Point X="9.5" Y="8.312" />
+        <Point X="5.906" Y="9" />
+        <Point X="5.906" Y="7.812" />
+        <Point X="10.5" Y="7.812" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAQgAABAAAAAAAKERGgAAAwAYEAgAEAhCSAABg2AAAA=</HashCode>
+      <HashCode>AAWgEABAACgAAAKETEgAAAwJYUCgAEChSSAAJg+AAAA=</HashCode>
       <FileName>Modeling\HadoopModel\YarnApp.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -108,7 +92,7 @@
     <Lollipop Position="1.385" />
   </Class>
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnAppContainer">
-    <Position X="9.5" Y="12.25" Width="2" />
+    <Position X="10.75" Y="13.5" Width="2" />
     <AssociationLine Name="Host" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnNode">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.068" Y="0.07" />
@@ -116,27 +100,27 @@
     </AssociationLine>
     <AssociationLine Name="AppAttempt" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnAppAttempt" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="10.084" Y="12.25" />
-        <Point X="10.084" Y="11.938" />
-        <Point X="8.75" Y="11.938" />
+        <Point X="11.334" Y="13.5" />
+        <Point X="11.334" Y="13.25" />
+        <Point X="9.5" Y="13.25" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAQgAAAAAQAAACIGAAIAAAAAYEAgCAABCQAABAAAAAA=</HashCode>
+      <HashCode>AAUgAAAAAwgAYCIGQAMAAAABYWAgCACBCQAABAIAAAA=</HashCode>
       <FileName>Modeling\HadoopModel\YarnAppContainer.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Host" />
       <Property Name="AppAttempt" />
     </ShowAsAssociation>
-    <Lollipop Orientation="Left" Position="0.995" />
+    <Lollipop Orientation="Left" Position="0.797" />
   </Class>
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnAppAttempt">
-    <Position X="7.25" Y="9" Width="1.5" />
+    <Position X="7.75" Y="9" Width="1.75" />
     <AssociationLine Name="App" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnApp" FixedToPoint="true">
       <Path>
-        <Point X="7.25" Y="11.062" />
-        <Point X="6.5" Y="11.062" />
+        <Point X="7.75" Y="12.062" />
+        <Point X="6.5" Y="12.062" />
       </Path>
     </AssociationLine>
     <AssociationLine Name="State" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.EAppState">
@@ -146,16 +130,16 @@
     </AssociationLine>
     <AssociationLine Name="AmHost" Type="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnNode" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="8.5" Y="9" />
-        <Point X="8.5" Y="8.812" />
-        <Point X="9.5" Y="8.812" />
+        <Point X="9.208" Y="9" />
+        <Point X="9.208" Y="8.312" />
+        <Point X="10.5" Y="8.312" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.068" Y="0.06" />
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAQgAABAAAAAAAKQAAAAAAAAYEAAAAAACQgARAEgAAA=</HashCode>
+      <HashCode>AQWgkABAACgAAAKQCAAQAAEBYUAAAACACQgARAcgEAA=</HashCode>
       <FileName>Modeling\HadoopModel\YarnAppAttempt.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -168,29 +152,29 @@
   <Class Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.YarnHost">
     <Position X="7.25" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgAAAAAAAAAAAJAIAAIAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAgAAAAAAAAAAAIAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Modeling\HadoopModel\YarnHost.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.IYarnReadable">
-    <Position X="2.5" Y="10.5" Width="1.5" />
+    <Position X="1.75" Y="11.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAQEAAAAAACQAAAAAAAAA=</HashCode>
+      <HashCode>AAEgAAAAAAAAAAAAAAAAAAABQUAAAACACQAAAAIAAAA=</HashCode>
       <FileName>Modeling\HadoopModel\IYarnReadable.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Enum Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.EAppState">
-    <Position X="7.25" Y="13.75" Width="1.5" />
+    <Position X="7.75" Y="16.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>IIQAAACAAAIACAAAIAAAQAAAAAAAAAAAgAAAAAEQAAA=</HashCode>
-      <FileName>Modeling\HadoopModel\EAppState.cs</FileName>
+      <FileName>Modeling\HadoopModel\Enumerations.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="SafetySharp.CaseStudies.TestingHadoop.Modeling.HadoopModel.EFinalStatus">
-    <Position X="2.5" Y="14.75" Width="1.5" />
+    <Position X="2.75" Y="18.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AIAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAgAEQAAA=</HashCode>
-      <FileName>Modeling\HadoopModel\EFinalStatus.cs</FileName>
+      <FileName>Modeling\HadoopModel\Enumerations.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Segoe UI" Size="9" />
