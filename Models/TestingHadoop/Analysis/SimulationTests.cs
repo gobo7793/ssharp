@@ -261,8 +261,8 @@ namespace SafetySharp.CaseStudies.TestingHadoop.Analysis
         [Test]
         public void SimulateHadoop()
         {
-            ModelSettings.FaultActivationProbability = 0.0;
-            ModelSettings.FaultRepairProbability = 1.0;
+            ModelSettings.FaultActivationProbability = FaultActivationProbability = 0.0;
+            ModelSettings.FaultRepairProbability = FaultRepairProbability = 1.0;
 
             var execRes = ExecuteSimulation();
             Assert.IsTrue(execRes, "fatal error occured, see log for details");
